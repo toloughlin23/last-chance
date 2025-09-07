@@ -1,0 +1,21 @@
+repos:
+  - repo: local
+    hooks:
+      - id: no-mocks-scanner
+        name: no-mocks-scanner
+        entry: python scripts/check_no_mocks.py
+        language: system
+        pass_filenames: false
+        types: [python, json, yaml, toml, shell, powershell]
+      - id: pytest-quick
+        name: pytest-quick (unit only)
+        entry: python scripts/run_pytest_quick.py
+        language: system
+        pass_filenames: false
+        stages: [pre-commit]
+      - id: pytest-full
+        name: pytest-full (includes integration)
+        entry: python scripts/run_pytest_full.py
+        language: system
+        pass_filenames: false
+        stages: [pre-push]

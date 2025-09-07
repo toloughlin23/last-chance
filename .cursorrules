@@ -1,0 +1,25 @@
+# Cursor Guardrails: Zero-Contamination Policy
+
+golden_rules:
+  - "Never introduce mocks, placeholders, lorem ipsum, fake endpoints, dummy data, or stubs."
+  - "Prefer real integrations over fakes. If integration is unavailable, leave the code unimplemented rather than adding fake data."
+  - "Do not generate example configs or fake files."
+  - "Preserve and improve functionality; prefer non-destructive edits."
+
+banned_patterns:
+  - "lorem ipsum"
+  - "mock data"
+  - "dummy data"
+  - "fake data"
+  - "placeholder"
+  - "stubbed"
+  - "REPLACE_ME"
+  - "CHANGEME"
+  - "YOUR_API_KEY"
+  - "example.com/api"
+
+allowed_exceptions:
+  - "Explicit allow on a single line using comment token: nocontam: allow <reason>"
+
+notes:
+  - "This file documents expectations for AI-assisted edits in Cursor. Enforcement is backed by pre-commit + CI."
