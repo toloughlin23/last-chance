@@ -36,3 +36,6 @@ pytest -q
 - Code owners: `.github/CODEOWNERS`
 - Branch protection guide: `docs/BRANCH_PROTECTION.md`
 - Policy: `NO_MOCKS_POLICY.md` and `.cursorrules`
+
+
+<!-- CI trigger: ensuring workflow runs to select required checks -->
