@@ -5,6 +5,7 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+  workflow_dispatch: {}
 
 jobs:
   build-test:
@@ -29,6 +30,6 @@ jobs:
 
       - name: Run tests
         env:
-          POLYGON_API_KEY: ${{HVaxVBqrpmumsZ10foKKkwtyMyPLs5_O}}
+          POLYGON_API_KEY: ${{ secrets.POLYGON_API_KEY }}
         run: |
           pytest -q
