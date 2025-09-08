@@ -29,6 +29,6 @@ jobs:
 
       - name: Run tests
         env:
-          POLYGON_API_KEY: ${{ secrets.POLYGON_API_KEY }}
+          POLYGON_API_KEY: ${{HVaxVBqrpmumsZ10foKKkwtyMyPLs5_O}}
         run: |
           pytest -q

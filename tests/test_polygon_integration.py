@@ -13,7 +13,7 @@ def test_polygon_aggs_historical_data_real_api():
 
     api_key = os.getenv("POLYGON_API_KEY")
     if not api_key:
-        pytest.skip("POLYGON_API_KEY not set; skipping real-data Polygon test.")
+        pytest.skip("POLYGON_API_KEY not set; set it in polygon/.env or .env and retry.")
 
     # Use a narrow historical window to minimize rate limit/usage
     url = (
