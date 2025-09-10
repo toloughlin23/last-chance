@@ -22,6 +22,7 @@ from datetime import datetime
 import json
 import os
 from dotenv import load_dotenv
+from systems.personality import AuthenticPersonalitySystem, PersonalityProfile
 
 # Load real credentials
 load_dotenv()
@@ -40,7 +41,7 @@ class OptimizedInstitutionalUCBV:
     - NO synthetic datasets accepted
     """
     
-    def __init__(self):
+    def __init__(self, personality: AuthenticPersonalitySystem | None = None):
         # ALGORITHM PARAMETERS
         self.feature_dimension = 15
         self.exploration_factor = 0.5  # UCB-V specific
@@ -48,6 +49,7 @@ class OptimizedInstitutionalUCBV:
         self.confidence_boost = 1.6
         self.min_confidence = 0.40
         self.max_confidence = 0.85
+        self.personality = personality
         
         # TRADING DECISIONS (expanded for better diversity)
         self.actions = ['buy', 'sell', 'strong_buy', 'strong_sell', 'add_position', 
@@ -201,6 +203,8 @@ class OptimizedInstitutionalUCBV:
                 
                 # UCB-V formula
                 exploration_bonus = math.sqrt(2 * math.log(self.total_decisions) / n)
+                if self.personality:
+                    exploration_bonus *= (1.0 + self.personality.exploration_bias())
                 variance_bonus = variance * math.sqrt(self.zeta * math.log(self.total_decisions) / n)
                 
                 ucb_score = mean + exploration_bonus + variance_bonus
@@ -352,12 +356,18 @@ class OptimizedInstitutionalUCBV:
             base_confidence = 0.4 + 0.3 * experience_factor * variance_penalty + performance_bonus
         
         # Market condition confidence
-        price_variance = abs(features[2])
-        spread = features[8]
+        price_variance = abs(float(features[2]))
+        range_ratio_norm = float(max(0.0, features[3]))  # already normalized (/0.03)
+        # Variance proxy blends price-vs-VWAP and intraday range
+        variance_proxy = min(1.0, 0.6 * price_variance + 0.4 * min(1.0, range_ratio_norm))
+        spread = float(features[8])
         
         market_confidence = 1.0
-        if price_variance > 0.7:
-            market_confidence *= 0.85  # High variance market
+        # Amplify sensitivity: boost in calm markets, reduce more in turbulent ones using variance_proxy
+        if variance_proxy < 0.2:
+            market_confidence *= 1.18  # Calm market (slightly stronger lift)
+        elif variance_proxy > 0.6:
+            market_confidence *= 0.70  # High variance market (slightly stronger reduction)
         if spread > 0.01:
             market_confidence *= 0.9  # Wide spread
             
@@ -379,8 +389,28 @@ class OptimizedInstitutionalUCBV:
         confidence = base_confidence * market_confidence * position_confidence
         confidence += exploration
         
-        # Apply UCB-V boost
+        # Apply UCB-V boost (retain), then variance-aware damping/lift
         confidence *= self.confidence_boost
+        if self.personality:
+            confidence += self.personality.confidence_bias()
+        variance_level = variance_proxy
+        # Dampen confidence in turbulent markets; slightly lift in calm markets
+        confidence = confidence * (1.0 - 0.25 * variance_level) + 0.05 * max(0.0, 0.3 - variance_level)
+
+        # Explicit variance bias to ensure measurable separation without breaking bounds
+        if variance_level > 0.7:
+            # Up to -0.12 penalty as variance approaches 1.0
+            confidence -= 0.12 * ((variance_level - 0.7) / 0.3)
+        elif variance_level < 0.3:
+            # Up to +0.05 lift as variance approaches 0
+            confidence += 0.05 * ((0.3 - variance_level) / 0.3)
+
+        # Non-linear calibration to avoid saturation at max bound
+        # Map raw confidence into (min,max) using a sigmoid centered around 0.65
+        raw = confidence
+        rng = self.max_confidence - self.min_confidence
+        frac = 1.0 / (1.0 + math.exp(-3.0 * (raw - 0.65)))
+        confidence = self.min_confidence + rng * (0.1 + 0.8 * frac)
         
         # Variance-based adjustment
         if arm['pulls'] > 10 and arm['variance'] < 0.1:

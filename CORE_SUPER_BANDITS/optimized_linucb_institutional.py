@@ -22,6 +22,7 @@ from dataclasses import dataclass
 from enum import Enum
 import time
 import random
+from systems.personality import AuthenticPersonalitySystem, PersonalityProfile
 
 class ArmType(Enum):
     """Trading signal types"""
@@ -161,12 +162,13 @@ class OptimizedInstitutionalLinUCB:
     - Institutional calibration (45-90% confidence range)
     """
     
-    def __init__(self, feature_dimension: int = 15, base_alpha: float = 1.0, base_regularization: float = 0.4):
+    def __init__(self, feature_dimension: int = 15, base_alpha: float = 1.0, base_regularization: float = 0.4, personality: AuthenticPersonalitySystem | None = None):
         self.feature_dimension = feature_dimension  # ENHANCED: 15 features
         self.base_alpha = base_alpha  # Base exploration parameter
         self.base_regularization = base_regularization  # ENHANCED: Adaptive regularization
         self.total_pulls = 0
         self.arms: Dict[str, OptimizedLinUCBArmState] = {}
+        self.personality = personality
         
         # COMPETITIVE ENHANCEMENTS
         self.confidence_boost_factor = 1.5  # Competitive advantage
@@ -253,7 +255,7 @@ class OptimizedInstitutionalLinUCB:
         news_volume = enriched_data.sentiment_analysis.news_volume
         
         # ENHANCED market features (from market_data if available)
-        price_momentum = getattr(enriched_data.market_data, 'price_momentum', np.random.normal(0, 0.02))
+        price_momentum = getattr(enriched_data.market_data, 'price_momentum', self._calculate_genuine_value_range(-0.02, 0.02))
         volatility = getattr(enriched_data.market_data, 'volatility', self._calculate_genuine_value_range(0.01, 0.05))
         volume_ratio = getattr(enriched_data.market_data, 'volume_ratio', self._calculate_genuine_value_range(0.6, 1.8))
         
@@ -348,6 +350,8 @@ class OptimizedInstitutionalLinUCB:
         
         # Calculate adaptive alpha
         dynamic_alpha = self._calculate_adaptive_alpha(enriched_data, regime_str)
+        if self.personality:
+            dynamic_alpha *= self.personality.alpha_multiplier()
         
         # COMPETITIVE arm evaluation
         arm_scores = {}
@@ -399,6 +403,8 @@ class OptimizedInstitutionalLinUCB:
         
         # Adaptive alpha
         dynamic_alpha = self._calculate_adaptive_alpha(enriched_data, regime_str)
+        if self.personality:
+            dynamic_alpha *= self.personality.alpha_multiplier()
         
         # COMPETITIVE confidence calculation
         base_confidence_bound = arm_state.calculate_competitive_confidence_bound(context, dynamic_alpha)
@@ -416,16 +422,92 @@ class OptimizedInstitutionalLinUCB:
         news_factor = news_confidence * 0.3  # News confidence contributes
         sentiment_factor = sentiment_strength * 0.2  # Strong sentiment = higher confidence
         
-        # Combine factors naturally
-        natural_confidence = base_confidence_bound + volatility_factor + news_factor + sentiment_factor
+        # Transparent weighted combination mapped into [0.45, 0.90]
+        # Weights emphasize real-market inputs for measurable variation
+        linear_score = (
+            market_volatility * 0.35
+            + news_confidence * 0.35
+            + sentiment_strength * 0.25
+            + max(0.0, (dynamic_alpha - 1.0)) * 0.10
+            + min(0.10, base_confidence_bound * 0.01)
+        )
+        # Normalize to [0,1] using a calibration divisor to avoid early saturation
+        fraction = min(1.0, max(0.0, linear_score / 0.6))
+        natural_confidence = 0.45 + 0.45 * fraction
         
-        # NATURAL institutional bounds - let market conditions determine confidence
-        final_confidence = max(0.10, natural_confidence)  # Only prevent extremely low values
+        # Institutional calibration bounds (45%–90%)
+        if self.personality:
+            natural_confidence += self.personality.confidence_bias()
+        final_confidence = max(0.45, min(0.90, natural_confidence))
         
         # Store confidence history
         arm_state.confidence_history.append(final_confidence)
         
         return final_confidence
+
+    # --- Day 1: ensure helper methods exist on LinUCB (not on other classes) ---
+    def _initialize_new_arm(self, arm_id: str):
+        """Initialize a new arm with genuine LinUCB parameters."""
+        self.arms[arm_id] = OptimizedLinUCBArmState(
+            arm_id=arm_id,
+            arm_type=ArmType.BUY_SIGNAL,
+            dimension=self.feature_dimension,
+            A=np.eye(self.feature_dimension) * self.base_regularization,
+            b=np.zeros(self.feature_dimension),
+            theta=np.zeros(self.feature_dimension),
+            A_inv=np.eye(self.feature_dimension) / self.base_regularization,
+            confidence_boost_factor=self.confidence_boost_factor,
+        )
+        print(f"✅ LinUCB: Arm {arm_id} initialized with genuine parameters")
+
+    def _calculate_genuine_linucb_confidence_for_new_arm(self, enriched_data, arm_id: str) -> float:
+        """Calculate genuine confidence for a newly initialized arm using LinUCB uncertainty."""
+        context = self.extract_enhanced_market_features(enriched_data)
+        arm_state = self.arms[arm_id]
+
+        current_regime = self._detect_market_regime_numeric(
+            enriched_data.sentiment_analysis.overall_sentiment,
+            getattr(enriched_data.market_data, 'price_momentum', 0.0)
+        )
+        regime_str = 'bull' if current_regime > 0.5 else ('bear' if current_regime < -0.5 else 'sideways')
+
+        dynamic_alpha = self._calculate_adaptive_alpha(enriched_data, regime_str)
+        if self.personality:
+            dynamic_alpha *= self.personality.alpha_multiplier()
+
+        uncertainty = context @ arm_state.A_inv @ context
+        raw_confidence_bound = dynamic_alpha * math.sqrt(max(0.0, uncertainty))
+
+        normalized_bound = 2.0 / (1.0 + math.exp(-raw_confidence_bound / 3.0)) - 1.0
+
+        base_exploration = 0.35
+        market_volatility = getattr(enriched_data.market_data, 'volatility', 0.02)
+        news_confidence = enriched_data.sentiment_analysis.confidence_level
+        sentiment_strength = abs(enriched_data.sentiment_analysis.overall_sentiment)
+
+        volatility_factor = market_volatility * 0.8
+        news_factor = news_confidence * 0.25
+        sentiment_factor = sentiment_strength * 0.15
+
+        if regime_str == 'sideways':
+            regime_bonus = 0.15
+        elif regime_str == 'bull':
+            regime_bonus = 0.10
+        else:
+            regime_bonus = 0.08
+
+        institutional_confidence_base = base_exploration + (normalized_bound * 0.15)
+        market_enhancement = (
+            market_volatility * 0.30 + news_confidence * 0.32 + sentiment_strength * 0.22
+        )
+        linear_score = institutional_confidence_base + market_enhancement + (0.06 if regime_str == 'sideways' else 0.04)
+        fraction = min(1.0, max(0.0, linear_score / 0.6))
+        genuine_confidence = 0.45 + 0.45 * fraction
+        if self.personality:
+            genuine_confidence = 0.45 + 0.45 * fraction + self.personality.confidence_bias()
+        else:
+            genuine_confidence = 0.45 + 0.45 * fraction
+        return max(0.45, min(0.90, genuine_confidence))
     
     def update_arm(self, arm_id: str, context: np.ndarray, reward: float) -> bool:
         """
@@ -558,10 +640,12 @@ class CrossAssetCorrelationAnalyzer:
         
         # Calculate adaptive alpha for new arm
         dynamic_alpha = self._calculate_adaptive_alpha(enriched_data, regime_str)
+        if self.personality:
+            dynamic_alpha *= self.personality.alpha_multiplier()
         
         # Genuine LinUCB confidence bound for new arm
         uncertainty = context @ arm_state.A_inv @ context
-        raw_confidence_bound = dynamic_alpha * math.sqrt(max(0, uncertainty))
+        raw_confidence_bound = dynamic_alpha * math.sqrt(max(0.0, uncertainty))
         
         # ENHANCED MATHEMATICAL NORMALIZATION - ALWAYS MAKE BETTER!
         # Normalize confidence bound using institutional-grade sigmoid transformation
@@ -591,14 +675,18 @@ class CrossAssetCorrelationAnalyzer:
         
         # INSTITUTIONAL MATHEMATICAL COMBINATION - ALWAYS MAKE BETTER!
         # Combine normalized bound with market factors using proper mathematical scaling
-        institutional_confidence_base = base_exploration + (normalized_bound * 0.45)  # Weight the normalized bound
-        market_enhancement = volatility_factor + news_factor + sentiment_factor + regime_bonus
-        
-        # Final institutional confidence with enhanced mathematical precision
-        genuine_confidence = institutional_confidence_base + market_enhancement
-        
-        # INSTITUTIONAL BOUNDS with enhanced range - ALWAYS MAKE BETTER!
-        return max(0.30, min(0.98, genuine_confidence))
+        institutional_confidence_base = base_exploration + (normalized_bound * 0.15)  # Weight the normalized bound
+        market_enhancement = (
+            market_volatility * 0.30 + news_confidence * 0.32 + sentiment_strength * 0.22
+        )
+        linear_score = institutional_confidence_base + market_enhancement + (0.06 if regime_str == 'sideways' else 0.04)
+        fraction = min(1.0, max(0.0, linear_score / 0.6))
+        genuine_confidence = 0.45 + 0.45 * fraction
+        if self.personality:
+            genuine_confidence = 0.45 + 0.45 * fraction + self.personality.confidence_bias()
+        else:
+            genuine_confidence = 0.45 + 0.45 * fraction
+        return max(0.45, min(0.90, genuine_confidence))
     
     def calculate_confidence(self, arm_id: int, context: List[float]) -> float:
         """
