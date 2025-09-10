@@ -50,6 +50,11 @@ pytest -q
   ```python
   from pipeline.runner import run_loop
 
+ chore/ci-smoke-pr
+<!-- CI trigger: ensuring workflow runs to select required checks -->
+
+CI: smoke PR to verify checks after rules fix.
+
   # Example: apply hygiene automatically for a momentum profile
   run_loop(
       symbols=["AAPL","MSFT","NVDA"],
@@ -132,3 +137,4 @@ pytest -q
 <!-- CI: retrigger PR merge status 2 -->
 
 <!-- CI: unblock via fresh PR branch -->
+> main
