@@ -125,4 +125,4 @@ pytest -q
   )
   ```
 
-<!-- CI trigger: ensuring workflow runs to select required checks -->
+<!-- CI: trigger push run to sync required status checks -->
