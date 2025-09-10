@@ -125,10 +125,7 @@ pytest -q
   )
   ```
 
-<!-- CI: trigger push run to sync required status checks -->
 
-<!-- CI: refresh pull_request status after rules change -->
 
-<!-- CI: retrigger PR merge status 2 -->
 
-<!-- CI: unblock via fresh PR branch -->
+
