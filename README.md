@@ -126,3 +126,5 @@ pytest -q
   ```
 
 <!-- CI: trigger push run to sync required status checks -->
+
+<!-- CI: refresh pull_request status after rules change -->
