@@ -1,15 +1,9 @@
-# Environments
-.env
-polygon/.env
-alpaca/.env
+# Temp
+pipeline_log.csv
+ruleset.json
+ruleset_disabled.json
+ruleset_enabled.json
+ruleset_fix.json
+ruleset_off.json
+ruleset_update.json
 
-# Python
-__pycache__/
-*.py[cod]
-*.egg-info/
-.venv/
-venv/
-
-# Editor
-.vscode/
-.idea/
