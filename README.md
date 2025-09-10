@@ -39,3 +39,5 @@ pytest -q
 
 
 <!-- CI trigger: ensuring workflow runs to select required checks -->
+
+CI: smoke PR to verify checks after rules fix.
