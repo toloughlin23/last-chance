@@ -130,3 +130,5 @@ pytest -q
 <!-- CI: refresh pull_request status after rules change -->
 
 <!-- CI: retrigger PR merge status 2 -->
+
+<!-- CI: unblock via fresh PR branch -->
