@@ -47,3 +47,10 @@ class PolygonClient:
         )
         return self.http.get_json(url, params=params)
 
+    def get_last_n_days(self, ticker: str, days: int = 5, adjusted: bool = True) -> Dict[str, Any]:
+        from datetime import date, timedelta
+
+        end = date.today()
+        start = end - timedelta(days=days)
+        return self.get_aggregates_daily(ticker, start=start, end=end, adjusted=adjusted)
+
