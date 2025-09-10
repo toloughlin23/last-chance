@@ -1,4 +1,27 @@
 import os
+from datetime import date, timedelta
+
+import pytest
+
+from services.polygon_client import PolygonClient
+
+
+@pytest.mark.integration
+def test_polygon_aggregates_daily_integration():
+    if not os.getenv("POLYGON_API_KEY"):
+        pytest.skip("Set POLYGON_API_KEY in environment to run this test")
+
+    client = PolygonClient()
+    end = date.today() - timedelta(days=7)
+    start = end - timedelta(days=7)
+    data = client.get_aggregates_daily("AAPL", start=start, end=end)
+
+    assert isinstance(data, dict)
+    # Expect a status and results array when data exists.
+    assert data.get("status") in {"OK", "DELAYED"}
+    assert "results" in data
+
+import os
 import pytest
 
 from services.polygon_client import PolygonClient
