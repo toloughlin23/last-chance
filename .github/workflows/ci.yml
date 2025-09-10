@@ -2,7 +2,6 @@ name: CI
 
 on:
   push:
-    branches: [ main ]
   pull_request:
     branches: [ main ]
   workflow_dispatch: {}
@@ -31,5 +30,6 @@ jobs:
       - name: Run tests
         env:
           POLYGON_API_KEY: ${{ secrets.POLYGON_API_KEY }}
+          PYTEST_DISABLE_PLUGIN_AUTOLOAD: '1'
         run: |
           pytest -q

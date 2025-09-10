@@ -13,6 +13,7 @@ import math
 import time
 from typing import Dict, List, Any, Optional, Tuple
 from datetime import datetime
+from systems.personality import AuthenticPersonalitySystem, PersonalityProfile
 
 class OptimizedInstitutionalNeuralBandit:
     """
@@ -22,10 +23,11 @@ class OptimizedInstitutionalNeuralBandit:
     Optimized for institutional trading with >95% accuracy target
     """
     
-    def __init__(self, feature_dimension: int = 15, hidden_sizes: List[int] = [32, 16], learning_rate: float = 0.01):
+    def __init__(self, feature_dimension: int = 15, hidden_sizes: List[int] = [32, 16], learning_rate: float = 0.01, personality: AuthenticPersonalitySystem | None = None):
         self.feature_dimension = feature_dimension
         self.hidden_sizes = hidden_sizes
         self.learning_rate = learning_rate
+        self.personality = personality
         
         # Initialize neural network weights
         self.networks = {}
@@ -111,12 +113,25 @@ class OptimizedInstitutionalNeuralBandit:
         
         # Uncertainty adjustment (more exploration needed = lower confidence in current estimate)
         uncertainty_penalty = exploration_factor * 0.1
-        
-        # Genuine confidence calculation
-        genuine_confidence = base_confidence + uncertainty_penalty
+
+        # Enhanced genuine confidence calculation with stronger market signal
+        # Compute market-driven component from real inputs
+        vol = getattr(enriched_data.market_data, 'volatility', 0.02)
+        sentiment_strength = abs(enriched_data.sentiment_analysis.overall_sentiment)
+        news_conf = enriched_data.sentiment_analysis.confidence_level
+        market_component = (
+            0.45 * news_conf + 0.35 * sentiment_strength + 0.20 * min(1.0, vol * 20)
+        )
+        mc_norm = min(1.0, market_component)
+        score = max(0.0, 0.15 * base_confidence + 0.85 * mc_norm - uncertainty_penalty)
+        combined = 0.40 + min(0.55, 0.40 * mc_norm + 0.15 * base_confidence)
         
         # Institutional bounds (40-95% range for neural networks)
-        final_confidence = max(0.40, min(0.95, genuine_confidence))
+        final_confidence = max(0.40, min(0.95, combined))
+        
+        if self.personality:
+            combined = final_confidence + self.personality.confidence_bias()
+            final_confidence = max(0.40, min(0.95, combined))
         
         return final_confidence
     

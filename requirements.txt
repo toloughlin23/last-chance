@@ -1,3 +1,8 @@
 pytest
 requests
 python-dotenv
+numpy
+pandas
+pytz
+beautifulsoup4
+lxml
