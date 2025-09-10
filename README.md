@@ -130,11 +130,12 @@ CI: smoke PR to verify checks after rules fix.
   )
   ```
 
-<!-- CI: trigger push run to sync required status checks -->
 
-<!-- CI: refresh pull_request status after rules change -->
 
-<!-- CI: retrigger PR merge status 2 -->
+
+< feature/new-changes-pr
+
 
 <!-- CI: unblock via fresh PR branch -->
+> main
 > main
