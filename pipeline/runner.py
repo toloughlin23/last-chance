@@ -20,6 +20,61 @@ from utils.sp500_cache import SP500Cache
 from utils.symbols_validator import filter_symbols_present_on_polygon
 
 
+def run_once_min(symbols: List[str], days: int = 7, log_path: str = "pipeline_min_log.csv") -> None:
+    """Minimal additive pipeline step that fetches recent daily bars and logs basic features.
+
+    - Uses PolygonClient.get_last_n_days strictly (real data only)
+    - Computes a simple feature: percent change between first and last close
+    - Appends CSV rows per symbol without modifying existing pipeline behavior
+    """
+    client = PolygonClient()
+    header = [
+        "ts_utc",
+        "symbol",
+        "days",
+        "num_results",
+        "start_iso",
+        "end_iso",
+        "first_close",
+        "last_close",
+        "pct_change",
+    ]
+
+    file_exists = os.path.exists(log_path)
+    with open(log_path, "a", newline="") as f:
+        w = csv.writer(f)
+        if not file_exists:
+            w.writerow(header)
+
+        for sym in symbols:
+            data = client.get_last_n_days(sym, days=days, adjusted=True)
+            results = data.get("results") or []
+            # Compute simple features if data is present
+            if results:
+                first_close = float(results[0].get("c", 0.0))
+                last_close = float(results[-1].get("c", 0.0))
+                pct = ((last_close - first_close) / first_close) if first_close > 0 else 0.0
+                start_iso = results[0].get("t")
+                end_iso = results[-1].get("t")
+            else:
+                first_close = 0.0
+                last_close = 0.0
+                pct = 0.0
+                start_iso = ""
+                end_iso = ""
+
+            w.writerow([
+                datetime.now(UTC).isoformat(),
+                sym,
+                days,
+                len(results),
+                start_iso,
+                end_iso,
+                f"{first_close:.6f}",
+                f"{last_close:.6f}",
+                f"{pct:.6f}",
+            ])
+
 def _chunk(items: List[str], size: int) -> List[List[str]]:
     if size <= 0:
         return [items]
