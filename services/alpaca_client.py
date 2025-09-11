@@ -1,5 +1,5 @@
 import os
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, List
 import requests
 
 from utils.env_loader import load_env_from_known_locations
@@ -39,4 +39,70 @@ class AlpacaClient:
         resp = self.session.post(f"{self.base}/v2/orders", json=order, timeout=30)
         resp.raise_for_status()
         return resp.json()
+
+    def submit_order(self, symbol: str, qty: str, side: str, type: str, time_in_force: str = "day", 
+                    limit_price: Optional[str] = None, stop_price: Optional[str] = None) -> Dict[str, Any]:
+        """Submit order with enhanced parameters"""
+        order = {
+            "symbol": symbol,
+            "qty": qty,
+            "side": side,
+            "type": type,
+            "time_in_force": time_in_force
+        }
+        
+        if limit_price:
+            order["limit_price"] = limit_price
+        if stop_price:
+            order["stop_price"] = stop_price
+            
+        resp = self.session.post(f"{self.base}/v2/orders", json=order, timeout=30)
+        resp.raise_for_status()
+        return resp.json()
+
+    def get_positions(self) -> List[Dict[str, Any]]:
+        """Get all positions"""
+        resp = self.session.get(f"{self.base}/v2/positions", timeout=30)
+        resp.raise_for_status()
+        return resp.json()
+
+    def get_position(self, symbol: str) -> Dict[str, Any]:
+        """Get specific position"""
+        resp = self.session.get(f"{self.base}/v2/positions/{symbol}", timeout=30)
+        resp.raise_for_status()
+        return resp.json()
+
+    def get_orders(self, status: Optional[str] = None, limit: int = 50) -> List[Dict[str, Any]]:
+        """Get orders"""
+        params = {"limit": limit}
+        if status:
+            params["status"] = status
+            
+        resp = self.session.get(f"{self.base}/v2/orders", params=params, timeout=30)
+        resp.raise_for_status()
+        return resp.json()
+
+    def get_order(self, order_id: str) -> Dict[str, Any]:
+        """Get specific order"""
+        resp = self.session.get(f"{self.base}/v2/orders/{order_id}", timeout=30)
+        resp.raise_for_status()
+        return resp.json()
+
+    def cancel_order(self, order_id: str) -> bool:
+        """Cancel order"""
+        try:
+            resp = self.session.delete(f"{self.base}/v2/orders/{order_id}", timeout=30)
+            resp.raise_for_status()
+            return True
+        except Exception:
+            return False
+
+    def cancel_all_orders(self) -> bool:
+        """Cancel all orders"""
+        try:
+            resp = self.session.delete(f"{self.base}/v2/orders", timeout=30)
+            resp.raise_for_status()
+            return True
+        except Exception:
+            return False
 

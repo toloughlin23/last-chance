@@ -57,9 +57,13 @@ def build_enriched_from_aggs(aggs: Dict[str, Any]) -> EnrichedData:
     first = results[0]
     last = results[-1]
 
-    # Close prices
-    c_first = float(first.get("c", first.get("o", 0.0)))
-    c_last = float(last.get("c", last.get("o", 0.0)))
+    # Close prices - handle both list and single value formats
+    c_first_raw = first.get("c", first.get("o", 0.0))
+    c_last_raw = last.get("c", last.get("o", 0.0))
+    
+    # Extract first element if it's a list, otherwise use as-is
+    c_first = float(c_first_raw[0] if isinstance(c_first_raw, list) and c_first_raw else c_first_raw)
+    c_last = float(c_last_raw[0] if isinstance(c_last_raw, list) and c_last_raw else c_last_raw)
 
     # Price momentum (relative change)
     price_momentum = _safe_div(c_last - c_first, c_first, 0.0)
@@ -70,7 +74,11 @@ def build_enriched_from_aggs(aggs: Dict[str, Any]) -> EnrichedData:
     for bar in results:
         h = float(bar.get("h", 0.0))
         l = float(bar.get("l", 0.0))
-        p = float(bar.get("c", bar.get("o", 0.0)))
+        
+        # Handle price extraction for both list and single value formats
+        p_raw = bar.get("c", bar.get("o", 0.0))
+        p = float(p_raw[0] if isinstance(p_raw, list) and p_raw else p_raw)
+        
         v = float(bar.get("v", 0.0))
         if p > 0:
             ranges.append(_safe_div(h - l, p, 0.0))
@@ -102,7 +110,9 @@ def build_enriched_from_aggs(aggs: Dict[str, Any]) -> EnrichedData:
     dq = max(0.5, min(1.0, 0.5 + 0.02 * len(results) + (0.1 if key_ok else 0.0)))
 
     # Price/volume from last bar for completeness
-    last_price = float(last.get("c", last.get("o", 0.0)))
+    # Handle last price extraction for both list and single value formats
+    last_price_raw = last.get("c", last.get("o", 0.0))
+    last_price = float(last_price_raw[0] if isinstance(last_price_raw, list) and last_price_raw else last_price_raw)
     last_volume = float(last.get("v", 0.0))
 
     return EnrichedData(
