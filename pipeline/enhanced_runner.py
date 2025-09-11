@@ -26,7 +26,7 @@ from CORE_SUPER_BANDITS.optimized_linucb_institutional import OptimizedInstituti
 from CORE_SUPER_BANDITS.optimized_neural_bandit_institutional import OptimizedInstitutionalNeuralBandit
 from CORE_SUPER_BANDITS.optimized_ucbv_institutional import OptimizedInstitutionalUCBV
 from services.alpaca_client import AlpacaClient
-from uk_us_timezone_handler import get_uk_us_handler
+from utils.uk_us_timezone_handler import get_uk_us_handler
 from pipeline.news_priority import build_priority, build_scores, save_priority, load_priority, save_priority_bundle, load_priority_bundle
 from utils.universe_selector import UniverseSelector
 from pipeline.hygiene import Hygiene
