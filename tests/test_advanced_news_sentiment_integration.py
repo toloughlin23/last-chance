@@ -265,3 +265,4 @@ def test_market_conditions_configuration():
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
+

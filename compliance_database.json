@@ -1085,6 +1085,3264 @@
         "critical_violations": 1,
         "regulatory_coverage": 4
       }
+    },
+    {
+      "report_id": "compliance_1757627021",
+      "timestamp": "2025-09-11 21:43:41.617283+00:00",
+      "overall_status": "ComplianceStatus.NON_COMPLIANT",
+      "total_checks": 12,
+      "passed_checks": 5,
+      "failed_checks": 7,
+      "warning_checks": 0,
+      "checks": [
+        {
+          "rule_id": "fca_001",
+          "status": "ComplianceStatus.NON_COMPLIANT",
+          "message": "Client money segregation insufficient: 0.00% < 100.00%",
+          "details": {
+            "segregated_ratio": 0.0,
+            "min_required_ratio": 1.0,
+            "client_money": 0.0,
+            "total_assets": 0.0
+          },
+          "timestamp": "2025-09-11 21:43:41.617061+00:00",
+          "execution_time_ms": 0.023365020751953125,
+          "severity_score": 1.0
+        },
+        {
+          "rule_id": "fca_002",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Best execution achieved: slippage 0.0000 <= 0.0010",
+          "details": {
+            "slippage": 0.0,
+            "max_allowed_slippage": 0.001,
+            "execution_price": 0.0,
+            "market_price": 0.0
+          },
+          "timestamp": "2025-09-11 21:43:41.617100+00:00",
+          "execution_time_ms": 0.010251998901367188,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "fca_003",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Position size within limits: 0.00% <= 10.00%",
+          "details": {
+            "position_ratio": 0.0,
+            "max_allowed_ratio": 0.1,
+            "position_size": 0.0,
+            "total_market_cap": 0.0
+          },
+          "timestamp": "2025-09-11 21:43:41.617117+00:00",
+          "execution_time_ms": 0.0059604644775390625,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "mifid_001",
+          "status": "ComplianceStatus.NON_COMPLIANT",
+          "message": "Transaction reporting non-compliant: missing ['client_id', 'instrument', 'quantity', 'price']",
+          "details": {
+            "missing_fields": [
+              "client_id",
+              "instrument",
+              "quantity",
+              "price"
+            ],
+            "reporting_deadline": "2025-09-12T21:43:41.617123+00:00",
+            "transaction_data": {}
+          },
+          "timestamp": "2025-09-11 21:43:41.617174+00:00",
+          "execution_time_ms": 0.05030632019042969,
+          "severity_score": 0.9
+        },
+        {
+          "rule_id": "mifid_002",
+          "status": "ComplianceStatus.NON_COMPLIANT",
+          "message": "Product governance non-compliant",
+          "details": {
+            "target_market_validation": false,
+            "risk_warning_provided": false
+          },
+          "timestamp": "2025-09-11 21:43:41.617184+00:00",
+          "execution_time_ms": 0.00286102294921875,
+          "severity_score": 0.7
+        },
+        {
+          "rule_id": "mifid_003",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Algorithmic trading controls compliant",
+          "details": {
+            "order_rate": 0,
+            "max_allowed_rate": 1000,
+            "circuit_breaker_triggered": false
+          },
+          "timestamp": "2025-09-11 21:43:41.617192+00:00",
+          "execution_time_ms": 0.003337860107421875,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "gdpr_001",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "DPIA requirement compliant",
+          "details": {
+            "data_processing_risk": 0.0,
+            "high_risk_threshold": 0.1,
+            "dpia_conducted": false
+          },
+          "timestamp": "2025-09-11 21:43:41.617199+00:00",
+          "execution_time_ms": 0.002384185791015625,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "gdpr_002",
+          "status": "ComplianceStatus.NON_COMPLIANT",
+          "message": "Data minimization non-compliant",
+          "details": {
+            "data_retention_days": 0,
+            "max_retention_days": 2555,
+            "purpose_limitation": false
+          },
+          "timestamp": "2025-09-11 21:43:41.617207+00:00",
+          "execution_time_ms": 0.0021457672119140625,
+          "severity_score": 0.6
+        },
+        {
+          "rule_id": "gdpr_003",
+          "status": "ComplianceStatus.NON_COMPLIANT",
+          "message": "Consent management non-compliant",
+          "details": {
+            "explicit_consent": false,
+            "withdrawal_right": false
+          },
+          "timestamp": "2025-09-11 21:43:41.617214+00:00",
+          "execution_time_ms": 0.0016689300537109375,
+          "severity_score": 0.8
+        },
+        {
+          "rule_id": "risk_001",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Position limits compliant: 0.00% <= 15.00%",
+          "details": {
+            "position_ratio": 0.0,
+            "max_allowed_ratio": 0.15,
+            "position_size": 0.0,
+            "total_portfolio": 0.0
+          },
+          "timestamp": "2025-09-11 21:43:41.617225+00:00",
+          "execution_time_ms": 0.0059604644775390625,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "risk_002",
+          "status": "ComplianceStatus.NON_COMPLIANT",
+          "message": "Liquidity risk non-compliant: 0.00% < 30.00%",
+          "details": {
+            "liquidity_ratio": 0.0,
+            "min_required_ratio": 0.3,
+            "liquid_assets": 0.0,
+            "total_portfolio": 0.0
+          },
+          "timestamp": "2025-09-11 21:43:41.617234+00:00",
+          "execution_time_ms": 0.00476837158203125,
+          "severity_score": 0.8
+        },
+        {
+          "rule_id": "risk_003",
+          "status": "ComplianceStatus.NON_COMPLIANT",
+          "message": "Stress testing overdue: 739504 days > 30 days",
+          "details": {
+            "days_since_test": 739504,
+            "required_frequency_days": 30,
+            "last_stress_test": "0001-01-01T00:00:00+00:00"
+          },
+          "timestamp": "2025-09-11 21:43:41.617260+00:00",
+          "execution_time_ms": 0.0209808349609375,
+          "severity_score": 0.5
+        }
+      ],
+      "summary": {
+        "compliance_score": 41.66666666666667,
+        "average_execution_time_ms": 0.011165936787923178,
+        "critical_violations": 2,
+        "regulatory_coverage": 4
+      }
+    },
+    {
+      "report_id": "compliance_1757628961",
+      "timestamp": "2025-09-11 22:16:01.096415+00:00",
+      "overall_status": "ComplianceStatus.COMPLIANT",
+      "total_checks": 12,
+      "passed_checks": 12,
+      "failed_checks": 0,
+      "warning_checks": 0,
+      "checks": [
+        {
+          "rule_id": "fca_001",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Client money properly segregated: 100.00%",
+          "details": {
+            "segregated_ratio": 1.0,
+            "min_required_ratio": 1.0,
+            "client_money": 54799.91,
+            "total_assets": 54799.91
+          },
+          "timestamp": "2025-09-11 22:16:01.096260+00:00",
+          "execution_time_ms": 0.015497207641601562,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "fca_002",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Best execution achieved: slippage 0.0000 <= 0.0010",
+          "details": {
+            "slippage": 0.0,
+            "max_allowed_slippage": 0.001,
+            "execution_price": 0.0,
+            "market_price": 0.0
+          },
+          "timestamp": "2025-09-11 22:16:01.096285+00:00",
+          "execution_time_ms": 0.008344650268554688,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "fca_003",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Position size within limits: 0.00% <= 10.00%",
+          "details": {
+            "position_ratio": 1e-07,
+            "max_allowed_ratio": 0.1,
+            "position_size": 100.0,
+            "total_market_cap": 1000000000.0
+          },
+          "timestamp": "2025-09-11 22:16:01.096299+00:00",
+          "execution_time_ms": 0.006198883056640625,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "mifid_001",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Transaction reporting compliant",
+          "details": {
+            "missing_fields": [],
+            "reporting_deadline": "2025-09-12T22:16:00.853518+00:00",
+            "transaction_data": {
+              "client_id": "INSTITUTIONAL_CLIENT",
+              "instrument": "AAPL",
+              "quantity": 100,
+              "price": 150.0
+            }
+          },
+          "timestamp": "2025-09-11 22:16:01.096330+00:00",
+          "execution_time_ms": 0.026941299438476562,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "mifid_002",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Product governance compliant",
+          "details": {
+            "target_market_validation": true,
+            "risk_warning_provided": true
+          },
+          "timestamp": "2025-09-11 22:16:01.096338+00:00",
+          "execution_time_ms": 0.0016689300537109375,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "mifid_003",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Algorithmic trading controls compliant",
+          "details": {
+            "order_rate": 1,
+            "max_allowed_rate": 1000,
+            "circuit_breaker_triggered": false
+          },
+          "timestamp": "2025-09-11 22:16:01.096344+00:00",
+          "execution_time_ms": 0.0021457672119140625,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "gdpr_001",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "DPIA requirement compliant",
+          "details": {
+            "data_processing_risk": 0.05,
+            "high_risk_threshold": 0.1,
+            "dpia_conducted": true
+          },
+          "timestamp": "2025-09-11 22:16:01.096350+00:00",
+          "execution_time_ms": 0.0016689300537109375,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "gdpr_002",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Data minimization compliant",
+          "details": {
+            "data_retention_days": 1000,
+            "max_retention_days": 2555,
+            "purpose_limitation": true
+          },
+          "timestamp": "2025-09-11 22:16:01.096356+00:00",
+          "execution_time_ms": 0.0021457672119140625,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "gdpr_003",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Consent management compliant",
+          "details": {
+            "explicit_consent": true,
+            "withdrawal_right": true
+          },
+          "timestamp": "2025-09-11 22:16:01.096360+00:00",
+          "execution_time_ms": 0.0007152557373046875,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "risk_001",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Position limits compliant: 0.18% <= 15.00%",
+          "details": {
+            "position_ratio": 0.0018248205152161744,
+            "max_allowed_ratio": 0.15,
+            "position_size": 100.0,
+            "total_portfolio": 54799.91
+          },
+          "timestamp": "2025-09-11 22:16:01.096368+00:00",
+          "execution_time_ms": 0.0045299530029296875,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "risk_002",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Liquidity risk compliant: 80.00% >= 30.00%",
+          "details": {
+            "liquidity_ratio": 0.8,
+            "min_required_ratio": 0.3,
+            "liquid_assets": 43839.92800000001,
+            "total_portfolio": 54799.91
+          },
+          "timestamp": "2025-09-11 22:16:01.096375+00:00",
+          "execution_time_ms": 0.003337860107421875,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "risk_003",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Stress testing compliant: 15 days <= 30 days",
+          "details": {
+            "days_since_test": 15,
+            "required_frequency_days": 30,
+            "last_stress_test": "2025-08-27T22:16:01.096209+00:00"
+          },
+          "timestamp": "2025-09-11 22:16:01.096391+00:00",
+          "execution_time_ms": 0.012874603271484375,
+          "severity_score": 0.0
+        }
+      ],
+      "summary": {
+        "compliance_score": 100.0,
+        "average_execution_time_ms": 0.007172425587972005,
+        "critical_violations": 0,
+        "regulatory_coverage": 4
+      }
+    },
+    {
+      "report_id": "compliance_1757629128",
+      "timestamp": "2025-09-11 22:18:48.987839+00:00",
+      "overall_status": "ComplianceStatus.COMPLIANT",
+      "total_checks": 12,
+      "passed_checks": 12,
+      "failed_checks": 0,
+      "warning_checks": 0,
+      "checks": [
+        {
+          "rule_id": "fca_001",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Client money properly segregated: 100.00%",
+          "details": {
+            "segregated_ratio": 1.0,
+            "min_required_ratio": 1.0,
+            "client_money": 54780.08,
+            "total_assets": 54780.08
+          },
+          "timestamp": "2025-09-11 22:18:48.987648+00:00",
+          "execution_time_ms": 0.018835067749023438,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "fca_002",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Best execution achieved: slippage 0.0000 <= 0.0010",
+          "details": {
+            "slippage": 0.0,
+            "max_allowed_slippage": 0.001,
+            "execution_price": 0.0,
+            "market_price": 0.0
+          },
+          "timestamp": "2025-09-11 22:18:48.987681+00:00",
+          "execution_time_ms": 0.011205673217773438,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "fca_003",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Position size within limits: 0.00% <= 10.00%",
+          "details": {
+            "position_ratio": 1e-07,
+            "max_allowed_ratio": 0.1,
+            "position_size": 100.0,
+            "total_market_cap": 1000000000.0
+          },
+          "timestamp": "2025-09-11 22:18:48.987699+00:00",
+          "execution_time_ms": 0.00858306884765625,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "mifid_001",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Transaction reporting compliant",
+          "details": {
+            "missing_fields": [],
+            "reporting_deadline": "2025-09-12T22:18:48.737772+00:00",
+            "transaction_data": {
+              "client_id": "INSTITUTIONAL_CLIENT",
+              "instrument": "AAPL",
+              "quantity": 100,
+              "price": 150.0
+            }
+          },
+          "timestamp": "2025-09-11 22:18:48.987740+00:00",
+          "execution_time_ms": 0.03504753112792969,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "mifid_002",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Product governance compliant",
+          "details": {
+            "target_market_validation": true,
+            "risk_warning_provided": true
+          },
+          "timestamp": "2025-09-11 22:18:48.987749+00:00",
+          "execution_time_ms": 0.00286102294921875,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "mifid_003",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Algorithmic trading controls compliant",
+          "details": {
+            "order_rate": 1,
+            "max_allowed_rate": 1000,
+            "circuit_breaker_triggered": false
+          },
+          "timestamp": "2025-09-11 22:18:48.987757+00:00",
+          "execution_time_ms": 0.003337860107421875,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "gdpr_001",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "DPIA requirement compliant",
+          "details": {
+            "data_processing_risk": 0.05,
+            "high_risk_threshold": 0.1,
+            "dpia_conducted": true
+          },
+          "timestamp": "2025-09-11 22:18:48.987765+00:00",
+          "execution_time_ms": 0.002384185791015625,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "gdpr_002",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Data minimization compliant",
+          "details": {
+            "data_retention_days": 1000,
+            "max_retention_days": 2555,
+            "purpose_limitation": true
+          },
+          "timestamp": "2025-09-11 22:18:48.987771+00:00",
+          "execution_time_ms": 0.0019073486328125,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "gdpr_003",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Consent management compliant",
+          "details": {
+            "explicit_consent": true,
+            "withdrawal_right": true
+          },
+          "timestamp": "2025-09-11 22:18:48.987776+00:00",
+          "execution_time_ms": 0.0011920928955078125,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "risk_001",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Position limits compliant: 0.18% <= 15.00%",
+          "details": {
+            "position_ratio": 0.0018254810872857432,
+            "max_allowed_ratio": 0.15,
+            "position_size": 100.0,
+            "total_portfolio": 54780.08
+          },
+          "timestamp": "2025-09-11 22:18:48.987787+00:00",
+          "execution_time_ms": 0.006198883056640625,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "risk_002",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Liquidity risk compliant: 80.00% >= 30.00%",
+          "details": {
+            "liquidity_ratio": 0.8,
+            "min_required_ratio": 0.3,
+            "liquid_assets": 43824.064000000006,
+            "total_portfolio": 54780.08
+          },
+          "timestamp": "2025-09-11 22:18:48.987796+00:00",
+          "execution_time_ms": 0.004291534423828125,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "risk_003",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Stress testing compliant: 15 days <= 30 days",
+          "details": {
+            "days_since_test": 15,
+            "required_frequency_days": 30,
+            "last_stress_test": "2025-08-27T22:18:48.987585+00:00"
+          },
+          "timestamp": "2025-09-11 22:18:48.987817+00:00",
+          "execution_time_ms": 0.016927719116210938,
+          "severity_score": 0.0
+        }
+      ],
+      "summary": {
+        "compliance_score": 100.0,
+        "average_execution_time_ms": 0.009397665659586588,
+        "critical_violations": 0,
+        "regulatory_coverage": 4
+      }
+    },
+    {
+      "report_id": "compliance_1757629205",
+      "timestamp": "2025-09-11 22:20:05.244940+00:00",
+      "overall_status": "ComplianceStatus.COMPLIANT",
+      "total_checks": 12,
+      "passed_checks": 12,
+      "failed_checks": 0,
+      "warning_checks": 0,
+      "checks": [
+        {
+          "rule_id": "fca_001",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Client money properly segregated: 100.00%",
+          "details": {
+            "segregated_ratio": 1.0,
+            "min_required_ratio": 1.0,
+            "client_money": 54774.04,
+            "total_assets": 54774.04
+          },
+          "timestamp": "2025-09-11 22:20:05.244740+00:00",
+          "execution_time_ms": 0.01811981201171875,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "fca_002",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Best execution achieved: slippage 0.0000 <= 0.0010",
+          "details": {
+            "slippage": 0.0,
+            "max_allowed_slippage": 0.001,
+            "execution_price": 0.0,
+            "market_price": 0.0
+          },
+          "timestamp": "2025-09-11 22:20:05.244772+00:00",
+          "execution_time_ms": 0.010728836059570312,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "fca_003",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Position size within limits: 0.00% <= 10.00%",
+          "details": {
+            "position_ratio": 1e-07,
+            "max_allowed_ratio": 0.1,
+            "position_size": 100.0,
+            "total_market_cap": 1000000000.0
+          },
+          "timestamp": "2025-09-11 22:20:05.244790+00:00",
+          "execution_time_ms": 0.008344650268554688,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "mifid_001",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Transaction reporting compliant",
+          "details": {
+            "missing_fields": [],
+            "reporting_deadline": "2025-09-12T22:20:05.038597+00:00",
+            "transaction_data": {
+              "client_id": "INSTITUTIONAL_CLIENT",
+              "instrument": "AAPL",
+              "quantity": 100,
+              "price": 150.0
+            }
+          },
+          "timestamp": "2025-09-11 22:20:05.244831+00:00",
+          "execution_time_ms": 0.034809112548828125,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "mifid_002",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Product governance compliant",
+          "details": {
+            "target_market_validation": true,
+            "risk_warning_provided": true
+          },
+          "timestamp": "2025-09-11 22:20:05.244840+00:00",
+          "execution_time_ms": 0.0026226043701171875,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "mifid_003",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Algorithmic trading controls compliant",
+          "details": {
+            "order_rate": 1,
+            "max_allowed_rate": 1000,
+            "circuit_breaker_triggered": false
+          },
+          "timestamp": "2025-09-11 22:20:05.244848+00:00",
+          "execution_time_ms": 0.00286102294921875,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "gdpr_001",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "DPIA requirement compliant",
+          "details": {
+            "data_processing_risk": 0.05,
+            "high_risk_threshold": 0.1,
+            "dpia_conducted": true
+          },
+          "timestamp": "2025-09-11 22:20:05.244856+00:00",
+          "execution_time_ms": 0.0021457672119140625,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "gdpr_002",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Data minimization compliant",
+          "details": {
+            "data_retention_days": 1000,
+            "max_retention_days": 2555,
+            "purpose_limitation": true
+          },
+          "timestamp": "2025-09-11 22:20:05.244864+00:00",
+          "execution_time_ms": 0.00286102294921875,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "gdpr_003",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Consent management compliant",
+          "details": {
+            "explicit_consent": true,
+            "withdrawal_right": true
+          },
+          "timestamp": "2025-09-11 22:20:05.244869+00:00",
+          "execution_time_ms": 0.001430511474609375,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "risk_001",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Position limits compliant: 0.18% <= 15.00%",
+          "details": {
+            "position_ratio": 0.0018256823853051555,
+            "max_allowed_ratio": 0.15,
+            "position_size": 100.0,
+            "total_portfolio": 54774.04
+          },
+          "timestamp": "2025-09-11 22:20:05.244881+00:00",
+          "execution_time_ms": 0.006198883056640625,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "risk_002",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Liquidity risk compliant: 80.00% >= 30.00%",
+          "details": {
+            "liquidity_ratio": 0.8,
+            "min_required_ratio": 0.3,
+            "liquid_assets": 43819.232,
+            "total_portfolio": 54774.04
+          },
+          "timestamp": "2025-09-11 22:20:05.244890+00:00",
+          "execution_time_ms": 0.0045299530029296875,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "risk_003",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Stress testing compliant: 15 days <= 30 days",
+          "details": {
+            "days_since_test": 15,
+            "required_frequency_days": 30,
+            "last_stress_test": "2025-08-27T22:20:05.244675+00:00"
+          },
+          "timestamp": "2025-09-11 22:20:05.244915+00:00",
+          "execution_time_ms": 0.019073486328125,
+          "severity_score": 0.0
+        }
+      ],
+      "summary": {
+        "compliance_score": 100.0,
+        "average_execution_time_ms": 0.00947713851928711,
+        "critical_violations": 0,
+        "regulatory_coverage": 4
+      }
+    },
+    {
+      "report_id": "compliance_1757629294",
+      "timestamp": "2025-09-11 22:21:34.761819+00:00",
+      "overall_status": "ComplianceStatus.COMPLIANT",
+      "total_checks": 12,
+      "passed_checks": 12,
+      "failed_checks": 0,
+      "warning_checks": 0,
+      "checks": [
+        {
+          "rule_id": "fca_001",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Client money properly segregated: 100.00%",
+          "details": {
+            "segregated_ratio": 1.0,
+            "min_required_ratio": 1.0,
+            "client_money": 54771.22,
+            "total_assets": 54771.22
+          },
+          "timestamp": "2025-09-11 22:21:34.761632+00:00",
+          "execution_time_ms": 0.0171661376953125,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "fca_002",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Best execution achieved: slippage 0.0000 <= 0.0010",
+          "details": {
+            "slippage": 0.0,
+            "max_allowed_slippage": 0.001,
+            "execution_price": 0.0,
+            "market_price": 0.0
+          },
+          "timestamp": "2025-09-11 22:21:34.761664+00:00",
+          "execution_time_ms": 0.011205673217773438,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "fca_003",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Position size within limits: 0.00% <= 10.00%",
+          "details": {
+            "position_ratio": 1e-07,
+            "max_allowed_ratio": 0.1,
+            "position_size": 100.0,
+            "total_market_cap": 1000000000.0
+          },
+          "timestamp": "2025-09-11 22:21:34.761682+00:00",
+          "execution_time_ms": 0.008344650268554688,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "mifid_001",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Transaction reporting compliant",
+          "details": {
+            "missing_fields": [],
+            "reporting_deadline": "2025-09-12T22:21:34.558743+00:00",
+            "transaction_data": {
+              "client_id": "INSTITUTIONAL_CLIENT",
+              "instrument": "AAPL",
+              "quantity": 100,
+              "price": 150.0
+            }
+          },
+          "timestamp": "2025-09-11 22:21:34.761722+00:00",
+          "execution_time_ms": 0.032901763916015625,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "mifid_002",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Product governance compliant",
+          "details": {
+            "target_market_validation": true,
+            "risk_warning_provided": true
+          },
+          "timestamp": "2025-09-11 22:21:34.761731+00:00",
+          "execution_time_ms": 0.0026226043701171875,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "mifid_003",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Algorithmic trading controls compliant",
+          "details": {
+            "order_rate": 1,
+            "max_allowed_rate": 1000,
+            "circuit_breaker_triggered": false
+          },
+          "timestamp": "2025-09-11 22:21:34.761739+00:00",
+          "execution_time_ms": 0.003337860107421875,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "gdpr_001",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "DPIA requirement compliant",
+          "details": {
+            "data_processing_risk": 0.05,
+            "high_risk_threshold": 0.1,
+            "dpia_conducted": true
+          },
+          "timestamp": "2025-09-11 22:21:34.761747+00:00",
+          "execution_time_ms": 0.002384185791015625,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "gdpr_002",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Data minimization compliant",
+          "details": {
+            "data_retention_days": 1000,
+            "max_retention_days": 2555,
+            "purpose_limitation": true
+          },
+          "timestamp": "2025-09-11 22:21:34.761752+00:00",
+          "execution_time_ms": 0.0019073486328125,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "gdpr_003",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Consent management compliant",
+          "details": {
+            "explicit_consent": true,
+            "withdrawal_right": true
+          },
+          "timestamp": "2025-09-11 22:21:34.761758+00:00",
+          "execution_time_ms": 0.0011920928955078125,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "risk_001",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Position limits compliant: 0.18% <= 15.00%",
+          "details": {
+            "position_ratio": 0.001825776384020659,
+            "max_allowed_ratio": 0.15,
+            "position_size": 100.0,
+            "total_portfolio": 54771.22
+          },
+          "timestamp": "2025-09-11 22:21:34.761770+00:00",
+          "execution_time_ms": 0.0057220458984375,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "risk_002",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Liquidity risk compliant: 80.00% >= 30.00%",
+          "details": {
+            "liquidity_ratio": 0.8,
+            "min_required_ratio": 0.3,
+            "liquid_assets": 43816.976,
+            "total_portfolio": 54771.22
+          },
+          "timestamp": "2025-09-11 22:21:34.761777+00:00",
+          "execution_time_ms": 0.003814697265625,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "risk_003",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Stress testing compliant: 15 days <= 30 days",
+          "details": {
+            "days_since_test": 15,
+            "required_frequency_days": 30,
+            "last_stress_test": "2025-08-27T22:21:34.761570+00:00"
+          },
+          "timestamp": "2025-09-11 22:21:34.761799+00:00",
+          "execution_time_ms": 0.016927719116210938,
+          "severity_score": 0.0
+        }
+      ],
+      "summary": {
+        "compliance_score": 100.0,
+        "average_execution_time_ms": 0.008960564931233725,
+        "critical_violations": 0,
+        "regulatory_coverage": 4
+      }
+    },
+    {
+      "report_id": "compliance_1757629389",
+      "timestamp": "2025-09-11 22:23:09.440140+00:00",
+      "overall_status": "ComplianceStatus.COMPLIANT",
+      "total_checks": 12,
+      "passed_checks": 12,
+      "failed_checks": 0,
+      "warning_checks": 0,
+      "checks": [
+        {
+          "rule_id": "fca_001",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Client money properly segregated: 100.00%",
+          "details": {
+            "segregated_ratio": 1.0,
+            "min_required_ratio": 1.0,
+            "client_money": 54773.87,
+            "total_assets": 54773.87
+          },
+          "timestamp": "2025-09-11 22:23:09.439954+00:00",
+          "execution_time_ms": 0.017642974853515625,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "fca_002",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Best execution achieved: slippage 0.0000 <= 0.0010",
+          "details": {
+            "slippage": 0.0,
+            "max_allowed_slippage": 0.001,
+            "execution_price": 0.0,
+            "market_price": 0.0
+          },
+          "timestamp": "2025-09-11 22:23:09.439984+00:00",
+          "execution_time_ms": 0.009775161743164062,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "fca_003",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Position size within limits: 0.00% <= 10.00%",
+          "details": {
+            "position_ratio": 1e-07,
+            "max_allowed_ratio": 0.1,
+            "position_size": 100.0,
+            "total_market_cap": 1000000000.0
+          },
+          "timestamp": "2025-09-11 22:23:09.440000+00:00",
+          "execution_time_ms": 0.0069141387939453125,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "mifid_001",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Transaction reporting compliant",
+          "details": {
+            "missing_fields": [],
+            "reporting_deadline": "2025-09-12T22:23:09.235289+00:00",
+            "transaction_data": {
+              "client_id": "INSTITUTIONAL_CLIENT",
+              "instrument": "AAPL",
+              "quantity": 100,
+              "price": 150.0
+            }
+          },
+          "timestamp": "2025-09-11 22:23:09.440038+00:00",
+          "execution_time_ms": 0.03266334533691406,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "mifid_002",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Product governance compliant",
+          "details": {
+            "target_market_validation": true,
+            "risk_warning_provided": true
+          },
+          "timestamp": "2025-09-11 22:23:09.440048+00:00",
+          "execution_time_ms": 0.0021457672119140625,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "mifid_003",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Algorithmic trading controls compliant",
+          "details": {
+            "order_rate": 1,
+            "max_allowed_rate": 1000,
+            "circuit_breaker_triggered": false
+          },
+          "timestamp": "2025-09-11 22:23:09.440056+00:00",
+          "execution_time_ms": 0.00286102294921875,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "gdpr_001",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "DPIA requirement compliant",
+          "details": {
+            "data_processing_risk": 0.05,
+            "high_risk_threshold": 0.1,
+            "dpia_conducted": true
+          },
+          "timestamp": "2025-09-11 22:23:09.440062+00:00",
+          "execution_time_ms": 0.002384185791015625,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "gdpr_002",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Data minimization compliant",
+          "details": {
+            "data_retention_days": 1000,
+            "max_retention_days": 2555,
+            "purpose_limitation": true
+          },
+          "timestamp": "2025-09-11 22:23:09.440069+00:00",
+          "execution_time_ms": 0.0019073486328125,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "gdpr_003",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Consent management compliant",
+          "details": {
+            "explicit_consent": true,
+            "withdrawal_right": true
+          },
+          "timestamp": "2025-09-11 22:23:09.440075+00:00",
+          "execution_time_ms": 0.0011920928955078125,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "risk_001",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Position limits compliant: 0.18% <= 15.00%",
+          "details": {
+            "position_ratio": 0.0018256880516202341,
+            "max_allowed_ratio": 0.15,
+            "position_size": 100.0,
+            "total_portfolio": 54773.87
+          },
+          "timestamp": "2025-09-11 22:23:09.440085+00:00",
+          "execution_time_ms": 0.006198883056640625,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "risk_002",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Liquidity risk compliant: 80.00% >= 30.00%",
+          "details": {
+            "liquidity_ratio": 0.8,
+            "min_required_ratio": 0.3,
+            "liquid_assets": 43819.096000000005,
+            "total_portfolio": 54773.87
+          },
+          "timestamp": "2025-09-11 22:23:09.440095+00:00",
+          "execution_time_ms": 0.0050067901611328125,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "risk_003",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Stress testing compliant: 15 days <= 30 days",
+          "details": {
+            "days_since_test": 15,
+            "required_frequency_days": 30,
+            "last_stress_test": "2025-08-27T22:23:09.439896+00:00"
+          },
+          "timestamp": "2025-09-11 22:23:09.440117+00:00",
+          "execution_time_ms": 0.017404556274414062,
+          "severity_score": 0.0
+        }
+      ],
+      "summary": {
+        "compliance_score": 100.0,
+        "average_execution_time_ms": 0.008841355641682943,
+        "critical_violations": 0,
+        "regulatory_coverage": 4
+      }
+    },
+    {
+      "report_id": "compliance_1757629498",
+      "timestamp": "2025-09-11 22:24:58.698626+00:00",
+      "overall_status": "ComplianceStatus.COMPLIANT",
+      "total_checks": 12,
+      "passed_checks": 12,
+      "failed_checks": 0,
+      "warning_checks": 0,
+      "checks": [
+        {
+          "rule_id": "fca_001",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Client money properly segregated: 100.00%",
+          "details": {
+            "segregated_ratio": 1.0,
+            "min_required_ratio": 1.0,
+            "client_money": 54765.64,
+            "total_assets": 54765.64
+          },
+          "timestamp": "2025-09-11 22:24:58.698418+00:00",
+          "execution_time_ms": 0.019311904907226562,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "fca_002",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Best execution achieved: slippage 0.0000 <= 0.0010",
+          "details": {
+            "slippage": 0.0,
+            "max_allowed_slippage": 0.001,
+            "execution_price": 0.0,
+            "market_price": 0.0
+          },
+          "timestamp": "2025-09-11 22:24:58.698457+00:00",
+          "execution_time_ms": 0.017404556274414062,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "fca_003",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Position size within limits: 0.00% <= 10.00%",
+          "details": {
+            "position_ratio": 1e-07,
+            "max_allowed_ratio": 0.1,
+            "position_size": 100.0,
+            "total_market_cap": 1000000000.0
+          },
+          "timestamp": "2025-09-11 22:24:58.698475+00:00",
+          "execution_time_ms": 0.007867813110351562,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "mifid_001",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Transaction reporting compliant",
+          "details": {
+            "missing_fields": [],
+            "reporting_deadline": "2025-09-12T22:24:58.494960+00:00",
+            "transaction_data": {
+              "client_id": "INSTITUTIONAL_CLIENT",
+              "instrument": "AAPL",
+              "quantity": 100,
+              "price": 150.0
+            }
+          },
+          "timestamp": "2025-09-11 22:24:58.698514+00:00",
+          "execution_time_ms": 0.03314018249511719,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "mifid_002",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Product governance compliant",
+          "details": {
+            "target_market_validation": true,
+            "risk_warning_provided": true
+          },
+          "timestamp": "2025-09-11 22:24:58.698524+00:00",
+          "execution_time_ms": 0.00286102294921875,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "mifid_003",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Algorithmic trading controls compliant",
+          "details": {
+            "order_rate": 1,
+            "max_allowed_rate": 1000,
+            "circuit_breaker_triggered": false
+          },
+          "timestamp": "2025-09-11 22:24:58.698535+00:00",
+          "execution_time_ms": 0.0035762786865234375,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "gdpr_001",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "DPIA requirement compliant",
+          "details": {
+            "data_processing_risk": 0.05,
+            "high_risk_threshold": 0.1,
+            "dpia_conducted": true
+          },
+          "timestamp": "2025-09-11 22:24:58.698542+00:00",
+          "execution_time_ms": 0.002384185791015625,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "gdpr_002",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Data minimization compliant",
+          "details": {
+            "data_retention_days": 1000,
+            "max_retention_days": 2555,
+            "purpose_limitation": true
+          },
+          "timestamp": "2025-09-11 22:24:58.698549+00:00",
+          "execution_time_ms": 0.00286102294921875,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "gdpr_003",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Consent management compliant",
+          "details": {
+            "explicit_consent": true,
+            "withdrawal_right": true
+          },
+          "timestamp": "2025-09-11 22:24:58.698555+00:00",
+          "execution_time_ms": 0.001430511474609375,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "risk_001",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Position limits compliant: 0.18% <= 15.00%",
+          "details": {
+            "position_ratio": 0.0018259624100074427,
+            "max_allowed_ratio": 0.15,
+            "position_size": 100.0,
+            "total_portfolio": 54765.64
+          },
+          "timestamp": "2025-09-11 22:24:58.698568+00:00",
+          "execution_time_ms": 0.0064373016357421875,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "risk_002",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Liquidity risk compliant: 80.00% >= 30.00%",
+          "details": {
+            "liquidity_ratio": 0.8,
+            "min_required_ratio": 0.3,
+            "liquid_assets": 43812.512,
+            "total_portfolio": 54765.64
+          },
+          "timestamp": "2025-09-11 22:24:58.698578+00:00",
+          "execution_time_ms": 0.0045299530029296875,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "risk_003",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Stress testing compliant: 15 days <= 30 days",
+          "details": {
+            "days_since_test": 15,
+            "required_frequency_days": 30,
+            "last_stress_test": "2025-08-27T22:24:58.698352+00:00"
+          },
+          "timestamp": "2025-09-11 22:24:58.698601+00:00",
+          "execution_time_ms": 0.017404556274414062,
+          "severity_score": 0.0
+        }
+      ],
+      "summary": {
+        "compliance_score": 100.0,
+        "average_execution_time_ms": 0.009934107462565104,
+        "critical_violations": 0,
+        "regulatory_coverage": 4
+      }
+    },
+    {
+      "report_id": "compliance_1757629659",
+      "timestamp": "2025-09-11 22:27:39.229004+00:00",
+      "overall_status": "ComplianceStatus.COMPLIANT",
+      "total_checks": 12,
+      "passed_checks": 12,
+      "failed_checks": 0,
+      "warning_checks": 0,
+      "checks": [
+        {
+          "rule_id": "fca_001",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Client money properly segregated: 100.00%",
+          "details": {
+            "segregated_ratio": 1.0,
+            "min_required_ratio": 1.0,
+            "client_money": 54756.22,
+            "total_assets": 54756.22
+          },
+          "timestamp": "2025-09-11 22:27:39.228795+00:00",
+          "execution_time_ms": 0.017881393432617188,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "fca_002",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Best execution achieved: slippage 0.0000 <= 0.0010",
+          "details": {
+            "slippage": 0.0,
+            "max_allowed_slippage": 0.001,
+            "execution_price": 0.0,
+            "market_price": 0.0
+          },
+          "timestamp": "2025-09-11 22:27:39.228829+00:00",
+          "execution_time_ms": 0.011920928955078125,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "fca_003",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Position size within limits: 0.00% <= 10.00%",
+          "details": {
+            "position_ratio": 1e-07,
+            "max_allowed_ratio": 0.1,
+            "position_size": 100.0,
+            "total_market_cap": 1000000000.0
+          },
+          "timestamp": "2025-09-11 22:27:39.228847+00:00",
+          "execution_time_ms": 0.00762939453125,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "mifid_001",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Transaction reporting compliant",
+          "details": {
+            "missing_fields": [],
+            "reporting_deadline": "2025-09-12T22:27:39.024164+00:00",
+            "transaction_data": {
+              "client_id": "INSTITUTIONAL_CLIENT",
+              "instrument": "AAPL",
+              "quantity": 100,
+              "price": 150.0
+            }
+          },
+          "timestamp": "2025-09-11 22:27:39.228889+00:00",
+          "execution_time_ms": 0.03528594970703125,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "mifid_002",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Product governance compliant",
+          "details": {
+            "target_market_validation": true,
+            "risk_warning_provided": true
+          },
+          "timestamp": "2025-09-11 22:27:39.228899+00:00",
+          "execution_time_ms": 0.002384185791015625,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "mifid_003",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Algorithmic trading controls compliant",
+          "details": {
+            "order_rate": 1,
+            "max_allowed_rate": 1000,
+            "circuit_breaker_triggered": false
+          },
+          "timestamp": "2025-09-11 22:27:39.228909+00:00",
+          "execution_time_ms": 0.003814697265625,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "gdpr_001",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "DPIA requirement compliant",
+          "details": {
+            "data_processing_risk": 0.05,
+            "high_risk_threshold": 0.1,
+            "dpia_conducted": true
+          },
+          "timestamp": "2025-09-11 22:27:39.228917+00:00",
+          "execution_time_ms": 0.0026226043701171875,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "gdpr_002",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Data minimization compliant",
+          "details": {
+            "data_retention_days": 1000,
+            "max_retention_days": 2555,
+            "purpose_limitation": true
+          },
+          "timestamp": "2025-09-11 22:27:39.228926+00:00",
+          "execution_time_ms": 0.0030994415283203125,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "gdpr_003",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Consent management compliant",
+          "details": {
+            "explicit_consent": true,
+            "withdrawal_right": true
+          },
+          "timestamp": "2025-09-11 22:27:39.228932+00:00",
+          "execution_time_ms": 0.0019073486328125,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "risk_001",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Position limits compliant: 0.18% <= 15.00%",
+          "details": {
+            "position_ratio": 0.001826276539907247,
+            "max_allowed_ratio": 0.15,
+            "position_size": 100.0,
+            "total_portfolio": 54756.22
+          },
+          "timestamp": "2025-09-11 22:27:39.228944+00:00",
+          "execution_time_ms": 0.00667572021484375,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "risk_002",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Liquidity risk compliant: 80.00% >= 30.00%",
+          "details": {
+            "liquidity_ratio": 0.8,
+            "min_required_ratio": 0.3,
+            "liquid_assets": 43804.976,
+            "total_portfolio": 54756.22
+          },
+          "timestamp": "2025-09-11 22:27:39.228953+00:00",
+          "execution_time_ms": 0.0050067901611328125,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "risk_003",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Stress testing compliant: 15 days <= 30 days",
+          "details": {
+            "days_since_test": 15,
+            "required_frequency_days": 30,
+            "last_stress_test": "2025-08-27T22:27:39.228733+00:00"
+          },
+          "timestamp": "2025-09-11 22:27:39.228978+00:00",
+          "execution_time_ms": 0.019311904907226562,
+          "severity_score": 0.0
+        }
+      ],
+      "summary": {
+        "compliance_score": 100.0,
+        "average_execution_time_ms": 0.009795029958089193,
+        "critical_violations": 0,
+        "regulatory_coverage": 4
+      }
+    },
+    {
+      "report_id": "compliance_1757630456",
+      "timestamp": "2025-09-11 22:40:56.459071+00:00",
+      "overall_status": "ComplianceStatus.COMPLIANT",
+      "total_checks": 12,
+      "passed_checks": 12,
+      "failed_checks": 0,
+      "warning_checks": 0,
+      "checks": [
+        {
+          "rule_id": "fca_001",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Client money properly segregated: 100.00%",
+          "details": {
+            "segregated_ratio": 1.0,
+            "min_required_ratio": 1.0,
+            "client_money": 54763.1,
+            "total_assets": 54763.1
+          },
+          "timestamp": "2025-09-11 22:40:56.458721+00:00",
+          "execution_time_ms": 0.034332275390625,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "fca_002",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Best execution achieved: slippage 0.0000 <= 0.0010",
+          "details": {
+            "slippage": 0.0,
+            "max_allowed_slippage": 0.001,
+            "execution_price": 0.0,
+            "market_price": 0.0
+          },
+          "timestamp": "2025-09-11 22:40:56.458851+00:00",
+          "execution_time_ms": 0.03552436828613281,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "fca_003",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Position size within limits: 0.00% <= 10.00%",
+          "details": {
+            "position_ratio": 1e-07,
+            "max_allowed_ratio": 0.1,
+            "position_size": 100.0,
+            "total_market_cap": 1000000000.0
+          },
+          "timestamp": "2025-09-11 22:40:56.458885+00:00",
+          "execution_time_ms": 0.013828277587890625,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "mifid_001",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Transaction reporting compliant",
+          "details": {
+            "missing_fields": [],
+            "reporting_deadline": "2025-09-12T22:40:56.254378+00:00",
+            "transaction_data": {
+              "client_id": "INSTITUTIONAL_CLIENT",
+              "instrument": "AAPL",
+              "quantity": 100,
+              "price": 150.0
+            }
+          },
+          "timestamp": "2025-09-11 22:40:56.458943+00:00",
+          "execution_time_ms": 0.05030632019042969,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "mifid_002",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Product governance compliant",
+          "details": {
+            "target_market_validation": true,
+            "risk_warning_provided": true
+          },
+          "timestamp": "2025-09-11 22:40:56.458954+00:00",
+          "execution_time_ms": 0.0026226043701171875,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "mifid_003",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Algorithmic trading controls compliant",
+          "details": {
+            "order_rate": 1,
+            "max_allowed_rate": 1000,
+            "circuit_breaker_triggered": false
+          },
+          "timestamp": "2025-09-11 22:40:56.458966+00:00",
+          "execution_time_ms": 0.004291534423828125,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "gdpr_001",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "DPIA requirement compliant",
+          "details": {
+            "data_processing_risk": 0.05,
+            "high_risk_threshold": 0.1,
+            "dpia_conducted": true
+          },
+          "timestamp": "2025-09-11 22:40:56.458974+00:00",
+          "execution_time_ms": 0.0030994415283203125,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "gdpr_002",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Data minimization compliant",
+          "details": {
+            "data_retention_days": 1000,
+            "max_retention_days": 2555,
+            "purpose_limitation": true
+          },
+          "timestamp": "2025-09-11 22:40:56.458981+00:00",
+          "execution_time_ms": 0.0021457672119140625,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "gdpr_003",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Consent management compliant",
+          "details": {
+            "explicit_consent": true,
+            "withdrawal_right": true
+          },
+          "timestamp": "2025-09-11 22:40:56.458989+00:00",
+          "execution_time_ms": 0.0016689300537109375,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "risk_001",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Position limits compliant: 0.18% <= 15.00%",
+          "details": {
+            "position_ratio": 0.0018260471010589248,
+            "max_allowed_ratio": 0.15,
+            "position_size": 100.0,
+            "total_portfolio": 54763.1
+          },
+          "timestamp": "2025-09-11 22:40:56.459004+00:00",
+          "execution_time_ms": 0.008106231689453125,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "risk_002",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Liquidity risk compliant: 80.00% >= 30.00%",
+          "details": {
+            "liquidity_ratio": 0.8,
+            "min_required_ratio": 0.3,
+            "liquid_assets": 43810.48,
+            "total_portfolio": 54763.1
+          },
+          "timestamp": "2025-09-11 22:40:56.459014+00:00",
+          "execution_time_ms": 0.005245208740234375,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "risk_003",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Stress testing compliant: 15 days <= 30 days",
+          "details": {
+            "days_since_test": 15,
+            "required_frequency_days": 30,
+            "last_stress_test": "2025-08-27T22:40:56.458530+00:00"
+          },
+          "timestamp": "2025-09-11 22:40:56.459040+00:00",
+          "execution_time_ms": 0.0209808349609375,
+          "severity_score": 0.0
+        }
+      ],
+      "summary": {
+        "compliance_score": 100.0,
+        "average_execution_time_ms": 0.015179316202799479,
+        "critical_violations": 0,
+        "regulatory_coverage": 4
+      }
+    },
+    {
+      "report_id": "compliance_1757630978",
+      "timestamp": "2025-09-11 22:49:38.617918+00:00",
+      "overall_status": "ComplianceStatus.COMPLIANT",
+      "total_checks": 12,
+      "passed_checks": 12,
+      "failed_checks": 0,
+      "warning_checks": 0,
+      "checks": [
+        {
+          "rule_id": "fca_001",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Client money properly segregated: 100.00%",
+          "details": {
+            "segregated_ratio": 1.0,
+            "min_required_ratio": 1.0,
+            "client_money": 54780.93,
+            "total_assets": 54780.93
+          },
+          "timestamp": "2025-09-11 22:49:38.617767+00:00",
+          "execution_time_ms": 0.014543533325195312,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "fca_002",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Best execution achieved: slippage 0.0000 <= 0.0010",
+          "details": {
+            "slippage": 0.0,
+            "max_allowed_slippage": 0.001,
+            "execution_price": 0.0,
+            "market_price": 0.0
+          },
+          "timestamp": "2025-09-11 22:49:38.617792+00:00",
+          "execution_time_ms": 0.008106231689453125,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "fca_003",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Position size within limits: 0.00% <= 10.00%",
+          "details": {
+            "position_ratio": 1e-07,
+            "max_allowed_ratio": 0.1,
+            "position_size": 100.0,
+            "total_market_cap": 1000000000.0
+          },
+          "timestamp": "2025-09-11 22:49:38.617806+00:00",
+          "execution_time_ms": 0.0054836273193359375,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "mifid_001",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Transaction reporting compliant",
+          "details": {
+            "missing_fields": [],
+            "reporting_deadline": "2025-09-12T22:49:38.416475+00:00",
+            "transaction_data": {
+              "client_id": "INSTITUTIONAL_CLIENT",
+              "instrument": "AAPL",
+              "quantity": 100,
+              "price": 150.0
+            }
+          },
+          "timestamp": "2025-09-11 22:49:38.617837+00:00",
+          "execution_time_ms": 0.026702880859375,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "mifid_002",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Product governance compliant",
+          "details": {
+            "target_market_validation": true,
+            "risk_warning_provided": true
+          },
+          "timestamp": "2025-09-11 22:49:38.617845+00:00",
+          "execution_time_ms": 0.0021457672119140625,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "mifid_003",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Algorithmic trading controls compliant",
+          "details": {
+            "order_rate": 1,
+            "max_allowed_rate": 1000,
+            "circuit_breaker_triggered": false
+          },
+          "timestamp": "2025-09-11 22:49:38.617851+00:00",
+          "execution_time_ms": 0.0021457672119140625,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "gdpr_001",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "DPIA requirement compliant",
+          "details": {
+            "data_processing_risk": 0.05,
+            "high_risk_threshold": 0.1,
+            "dpia_conducted": true
+          },
+          "timestamp": "2025-09-11 22:49:38.617857+00:00",
+          "execution_time_ms": 0.0019073486328125,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "gdpr_002",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Data minimization compliant",
+          "details": {
+            "data_retention_days": 1000,
+            "max_retention_days": 2555,
+            "purpose_limitation": true
+          },
+          "timestamp": "2025-09-11 22:49:38.617862+00:00",
+          "execution_time_ms": 0.0019073486328125,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "gdpr_003",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Consent management compliant",
+          "details": {
+            "explicit_consent": true,
+            "withdrawal_right": true
+          },
+          "timestamp": "2025-09-11 22:49:38.617867+00:00",
+          "execution_time_ms": 0.00095367431640625,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "risk_001",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Position limits compliant: 0.18% <= 15.00%",
+          "details": {
+            "position_ratio": 0.0018254527624850473,
+            "max_allowed_ratio": 0.15,
+            "position_size": 100.0,
+            "total_portfolio": 54780.93
+          },
+          "timestamp": "2025-09-11 22:49:38.617874+00:00",
+          "execution_time_ms": 0.0045299530029296875,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "risk_002",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Liquidity risk compliant: 80.00% >= 30.00%",
+          "details": {
+            "liquidity_ratio": 0.8000000000000002,
+            "min_required_ratio": 0.3,
+            "liquid_assets": 43824.744000000006,
+            "total_portfolio": 54780.93
+          },
+          "timestamp": "2025-09-11 22:49:38.617881+00:00",
+          "execution_time_ms": 0.0035762786865234375,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "risk_003",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Stress testing compliant: 15 days <= 30 days",
+          "details": {
+            "days_since_test": 15,
+            "required_frequency_days": 30,
+            "last_stress_test": "2025-08-27T22:49:38.617718+00:00"
+          },
+          "timestamp": "2025-09-11 22:49:38.617900+00:00",
+          "execution_time_ms": 0.014781951904296875,
+          "severity_score": 0.0
+        }
+      ],
+      "summary": {
+        "compliance_score": 100.0,
+        "average_execution_time_ms": 0.0072320302327473955,
+        "critical_violations": 0,
+        "regulatory_coverage": 4
+      }
+    },
+    {
+      "report_id": "compliance_1757632394",
+      "timestamp": "2025-09-11 23:13:14.313511+00:00",
+      "overall_status": "ComplianceStatus.COMPLIANT",
+      "total_checks": 12,
+      "passed_checks": 12,
+      "failed_checks": 0,
+      "warning_checks": 0,
+      "checks": [
+        {
+          "rule_id": "fca_001",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Client money properly segregated: 100.00%",
+          "details": {
+            "segregated_ratio": 1.0,
+            "min_required_ratio": 1.0,
+            "client_money": 54785.05,
+            "total_assets": 54785.05
+          },
+          "timestamp": "2025-09-11 23:13:14.313419+00:00",
+          "execution_time_ms": 0.011444091796875,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "fca_002",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Best execution achieved: slippage 0.0000 <= 0.0010",
+          "details": {
+            "slippage": 0.0,
+            "max_allowed_slippage": 0.001,
+            "execution_price": 0.0,
+            "market_price": 0.0
+          },
+          "timestamp": "2025-09-11 23:13:14.313436+00:00",
+          "execution_time_ms": 0.0057220458984375,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "fca_003",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Position size within limits: 0.00% <= 10.00%",
+          "details": {
+            "position_ratio": 1e-07,
+            "max_allowed_ratio": 0.1,
+            "position_size": 100.0,
+            "total_market_cap": 1000000000.0
+          },
+          "timestamp": "2025-09-11 23:13:14.313443+00:00",
+          "execution_time_ms": 0.003337860107421875,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "mifid_001",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Transaction reporting compliant",
+          "details": {
+            "missing_fields": [],
+            "reporting_deadline": "2025-09-12T23:13:14.112885+00:00",
+            "transaction_data": {
+              "client_id": "INSTITUTIONAL_CLIENT",
+              "instrument": "AAPL",
+              "quantity": 100,
+              "price": 150.0
+            }
+          },
+          "timestamp": "2025-09-11 23:13:14.313464+00:00",
+          "execution_time_ms": 0.018596649169921875,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "mifid_002",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Product governance compliant",
+          "details": {
+            "target_market_validation": true,
+            "risk_warning_provided": true
+          },
+          "timestamp": "2025-09-11 23:13:14.313468+00:00",
+          "execution_time_ms": 0.00095367431640625,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "mifid_003",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Algorithmic trading controls compliant",
+          "details": {
+            "order_rate": 1,
+            "max_allowed_rate": 1000,
+            "circuit_breaker_triggered": false
+          },
+          "timestamp": "2025-09-11 23:13:14.313472+00:00",
+          "execution_time_ms": 0.0016689300537109375,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "gdpr_001",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "DPIA requirement compliant",
+          "details": {
+            "data_processing_risk": 0.05,
+            "high_risk_threshold": 0.1,
+            "dpia_conducted": true
+          },
+          "timestamp": "2025-09-11 23:13:14.313475+00:00",
+          "execution_time_ms": 0.0016689300537109375,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "gdpr_002",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Data minimization compliant",
+          "details": {
+            "data_retention_days": 1000,
+            "max_retention_days": 2555,
+            "purpose_limitation": true
+          },
+          "timestamp": "2025-09-11 23:13:14.313478+00:00",
+          "execution_time_ms": 0.001430511474609375,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "gdpr_003",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Consent management compliant",
+          "details": {
+            "explicit_consent": true,
+            "withdrawal_right": true
+          },
+          "timestamp": "2025-09-11 23:13:14.313481+00:00",
+          "execution_time_ms": 0.000476837158203125,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "risk_001",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Position limits compliant: 0.18% <= 15.00%",
+          "details": {
+            "position_ratio": 0.0018253154829647868,
+            "max_allowed_ratio": 0.15,
+            "position_size": 100.0,
+            "total_portfolio": 54785.05
+          },
+          "timestamp": "2025-09-11 23:13:14.313485+00:00",
+          "execution_time_ms": 0.0030994415283203125,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "risk_002",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Liquidity risk compliant: 80.00% >= 30.00%",
+          "details": {
+            "liquidity_ratio": 0.8000000000000002,
+            "min_required_ratio": 0.3,
+            "liquid_assets": 43828.04000000001,
+            "total_portfolio": 54785.05
+          },
+          "timestamp": "2025-09-11 23:13:14.313489+00:00",
+          "execution_time_ms": 0.0026226043701171875,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "risk_003",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Stress testing compliant: 15 days <= 30 days",
+          "details": {
+            "days_since_test": 15,
+            "required_frequency_days": 30,
+            "last_stress_test": "2025-08-27T23:13:14.313378+00:00"
+          },
+          "timestamp": "2025-09-11 23:13:14.313500+00:00",
+          "execution_time_ms": 0.00762939453125,
+          "severity_score": 0.0
+        }
+      ],
+      "summary": {
+        "compliance_score": 100.0,
+        "average_execution_time_ms": 0.004887580871582031,
+        "critical_violations": 0,
+        "regulatory_coverage": 4
+      }
+    },
+    {
+      "report_id": "compliance_1757632495",
+      "timestamp": "2025-09-11 23:14:55.299020+00:00",
+      "overall_status": "ComplianceStatus.COMPLIANT",
+      "total_checks": 12,
+      "passed_checks": 12,
+      "failed_checks": 0,
+      "warning_checks": 0,
+      "checks": [
+        {
+          "rule_id": "fca_001",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Client money properly segregated: 100.00%",
+          "details": {
+            "segregated_ratio": 1.0,
+            "min_required_ratio": 1.0,
+            "client_money": 54789.28,
+            "total_assets": 54789.28
+          },
+          "timestamp": "2025-09-11 23:14:55.298915+00:00",
+          "execution_time_ms": 0.009775161743164062,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "fca_002",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Best execution achieved: slippage 0.0000 <= 0.0010",
+          "details": {
+            "slippage": 0.0,
+            "max_allowed_slippage": 0.001,
+            "execution_price": 0.0,
+            "market_price": 0.0
+          },
+          "timestamp": "2025-09-11 23:14:55.298933+00:00",
+          "execution_time_ms": 0.0057220458984375,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "fca_003",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Position size within limits: 0.00% <= 10.00%",
+          "details": {
+            "position_ratio": 1e-07,
+            "max_allowed_ratio": 0.1,
+            "position_size": 100.0,
+            "total_market_cap": 1000000000.0
+          },
+          "timestamp": "2025-09-11 23:14:55.298942+00:00",
+          "execution_time_ms": 0.003814697265625,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "mifid_001",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Transaction reporting compliant",
+          "details": {
+            "missing_fields": [],
+            "reporting_deadline": "2025-09-12T23:14:55.098245+00:00",
+            "transaction_data": {
+              "client_id": "INSTITUTIONAL_CLIENT",
+              "instrument": "AAPL",
+              "quantity": 100,
+              "price": 150.0
+            }
+          },
+          "timestamp": "2025-09-11 23:14:55.298964+00:00",
+          "execution_time_ms": 0.019073486328125,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "mifid_002",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Product governance compliant",
+          "details": {
+            "target_market_validation": true,
+            "risk_warning_provided": true
+          },
+          "timestamp": "2025-09-11 23:14:55.298969+00:00",
+          "execution_time_ms": 0.0011920928955078125,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "mifid_003",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Algorithmic trading controls compliant",
+          "details": {
+            "order_rate": 1,
+            "max_allowed_rate": 1000,
+            "circuit_breaker_triggered": false
+          },
+          "timestamp": "2025-09-11 23:14:55.298973+00:00",
+          "execution_time_ms": 0.001430511474609375,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "gdpr_001",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "DPIA requirement compliant",
+          "details": {
+            "data_processing_risk": 0.05,
+            "high_risk_threshold": 0.1,
+            "dpia_conducted": true
+          },
+          "timestamp": "2025-09-11 23:14:55.298978+00:00",
+          "execution_time_ms": 0.0016689300537109375,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "gdpr_002",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Data minimization compliant",
+          "details": {
+            "data_retention_days": 1000,
+            "max_retention_days": 2555,
+            "purpose_limitation": true
+          },
+          "timestamp": "2025-09-11 23:14:55.298982+00:00",
+          "execution_time_ms": 0.0011920928955078125,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "gdpr_003",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Consent management compliant",
+          "details": {
+            "explicit_consent": true,
+            "withdrawal_right": true
+          },
+          "timestamp": "2025-09-11 23:14:55.298984+00:00",
+          "execution_time_ms": 0.0007152557373046875,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "risk_001",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Position limits compliant: 0.18% <= 15.00%",
+          "details": {
+            "position_ratio": 0.0018251745596948893,
+            "max_allowed_ratio": 0.15,
+            "position_size": 100.0,
+            "total_portfolio": 54789.28
+          },
+          "timestamp": "2025-09-11 23:14:55.298990+00:00",
+          "execution_time_ms": 0.003337860107421875,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "risk_002",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Liquidity risk compliant: 80.00% >= 30.00%",
+          "details": {
+            "liquidity_ratio": 0.8,
+            "min_required_ratio": 0.3,
+            "liquid_assets": 43831.424,
+            "total_portfolio": 54789.28
+          },
+          "timestamp": "2025-09-11 23:14:55.298994+00:00",
+          "execution_time_ms": 0.0019073486328125,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "risk_003",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Stress testing compliant: 15 days <= 30 days",
+          "details": {
+            "days_since_test": 15,
+            "required_frequency_days": 30,
+            "last_stress_test": "2025-08-27T23:14:55.298880+00:00"
+          },
+          "timestamp": "2025-09-11 23:14:55.299006+00:00",
+          "execution_time_ms": 0.009775161743164062,
+          "severity_score": 0.0
+        }
+      ],
+      "summary": {
+        "compliance_score": 100.0,
+        "average_execution_time_ms": 0.004967053731282552,
+        "critical_violations": 0,
+        "regulatory_coverage": 4
+      }
+    },
+    {
+      "report_id": "compliance_1757632757",
+      "timestamp": "2025-09-11 23:19:17.731469+00:00",
+      "overall_status": "ComplianceStatus.NON_COMPLIANT",
+      "total_checks": 12,
+      "passed_checks": 11,
+      "failed_checks": 1,
+      "warning_checks": 0,
+      "checks": [
+        {
+          "rule_id": "fca_001",
+          "status": "ComplianceStatus.NON_COMPLIANT",
+          "message": "Client money segregation insufficient: 50.00% < 100.00%",
+          "details": {
+            "segregated_ratio": 0.5,
+            "min_required_ratio": 1.0,
+            "client_money": 1000000.0,
+            "total_assets": 2000000.0
+          },
+          "timestamp": "2025-09-11 23:19:17.731381+00:00",
+          "execution_time_ms": 0.010251998901367188,
+          "severity_score": 1.0
+        },
+        {
+          "rule_id": "fca_002",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Best execution achieved: slippage 0.0007 <= 0.0010",
+          "details": {
+            "slippage": 0.0006662225183210814,
+            "max_allowed_slippage": 0.001,
+            "execution_price": 150.0,
+            "market_price": 150.1
+          },
+          "timestamp": "2025-09-11 23:19:17.731396+00:00",
+          "execution_time_ms": 0.0045299530029296875,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "fca_003",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Position size within limits: 0.01% <= 10.00%",
+          "details": {
+            "position_ratio": 5e-05,
+            "max_allowed_ratio": 0.1,
+            "position_size": 50000.0,
+            "total_market_cap": 1000000000.0
+          },
+          "timestamp": "2025-09-11 23:19:17.731404+00:00",
+          "execution_time_ms": 0.0030994415283203125,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "mifid_001",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Transaction reporting compliant",
+          "details": {
+            "missing_fields": [],
+            "reporting_deadline": "2025-09-12T23:19:17.731333+00:00",
+            "transaction_data": {
+              "client_id": "CLIENT_001",
+              "instrument": "AAPL",
+              "quantity": 100,
+              "price": 150.0
+            }
+          },
+          "timestamp": "2025-09-11 23:19:17.731422+00:00",
+          "execution_time_ms": 0.015735626220703125,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "mifid_002",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Product governance compliant",
+          "details": {
+            "target_market_validation": true,
+            "risk_warning_provided": true
+          },
+          "timestamp": "2025-09-11 23:19:17.731426+00:00",
+          "execution_time_ms": 0.00095367431640625,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "mifid_003",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Algorithmic trading controls compliant",
+          "details": {
+            "order_rate": 500,
+            "max_allowed_rate": 1000,
+            "circuit_breaker_triggered": false
+          },
+          "timestamp": "2025-09-11 23:19:17.731430+00:00",
+          "execution_time_ms": 0.0011920928955078125,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "gdpr_001",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "DPIA requirement compliant",
+          "details": {
+            "data_processing_risk": 0.05,
+            "high_risk_threshold": 0.1,
+            "dpia_conducted": true
+          },
+          "timestamp": "2025-09-11 23:19:17.731433+00:00",
+          "execution_time_ms": 0.0011920928955078125,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "gdpr_002",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Data minimization compliant",
+          "details": {
+            "data_retention_days": 1000,
+            "max_retention_days": 2555,
+            "purpose_limitation": true
+          },
+          "timestamp": "2025-09-11 23:19:17.731436+00:00",
+          "execution_time_ms": 0.00095367431640625,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "gdpr_003",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Consent management compliant",
+          "details": {
+            "explicit_consent": true,
+            "withdrawal_right": true
+          },
+          "timestamp": "2025-09-11 23:19:17.731439+00:00",
+          "execution_time_ms": 0.0007152557373046875,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "risk_001",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Position limits compliant: 5.00% <= 15.00%",
+          "details": {
+            "position_ratio": 0.05,
+            "max_allowed_ratio": 0.15,
+            "position_size": 50000.0,
+            "total_portfolio": 1000000.0
+          },
+          "timestamp": "2025-09-11 23:19:17.731444+00:00",
+          "execution_time_ms": 0.002384185791015625,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "risk_002",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Liquidity risk compliant: 40.00% >= 30.00%",
+          "details": {
+            "liquidity_ratio": 0.4,
+            "min_required_ratio": 0.3,
+            "liquid_assets": 400000.0,
+            "total_portfolio": 1000000.0
+          },
+          "timestamp": "2025-09-11 23:19:17.731448+00:00",
+          "execution_time_ms": 0.0016689300537109375,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "risk_003",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Stress testing compliant: 15 days <= 30 days",
+          "details": {
+            "days_since_test": 15,
+            "required_frequency_days": 30,
+            "last_stress_test": "2025-08-27T23:19:17.731338+00:00"
+          },
+          "timestamp": "2025-09-11 23:19:17.731458+00:00",
+          "execution_time_ms": 0.00858306884765625,
+          "severity_score": 0.0
+        }
+      ],
+      "summary": {
+        "compliance_score": 91.66666666666666,
+        "average_execution_time_ms": 0.004271666208902995,
+        "critical_violations": 1,
+        "regulatory_coverage": 4
+      }
+    },
+    {
+      "report_id": "compliance_1757632757",
+      "timestamp": "2025-09-11 23:19:17.764982+00:00",
+      "overall_status": "ComplianceStatus.COMPLIANT",
+      "total_checks": 12,
+      "passed_checks": 12,
+      "failed_checks": 0,
+      "warning_checks": 0,
+      "checks": [
+        {
+          "rule_id": "fca_001",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Client money properly segregated: 100.00%",
+          "details": {
+            "segregated_ratio": 1.0,
+            "min_required_ratio": 1.0,
+            "client_money": 2000000.0,
+            "total_assets": 2000000.0
+          },
+          "timestamp": "2025-09-11 23:19:17.764930+00:00",
+          "execution_time_ms": 0.007867813110351562,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "fca_002",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Best execution achieved: slippage 0.0000 <= 0.0010",
+          "details": {
+            "slippage": 0.0,
+            "max_allowed_slippage": 0.001,
+            "execution_price": 150.0,
+            "market_price": 150.0
+          },
+          "timestamp": "2025-09-11 23:19:17.764937+00:00",
+          "execution_time_ms": 0.00286102294921875,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "fca_003",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Position size within limits: 0.00% <= 10.00%",
+          "details": {
+            "position_ratio": 1e-05,
+            "max_allowed_ratio": 0.1,
+            "position_size": 10000.0,
+            "total_market_cap": 1000000000.0
+          },
+          "timestamp": "2025-09-11 23:19:17.764940+00:00",
+          "execution_time_ms": 0.0016689300537109375,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "mifid_001",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Transaction reporting compliant",
+          "details": {
+            "missing_fields": [],
+            "reporting_deadline": "2025-09-12T23:19:17.764897+00:00",
+            "transaction_data": {
+              "client_id": "CLIENT_001",
+              "instrument": "AAPL",
+              "quantity": 100,
+              "price": 150.0
+            }
+          },
+          "timestamp": "2025-09-11 23:19:17.764953+00:00",
+          "execution_time_ms": 0.010967254638671875,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "mifid_002",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Product governance compliant",
+          "details": {
+            "target_market_validation": true,
+            "risk_warning_provided": true
+          },
+          "timestamp": "2025-09-11 23:19:17.764956+00:00",
+          "execution_time_ms": 0.00095367431640625,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "mifid_003",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Algorithmic trading controls compliant",
+          "details": {
+            "order_rate": 100,
+            "max_allowed_rate": 1000,
+            "circuit_breaker_triggered": false
+          },
+          "timestamp": "2025-09-11 23:19:17.764959+00:00",
+          "execution_time_ms": 0.0007152557373046875,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "gdpr_001",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "DPIA requirement compliant",
+          "details": {
+            "data_processing_risk": 0.05,
+            "high_risk_threshold": 0.1,
+            "dpia_conducted": true
+          },
+          "timestamp": "2025-09-11 23:19:17.764961+00:00",
+          "execution_time_ms": 0.0007152557373046875,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "gdpr_002",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Data minimization compliant",
+          "details": {
+            "data_retention_days": 1000,
+            "max_retention_days": 2555,
+            "purpose_limitation": true
+          },
+          "timestamp": "2025-09-11 23:19:17.764963+00:00",
+          "execution_time_ms": 0.0011920928955078125,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "gdpr_003",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Consent management compliant",
+          "details": {
+            "explicit_consent": true,
+            "withdrawal_right": true
+          },
+          "timestamp": "2025-09-11 23:19:17.764964+00:00",
+          "execution_time_ms": 0.000476837158203125,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "risk_001",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Position limits compliant: 1.00% <= 15.00%",
+          "details": {
+            "position_ratio": 0.01,
+            "max_allowed_ratio": 0.15,
+            "position_size": 10000.0,
+            "total_portfolio": 1000000.0
+          },
+          "timestamp": "2025-09-11 23:19:17.764967+00:00",
+          "execution_time_ms": 0.0019073486328125,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "risk_002",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Liquidity risk compliant: 50.00% >= 30.00%",
+          "details": {
+            "liquidity_ratio": 0.5,
+            "min_required_ratio": 0.3,
+            "liquid_assets": 500000.0,
+            "total_portfolio": 1000000.0
+          },
+          "timestamp": "2025-09-11 23:19:17.764969+00:00",
+          "execution_time_ms": 0.001430511474609375,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "risk_003",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Stress testing compliant: 15 days <= 30 days",
+          "details": {
+            "days_since_test": 15,
+            "required_frequency_days": 30,
+            "last_stress_test": "2025-08-27T23:19:17.764901+00:00"
+          },
+          "timestamp": "2025-09-11 23:19:17.764976+00:00",
+          "execution_time_ms": 0.0057220458984375,
+          "severity_score": 0.0
+        }
+      ],
+      "summary": {
+        "compliance_score": 100.0,
+        "average_execution_time_ms": 0.003039836883544922,
+        "critical_violations": 0,
+        "regulatory_coverage": 4
+      }
+    },
+    {
+      "report_id": "compliance_1757632757",
+      "timestamp": "2025-09-11 23:19:17.793188+00:00",
+      "overall_status": "ComplianceStatus.COMPLIANT",
+      "total_checks": 12,
+      "passed_checks": 12,
+      "failed_checks": 0,
+      "warning_checks": 0,
+      "checks": [
+        {
+          "rule_id": "fca_001",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Client money properly segregated: 100.00%",
+          "details": {
+            "segregated_ratio": 1.0,
+            "min_required_ratio": 1.0,
+            "client_money": 2000000.0,
+            "total_assets": 2000000.0
+          },
+          "timestamp": "2025-09-11 23:19:17.793116+00:00",
+          "execution_time_ms": 0.0073909759521484375,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "fca_002",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Best execution achieved: slippage 0.0000 <= 0.0010",
+          "details": {
+            "slippage": 0.0,
+            "max_allowed_slippage": 0.001,
+            "execution_price": 150.0,
+            "market_price": 150.0
+          },
+          "timestamp": "2025-09-11 23:19:17.793124+00:00",
+          "execution_time_ms": 0.00286102294921875,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "fca_003",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Position size within limits: 0.00% <= 10.00%",
+          "details": {
+            "position_ratio": 1e-05,
+            "max_allowed_ratio": 0.1,
+            "position_size": 10000.0,
+            "total_market_cap": 1000000000.0
+          },
+          "timestamp": "2025-09-11 23:19:17.793130+00:00",
+          "execution_time_ms": 0.0040531158447265625,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "mifid_001",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Transaction reporting compliant",
+          "details": {
+            "missing_fields": [],
+            "reporting_deadline": "2025-09-12T23:19:17.793080+00:00",
+            "transaction_data": {
+              "client_id": "CLIENT_001",
+              "instrument": "AAPL",
+              "quantity": 100,
+              "price": 150.0
+            }
+          },
+          "timestamp": "2025-09-11 23:19:17.793145+00:00",
+          "execution_time_ms": 0.013589859008789062,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "mifid_002",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Product governance compliant",
+          "details": {
+            "target_market_validation": true,
+            "risk_warning_provided": true
+          },
+          "timestamp": "2025-09-11 23:19:17.793148+00:00",
+          "execution_time_ms": 0.00095367431640625,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "mifid_003",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Algorithmic trading controls compliant",
+          "details": {
+            "order_rate": 100,
+            "max_allowed_rate": 1000,
+            "circuit_breaker_triggered": false
+          },
+          "timestamp": "2025-09-11 23:19:17.793151+00:00",
+          "execution_time_ms": 0.0011920928955078125,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "gdpr_001",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "DPIA requirement compliant",
+          "details": {
+            "data_processing_risk": 0.05,
+            "high_risk_threshold": 0.1,
+            "dpia_conducted": true
+          },
+          "timestamp": "2025-09-11 23:19:17.793154+00:00",
+          "execution_time_ms": 0.00095367431640625,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "gdpr_002",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Data minimization compliant",
+          "details": {
+            "data_retention_days": 1000,
+            "max_retention_days": 2555,
+            "purpose_limitation": true
+          },
+          "timestamp": "2025-09-11 23:19:17.793156+00:00",
+          "execution_time_ms": 0.00095367431640625,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "gdpr_003",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Consent management compliant",
+          "details": {
+            "explicit_consent": true,
+            "withdrawal_right": true
+          },
+          "timestamp": "2025-09-11 23:19:17.793158+00:00",
+          "execution_time_ms": 0.000476837158203125,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "risk_001",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Position limits compliant: 1.00% <= 15.00%",
+          "details": {
+            "position_ratio": 0.01,
+            "max_allowed_ratio": 0.15,
+            "position_size": 10000.0,
+            "total_portfolio": 1000000.0
+          },
+          "timestamp": "2025-09-11 23:19:17.793162+00:00",
+          "execution_time_ms": 0.0019073486328125,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "risk_002",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Liquidity risk compliant: 50.00% >= 30.00%",
+          "details": {
+            "liquidity_ratio": 0.5,
+            "min_required_ratio": 0.3,
+            "liquid_assets": 500000.0,
+            "total_portfolio": 1000000.0
+          },
+          "timestamp": "2025-09-11 23:19:17.793164+00:00",
+          "execution_time_ms": 0.0011920928955078125,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "risk_003",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Stress testing compliant: 15 days <= 30 days",
+          "details": {
+            "days_since_test": 15,
+            "required_frequency_days": 30,
+            "last_stress_test": "2025-08-27T23:19:17.793085+00:00"
+          },
+          "timestamp": "2025-09-11 23:19:17.793173+00:00",
+          "execution_time_ms": 0.00667572021484375,
+          "severity_score": 0.0
+        }
+      ],
+      "summary": {
+        "compliance_score": 100.0,
+        "average_execution_time_ms": 0.003516674041748047,
+        "critical_violations": 0,
+        "regulatory_coverage": 4
+      }
+    },
+    {
+      "report_id": "compliance_1757632911",
+      "timestamp": "2025-09-11 23:21:51.402633+00:00",
+      "overall_status": "ComplianceStatus.NON_COMPLIANT",
+      "total_checks": 12,
+      "passed_checks": 11,
+      "failed_checks": 1,
+      "warning_checks": 0,
+      "checks": [
+        {
+          "rule_id": "fca_001",
+          "status": "ComplianceStatus.NON_COMPLIANT",
+          "message": "Client money segregation insufficient: 50.00% < 100.00%",
+          "details": {
+            "segregated_ratio": 0.5,
+            "min_required_ratio": 1.0,
+            "client_money": 1000000.0,
+            "total_assets": 2000000.0
+          },
+          "timestamp": "2025-09-11 23:21:51.402485+00:00",
+          "execution_time_ms": 0.017642974853515625,
+          "severity_score": 1.0
+        },
+        {
+          "rule_id": "fca_002",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Best execution achieved: slippage 0.0007 <= 0.0010",
+          "details": {
+            "slippage": 0.0006662225183210814,
+            "max_allowed_slippage": 0.001,
+            "execution_price": 150.0,
+            "market_price": 150.1
+          },
+          "timestamp": "2025-09-11 23:21:51.402510+00:00",
+          "execution_time_ms": 0.008106231689453125,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "fca_003",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Position size within limits: 0.01% <= 10.00%",
+          "details": {
+            "position_ratio": 5e-05,
+            "max_allowed_ratio": 0.1,
+            "position_size": 50000.0,
+            "total_market_cap": 1000000000.0
+          },
+          "timestamp": "2025-09-11 23:21:51.402522+00:00",
+          "execution_time_ms": 0.00476837158203125,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "mifid_001",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Transaction reporting compliant",
+          "details": {
+            "missing_fields": [],
+            "reporting_deadline": "2025-09-12T23:21:51.402404+00:00",
+            "transaction_data": {
+              "client_id": "CLIENT_001",
+              "instrument": "AAPL",
+              "quantity": 100,
+              "price": 150.0
+            }
+          },
+          "timestamp": "2025-09-11 23:21:51.402552+00:00",
+          "execution_time_ms": 0.026464462280273438,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "mifid_002",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Product governance compliant",
+          "details": {
+            "target_market_validation": true,
+            "risk_warning_provided": true
+          },
+          "timestamp": "2025-09-11 23:21:51.402559+00:00",
+          "execution_time_ms": 0.0019073486328125,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "mifid_003",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Algorithmic trading controls compliant",
+          "details": {
+            "order_rate": 500,
+            "max_allowed_rate": 1000,
+            "circuit_breaker_triggered": false
+          },
+          "timestamp": "2025-09-11 23:21:51.402565+00:00",
+          "execution_time_ms": 0.0019073486328125,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "gdpr_001",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "DPIA requirement compliant",
+          "details": {
+            "data_processing_risk": 0.05,
+            "high_risk_threshold": 0.1,
+            "dpia_conducted": true
+          },
+          "timestamp": "2025-09-11 23:21:51.402571+00:00",
+          "execution_time_ms": 0.001430511474609375,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "gdpr_002",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Data minimization compliant",
+          "details": {
+            "data_retention_days": 1000,
+            "max_retention_days": 2555,
+            "purpose_limitation": true
+          },
+          "timestamp": "2025-09-11 23:21:51.402581+00:00",
+          "execution_time_ms": 0.0019073486328125,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "gdpr_003",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Consent management compliant",
+          "details": {
+            "explicit_consent": true,
+            "withdrawal_right": true
+          },
+          "timestamp": "2025-09-11 23:21:51.402585+00:00",
+          "execution_time_ms": 0.00095367431640625,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "risk_001",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Position limits compliant: 5.00% <= 15.00%",
+          "details": {
+            "position_ratio": 0.05,
+            "max_allowed_ratio": 0.15,
+            "position_size": 50000.0,
+            "total_portfolio": 1000000.0
+          },
+          "timestamp": "2025-09-11 23:21:51.402592+00:00",
+          "execution_time_ms": 0.0040531158447265625,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "risk_002",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Liquidity risk compliant: 40.00% >= 30.00%",
+          "details": {
+            "liquidity_ratio": 0.4,
+            "min_required_ratio": 0.3,
+            "liquid_assets": 400000.0,
+            "total_portfolio": 1000000.0
+          },
+          "timestamp": "2025-09-11 23:21:51.402598+00:00",
+          "execution_time_ms": 0.0030994415283203125,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "risk_003",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Stress testing compliant: 15 days <= 30 days",
+          "details": {
+            "days_since_test": 15,
+            "required_frequency_days": 30,
+            "last_stress_test": "2025-08-27T23:21:51.402412+00:00"
+          },
+          "timestamp": "2025-09-11 23:21:51.402615+00:00",
+          "execution_time_ms": 0.0133514404296875,
+          "severity_score": 0.0
+        }
+      ],
+      "summary": {
+        "compliance_score": 91.66666666666666,
+        "average_execution_time_ms": 0.007132689158121745,
+        "critical_violations": 1,
+        "regulatory_coverage": 4
+      }
+    },
+    {
+      "report_id": "compliance_1757632911",
+      "timestamp": "2025-09-11 23:21:51.455967+00:00",
+      "overall_status": "ComplianceStatus.COMPLIANT",
+      "total_checks": 12,
+      "passed_checks": 12,
+      "failed_checks": 0,
+      "warning_checks": 0,
+      "checks": [
+        {
+          "rule_id": "fca_001",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Client money properly segregated: 100.00%",
+          "details": {
+            "segregated_ratio": 1.0,
+            "min_required_ratio": 1.0,
+            "client_money": 2000000.0,
+            "total_assets": 2000000.0
+          },
+          "timestamp": "2025-09-11 23:21:51.455774+00:00",
+          "execution_time_ms": 0.015497207641601562,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "fca_002",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Best execution achieved: slippage 0.0000 <= 0.0010",
+          "details": {
+            "slippage": 0.0,
+            "max_allowed_slippage": 0.001,
+            "execution_price": 150.0,
+            "market_price": 150.0
+          },
+          "timestamp": "2025-09-11 23:21:51.455792+00:00",
+          "execution_time_ms": 0.00762939453125,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "fca_003",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Position size within limits: 0.00% <= 10.00%",
+          "details": {
+            "position_ratio": 1e-05,
+            "max_allowed_ratio": 0.1,
+            "position_size": 10000.0,
+            "total_market_cap": 1000000000.0
+          },
+          "timestamp": "2025-09-11 23:21:51.455800+00:00",
+          "execution_time_ms": 0.0040531158447265625,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "mifid_001",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Transaction reporting compliant",
+          "details": {
+            "missing_fields": [],
+            "reporting_deadline": "2025-09-12T23:21:51.455701+00:00",
+            "transaction_data": {
+              "client_id": "CLIENT_001",
+              "instrument": "AAPL",
+              "quantity": 100,
+              "price": 150.0
+            }
+          },
+          "timestamp": "2025-09-11 23:21:51.455831+00:00",
+          "execution_time_ms": 0.028133392333984375,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "mifid_002",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Product governance compliant",
+          "details": {
+            "target_market_validation": true,
+            "risk_warning_provided": true
+          },
+          "timestamp": "2025-09-11 23:21:51.455839+00:00",
+          "execution_time_ms": 0.0019073486328125,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "mifid_003",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Algorithmic trading controls compliant",
+          "details": {
+            "order_rate": 100,
+            "max_allowed_rate": 1000,
+            "circuit_breaker_triggered": false
+          },
+          "timestamp": "2025-09-11 23:21:51.455844+00:00",
+          "execution_time_ms": 0.0019073486328125,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "gdpr_001",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "DPIA requirement compliant",
+          "details": {
+            "data_processing_risk": 0.05,
+            "high_risk_threshold": 0.1,
+            "dpia_conducted": true
+          },
+          "timestamp": "2025-09-11 23:21:51.455849+00:00",
+          "execution_time_ms": 0.001430511474609375,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "gdpr_002",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Data minimization compliant",
+          "details": {
+            "data_retention_days": 1000,
+            "max_retention_days": 2555,
+            "purpose_limitation": true
+          },
+          "timestamp": "2025-09-11 23:21:51.455854+00:00",
+          "execution_time_ms": 0.0021457672119140625,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "gdpr_003",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Consent management compliant",
+          "details": {
+            "explicit_consent": true,
+            "withdrawal_right": true
+          },
+          "timestamp": "2025-09-11 23:21:51.455917+00:00",
+          "execution_time_ms": 0.0019073486328125,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "risk_001",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Position limits compliant: 1.00% <= 15.00%",
+          "details": {
+            "position_ratio": 0.01,
+            "max_allowed_ratio": 0.15,
+            "position_size": 10000.0,
+            "total_portfolio": 1000000.0
+          },
+          "timestamp": "2025-09-11 23:21:51.455927+00:00",
+          "execution_time_ms": 0.0059604644775390625,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "risk_002",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Liquidity risk compliant: 50.00% >= 30.00%",
+          "details": {
+            "liquidity_ratio": 0.5,
+            "min_required_ratio": 0.3,
+            "liquid_assets": 500000.0,
+            "total_portfolio": 1000000.0
+          },
+          "timestamp": "2025-09-11 23:21:51.455934+00:00",
+          "execution_time_ms": 0.003814697265625,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "risk_003",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Stress testing compliant: 15 days <= 30 days",
+          "details": {
+            "days_since_test": 15,
+            "required_frequency_days": 30,
+            "last_stress_test": "2025-08-27T23:21:51.455710+00:00"
+          },
+          "timestamp": "2025-09-11 23:21:51.455953+00:00",
+          "execution_time_ms": 0.015974044799804688,
+          "severity_score": 0.0
+        }
+      ],
+      "summary": {
+        "compliance_score": 100.0,
+        "average_execution_time_ms": 0.007530053456624349,
+        "critical_violations": 0,
+        "regulatory_coverage": 4
+      }
+    },
+    {
+      "report_id": "compliance_1757632911",
+      "timestamp": "2025-09-11 23:21:51.493561+00:00",
+      "overall_status": "ComplianceStatus.COMPLIANT",
+      "total_checks": 12,
+      "passed_checks": 12,
+      "failed_checks": 0,
+      "warning_checks": 0,
+      "checks": [
+        {
+          "rule_id": "fca_001",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Client money properly segregated: 100.00%",
+          "details": {
+            "segregated_ratio": 1.0,
+            "min_required_ratio": 1.0,
+            "client_money": 2000000.0,
+            "total_assets": 2000000.0
+          },
+          "timestamp": "2025-09-11 23:21:51.493483+00:00",
+          "execution_time_ms": 0.009059906005859375,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "fca_002",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Best execution achieved: slippage 0.0000 <= 0.0010",
+          "details": {
+            "slippage": 0.0,
+            "max_allowed_slippage": 0.001,
+            "execution_price": 150.0,
+            "market_price": 150.0
+          },
+          "timestamp": "2025-09-11 23:21:51.493493+00:00",
+          "execution_time_ms": 0.0045299530029296875,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "fca_003",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Position size within limits: 0.00% <= 10.00%",
+          "details": {
+            "position_ratio": 1e-05,
+            "max_allowed_ratio": 0.1,
+            "position_size": 10000.0,
+            "total_market_cap": 1000000000.0
+          },
+          "timestamp": "2025-09-11 23:21:51.493499+00:00",
+          "execution_time_ms": 0.0026226043701171875,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "mifid_001",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Transaction reporting compliant",
+          "details": {
+            "missing_fields": [],
+            "reporting_deadline": "2025-09-12T23:21:51.493438+00:00",
+            "transaction_data": {
+              "client_id": "CLIENT_001",
+              "instrument": "AAPL",
+              "quantity": 100,
+              "price": 150.0
+            }
+          },
+          "timestamp": "2025-09-11 23:21:51.493518+00:00",
+          "execution_time_ms": 0.016450881958007812,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "mifid_002",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Product governance compliant",
+          "details": {
+            "target_market_validation": true,
+            "risk_warning_provided": true
+          },
+          "timestamp": "2025-09-11 23:21:51.493522+00:00",
+          "execution_time_ms": 0.00095367431640625,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "mifid_003",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Algorithmic trading controls compliant",
+          "details": {
+            "order_rate": 100,
+            "max_allowed_rate": 1000,
+            "circuit_breaker_triggered": false
+          },
+          "timestamp": "2025-09-11 23:21:51.493526+00:00",
+          "execution_time_ms": 0.0011920928955078125,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "gdpr_001",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "DPIA requirement compliant",
+          "details": {
+            "data_processing_risk": 0.05,
+            "high_risk_threshold": 0.1,
+            "dpia_conducted": true
+          },
+          "timestamp": "2025-09-11 23:21:51.493529+00:00",
+          "execution_time_ms": 0.0007152557373046875,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "gdpr_002",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Data minimization compliant",
+          "details": {
+            "data_retention_days": 1000,
+            "max_retention_days": 2555,
+            "purpose_limitation": true
+          },
+          "timestamp": "2025-09-11 23:21:51.493532+00:00",
+          "execution_time_ms": 0.0011920928955078125,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "gdpr_003",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Consent management compliant",
+          "details": {
+            "explicit_consent": true,
+            "withdrawal_right": true
+          },
+          "timestamp": "2025-09-11 23:21:51.493535+00:00",
+          "execution_time_ms": 0.000476837158203125,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "risk_001",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Position limits compliant: 1.00% <= 15.00%",
+          "details": {
+            "position_ratio": 0.01,
+            "max_allowed_ratio": 0.15,
+            "position_size": 10000.0,
+            "total_portfolio": 1000000.0
+          },
+          "timestamp": "2025-09-11 23:21:51.493539+00:00",
+          "execution_time_ms": 0.00286102294921875,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "risk_002",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Liquidity risk compliant: 50.00% >= 30.00%",
+          "details": {
+            "liquidity_ratio": 0.5,
+            "min_required_ratio": 0.3,
+            "liquid_assets": 500000.0,
+            "total_portfolio": 1000000.0
+          },
+          "timestamp": "2025-09-11 23:21:51.493543+00:00",
+          "execution_time_ms": 0.0019073486328125,
+          "severity_score": 0.0
+        },
+        {
+          "rule_id": "risk_003",
+          "status": "ComplianceStatus.COMPLIANT",
+          "message": "Stress testing compliant: 15 days <= 30 days",
+          "details": {
+            "days_since_test": 15,
+            "required_frequency_days": 30,
+            "last_stress_test": "2025-08-27T23:21:51.493444+00:00"
+          },
+          "timestamp": "2025-09-11 23:21:51.493552+00:00",
+          "execution_time_ms": 0.0073909759521484375,
+          "severity_score": 0.0
+        }
+      ],
+      "summary": {
+        "compliance_score": 100.0,
+        "average_execution_time_ms": 0.004112720489501953,
+        "critical_violations": 0,
+        "regulatory_coverage": 4
+      }
     }
   ]
 }

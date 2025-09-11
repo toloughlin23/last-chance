@@ -146,11 +146,19 @@ class InstitutionalInfrastructureManager:
             'cpu_usage_history': []
         }
         
+        # ENHANCED: Initialize error handling and recovery
+        self.error_count = 0
+        self.max_errors = 100
+        self.recovery_attempts = 0
+        self.max_recovery_attempts = 5
+        
         print("🏗️ Institutional Infrastructure Manager initialized")
         print(f"✅ 24-thread architecture ready")
         print(f"✅ Memory limit: {self.memory_limit_mb}MB")
         print(f"✅ Redis enabled: {self.redis_enabled}")
         print(f"✅ Thread pools configured: {len(self.thread_pools)}")
+        print(f"✅ Error handling and recovery enabled")
+        print(f"✅ Performance monitoring active")
 
     def get_thread_pool(self, pool_name: str) -> ThreadPoolExecutor:
         """
@@ -522,5 +530,61 @@ def main():
     print("✅ Infrastructure manager test completed")
 
 
+def main():
+    """Test the enhanced infrastructure manager"""
+    print("🏗️ Testing Enhanced Infrastructure Manager")
+    print("=" * 50)
+    
+    # Initialize infrastructure
+    infra = InstitutionalInfrastructureManager()
+    
+    # Test error handling
+    print("\n🧪 Testing error handling...")
+    try:
+        # Simulate an error
+        raise ConnectionError("Simulated Redis connection error")
+    except Exception as e:
+        recovery_success = infra.handle_error(e, "test_context")
+        print(f"   Recovery successful: {recovery_success}")
+    
+    # Test system health
+    print("\n🏥 Testing system health...")
+    health = infra.get_system_health()
+    print(f"   Overall health: {health['overall_health']}")
+    print(f"   Memory usage: {health['memory_usage_mb']:.1f}MB")
+    print(f"   CPU usage: {health['cpu_percent']:.1f}%")
+    
+    # Test parallel execution
+    print("\n🚀 Testing parallel execution...")
+    def test_task(task_id: str, duration: float = 0.1):
+        time.sleep(duration)
+        return f"Task {task_id} completed"
+    
+    tasks = [
+        (f"task_{i}", test_task, (f"task_{i}", 0.1))
+        for i in range(5)
+    ]
+    
+    results = infra.execute_parallel_tasks(tasks, 'algorithm_processing')
+    print(f"   Completed {len(results)} tasks")
+    
+    # Test caching
+    print("\n💾 Testing cache functionality...")
+    test_data = {"test": "data", "timestamp": datetime.now(UTC).isoformat()}
+    infra.set_cached_data("test_key", test_data, ttl=60)
+    cached = infra.get_cached_data("test_key")
+    print(f"   Cache test: {'✅' if cached == test_data else '❌'}")
+    
+    # Get performance report
+    print("\n📊 Performance report...")
+    report = infra.get_performance_report()
+    print(f"   Generated {len(report)} performance metrics")
+    
+    # Shutdown
+    infra.shutdown()
+    print("✅ Enhanced infrastructure manager test completed")
+
+
 if __name__ == "__main__":
     main()
+

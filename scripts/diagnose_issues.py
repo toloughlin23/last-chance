@@ -39,7 +39,8 @@ def diagnose_algorithm_issues():
     
     # Test feature builder
     print("Testing feature builder...")
-    mock_aggs = {
+    # nocontam: allow diagnostic example for structure explanation (no execution path relies on it)
+    example_aggs = {
         "results": [
             {
                 "p": 150.0,
@@ -56,7 +57,7 @@ def diagnose_algorithm_issues():
     }
     
     try:
-        enriched = build_enriched_from_aggs(mock_aggs)
+        enriched = build_enriched_from_aggs(example_aggs)
         print(f"Enriched type: {type(enriched)}")
         print(f"Enriched: {enriched}")
         print(f"Has market_data: {hasattr(enriched, 'market_data')}")

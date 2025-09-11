@@ -84,10 +84,7 @@ class OptimizedInstitutionalLinUCB:
         self.correlation_analyzer = CrossAssetCorrelationAnalyzer()
         
         # ENHANCED: Personality system integration
-        try:
-            self.personality = AuthenticPersonalitySystem(PersonalityProfile())
-        except:
-            self.personality = None
+        self.personality = AuthenticPersonalitySystem()
         
         print("🔥 OPTIMIZED LinUCB initialized")
         print("✅ Enhanced features: 15")

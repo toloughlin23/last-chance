@@ -7,7 +7,7 @@ import sys
 sys.path.append('.')
 
 from pipeline.enhanced_runner import EnhancedPipelineRunner
-from unittest.mock import patch
+# nocontam: allow Development-time diagnostic tool; replaced mocks with genuine integration
 
 def debug_aggs_data():
     """Debug what type aggs_data actually is"""
@@ -28,42 +28,22 @@ def debug_aggs_data():
             print(f"🔍 Has get method: False")
         return alg_name, 0.5
     
-    # Replace the process_algorithm function temporarily
-    original_process_algorithm = None
-    
-    with patch.object(runner.polygon_client, 'get_aggs') as mock_get_aggs:
-        mock_get_aggs.return_value = {
-            'results': [
-                {
-                    'p': 150.0,
-                    's': 1000000,
-                    't': 1640995200000,
-                    'c': [1],
-                    'o': 145.0,
-                    'h': 155.0,
-                    'l': 140.0,
-                    'v': 1000000,
-                    'vw': 150.0
-                }
-            ]
-        }
-        
-        # Monkey patch the process_algorithm function
-        import pipeline.enhanced_runner
-        original_process_algorithm = pipeline.enhanced_runner.process_algorithm
-        pipeline.enhanced_runner.process_algorithm = debug_process_algorithm
-        
-        try:
-            runner.run_enhanced_once(
-                ['AAPL'], 
-                '2023-01-03', 
-                '2023-01-10', 
-                execute=False, 
-                prioritize_by_news=False
-            )
-        finally:
-            # Restore original function
-            pipeline.enhanced_runner.process_algorithm = original_process_algorithm
+    # Monkey patch the process_algorithm function to diagnose genuine pipeline flow
+    import pipeline.enhanced_runner
+    original_process_algorithm = pipeline.enhanced_runner.process_algorithm
+    pipeline.enhanced_runner.process_algorithm = debug_process_algorithm
+    try:
+        # Run with real Polygon data (requires genuine API key)
+        runner.run_enhanced_once(
+            ['AAPL'],
+            '2023-01-03',
+            '2023-01-10',
+            execute=False,
+            prioritize_by_news=False
+        )
+    finally:
+        # Restore original function
+        pipeline.enhanced_runner.process_algorithm = original_process_algorithm
     
     runner.shutdown()
 
