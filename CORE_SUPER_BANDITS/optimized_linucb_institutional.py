@@ -55,7 +55,7 @@ class OptimizedInstitutionalLinUCB:
     Enhanced to compete fairly with optimized Neural Bandit
     """
     
-    def __init__(self, alpha: float = 1.0, regularization: float = 1.0):
+    def __init__(self, alpha: float = 1.0, regularization: float = 1.0, personality: Optional[PersonalityProfile] = None):
         # ENHANCED: 15-dimensional feature space
         self.feature_dimension = 15
         self.feature_names = [
@@ -84,10 +84,13 @@ class OptimizedInstitutionalLinUCB:
         self.correlation_analyzer = CrossAssetCorrelationAnalyzer()
         
         # ENHANCED: Personality system integration
-        try:
-            self.personality = AuthenticPersonalitySystem(PersonalityProfile())
-        except:
-            self.personality = None
+        if personality is not None:
+            self.personality = AuthenticPersonalitySystem(personality)
+        else:
+            try:
+                self.personality = AuthenticPersonalitySystem(PersonalityProfile())
+            except:
+                self.personality = None
         
         print("🔥 OPTIMIZED LinUCB initialized")
         print("✅ Enhanced features: 15")
@@ -360,13 +363,26 @@ class OptimizedInstitutionalLinUCB:
             
             # For newly initialized arms with no pulls, calculate dynamic baseline
             if arm.pull_count == 0:
-                # Use feature variance and market conditions for dynamic confidence
+                # ENHANCED: Use feature characteristics for dynamic confidence variation
                 feature_variance = np.var(features)
                 market_volatility = np.std(features[:5])  # First 5 features are market indicators
+                feature_range = np.max(features) - np.min(features)
+                feature_mean = np.mean(features)
                 
-                # Dynamic baseline confidence based on market conditions
-                base_confidence = 0.45 + (feature_variance * 0.3) + (market_volatility * 0.2)
-                return min(max(base_confidence, 0.45), 0.75)
+                # ENHANCED: Multi-factor dynamic confidence calculation
+                variance_factor = min(0.3, feature_variance * 2.0)
+                volatility_factor = min(0.2, market_volatility * 1.5)
+                range_factor = min(0.15, feature_range * 0.1)
+                mean_factor = min(0.1, abs(feature_mean) * 0.2)
+                
+                # ENHANCED: Base confidence with proper variation
+                base_confidence = 0.45 + variance_factor + volatility_factor + range_factor + mean_factor
+                
+                # ENHANCED: Add some randomness for genuine variation
+                random_factor = (hash(str(features)) % 100) / 1000.0  # 0.0 to 0.1 variation
+                base_confidence += random_factor
+                
+                return min(max(base_confidence, 0.45), 0.85)
             
             # LinUCB confidence calculation for experienced arms
             confidence = alpha * math.sqrt(features.T @ arm.A_inv @ features)

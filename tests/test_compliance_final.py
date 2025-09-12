@@ -85,11 +85,10 @@ def test_compliance_system_final():
     # Verify success
     if report.overall_status.value == "compliant" and report.summary['compliance_score'] >= 95:
         print("\n✅ Compliance system test PASSED - All checks compliant!")
-        return True
+        assert True, "Compliance system working correctly"
     else:
         print(f"\n❌ Compliance system test FAILED - Score: {report.summary['compliance_score']:.1f}%")
-        return False
+        assert False, f"Compliance score {report.summary['compliance_score']:.1f}% below threshold 95%"
 
 if __name__ == "__main__":
-    success = test_compliance_system_final()
-    exit(0 if success else 1)
+    test_compliance_system_final()

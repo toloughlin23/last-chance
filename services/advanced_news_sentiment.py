@@ -73,6 +73,18 @@ class AdvancedNewsSentimentAnalysis:
         self.sources = []
         self.news_sources = []  # For compatibility
         
+        # ENHANCED: Initialize all news sources with proper fallback
+        self._initialize_news_sources()
+        
+        print(f"✅ News sources configured: {len(self.sources)} sources")
+        if self.sources:
+            source_names = [source.name for source in self.sources]
+            print(f"   Sources: {source_names}")
+        else:
+            print("   ⚠️ No news sources configured - check API keys")
+    
+    def _initialize_news_sources(self):
+        """Initialize all available news sources with enhanced validation"""
         # Initialize Polygon news source
         polygon_key = os.getenv("POLYGON_API_KEY")
         if polygon_key:
@@ -353,11 +365,11 @@ class AdvancedNewsSentimentAnalysis:
         
         return min(1.0, impact_score / total_articles)
 
-    def _aggregate_multi_source_sentiment(self, source_results: List[Tuple[str, List[Dict[str, Any]]]]) -> SentimentResult:
+    def _aggregate_multi_source_sentiment(self, source_results: List[Tuple[str, List[Dict[str, Any]]]], symbol: str = "UNKNOWN") -> SentimentResult:
         """
         ENHANCED: Aggregate sentiment from multiple sources with advanced confidence weighting
         """
-        symbol = source_results[0][0] if source_results else "UNKNOWN"
+        # ENHANCED: Use the actual symbol parameter instead of extracting from source_results
         all_articles = []
         source_weights = []
         source_confidences = []
@@ -537,7 +549,7 @@ class AdvancedNewsSentimentAnalysis:
                     source_results.append((source_name, []))
         
         # ENHANCED: Aggregate results with improved error handling
-        result = self._aggregate_multi_source_sentiment(source_results)
+        result = self._aggregate_multi_source_sentiment(source_results, symbol)
         
         # ENHANCED: Cache the result for real-time efficiency
         if use_cache:
@@ -606,7 +618,14 @@ class AdvancedNewsSentimentAnalysis:
 
     def save_sentiment_analysis(self, results: Dict[str, SentimentResult], filepath: str):
         """Save sentiment analysis results to file"""
-        os.makedirs(os.path.dirname(filepath), exist_ok=True)
+        # ENHANCED: Handle empty filepath and ensure directory exists
+        if not filepath:
+            filepath = "sentiment_analysis_results.json"
+        
+        # Ensure directory exists
+        directory = os.path.dirname(filepath)
+        if directory:
+            os.makedirs(directory, exist_ok=True)
         
         serializable_results = {}
         for symbol, result in results.items():
