@@ -41,7 +41,7 @@ def setup_environment():
         "ALPACA_SECRET_KEY": "demo_key_for_testing",
         
         # Infrastructure
-        "REDIS_HOST": "127.0.0.1",
+        "REDIS_HOST": "172.29.18.70",
         "REDIS_PORT": "6379",
         "REDIS_PASSWORD": "",
         

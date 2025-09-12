@@ -113,7 +113,9 @@ class InstitutionalInfrastructureManager:
                     db=int(os.getenv('REDIS_DB', 0)),
                     decode_responses=True,
                     socket_connect_timeout=5,
-                    socket_timeout=5
+                    socket_timeout=5,
+                    retry_on_timeout=True,
+                    health_check_interval=30
                 )
                 # Test connection
                 self.redis_client.ping()
