@@ -54,10 +54,6 @@ def run_once_min(symbols: List[str], days: int = 7, log_path: str = "pipeline_mi
                 first_close = float(results[0].get("c", 0.0))
                 last_close = float(results[-1].get("c", 0.0))
                 pct = ((last_close - first_close) / first_close) if first_close > 0 else 0.0
-<chore/ci-smoke-pr
-=======
-<chore/min-pipeline-iso
-> main
                 # Convert Polygon epoch-ms timestamps to ISO-8601 UTC
                 try:
                     t_start = results[0].get("t")
@@ -71,13 +67,6 @@ def run_once_min(symbols: List[str], days: int = 7, log_path: str = "pipeline_mi
                     end_iso = datetime.fromtimestamp(ts_ms_end / 1000.0, tz=UTC).isoformat() if ts_ms_end is not None else ""
                 except Exception:
                     end_iso = ""
-< chore/ci-smoke-pr
-=======
-                    
-                start_iso = results[0].get("t")
-                end_iso = results[-1].get("t")
-> main
-> main
             else:
                 first_close = 0.0
                 last_close = 0.0

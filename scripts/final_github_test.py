@@ -74,7 +74,8 @@ def test_github_integration():
     
     passed = sum(tests)
     failed = len(tests) - passed
-    return passed, failed
+    assert passed > 0, f"GitHub integration tests failed: {failed} failures"
+    assert failed == 0, f"GitHub integration tests failed: {failed} failures"
 
 def test_core_imports():
     """Test core module imports"""
@@ -110,7 +111,8 @@ def test_core_imports():
             print(f"  ❌ {description} - {e}")
             failed += 1
     
-    return passed, failed
+    assert passed > 0, f"GitHub integration tests failed: {failed} failures"
+    assert failed == 0, f"GitHub integration tests failed: {failed} failures"
 
 def test_algorithm_initialization():
     """Test algorithm initialization"""
@@ -150,7 +152,8 @@ def test_algorithm_initialization():
     
     passed = sum(tests)
     failed = len(tests) - passed
-    return passed, failed
+    assert passed > 0, f"GitHub integration tests failed: {failed} failures"
+    assert failed == 0, f"GitHub integration tests failed: {failed} failures"
 
 def test_services_initialization():
     """Test services initialization"""
@@ -200,7 +203,8 @@ def test_services_initialization():
     
     passed = sum(tests)
     failed = len(tests) - passed
-    return passed, failed
+    assert passed > 0, f"GitHub integration tests failed: {failed} failures"
+    assert failed == 0, f"GitHub integration tests failed: {failed} failures"
 
 def test_pipeline_components():
     """Test pipeline components"""
@@ -239,7 +243,8 @@ def test_pipeline_components():
     
     passed = sum(tests)
     failed = len(tests) - passed
-    return passed, failed
+    assert passed > 0, f"GitHub integration tests failed: {failed} failures"
+    assert failed == 0, f"GitHub integration tests failed: {failed} failures"
 
 def main():
     """Run final GitHub test"""
@@ -305,7 +310,7 @@ def main():
     else:
         print(f"⚠️  {total_failed} TESTS FAILED - Review and fix")
     
-    return 0 if total_failed == 0 else 1
+    assert total_failed == 0, f"Total failures: {total_failed}"
 
 if __name__ == "__main__":
     sys.exit(main())

@@ -164,8 +164,8 @@ class AdvancedNewsSentimentAnalysis:
             },
             'negative': {
                 'strong': [
-                    r'\b(miss|crash|plunge|collapse|tank|dive|slump|crash|disaster)\b',
-                    r'\b(downgrade|cut|reduce|decrease|decline|fall|drop|sink)\b',
+                    r'\b(miss|misses|crash|plunge|collapse|tank|dive|slump|disaster)\b',
+                    r'\b(downgrade|cut|cuts|reduce|decrease|decline|fall|drop|sink)\b',
                     r'\b(lawsuit|probe|investigation|scandal|fraud|violation)\b',
                     r'\b(guidance cut|outlook negative|bearish|pessimistic)\b'
                 ],

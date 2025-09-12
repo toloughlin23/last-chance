@@ -15,6 +15,9 @@ class _Market:
         self.price_momentum = pm
         self.volatility = vol
         self.volume_ratio = vr
+        self.price = 100.0
+        self.high = 105.0
+        self.low = 95.0
 
 
 class _Enriched:
