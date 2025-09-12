@@ -20,14 +20,14 @@ class DeepGenuineVerifier:
         self.project_root = project_root
         # Align with NO_MOCKS_POLICY and guardrails banned patterns
         self.contamination_patterns = [
-            "mock data",               # phrase only
-            "fake data",               # phrase only
-            "placeholder",             # tokens/markers
-            "REPLACE_ME",
-            "CHANGEME",
-            "YOUR_API_KEY",
-            "example.com/api",
-            "stubbed"
+            "mock data",               # phrase only  # nocontam: allow
+            "fake data",               # phrase only  # nocontam: allow
+            "placeholder",             # tokens/markers  # nocontam: allow
+            "REPLACE_ME",  # nocontam: allow
+            "CHANGEME",  # nocontam: allow
+            "YOUR_API_KEY",  # nocontam: allow
+            "example.com/api",  # nocontam: allow
+            "stubbed"  # nocontam: allow
         ]
         self.results = {}
         
@@ -72,7 +72,7 @@ class DeepGenuineVerifier:
                                 
                                 # Skip if it's in a comment explaining NO FAKE/NO MOCK
                                 if any(phrase in line_lower for phrase in [
-                                    "no fake", "no mock", "no placeholder", "no dummy",
+                                    "no fake", "no mock", "no placeholder", "no dummy",  # nocontam: allow
                                     "genuine", "real", "authentic", "institutional"
                                 ]):
                                     continue
