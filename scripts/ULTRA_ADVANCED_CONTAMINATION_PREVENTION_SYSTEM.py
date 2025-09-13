@@ -196,7 +196,7 @@ class UltraAdvancedContaminationDetector:
             'mock_classes': ['Mock', 'MagicMock', 'patch'],
             'test_functions': ['test_', 'mock_', 'fake_'],
             'random_calls': ['random', 'randint', 'uniform', 'choice'],
-            'placeholder_returns': ['None', '0', '0.5', 'True', 'False']
+            'placeholder_returns': ['None', '0', '0.5', 'True', 'False']  # nocontam: allow - diagnostic patterns for contamination detection
         }
         
         # Machine learning pattern recognition
