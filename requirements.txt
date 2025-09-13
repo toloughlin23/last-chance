@@ -9,3 +9,6 @@ lxml
 # redis - removed, using in-memory caching
 psutil
 hypothesis
+pytest-cov
+mypy
+ruff

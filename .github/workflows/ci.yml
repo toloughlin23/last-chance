@@ -10,6 +10,9 @@ on:
 jobs:
   verify:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [ '3.10', '3.11' ]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -17,12 +20,22 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: ${{ matrix.python-version }}
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+
+      - name: Type check (mypy)
+        run: |
+          mypy --version
+          mypy services CORE_SUPER_BANDITS pipeline utils tests --ignore-missing-imports --explicit-package-bases --pretty --show-error-codes
+
+      - name: Lint (ruff)
+        run: |
+          ruff --version
+          ruff check . --select F,E,I --quiet
 
       - name: Run contamination scanner
         run: |
@@ -32,7 +45,7 @@ jobs:
         run: |
           python scripts/deep_genuine_verification.py
 
-      - name: Run tests
+      - name: Run tests (with coverage)
         env:
           POLYGON_API_KEY: ${{ secrets.POLYGON_API_KEY }}
           ALPACA_API_KEY: ${{ secrets.ALPACA_API_KEY }}
@@ -40,7 +53,7 @@ jobs:
           REDIS_HOST: localhost
           PYTEST_DISABLE_PLUGIN_AUTOLOAD: '1'
         run: |
-          pytest -q --tb=short
+          pytest -q --tb=short --cov=. --cov-report=term-missing --cov-fail-under=70
 
       - name: Run GitHub Integration Test
         run: |
