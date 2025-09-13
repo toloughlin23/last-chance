@@ -59,15 +59,24 @@ def test_github_integration():
         print(f"  ❌ Git status test failed: {e}")
         tests.append(False)
     
-    # Test Git branch
+    # Test Git branch (support detached HEAD in CI)
     try:
         result = subprocess.run(["git", "branch", "--show-current"], capture_output=True, text=True, timeout=10)
-        if result.returncode == 0 and result.stdout.strip():
-            print(f"  ✅ Current branch: {result.stdout.strip()}")
-            tests.append(True)
+        branch = result.stdout.strip() if result.returncode == 0 else ""
+        if not branch:
+            # In pull_request runs GitHub checks out a detached HEAD; use CI env vars or commit SHA
+            branch = os.getenv("GITHUB_HEAD_REF") or os.getenv("GITHUB_REF", "").replace("refs/heads/", "")
+        if not branch:
+            sha = subprocess.run(["git", "rev-parse", "--short", "HEAD"], capture_output=True, text=True, timeout=10)
+            if sha.returncode == 0 and sha.stdout.strip():
+                print(f"  ✅ Detached HEAD detected @ {sha.stdout.strip()} (CI)\n")
+                tests.append(True)
+            else:
+                print("  ❌ Git branch detection failed")
+                tests.append(False)
         else:
-            print("  ❌ Git branch detection failed")
-            tests.append(False)
+            print(f"  ✅ Current branch: {branch}")
+            tests.append(True)
     except Exception as e:
         print(f"  ❌ Git branch test failed: {e}")
         tests.append(False)
