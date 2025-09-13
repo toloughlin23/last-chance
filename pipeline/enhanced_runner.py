@@ -4,7 +4,7 @@
 ==========================
 100% GENUINE - NO SHORTCUTS - ALWAYS MAKE BETTER
 
-24-thread institutional-grade pipeline with Redis caching
+24-thread institutional-grade pipeline with high-performance in-memory caching
 - Enhanced parallel processing
 - Real-time data caching
 - Resource monitoring
@@ -39,7 +39,7 @@ class EnhancedPipelineRunner:
     """
     🚀 ENHANCED PIPELINE RUNNER
     ==========================
-    24-thread institutional-grade pipeline with Redis caching
+    24-thread institutional-grade pipeline with high-performance in-memory caching
     """
     
     def __init__(self):
@@ -65,7 +65,7 @@ class EnhancedPipelineRunner:
         
         print("🚀 Enhanced Pipeline Runner initialized")
         print("✅ 24-thread infrastructure active")
-        print("✅ Redis caching enabled")
+        print("✅ High-performance in-memory caching enabled")
         print("✅ Resource monitoring active")
 
     def _chunk(self, items: List[str], size: int) -> List[List[str]]:

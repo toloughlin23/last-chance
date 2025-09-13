@@ -4,7 +4,7 @@
 ======================================
 100% GENUINE - NO SHORTCUTS - ALWAYS MAKE BETTER
 
-24-thread parallel processing architecture with 3GB Redis allocation
+24-thread parallel processing architecture with 3GB memory allocation
 - Production-grade memory management
 - Real-time data caching system
 - Resource monitoring and optimization
@@ -27,13 +27,7 @@ from threading import Lock, Event
 import json
 import logging
 
-# Redis imports (will be installed if needed)
-try:
-    import redis
-    REDIS_AVAILABLE = True
-except ImportError:
-    REDIS_AVAILABLE = False
-    print("⚠️ Redis not available - using in-memory cache fallback")
+# High-performance in-memory caching (Redis-free architecture)
 
 from utils.env_loader import load_env_from_known_locations
 
@@ -63,15 +57,15 @@ class InstitutionalInfrastructureManager:
     """
     🏗️ INSTITUTIONAL INFRASTRUCTURE MANAGER
     ======================================
-    24-thread parallel processing with 3GB Redis allocation
+    24-thread parallel processing with 3GB memory allocation
     """
     
-    def __init__(self, redis_enabled: bool = True):
+    def __init__(self, redis_enabled: bool = False):
         load_env_from_known_locations()
         
         # ENHANCED: 24-thread architecture configuration
         self.total_threads = 24
-        self.redis_enabled = redis_enabled and REDIS_AVAILABLE
+        self.redis_enabled = False  # Always use in-memory caching
         self.memory_limit_mb = 3072  # 3GB
         self.cache_ttl = 300  # 5 minutes
         
@@ -103,26 +97,10 @@ class InstitutionalInfrastructureManager:
             )
         }
         
-        # ENHANCED: Initialize Redis connection
+        # ENHANCED: Redis-free architecture - using only in-memory caching
         self.redis_client = None
-        if self.redis_enabled:
-            try:
-                self.redis_client = redis.Redis(
-                    host=os.getenv('REDIS_HOST', 'localhost'),
-                    port=int(os.getenv('REDIS_PORT', 6379)),
-                    db=int(os.getenv('REDIS_DB', 0)),
-                    decode_responses=True,
-                    socket_connect_timeout=5,
-                    socket_timeout=5,
-                    health_check_interval=30
-                )
-                # Test connection
-                self.redis_client.ping()
-                print("✅ Redis connection established")
-            except Exception as e:
-                print(f"⚠️ Redis connection failed: {e}")
-                self.redis_enabled = False
-                self.redis_client = None
+        self.redis_enabled = False
+        print("✅ Redis-free architecture: Using high-performance in-memory caching")
         
         # ENHANCED: Fallback in-memory cache
         self.memory_cache = {}
@@ -156,7 +134,7 @@ class InstitutionalInfrastructureManager:
         print("🏗️ Institutional Infrastructure Manager initialized")
         print(f"✅ 24-thread architecture ready")
         print(f"✅ Memory limit: {self.memory_limit_mb}MB")
-        print(f"✅ Redis enabled: {self.redis_enabled}")
+        print(f"✅ In-memory caching enabled: {not self.redis_enabled}")
         print(f"✅ Thread pools configured: {len(self.thread_pools)}")
         print(f"✅ Error handling and recovery enabled")
         print(f"✅ Performance monitoring active")
@@ -181,21 +159,12 @@ class InstitutionalInfrastructureManager:
 
     def cache_data(self, key: str, data: Any, ttl: Optional[int] = None) -> bool:
         """
-        ENHANCED: Cache data with Redis or memory fallback
+        ENHANCED: Cache data with high-performance in-memory storage
         """
         ttl = ttl or self.cache_ttl
         serialized_data = json.dumps(data, default=str)
         
-        if self.redis_enabled and self.redis_client:
-            try:
-                self.redis_client.setex(key, ttl, serialized_data)
-                return True
-            except Exception as e:
-                print(f"⚠️ Redis cache failed: {e}")
-                # Fallback to memory cache
-                pass
-        
-        # Memory cache fallback
+        # High-performance in-memory caching
         with self.cache_lock:
             self.memory_cache[key] = {
                 'data': serialized_data,
@@ -207,21 +176,7 @@ class InstitutionalInfrastructureManager:
         """
         ENHANCED: Retrieve cached data with automatic expiration
         """
-        if self.redis_enabled and self.redis_client:
-            try:
-                data = self.redis_client.get(key)
-                if data:
-                    self.performance_metrics['cache_hits'] += 1
-                    return json.loads(data)
-                else:
-                    self.performance_metrics['cache_misses'] += 1
-                    return None
-            except Exception as e:
-                print(f"⚠️ Redis cache retrieval failed: {e}")
-                # Fallback to memory cache
-                pass
-        
-        # Memory cache fallback
+        # High-performance in-memory cache
         with self.cache_lock:
             if key in self.memory_cache:
                 entry = self.memory_cache[key]
@@ -383,13 +338,6 @@ class InstitutionalInfrastructureManager:
         """
         ENHANCED: Clear all caches
         """
-        if self.redis_enabled and self.redis_client:
-            try:
-                self.redis_client.flushdb()
-                print("✅ Redis cache cleared")
-            except Exception as e:
-                print(f"⚠️ Redis cache clear failed: {e}")
-        
         with self.cache_lock:
             self.memory_cache.clear()
             print("✅ Memory cache cleared")
@@ -408,9 +356,9 @@ class InstitutionalInfrastructureManager:
             print(f"   Shutting down {pool_name} pool...")
             pool.shutdown(wait=True)
         
-        # Close Redis connection
-        if self.redis_client:
-            self.redis_client.close()
+        # Clean up memory cache
+        with self.cache_lock:
+            self.memory_cache.clear()
         
         print("✅ Infrastructure manager shutdown complete")
 
@@ -439,9 +387,10 @@ class InstitutionalInfrastructureManager:
                 }
                 for name, config in self.thread_pools.items()
             },
-            'redis_status': {
-                'enabled': self.redis_enabled,
-                'connected': self.redis_client is not None
+            'cache_status': {
+                'type': 'in-memory',
+                'enabled': True,
+                'entries': len(self.memory_cache)
             }
         }
 

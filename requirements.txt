@@ -6,5 +6,5 @@ pandas
 pytz
 beautifulsoup4
 lxml
-redis
+# redis - removed, using in-memory caching
 psutil

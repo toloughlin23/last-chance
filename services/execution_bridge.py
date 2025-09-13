@@ -136,7 +136,7 @@ class UltraInstitutionalExecutionBridge:
         self.alpaca_client = AlpacaClient()
         
         # ENHANCED: Initialize infrastructure manager
-        self.infra = InstitutionalInfrastructureManager(redis_enabled=True)
+        self.infra = InstitutionalInfrastructureManager(redis_enabled=False)
         
         # ENHANCED: Initialize compliance system
         self.compliance = UKROIComplianceSystem()
