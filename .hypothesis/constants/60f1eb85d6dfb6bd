@@ -1,0 +1,4 @@
+# file: C:\Users\tolou\last chance\services\alpaca_client.py
+# hypothesis_version: 6.138.15
+
+['ALPACA_API_KEY', 'ALPACA_SECRET_KEY', 'APCA-API-KEY-ID', 'APCA-API-SECRET-KEY', 'Content-Type', 'application/json', 'day', 'limit', 'limit_price', 'market', 'qty', 'side', 'status', 'stop_price', 'symbol', 'time_in_force', 'type']
