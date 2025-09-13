@@ -76,6 +76,7 @@ def test_github_integration():
     failed = len(tests) - passed
     assert passed > 0, f"GitHub integration tests failed: {failed} failures"
     assert failed == 0, f"GitHub integration tests failed: {failed} failures"
+    return passed, failed
 
 def test_core_imports():
     """Test core module imports"""
@@ -113,6 +114,7 @@ def test_core_imports():
     
     assert passed > 0, f"GitHub integration tests failed: {failed} failures"
     assert failed == 0, f"GitHub integration tests failed: {failed} failures"
+    return passed, failed
 
 def test_algorithm_initialization():
     """Test algorithm initialization"""
@@ -154,6 +156,7 @@ def test_algorithm_initialization():
     failed = len(tests) - passed
     assert passed > 0, f"GitHub integration tests failed: {failed} failures"
     assert failed == 0, f"GitHub integration tests failed: {failed} failures"
+    return passed, failed
 
 def test_services_initialization():
     """Test services initialization"""
@@ -205,6 +208,7 @@ def test_services_initialization():
     failed = len(tests) - passed
     assert passed > 0, f"GitHub integration tests failed: {failed} failures"
     assert failed == 0, f"GitHub integration tests failed: {failed} failures"
+    return passed, failed
 
 def test_pipeline_components():
     """Test pipeline components"""
@@ -245,6 +249,7 @@ def test_pipeline_components():
     failed = len(tests) - passed
     assert passed > 0, f"GitHub integration tests failed: {failed} failures"
     assert failed == 0, f"GitHub integration tests failed: {failed} failures"
+    return passed, failed
 
 def main():
     """Run final GitHub test"""
