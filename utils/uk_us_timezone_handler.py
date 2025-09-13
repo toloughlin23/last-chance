@@ -128,16 +128,18 @@ class UKUSTimezoneHandler:
         Returns: (market_open_uk, market_close_uk)
         """
         if date is None:
-            date = self.get_uk_time().date()
+            date_only = self.get_uk_time().date()
         elif hasattr(date, 'date'):
-            date = date.date()
+            date_only = date.date()  # type: ignore[union-attr]
+        else:
+            date_only = date
         
         # Create US market hours for the date
         market_open_us = self.us_market_tz.localize(
-            datetime.combine(date, datetime.min.time().replace(hour=9, minute=30))
+            datetime.combine(date_only, datetime.min.time().replace(hour=9, minute=30))
         )
         market_close_us = self.us_market_tz.localize(
-            datetime.combine(date, datetime.min.time().replace(hour=16, minute=0))
+            datetime.combine(date_only, datetime.min.time().replace(hour=16, minute=0))
         )
         
         # Convert to UK time

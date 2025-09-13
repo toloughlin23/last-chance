@@ -1,7 +1,7 @@
 import os
 import time
 import pytest
-import requests
+import requests  # type: ignore[import-untyped]
 
 from utils.env_loader import load_env_from_known_locations
 

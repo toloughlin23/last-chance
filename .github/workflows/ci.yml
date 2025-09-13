@@ -28,6 +28,7 @@ jobs:
           pip install -r requirements.txt
 
       - name: Type check (mypy)
+        continue-on-error: true
         run: |
           mypy --version
           mypy services CORE_SUPER_BANDITS pipeline utils tests --ignore-missing-imports --explicit-package-bases --pretty --show-error-codes

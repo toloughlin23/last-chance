@@ -15,7 +15,7 @@ import os
 import csv
 import time
 from datetime import datetime, UTC, date, timedelta
-from typing import List, Dict, Any, Tuple
+from typing import List, Dict, Any, Tuple, Optional
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from services.infrastructure_manager import InstitutionalInfrastructureManager
@@ -349,7 +349,7 @@ class EnhancedPipelineRunner:
 
     def run_enhanced_loop(self, symbols: List[str], lookback_days: int, interval_seconds: int,
                         execute: bool = False, log_path: str = "enhanced_pipeline_log.csv",
-                        iterations: int = None, market_hours_only: bool = False,
+                        iterations: Optional[int] = None, market_hours_only: bool = False,
                         batch_size: int = 0, max_retries: int = 2, retry_backoff: float = 0.5,
                         prioritize_by_news: bool = False, news_booster_enabled: bool = False,
                         strategy_profile: str = "mean_reversion") -> None:

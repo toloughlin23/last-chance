@@ -103,7 +103,7 @@ class InstitutionalInfrastructureManager:
         print("✅ Redis-free architecture: Using high-performance in-memory caching")
         
         # ENHANCED: Fallback in-memory cache
-        self.memory_cache = {}
+        self.memory_cache: Dict[str, Dict[str, Any]] = {}
         self.cache_lock = Lock()
         
         # ENHANCED: Resource monitoring
@@ -112,11 +112,11 @@ class InstitutionalInfrastructureManager:
         self.monitoring_thread = None
         
         # ENHANCED: Thread pool managers
-        self.active_pools = {}
+        self.active_pools: Dict[str, ThreadPoolExecutor] = {}
         self.pool_locks = {name: Lock() for name in self.thread_pools.keys()}
         
         # ENHANCED: Performance metrics
-        self.performance_metrics = {
+        self.performance_metrics: Dict[str, Any] = {
             'total_tasks_completed': 0,
             'cache_hits': 0,
             'cache_misses': 0,

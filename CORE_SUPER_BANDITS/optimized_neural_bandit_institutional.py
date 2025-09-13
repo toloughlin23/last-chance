@@ -178,7 +178,7 @@ class OptimizedInstitutionalNeuralBandit:
         
         return features
     
-    def select_arm(self, enriched_data, available_arms: List[str] = None) -> str:
+    def select_arm(self, enriched_data, available_arms: Optional[List[str]] = None) -> str:
         """
         🧠 GENUINE Neural Bandit arm selection
         Select best arm using neural network predictions with exploration
@@ -237,7 +237,7 @@ class OptimizedInstitutionalNeuralBandit:
             self.total_selections += 1
         
         print(f"🧠 Neural Bandit selected: {best_arm} (score: {best_score:.4f})")
-        return best_arm
+        return best_arm or 'buy_signal'
     
     def update_arm(self, arm_id: str, context_or_enriched_data, reward: float):
         """

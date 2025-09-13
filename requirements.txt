@@ -12,3 +12,5 @@ hypothesis
 pytest-cov
 mypy
 ruff
+types-requests
+types-pytz
