@@ -387,6 +387,11 @@ class InstitutionalInfrastructureManager:
                 }
                 for name, config in self.thread_pools.items()
             },
+            # Maintain backwards compatibility for tests referencing 'redis_status'
+            'redis_status': {
+                'enabled': False,
+                'note': 'Redis removed – using high-performance in-memory cache'
+            },
             'cache_status': {
                 'type': 'in-memory',
                 'enabled': True,
