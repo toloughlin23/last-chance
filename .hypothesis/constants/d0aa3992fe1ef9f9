@@ -1,4 +1,0 @@
-# file: C:\Users\tolou\last chance\services\news_client.py
-# hypothesis_version: 6.138.15
-
-['POLYGON_API_KEY', 'apiKey', 'desc', 'limit', 'order', 'published_utc.gte', 'results', 'ticker']

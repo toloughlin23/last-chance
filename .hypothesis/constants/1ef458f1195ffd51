@@ -1,4 +1,0 @@
-# file: C:\Users\tolou\last chance\CORE_SUPER_BANDITS\optimized_neural_bandit_institutional.py
-# hypothesis_version: 6.138.15
-
-[-0.02, 0.0, 0.01, 0.02, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.71, 0.85, 0.95, 1.0, 1.8, 2.0, 3.0, 5.0, 25.0, -500, 500, 'arm_id', 'average_reward', 'biases', 'buy_signal', 'confidence', 'error', 'exists', 'hold_signal', 'inf', 'last_features', 'last_prediction', 'last_updated', 'learning_rate', 'network_layers', 'price_momentum', 'selections', 'sell_signal', 'sentiment_analysis', 'total_reward', 'volatility', 'volume_ratio', 'weights']
