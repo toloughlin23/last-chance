@@ -18,6 +18,8 @@ class MarketData:
     volume_ratio: float
     price: float = 0.0
     volume: float = 0.0
+    high: float = 0.0
+    low: float = 0.0
 
 
 @dataclass
@@ -114,6 +116,17 @@ def build_enriched_from_aggs(aggs: Dict[str, Any]) -> EnrichedData:
     last_price_raw = last.get("c", last.get("o", 0.0))
     last_price = float(last_price_raw[0] if isinstance(last_price_raw, list) and last_price_raw else last_price_raw)
     last_volume = float(last.get("v", 0.0))
+    
+    # Extract OHLC data from last bar
+    last_open_raw = last.get("o", last_price)
+    last_high_raw = last.get("h", last_price)
+    last_low_raw = last.get("l", last_price)
+    last_close_raw = last.get("c", last_price)
+    
+    last_open = float(last_open_raw[0] if isinstance(last_open_raw, list) and last_open_raw else last_open_raw)
+    last_high = float(last_high_raw[0] if isinstance(last_high_raw, list) and last_high_raw else last_high_raw)
+    last_low = float(last_low_raw[0] if isinstance(last_low_raw, list) and last_low_raw else last_low_raw)
+    last_close = float(last_close_raw[0] if isinstance(last_close_raw, list) and last_close_raw else last_close_raw)
 
     return EnrichedData(
         sentiment_analysis=SentimentData(
@@ -128,6 +141,8 @@ def build_enriched_from_aggs(aggs: Dict[str, Any]) -> EnrichedData:
             volume_ratio=volume_ratio,
             price=last_price,
             volume=last_volume,
+            high=last_high,
+            low=last_low,
         ),
         data_quality_score=dq,
     )

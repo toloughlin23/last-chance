@@ -15,7 +15,7 @@ Purpose: Eliminate recurring timezone issues permanently
 
 import pandas as pd
 from datetime import datetime, timedelta
-import pytz
+import pytz  # type: ignore[import-untyped]
 from typing import Union, Optional
 import logging
 
@@ -60,21 +60,23 @@ class UKUSTimezoneHandler:
         """Convert UK time to US market time"""
         if isinstance(uk_time, str):
             uk_time = pd.to_datetime(uk_time)
-        
-        if uk_time.tzinfo is None:
-            uk_time = self.uk_tz.localize(uk_time)
-        
-        return uk_time.astimezone(self.us_market_tz)
+        from typing import cast
+        dt = uk_time.to_pydatetime() if hasattr(uk_time, 'to_pydatetime') else uk_time
+        dt = cast(datetime, dt)
+        if isinstance(dt, datetime) and dt.tzinfo is None:
+            dt = self.uk_tz.localize(dt)
+        return dt.astimezone(self.us_market_tz)
     
     def us_market_to_uk(self, us_time: Union[datetime, str]) -> datetime:
         """Convert US market time to UK time"""
         if isinstance(us_time, str):
             us_time = pd.to_datetime(us_time)
-        
-        if us_time.tzinfo is None:
-            us_time = self.us_market_tz.localize(us_time)
-        
-        return us_time.astimezone(self.uk_tz)
+        from typing import cast
+        dt = us_time.to_pydatetime() if hasattr(us_time, 'to_pydatetime') else us_time
+        dt = cast(datetime, dt)
+        if isinstance(dt, datetime) and dt.tzinfo is None:
+            dt = self.us_market_tz.localize(dt)
+        return dt.astimezone(self.uk_tz)
     
     def to_utc_naive(self, timestamp: Union[datetime, pd.Timestamp, str]) -> pd.Timestamp:
         """

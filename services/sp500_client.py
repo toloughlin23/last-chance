@@ -1,5 +1,5 @@
 import io
-import requests
+import requests  # type: ignore[import-untyped]
 import pandas as pd
 from typing import List
 

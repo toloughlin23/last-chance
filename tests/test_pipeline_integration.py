@@ -13,12 +13,13 @@ Test complete pipeline integration with real data flow
 """
 
 import sys
-sys.path.append('.')
-
-import pytest
 import time
-from datetime import datetime, UTC, timedelta
-from unittest.mock import patch, MagicMock
+from datetime import datetime, timedelta, timezone as _timezone
+from unittest.mock import patch
+
+# Portable UTC constant for mypy compatibility
+UTC = _timezone.utc
+from unittest.mock import patch
 
 from pipeline.enhanced_runner import EnhancedPipelineRunner
 from services.infrastructure_manager import InstitutionalInfrastructureManager

@@ -208,7 +208,7 @@ class InstitutionalInfrastructureManager:
             print(f"⚠️ Insufficient resources for {pool_name}, reducing task load")
             tasks = tasks[:len(tasks)//2]  # Reduce task load
         
-        results = []
+        results: List[Tuple[str, Any, Optional[str]]] = []
         start_time = time.time()
         
         try:
@@ -441,48 +441,6 @@ class ResourceMonitor:
             except Exception as e:
                 print(f"⚠️ Resource monitoring error: {e}")
                 time.sleep(5)
-
-
-def main():
-    """Test the infrastructure manager"""
-    print("🧪 Testing Institutional Infrastructure Manager")
-    print("=" * 50)
-    
-    # Initialize infrastructure
-    infra = InstitutionalInfrastructureManager()
-    
-    # Start monitoring
-    infra.start_resource_monitoring()
-    
-    # Test thread pools
-    def test_task(task_id: str, duration: float = 0.1):
-        time.sleep(duration)
-        return f"Task {task_id} completed"
-    
-    # Test parallel execution
-    tasks = [
-        (f"task_{i}", test_task, (f"task_{i}", 0.1))
-        for i in range(10)
-    ]
-    
-    print("🚀 Testing parallel task execution...")
-    results = infra.execute_parallel_tasks(tasks, 'algorithm_processing')
-    print(f"✅ Completed {len(results)} tasks")
-    
-    # Test caching
-    print("💾 Testing cache functionality...")
-    test_data = {"test": "data", "timestamp": datetime.now(UTC).isoformat()}
-    infra.cache_data("test_key", test_data, ttl=60)
-    cached_data = infra.get_cached_data("test_key")
-    print(f"✅ Cache test: {cached_data is not None}")
-    
-    # Get performance report
-    report = infra.get_performance_report()
-    print(f"📊 Performance report generated: {len(report)} metrics")
-    
-    # Shutdown
-    infra.shutdown()
-    print("✅ Infrastructure manager test completed")
 
 
 def main():

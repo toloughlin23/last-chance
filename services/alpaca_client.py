@@ -1,6 +1,6 @@
 import os
 from typing import Any, Dict, Optional, List
-import requests
+import requests  # type: ignore[import-untyped]
 
 from utils.env_loader import load_env_from_known_locations
 
@@ -14,7 +14,7 @@ class AlpacaClient:
         # Lazy-enable network usage only when credentials are present
         self.enabled = bool(self.api_key and self.secret_key)
         self.base = "https://paper-api.alpaca.markets" if paper else "https://api.alpaca.markets"
-        self.session = None
+        self.session: Optional[requests.Session] = None
         if self.enabled:
             self.session = requests.Session()
             self.session.headers.update({
@@ -28,9 +28,13 @@ class AlpacaClient:
         if not self.enabled:
             raise RuntimeError("Alpaca credentials not set in env")
 
-    def get_account(self) -> Dict[str, Any]:
+    def _session(self) -> requests.Session:
         self._require_configured()
-        resp = self.session.get(f"{self.base}/v2/account", timeout=30)
+        assert self.session is not None
+        return self.session
+
+    def get_account(self) -> Dict[str, Any]:
+        resp = self._session().get(f"{self.base}/v2/account", timeout=30)
         resp.raise_for_status()
         return resp.json()
 
@@ -45,7 +49,7 @@ class AlpacaClient:
             "type": type_,
             "time_in_force": time_in_force
         }
-        resp = self.session.post(f"{self.base}/v2/orders", json=order, timeout=30)
+        resp = self._session().post(f"{self.base}/v2/orders", json=order, timeout=30)
         resp.raise_for_status()
         return resp.json()
 
@@ -66,39 +70,37 @@ class AlpacaClient:
         if stop_price:
             order["stop_price"] = stop_price
             
-        resp = self.session.post(f"{self.base}/v2/orders", json=order, timeout=30)
+        resp = self._session().post(f"{self.base}/v2/orders", json=order, timeout=30)
         resp.raise_for_status()
         return resp.json()
 
     def get_positions(self) -> List[Dict[str, Any]]:
         """Get all positions"""
-        self._require_configured()
-        resp = self.session.get(f"{self.base}/v2/positions", timeout=30)
+        resp = self._session().get(f"{self.base}/v2/positions", timeout=30)
         resp.raise_for_status()
         return resp.json()
 
     def get_position(self, symbol: str) -> Dict[str, Any]:
         """Get specific position"""
-        self._require_configured()
-        resp = self.session.get(f"{self.base}/v2/positions/{symbol}", timeout=30)
+        resp = self._session().get(f"{self.base}/v2/positions/{symbol}", timeout=30)
         resp.raise_for_status()
         return resp.json()
 
     def get_orders(self, status: Optional[str] = None, limit: int = 50) -> List[Dict[str, Any]]:
         """Get orders"""
         self._require_configured()
-        params = {"limit": limit}
+        params: Dict[str, Any] = {"limit": limit}
         if status:
             params["status"] = status
             
-        resp = self.session.get(f"{self.base}/v2/orders", params=params, timeout=30)
+        resp = self._session().get(f"{self.base}/v2/orders", params=params, timeout=30)
         resp.raise_for_status()
         return resp.json()
 
     def get_order(self, order_id: str) -> Dict[str, Any]:
         """Get specific order"""
         self._require_configured()
-        resp = self.session.get(f"{self.base}/v2/orders/{order_id}", timeout=30)
+        resp = self._session().get(f"{self.base}/v2/orders/{order_id}", timeout=30)
         resp.raise_for_status()
         return resp.json()
 
@@ -106,7 +108,7 @@ class AlpacaClient:
         """Cancel order"""
         self._require_configured()
         try:
-            resp = self.session.delete(f"{self.base}/v2/orders/{order_id}", timeout=30)
+            resp = self._session().delete(f"{self.base}/v2/orders/{order_id}", timeout=30)
             resp.raise_for_status()
             return True
         except Exception:
@@ -116,7 +118,7 @@ class AlpacaClient:
         """Cancel all orders"""
         self._require_configured()
         try:
-            resp = self.session.delete(f"{self.base}/v2/orders", timeout=30)
+            resp = self._session().delete(f"{self.base}/v2/orders", timeout=30)
             resp.raise_for_status()
             return True
         except Exception:

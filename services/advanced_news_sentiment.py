@@ -24,7 +24,7 @@ from typing import Dict, List, Any, Optional, Tuple
 from datetime import datetime, timedelta, UTC
 from dataclasses import dataclass
 from concurrent.futures import ThreadPoolExecutor, as_completed
-import requests
+import requests  # type: ignore[import-untyped]
 
 from services.http import HttpClient
 from utils.env_loader import load_env_from_known_locations

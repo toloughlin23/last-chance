@@ -1,0 +1,4 @@
+# file: C:\Users\tolou\last chance\learning\phase1_learning_loop.py
+# hypothesis_version: 6.138.15
+
+[0.0, 0.001, 0.01, 0.1, 0.15, 0.5, 0.7, 0.8, 0.99, 1.0, 1.01, 100.0, 100, 300, 1000000, '=', 'AAPL', 'GOOGL', 'MSFT', 'NVDA', 'OK', 'TSLA', '__main__', 'avg_confidence', 'buy_signal', 'c', 'day', 'h', 'hold_signal', 'holding_time', 'l', 'linucb', 'neural', 'o', 'order_id', 'overall_variance', 'p', 'price', 'results', 's', 'status', 't', 'total_reward', 'trades', 'ucbv', 'v', 'volume', 'vw']

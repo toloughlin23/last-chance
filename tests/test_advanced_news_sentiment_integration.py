@@ -13,7 +13,8 @@ Test the enhanced Advanced News Sentiment Analysis system
 
 import os
 import pytest
-from datetime import datetime, UTC
+from datetime import datetime, timezone as _timezone
+UTC = _timezone.utc
 
 from services.advanced_news_sentiment import AdvancedNewsSentimentAnalysis, SentimentResult
 

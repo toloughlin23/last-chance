@@ -42,7 +42,7 @@ class OptimizedLinUCBArmState:
     total_reward: float = 0.0
     pull_count: int = 0
     last_updated: Optional[float] = None
-    confidence_history: List[float] = None
+    confidence_history: List[float] | None = None
     
     def __post_init__(self):
         if self.confidence_history is None:
@@ -84,7 +84,7 @@ class OptimizedInstitutionalLinUCB:
         self.correlation_analyzer = CrossAssetCorrelationAnalyzer()
         
         # ENHANCED: Personality system integration
-        self.personality = AuthenticPersonalitySystem()
+        self.personality = AuthenticPersonalitySystem(PersonalityProfile(risk_tolerance=0.5, decision_speed=0.5, aggression=0.5))
         
         print("🔥 OPTIMIZED LinUCB initialized")
         print("✅ Enhanced features: 15")
@@ -185,7 +185,7 @@ class OptimizedInstitutionalLinUCB:
             
             # Select best arm
             if ucb_scores:
-                best_arm = max(ucb_scores, key=ucb_scores.get)
+                best_arm = max(ucb_scores, key=lambda x: ucb_scores[x])
             else:
                 # Initialize first arm
                 best_arm = "buy_signal"
@@ -194,7 +194,12 @@ class OptimizedInstitutionalLinUCB:
             # Log selection
             print(f"🔥 OPTIMIZED LinUCB selected: {best_arm}")
             print(f"   Expected reward: {ucb_scores.get(best_arm, 0.0):.4f}")
-            print(f"   Confidence bound: {self._calculate_linucb_confidence(self.arms.get(best_arm), features, alpha):.4f}")
+            arm_state = self.arms.get(best_arm)
+            if arm_state is not None:
+                conf_dbg = self._calculate_linucb_confidence(arm_state, features, alpha)
+            else:
+                conf_dbg = 0.0
+            print(f"   Confidence bound: {conf_dbg:.4f}")
             print(f"   Adaptive alpha: {alpha:.3f}")
             
             return best_arm

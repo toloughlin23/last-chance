@@ -1,7 +1,7 @@
 from typing import Any, Dict, Optional
 import time
 
-import requests
+import requests  # type: ignore[import-untyped]
 
 
 class HttpError(Exception):

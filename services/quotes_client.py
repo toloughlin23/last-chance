@@ -1,6 +1,7 @@
 import os
-from datetime import datetime, timedelta, UTC
-from typing import Any, Dict, List, Optional, Tuple
+from datetime import datetime, timedelta, timezone as _timezone
+UTC = _timezone.utc
+from typing import Any, Dict, List, Optional, Tuple, Union, cast
 
 from services.http import HttpClient
 from utils.env_loader import load_env_from_known_locations
@@ -48,8 +49,8 @@ class QuotesClient:
                 bid = q.get("bp")
                 ask = q.get("ap")
             try:
-                b = float(bid)
-                a = float(ask)
+                b = float(cast(Union[str, float, int], bid))
+                a = float(cast(Union[str, float, int], ask))
                 if b <= 0 or a <= 0 or a < b:
                     continue
                 spread = a - b

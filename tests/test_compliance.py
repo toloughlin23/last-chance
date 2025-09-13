@@ -7,7 +7,8 @@ import sys
 sys.path.append('.')
 
 from services.compliance_system import UKROIComplianceSystem
-from datetime import datetime, UTC, timedelta
+from datetime import datetime, timedelta, timezone as _timezone
+UTC = _timezone.utc
 
 def test_compliance_system():
     """Test the compliance system"""
