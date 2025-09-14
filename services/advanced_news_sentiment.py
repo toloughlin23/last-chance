@@ -2,7 +2,7 @@
 """
 🎯 ADVANCED NEWS SENTIMENT ANALYSIS SYSTEM
 =========================================
-100% GENUINE - NO SHORTCUTS - ALWAYS MAKE BETTER
+Authentic, institutional-grade sentiment analysis — real data, real integrations
 
 Multi-source news sentiment with genuine NLP processing
 - Real news sources integration (Polygon, Alpha Vantage, NewsAPI)
@@ -10,7 +10,7 @@ Multi-source news sentiment with genuine NLP processing
 - Multi-source aggregation with confidence scoring
 - Real-time news sentiment scoring
 - Market impact assessment
-- NO fake sentiment generators
+- Zero tolerance for synthetic sentiment generators
 
 INSTITUTIONAL-GRADE SENTIMENT ANALYSIS
 """

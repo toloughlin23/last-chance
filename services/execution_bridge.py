@@ -2,14 +2,14 @@
 """
 🚀 ULTRA-INSTITUTIONAL EXECUTION BRIDGE
 ======================================
-100% GENUINE - NO SHORTCUTS - ALWAYS MAKE BETTER
+Authentic, institutional-grade execution — real data, real integrations
 
 Ultra-institutional execution bridge with real Alpaca integration
 - Real-time order execution
 - Advanced risk management
 - Position sizing and portfolio management
 - Real-time P&L tracking
-- NO development shortcuts
+- Zero tolerance for development shortcuts
 """
 
 import logging
