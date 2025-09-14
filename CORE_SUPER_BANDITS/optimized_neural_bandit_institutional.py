@@ -115,48 +115,34 @@ class OptimizedInstitutionalNeuralBandit:
         exploration_factor = math.sqrt(2 * math.log(max(1, self.total_selections)) / selections)
         
         # Base confidence from prediction strength
-        base_confidence = abs(prediction)  # Stronger predictions = higher confidence
+        base_confidence = float(abs(prediction))  # Stronger predictions = higher confidence
         
         # Uncertainty adjustment (more exploration needed = lower confidence in current estimate)
         uncertainty_penalty = exploration_factor * 0.1
 
-        # Enhanced genuine confidence calculation with stronger market signal
-        # Compute market-driven component from real inputs
-        vol = getattr(enriched_data.market_data, 'volatility', 0.02)
-        sentiment_strength = abs(enriched_data.sentiment_analysis.overall_sentiment)
-        news_conf = enriched_data.sentiment_analysis.confidence_level
-        market_component = (
-            0.45 * news_conf + 0.35 * sentiment_strength + 0.20 * min(1.0, vol * 20)
-        )
-        mc_norm = min(1.0, market_component)
-        max(0.0, 0.15 * base_confidence + 0.85 * mc_norm - uncertainty_penalty)
-        combined = 0.40 + min(0.55, 0.40 * mc_norm + 0.15 * base_confidence)
+        # Enhanced genuine confidence calculation with stronger market signal (deterministic)
+        vol = float(getattr(enriched_data.market_data, 'volatility', 0.02))
+        sentiment_strength = float(abs(enriched_data.sentiment_analysis.overall_sentiment))
+        news_conf = float(enriched_data.sentiment_analysis.confidence_level)
+        mc_norm = min(1.0, 0.45 * news_conf + 0.35 * sentiment_strength + 0.20 * min(1.0, vol * 20))
+        combined = 0.40 + 0.35 * mc_norm + 0.12 * base_confidence
         
-        # ULTRA-ENHANCED: Add neural network specific variation
-        # Network depth variation (deeper networks = more confidence variation)
-        network_depth_factor = 1.0 + (len(self.hidden_sizes) * 0.1)  # 1.1 to 1.4 range
-        
-        # Learning rate variation (different learning rates = different confidence patterns)
-        lr_factor = 1.0 + (self.learning_rate * 10)  # 1.1 to 1.2 range
-        
-        # Feature complexity variation
-        feature_complexity = np.std(context) if len(context) > 0 else 0.1
-        complexity_factor = 1.0 + (feature_complexity * 0.5)  # 1.0 to 1.5 range
-        
-        # Apply all variation factors
+        # Deterministic scaling factors (bounded, avoid saturation)
+        network_depth_factor = 1.0 + (len(self.hidden_sizes) * 0.05)
+        lr_factor = 1.0 + (self.learning_rate * 2.0)
+        feature_complexity = float(np.std(context)) if len(context) > 0 else 0.1
+        complexity_factor = 1.0 + (feature_complexity * 0.18)
+
+        # Apply deterministic scaling only
         combined *= network_depth_factor * lr_factor * complexity_factor
         
-        # ULTRA-ENHANCED: Add neural-specific random variation
-        neural_noise = np.random.normal(0, 0.08)  # Neural networks have more variation
-        combined += neural_noise
-        
         # Institutional bounds (40-95% range for neural networks)
-        final_confidence = max(0.40, min(0.95, combined))
+        final_confidence = max(0.40, min(0.95, float(combined)))
         
-        if self.personality:
-            # ULTRA-ENHANCED: Amplify personality effects for neural networks
-            personality_effect = self.personality.confidence_bias() * 1.5  # Amplify personality
-            final_confidence += personality_effect
+        # Deterministic personality influence to ensure context-driven spread without randomness
+        if self.personality is not None:
+            bias = float(self.personality.confidence_bias())
+            final_confidence += (bias - 0.5) * 0.10  # ±0.05 shift
             final_confidence = max(0.40, min(0.95, final_confidence))
         
         return final_confidence
@@ -442,88 +428,32 @@ class OptimizedInstitutionalNeuralBandit:
             # Combine all Neural Bandit-specific factors
             confidence = base_confidence + pattern_contribution + uncertainty_contribution + distribution_contribution + nonlinear_contribution + utilization_contribution + learning_contribution
             
-            # GENUINE Neural Bandit Variation: Thompson Sampling with real Polygon data
-            # This creates natural variation based on uncertainty (research-backed)
-            
-            # 1. Thompson Sampling: Sample from posterior distribution
+            # Deterministic adaptation (no randomness): use uncertainty and complexity directly
             network_uncertainty = 1.0 - prediction_confidence
-            if network_uncertainty > 0:
-                # Thompson Sampling: sample from uncertainty distribution
-                thompson_sample = float(np.random.normal(0, network_uncertainty * 100.0))  # Scale up for small values
-                uncertainty_factor = min(0.3, abs(float(thompson_sample)) * 0.1)  # 0.0 to 0.3 variation
-            else:
-                # Fallback: Use feature magnitude for variation
-                feature_magnitude = np.linalg.norm(features) if len(features) > 0 else 0.0
-                if feature_magnitude > 0:
-                    thompson_sample = float(np.random.normal(0, feature_magnitude * 100.0))
-                    uncertainty_factor = min(0.3, abs(float(thompson_sample)) * 0.1)
-                else:
-                    uncertainty_factor = 0.0
-            
-            # 2. Non-stationary Adaptation: Respond to pattern changes
-            if pattern_complexity > 0:
-                complexity_factor = min(0.25, pattern_complexity * 100.0)  # 0.0 to 0.25 variation
-            else:
-                complexity_factor = 0.0
-            
-            # 3. Contextual Sensitivity: Neural networks respond to different contexts
-            context_diversity = len(set([round(f, 2) for f in features])) / len(features) if len(features) > 0 else 0.0
-            context_factor = min(0.2, context_diversity * 50.0)  # 0.0 to 0.2 variation
-            
-            # Apply Thompson Sampling variation to confidence
-            confidence += complexity_factor + context_factor - uncertainty_factor
+            complexity_factor = min(0.14, pattern_complexity * 0.7)
+            context_diversity = len(set([round(float(f), 3) for f in features])) / len(features) if len(features) > 0 else 0.0
+            context_factor = min(0.10, context_diversity * 0.5)
+            uncertainty_factor = min(0.08, network_uncertainty * 0.4)
+
+            # Directional context term to prevent identical outcomes across nearby contexts
+            dir_term = 0.0
+            if len(features) >= 3:
+                dir_term = 0.06 * math.tanh(18.0 * (0.6 * float(features[0]) + 0.3 * float(features[1]) + 0.1 * float(features[2])))
+
+            confidence += complexity_factor + context_factor - uncertainty_factor + dir_term
             
             # GENUINE Neural Bandit Variation: Based on research findings
             # Use Bayesian uncertainty estimation and pattern complexity
             
-            # 1. Thompson Sampling: Sample from posterior distribution (research-backed)
-            # This creates natural variation based on uncertainty
-            # Use RAW feature values for Thompson Sampling, not normalized ones
-            network_uncertainty = 1.0 - prediction_confidence
-            if network_uncertainty > 0:
-                # Thompson Sampling: sample from uncertainty distribution
-                thompson_sample = float(np.random.normal(0, network_uncertainty * 100.0))  # Scale up for small values
-                uncertainty_factor = min(0.3, abs(float(thompson_sample)) * 0.1)  # 0.0 to 0.3 variation
-            else:
-                # Fallback: Use feature magnitude for variation
-                feature_magnitude = np.linalg.norm(features) if len(features) > 0 else 0.0
-                if feature_magnitude > 0:
-                    thompson_sample = float(np.random.normal(0, feature_magnitude * 100.0))
-                    uncertainty_factor = min(0.3, abs(float(thompson_sample)) * 0.1)
-                else:
-                    uncertainty_factor = 0.0
-            
-            # 2. Non-stationary Adaptation: Sliding window approach (research-backed)
-            # Different market conditions affect Neural Bandit differently
-            if pattern_complexity > 0:
-                # Non-stationary adaptation: respond to pattern changes
-                complexity_factor = min(0.25, pattern_complexity * 100.0)  # 0.0 to 0.25 variation
-            else:
-                complexity_factor = 0.0
-            
-            # 3. Contextual Sensitivity: Neural networks respond to different contexts (research-backed)
-            # Count unique feature values to measure context diversity
-            context_diversity = len(set([round(f, 2) for f in features])) / len(features) if len(features) > 0 else 0.0
-            context_factor = min(0.2, context_diversity * 50.0)  # 0.0 to 0.2 variation
-            
-            # 4. Feature Quality: Better features = higher confidence (research-backed)
+            # Additional deterministic sensitivity terms
             feature_quality = np.mean(np.abs(features)) if len(features) > 0 else 0.0
-            if feature_quality > 0:
-                quality_factor = min(0.2, feature_quality * 100.0)  # 0.0 to 0.2 variation
-            else:
-                quality_factor = 0.0
-            
-            # 5. Non-linear Strength: Neural networks excel at non-linear patterns (research-backed)
-            if nonlinear_strength > 0:
-                nonlinear_factor = min(0.15, nonlinear_strength * 1000.0)  # 0.0 to 0.15 variation
-            else:
-                nonlinear_factor = 0.0
-            
-            # Apply genuine Neural Bandit variation based on research findings
-            confidence += complexity_factor + context_factor + quality_factor + nonlinear_factor - uncertainty_factor
-            
-            # Ensure within Neural Bandit's natural range [0.1, 0.9]
-            confidence = float(max(0.1, min(0.9, confidence)))
+            quality_factor = min(0.12, feature_quality * 0.6)
+            nonlinear_factor = min(0.10, nonlinear_strength * 0.05) if nonlinear_strength > 0 else 0.0
+
+            confidence += quality_factor + nonlinear_factor
+
+            # Ensure within Neural Bandit's natural range [0.4, 0.95] after deterministic shaping
+            confidence = float(max(0.40, min(0.95, confidence)))
             
             print(f"🔍 Neural: pattern={pattern_contribution:.3f}, uncertainty={uncertainty_contribution:.3f}, distribution={distribution_contribution:.3f}, nonlinear={nonlinear_contribution:.3f}, utilization={utilization_contribution:.3f}, learning={learning_contribution:.3f}, final={confidence:.3f}")
             

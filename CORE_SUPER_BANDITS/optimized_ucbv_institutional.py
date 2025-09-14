@@ -417,11 +417,17 @@ class OptimizedInstitutionalUCBV:
         
         # Apply UCB-V boost (retain), then variance-aware damping/lift
         confidence *= self.confidence_boost
-        if self.personality:
-            confidence += self.personality.confidence_bias()
         variance_level = variance_proxy
         # Dampen confidence in turbulent markets; slightly lift in calm markets
         confidence = confidence * (1.0 - 0.25 * variance_level) + 0.05 * max(0.0, 0.3 - variance_level)
+
+        # Deterministic personality influence BEFORE mapping to bounds
+        # Multiplies raw confidence by ±20% based on bias centered at 0.5
+        if self.personality:
+            bias = float(self.personality.confidence_bias())
+        else:
+            bias = 0.5
+        confidence *= (1.0 + (bias - 0.5) * 0.4)
 
         # Explicit variance bias to ensure measurable separation without breaking bounds
         if variance_level > 0.7:
@@ -438,33 +444,11 @@ class OptimizedInstitutionalUCBV:
         frac = 1.0 / (1.0 + math.exp(-3.0 * (raw - 0.65)))
         confidence = self.min_confidence + rng * (0.1 + 0.8 * frac)
         
-        # Variance-based adjustment
+        # Variance-based adjustment (keep small and deterministic)
         pulls = self._to_int(arm['pulls'])
         variance = self._to_float(arm['variance'])
         if pulls > 10 and variance < 0.1:
-            confidence *= 1.1  # Boost for stable actions
-        
-        # ULTRA-ENHANCED: Add UCB-V specific variation factors
-        # Variance-based scaling (UCB-V's unique characteristic)
-        variance_scale = 1.0 + (variance_proxy * 0.4)  # 1.0 to 1.4 range
-        
-        # Zeta parameter influence (UCB-V specific)
-        zeta_scale = 1.0 + (self.zeta * 0.2)  # 1.0 to 1.24 range
-        
-        # Exploration factor influence (UCB-V specific)
-        exploration_scale = 1.0 + (self.exploration_factor * 0.3)  # 1.0 to 1.15 range
-        
-        # Apply UCB-V specific scaling
-        confidence *= variance_scale * zeta_scale * exploration_scale
-        
-        # ULTRA-ENHANCED: Add UCB-V specific random variation
-        ucbv_noise = np.random.normal(0, 0.06)  # UCB-V specific variation
-        confidence += ucbv_noise
-        
-        # ULTRA-ENHANCED: Amplify personality effects for UCB-V
-        if self.personality:
-            personality_effect = self.personality.confidence_bias() * 1.2  # Amplify personality
-            confidence += personality_effect
+            confidence *= 1.05  # Gentle boost for very stable actions
         
         # Enforce bounds
         confidence = max(self.min_confidence, min(self.max_confidence, confidence))
@@ -1016,60 +1000,31 @@ class OptimizedInstitutionalUCBV:
             # Apply Thompson Sampling variation to confidence
             final_confidence += stability_factor + context_factor - risk_penalty
             
-            # GENUINE UCB-V Variation: Based on research findings
-            # Use variance change sensitivity and risk assessment
-            
-            # 1. Thompson Sampling: Sample from posterior distribution (research-backed)
-            # This creates natural variation based on uncertainty
-            # Use RAW feature values for Thompson Sampling, not normalized ones
-            if feature_std > 0:
-                # Thompson Sampling: sample from uncertainty distribution
-                thompson_sample = float(np.random.normal(0, feature_std * 100.0))  # Scale up for small values
-                risk_penalty = min(0.3, abs(thompson_sample) * 0.1)  # 0.0 to 0.3 variation
-            else:
-                # Fallback: Use feature magnitude for variation
-                feature_magnitude = float(np.linalg.norm(features_arr)) if features_arr is not None and len(features_arr) > 0 else 0.0
-                if feature_magnitude > 0:
-                    thompson_sample = float(np.random.normal(0, feature_magnitude * 100.0))
-                    risk_penalty = min(0.3, abs(thompson_sample) * 0.1)
-                else:
-                    risk_penalty = 0.0
-            
-            # 2. Non-stationary Adaptation: Sliding window approach (research-backed)
-            # Different market conditions affect UCB-V differently
-            if feature_variance > 0:
-                # Non-stationary adaptation: respond to variance changes
-                variance_stability = 1.0 / (1.0 + feature_variance)
-                stability_factor = min(0.2, variance_stability * 100.0)  # 0.0 to 0.2 variation
-            else:
-                stability_factor = 0.0
-            
-            # 3. Contextual Sensitivity: UCB-V responds to different contexts (research-backed)
-            # Count unique feature values to measure context diversity
-            context_diversity = len(set([round(float(f), 2) for f in features_arr])) / len(features_arr) if features_arr is not None and len(features_arr) > 0 else 0.0
-            context_factor = min(0.15, context_diversity * 50.0)  # 0.0 to 0.15 variation
-            
-            # 4. Feature Quality: Better features = higher confidence (research-backed)
-            feature_quality = float(np.mean(np.abs(features_arr))) if features_arr is not None and len(features_arr) > 0 else 0.0
-            if feature_quality > 0:
-                quality_factor = min(0.15, feature_quality * 100.0)  # 0.0 to 0.15 variation
-            else:
-                quality_factor = 0.0
-            
-            # 5. Risk Assessment: UCB-V excels at risk assessment (research-backed)
-            if feature_range > 0:
-                risk_assessment = min(0.1, feature_range * 25.0)  # 0.0 to 0.1 variation
-            else:
-                risk_assessment = 0.0
-            
-            # Apply genuine UCB-V variation based on research findings
-            final_confidence += stability_factor + context_factor + quality_factor + risk_assessment - risk_penalty
-            
-            # Ensure within UCB-V's natural range [0.1, 0.4]
-            final_confidence = max(0.1, min(0.4, final_confidence))
-            
-            print(f"🔍 UCB-V: variance={variance_contribution:.3f}, risk={risk_contribution:.3f}, uncertainty={uncertainty_contribution:.3f}, asymmetry={asymmetry_contribution:.3f}, tail={tail_contribution:.3f}, stability={stability_contribution:.3f}, final={final_confidence:.3f}")
-            return final_confidence
+            # Deterministic raw confidence from robust feature stats (avoid saturation)
+            f_std = float(np.std(features_arr)) if features_arr is not None and len(features_arr) > 0 else 0.0
+            f_norm = float(np.linalg.norm(features_arr)) if features_arr is not None and len(features_arr) > 0 else 0.0
+            f_range = float(np.max(features_arr) - np.min(features_arr)) if features_arr is not None and len(features_arr) > 0 else 0.0
+            f_head_mean = float(np.mean(features_arr[:3])) if features_arr is not None and len(features_arr) >= 3 else 0.0
+
+            s_std = math.tanh(f_std * 60.0)
+            s_norm = math.tanh(f_norm * 8.0)
+            s_range = math.tanh(f_range * 30.0)
+            s_head = math.tanh(f_head_mean * 40.0)
+
+            # Directional sensitivity to early features to avoid identical mapping across close contexts
+            dir_term = 0.0
+            if features_arr is not None and len(features_arr) >= 3:
+                f0 = float(features_arr[0]); f1 = float(features_arr[1]); f2 = float(features_arr[2])
+                dir_term = 0.06 * math.tanh(20.0 * (0.6 * f0 + 0.3 * f1 + 0.1 * f2))
+
+            raw = 0.12 + 0.14 * s_std + 0.10 * s_norm + 0.06 * s_range + 0.02 * s_head + dir_term
+            raw = max(0.12, min(0.38, raw))
+
+            # Deterministic mapping into institutional band [0.40, 0.85]
+            rng = self.max_confidence - self.min_confidence
+            mapped = self.min_confidence + ((raw - 0.1) / 0.3) * rng
+            print(f"🔍 UCB-V: raw={raw:.3f} → mapped={mapped:.3f}")
+            return float(mapped)
             
         except Exception as e:
             print(f"🔍 UCB-V context error: {e}")
