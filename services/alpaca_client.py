@@ -18,6 +18,9 @@ class AlpacaClient:
         self.session: Optional[requests.Session] = None
         if self.enabled:
             self.session = requests.Session()
+            # Assert for type-narrowing: enabled implies keys are present
+            assert self.api_key is not None
+            assert self.secret_key is not None
             self.session.headers.update({
                 "APCA-API-KEY-ID": self.api_key,
                 "APCA-API-SECRET-KEY": self.secret_key,
