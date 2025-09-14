@@ -1,6 +1,9 @@
 import json
 import os
-from datetime import UTC, datetime, timedelta
+from datetime import datetime, timedelta, timezone as _timezone
+
+# Portable UTC alias for mypy compatibility
+UTC = _timezone.utc
 from typing import Dict, List, Tuple
 
 from services.news_client import NewsClient

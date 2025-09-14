@@ -1,6 +1,8 @@
 import os
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from datetime import UTC, datetime, timedelta
+from datetime import datetime, timedelta, timezone as _timezone
+
+UTC = _timezone.utc
 from typing import Dict, List, Optional
 
 from services.http import HttpClient

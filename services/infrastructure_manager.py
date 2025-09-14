@@ -19,7 +19,9 @@ import threading
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
-from datetime import UTC, datetime
+from datetime import datetime, timezone as _timezone
+
+UTC = _timezone.utc
 from threading import Lock
 from typing import Any, Callable, Dict, List, Optional, Tuple
 

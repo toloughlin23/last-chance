@@ -15,7 +15,9 @@ Ultra-institutional execution bridge with real Alpaca integration
 import logging
 import time
 from dataclasses import dataclass
-from datetime import UTC, datetime, timedelta
+from datetime import datetime, timedelta, timezone as _timezone
+
+UTC = _timezone.utc
 from decimal import ROUND_DOWN, Decimal
 from enum import Enum
 from typing import Any, Dict, List, Optional, Tuple

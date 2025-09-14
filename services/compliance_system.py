@@ -16,7 +16,9 @@ import json
 import logging
 import time
 from dataclasses import asdict, dataclass
-from datetime import UTC, datetime, timedelta
+from datetime import datetime, timedelta, timezone as _timezone
+
+UTC = _timezone.utc
 from enum import Enum
 from pathlib import Path
 from typing import Any, Dict, List, Optional

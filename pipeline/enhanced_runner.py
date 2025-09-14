@@ -14,7 +14,9 @@
 import csv
 import os
 import time
-from datetime import UTC, date, datetime, timedelta
+from datetime import date, datetime, timedelta, timezone as _timezone
+
+UTC = _timezone.utc
 from typing import Any, Dict, List, Optional, Tuple
 
 from CORE_SUPER_BANDITS.optimized_linucb_institutional import (

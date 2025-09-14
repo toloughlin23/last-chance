@@ -20,7 +20,9 @@ import os
 import re
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
-from datetime import UTC, datetime, timedelta
+from datetime import datetime, timedelta, timezone as _timezone
+
+UTC = _timezone.utc
 from typing import Any, Dict, List, Tuple
 
 from services.http import HttpClient

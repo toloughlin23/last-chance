@@ -2,7 +2,9 @@ import csv
 import os
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from datetime import UTC, datetime
+from datetime import datetime, timezone as _timezone
+
+UTC = _timezone.utc
 from typing import Any, Dict, List, Tuple
 
 from CORE_SUPER_BANDITS.optimized_linucb_institutional import (

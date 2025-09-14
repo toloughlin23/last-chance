@@ -293,8 +293,16 @@ class OptimizedInstitutionalLinUCB:
                           contribution_norm + contribution_std + contribution_mean +
                           sentiment_contrib + momentum_contrib + volatility_contrib + volume_ratio_contrib)
 
+            # Deterministic personality influence (no randomness)
+            if self.personality is not None:
+                # Confidence bias centered at 0.5 → shift in [-0.10, +0.10]
+                bias = float(self.personality.confidence_bias())
+                confidence += (bias - 0.5) * 0.20
+                # Exploration bias provides a small additional spread in [0, +0.05]
+                confidence += float(self.personality.exploration_bias()) * 0.05
+
             # Clamp to institutional bounds
-            return max(0.45, min(0.90, confidence))
+            return max(0.45, min(0.90, float(confidence)))
             
         except Exception:
             return 0.6  # Institutional fallback confidence
