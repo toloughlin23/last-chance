@@ -419,7 +419,7 @@ class OptimizedInstitutionalLinUCB:
         try:
             # Simplified RSI calculation
             return 0.5  # Neutral RSI
-        except:
+        except Exception:
             return 0.5
     
     def _calculate_macd(self, market) -> float:
@@ -427,7 +427,7 @@ class OptimizedInstitutionalLinUCB:
         try:
             # Simplified MACD calculation
             return 0.0  # Neutral MACD
-        except:
+        except Exception:
             return 0.0
     
     def _calculate_bollinger_position(self, market) -> float:
@@ -435,21 +435,21 @@ class OptimizedInstitutionalLinUCB:
         try:
             # Simplified Bollinger position
             return 0.5  # Middle of bands
-        except:
+        except Exception:
             return 0.5
     
     def _calculate_support_proximity(self, market) -> float:
         """Calculate proximity to support level"""
         try:
             return 0.5  # Neutral proximity
-        except:
+        except Exception:
             return 0.5
     
     def _calculate_resistance_proximity(self, market) -> float:
         """Calculate proximity to resistance level"""
         try:
             return 0.5  # Neutral proximity
-        except:
+        except Exception:
             return 0.5
     
     def _get_time_of_day_factor(self) -> float:
@@ -461,7 +461,7 @@ class OptimizedInstitutionalLinUCB:
                 return 1.0  # Market hours
             else:
                 return 0.5  # After hours
-        except:
+        except Exception:
             return 0.5
 
 
@@ -473,7 +473,7 @@ class MarketRegimeDetector:
         try:
             # Simplified regime detection
             return 0.5  # Neutral regime
-        except:
+        except Exception:
             return 0.5
     
     def detect_regime_from_features(self, features: np.ndarray) -> str:
@@ -485,7 +485,7 @@ class MarketRegimeDetector:
                 return "low_volatility"
             else:
                 return "normal"
-        except:
+        except Exception:
             return "normal"
 
 
@@ -497,7 +497,7 @@ class CrossAssetCorrelationAnalyzer:
         try:
             # Simplified correlation analysis
             return 0.5  # Neutral correlation
-        except:
+        except Exception:
             return 0.5
 
 

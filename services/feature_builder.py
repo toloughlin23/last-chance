@@ -75,7 +75,7 @@ def build_enriched_from_aggs(aggs: Dict[str, Any]) -> EnrichedData:
     volumes = []
     for bar in results:
         h = float(bar.get("h", 0.0))
-        l = float(bar.get("l", 0.0))
+        low_val = float(bar.get("l", 0.0))
         
         # Handle price extraction for both list and single value formats
         p_raw = bar.get("c", bar.get("o", 0.0))
@@ -83,7 +83,7 @@ def build_enriched_from_aggs(aggs: Dict[str, Any]) -> EnrichedData:
         
         v = float(bar.get("v", 0.0))
         if p > 0:
-            ranges.append(_safe_div(h - l, p, 0.0))
+            ranges.append(_safe_div(h - low_val, p, 0.0))
         volumes.append(v)
 
     avg_range = sum(ranges) / len(ranges) if ranges else 0.0
