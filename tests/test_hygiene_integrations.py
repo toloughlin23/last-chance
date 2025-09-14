@@ -1,8 +1,8 @@
 import os
+
 import pytest
 
 from pipeline.hygiene import Hygiene
-
 
 pytestmark = pytest.mark.integration
 

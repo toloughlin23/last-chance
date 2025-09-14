@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Dict, List, Tuple
+from typing import Dict, List
 
 from core.controller_hub.hub import Hub
 from core.controller_hub.messages import DecisionMessage, MetricsMessage
@@ -61,5 +61,6 @@ class Phase1Controller:
         self.hub.publish(self.channel_metrics, m, block=True)
 
         return metrics
+
 
 

@@ -4,9 +4,11 @@ Debug parallel execution issue
 """
 
 import sys
+
 sys.path.append('.')
 
 from services.infrastructure_manager import InstitutionalInfrastructureManager
+
 
 def test_func(a, b, c):
     print(f'a={a}, b={b}, c={c}')

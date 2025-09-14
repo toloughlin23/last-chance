@@ -14,21 +14,18 @@
 INSTITUTIONAL-GRADE INFRASTRUCTURE
 """
 
-import os
-import time
-import psutil
-import threading
-import queue
-from typing import Dict, List, Any, Optional, Callable, Tuple
-from datetime import datetime, UTC
-from dataclasses import dataclass
-from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor, as_completed
-from threading import Lock, Event
 import json
-import logging
+import threading
+import time
+from concurrent.futures import ThreadPoolExecutor, as_completed
+from dataclasses import dataclass
+from datetime import UTC, datetime
+from threading import Lock
+from typing import Any, Callable, Dict, List, Optional, Tuple
+
+import psutil
 
 # High-performance in-memory caching (Redis-free architecture)
-
 from utils.env_loader import load_env_from_known_locations
 
 
@@ -132,12 +129,12 @@ class InstitutionalInfrastructureManager:
         self.max_recovery_attempts = 5
         
         print("🏗️ Institutional Infrastructure Manager initialized")
-        print(f"✅ 24-thread architecture ready")
+        print("✅ 24-thread architecture ready")
         print(f"✅ Memory limit: {self.memory_limit_mb}MB")
         print(f"✅ In-memory caching enabled: {not self.redis_enabled}")
         print(f"✅ Thread pools configured: {len(self.thread_pools)}")
-        print(f"✅ Error handling and recovery enabled")
-        print(f"✅ Performance monitoring active")
+        print("✅ Error handling and recovery enabled")
+        print("✅ Performance monitoring active")
 
     def get_thread_pool(self, pool_name: str) -> ThreadPoolExecutor:
         """

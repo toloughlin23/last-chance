@@ -1,6 +1,6 @@
+from .controller import Phase1Controller
 from .hub import Hub
 from .messages import DecisionMessage, MetricsMessage
-from .controller import Phase1Controller
 
 __all__ = [
     "Hub",
@@ -8,5 +8,6 @@ __all__ = [
     "MetricsMessage",
     "Phase1Controller",
 ]
+
 
 

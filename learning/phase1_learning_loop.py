@@ -5,24 +5,28 @@
 NO SHORTCUTS - NO MOCK DATA - NO PLACEHOLDERS
 """
 
-import numpy as np
-import pandas as pd
-from datetime import datetime, timedelta
-from typing import Dict, List, Tuple, Optional, Any
-import logging
-from dataclasses import dataclass
 import time
+from dataclasses import dataclass
+from datetime import datetime, timedelta
+from typing import Any, Dict, List, Optional, Tuple
+
+import numpy as np
 
 # Import our optimized algorithms
-from CORE_SUPER_BANDITS.optimized_linucb_institutional import OptimizedInstitutionalLinUCB
-from CORE_SUPER_BANDITS.optimized_neural_bandit_institutional import OptimizedInstitutionalNeuralBandit
+from CORE_SUPER_BANDITS.optimized_linucb_institutional import (
+    OptimizedInstitutionalLinUCB,
+)
+from CORE_SUPER_BANDITS.optimized_neural_bandit_institutional import (
+    OptimizedInstitutionalNeuralBandit,
+)
 from CORE_SUPER_BANDITS.optimized_ucbv_institutional import OptimizedInstitutionalUCBV
+from services.alpaca_client import AlpacaClient
+from services.feature_builder import build_enriched_from_aggs
 
 # Import market data and feature building
 from services.polygon_client import PolygonClient
-from services.feature_builder import build_enriched_from_aggs
-from services.alpaca_client import AlpacaClient
 from utils.uk_us_timezone_handler import get_uk_us_handler
+
 
 @dataclass
 class LearningMetrics:
@@ -368,7 +372,7 @@ class Phase1LearningLoop:
                 for alg_name, payload in decisions.items():
                     # payload may be (decision, avg_conf) or (decision, avg_conf, all_conf)
                     try:
-                        decision, confidence = payload[0], float(payload[1])
+                        _decision, confidence = payload[0], float(payload[1])
                     except Exception:
                         continue
                     if self.metrics.algorithm_performance and alg_name in self.metrics.algorithm_performance:
@@ -399,7 +403,7 @@ class Phase1LearningLoop:
     def run_learning_loop(self, iterations: int = 10, lookback_days: int = 5, 
                          execute_trades: bool = False, interval_seconds: int = 60):
         """Run continuous learning loop"""
-        print(f"\n🚀 STARTING LEARNING LOOP")
+        print("\n🚀 STARTING LEARNING LOOP")
         print(f"   Iterations: {iterations}")
         print(f"   Lookback days: {lookback_days}")
         print(f"   Execute trades: {execute_trades}")
@@ -446,17 +450,17 @@ class Phase1LearningLoop:
         for alg_name, perf in self.metrics.algorithm_performance.items():
             print(f"  {alg_name}: {perf['trades']} trades, avg confidence: {perf['avg_confidence']:.3f}")
         
-        print(f"\nDiversity Metrics:")
+        print("\nDiversity Metrics:")
         for metric, value in self.metrics.diversity_scores.items():
             print(f"  {metric}: {value:.4f}")
         
         # Check Bronze Tier compliance
         overall_variance = self.metrics.diversity_scores.get('overall_variance', 0)
         if overall_variance > 0.15:
-            print(f"\n🏆 BRONZE TIER COMPLIANCE: ✅ ACHIEVED")
+            print("\n🏆 BRONZE TIER COMPLIANCE: ✅ ACHIEVED")
             print(f"   Overall variance: {overall_variance:.4f} > 0.15 required")
         else:
-            print(f"\n⚠️ BRONZE TIER COMPLIANCE: ❌ NOT ACHIEVED")
+            print("\n⚠️ BRONZE TIER COMPLIANCE: ❌ NOT ACHIEVED")
             print(f"   Overall variance: {overall_variance:.4f} < 0.15 required")
         
         print("=" * 60)

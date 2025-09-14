@@ -8,14 +8,16 @@ ENHANCEMENTS: 15 features, confidence boost 1.5x, adaptive alpha, market regime 
 100% GENUINE - NO SHORTCUTS - ALWAYS MAKE BETTER NEVER REMOVE TO FIX
 """
 
-import numpy as np
 import math
-from typing import Dict, List, Any, Optional, Tuple
+import time
 from dataclasses import dataclass
 from enum import Enum
-import time
-import random
+from typing import Any, Dict, List, Optional
+
+import numpy as np
+
 from systems.personality import AuthenticPersonalitySystem, PersonalityProfile
+
 
 class ArmType(Enum):
     """Trading signal types"""
@@ -99,8 +101,7 @@ class OptimizedInstitutionalLinUCB:
             # Extract sentiment features
             sentiment = enriched_data.sentiment_analysis
             sentiment_score = sentiment.overall_sentiment
-            sentiment_confidence = sentiment.confidence_level
-            sentiment_strength = getattr(sentiment, 'sentiment_strength', 0.5)
+            getattr(sentiment, 'sentiment_strength', 0.5)
             
             # Extract market data features
             market = enriched_data.market_data
@@ -152,7 +153,7 @@ class OptimizedInstitutionalLinUCB:
             
             return features
             
-        except Exception as e:
+        except Exception:
             # Fallback to basic features
             return np.zeros(self.feature_dimension)
     
@@ -180,7 +181,7 @@ class OptimizedInstitutionalLinUCB:
                     ucb_score = expected_reward + confidence
                     ucb_scores[arm_id] = ucb_score
                     
-                except Exception as e:
+                except Exception:
                     ucb_scores[arm_id] = 0.0
             
             # Select best arm
@@ -204,7 +205,7 @@ class OptimizedInstitutionalLinUCB:
             
             return best_arm
             
-        except Exception as e:
+        except Exception:
             return "hold_signal"
     
     def update_arm(self, arm_id: str, enriched_data, reward: float) -> bool:
@@ -233,7 +234,7 @@ class OptimizedInstitutionalLinUCB:
             
             return True
             
-        except Exception as e:
+        except Exception:
             return False
     
     def get_confidence_for_context(self, arm_id: str, enriched_data) -> float:
@@ -249,7 +250,7 @@ class OptimizedInstitutionalLinUCB:
             confidence = self._calculate_linucb_confidence(arm, features, alpha)
             return min(max(confidence, 0.0), 1.0)  # Clamp to [0,1]
             
-        except Exception as e:
+        except Exception:
             return 0.5  # Fallback confidence
     
     def get_arm_statistics(self, arm_id: str) -> Dict[str, Any]:
@@ -311,7 +312,7 @@ class OptimizedInstitutionalLinUCB:
             arm.A_inv = np.eye(arm.dimension) / self.base_regularization
             
             return True
-        except Exception as e:
+        except Exception:
             return False
     
     def reset_all_arms(self) -> int:
@@ -322,7 +323,7 @@ class OptimizedInstitutionalLinUCB:
                 if self.reset_arm(arm_id):
                     reset_count += 1
             return reset_count
-        except Exception as e:
+        except Exception:
             return 0
     
     def _initialize_new_arm(self, arm_id: str):
@@ -363,7 +364,7 @@ class OptimizedInstitutionalLinUCB:
             confidence = alpha * math.sqrt(features.T @ arm.A_inv @ features)
             return min(confidence, 1.0)  # Cap at 1.0
             
-        except Exception as e:
+        except Exception:
             return 0.5
     
     def _get_adaptive_alpha(self, features: np.ndarray) -> float:
@@ -385,7 +386,7 @@ class OptimizedInstitutionalLinUCB:
             
             return base_alpha
             
-        except Exception as e:
+        except Exception:
             return self.base_alpha
     
     def _calculate_genuine_confidence(self) -> float:
@@ -410,7 +411,7 @@ class OptimizedInstitutionalLinUCB:
             else:
                 return 0.5
                 
-        except Exception as e:
+        except Exception:
             return 0.5
     
     def _calculate_rsi(self, market) -> float:

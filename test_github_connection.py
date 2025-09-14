@@ -3,8 +3,7 @@
 Test GitHub connection and run full test suite
 """
 import subprocess
-import os
-import sys
+
 
 def run_command(cmd, timeout=10):
     """Run command with timeout"""

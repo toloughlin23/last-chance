@@ -4,11 +4,15 @@ Diagnose the critical issues in the system
 """
 
 import sys
+
 sys.path.append('.')
 
+from CORE_SUPER_BANDITS.optimized_linucb_institutional import (
+    OptimizedInstitutionalLinUCB,
+)
 from services.advanced_news_sentiment import AdvancedNewsSentimentAnalysis
 from services.feature_builder import build_enriched_from_aggs
-from CORE_SUPER_BANDITS.optimized_linucb_institutional import OptimizedInstitutionalLinUCB
+
 
 def diagnose_news_sentiment():
     """Diagnose news sentiment issues"""
@@ -106,7 +110,7 @@ def diagnose_news_sources():
         if hasattr(source, 'api_key'):
             print(f"  API Key: {'SET' if source.api_key else 'NOT SET'}")
         else:
-            print(f"  API Key: NOT FOUND")
+            print("  API Key: NOT FOUND")
 
 def main():
     """Main diagnosis function"""

@@ -25,15 +25,13 @@ PRESERVES:
 ✅ Legitimate mock systems for validation
 """
 
+import json
+import logging
 import os
 import re
-import ast
-import json
 import shutil
 from datetime import datetime
-from typing import Dict, List, Set, Any, Tuple, Optional
-from pathlib import Path
-import logging
+from typing import Any, Dict, List
 
 logger = logging.getLogger(__name__)
 
@@ -165,7 +163,7 @@ class SurgicalContaminationRemover:
         ================================
         Removes ONLY harmful contamination while preserving script functionality
         """
-        print(f"\n🔬 STARTING SURGICAL CONTAMINATION REMOVAL")
+        print("\n🔬 STARTING SURGICAL CONTAMINATION REMOVAL")
         print(f"📁 Target: {root_path}")
         print("🎯 PRECISION ELIMINATION - PRESERVING FUNCTIONALITY")
         
@@ -200,7 +198,7 @@ class SurgicalContaminationRemover:
                             print(f"   🔬 REMOVED: {surgical_result['removed']} harmful patterns")
                             print(f"   ✅ PRESERVED: {surgical_result['preserved']} legitimate patterns")
                         else:
-                            print(f"   ✅ CLEAN: No harmful contamination found")
+                            print("   ✅ CLEAN: No harmful contamination found")
                         
                         removal_report['preserved_legitimate_patterns'] += surgical_result['preserved']
                         removal_report['files_processed'] += 1
@@ -376,9 +374,9 @@ class SurgicalContaminationRemover:
         with open(report_filename, 'w') as f:
             json.dump(removal_report, f, indent=2, default=str)
         
-        print(f"\n🔬 SURGICAL REMOVAL COMPLETE!")
+        print("\n🔬 SURGICAL REMOVAL COMPLETE!")
         print("=" * 40)
-        print(f"📊 SURGICAL SUMMARY:")
+        print("📊 SURGICAL SUMMARY:")
         print(f"   Files processed: {removal_report['files_processed']}")
         print(f"   Files modified: {removal_report['files_modified']}")
         print(f"   Harmful contaminations removed: {removal_report['harmful_contaminations_removed']}")
@@ -411,9 +409,9 @@ def main():
     surgical_remover = SurgicalContaminationRemover()
     
     # Perform surgical removal
-    removal_report = surgical_remover.surgical_remove_contamination(root_path)
+    surgical_remover.surgical_remove_contamination(root_path)
     
-    print(f"\n🎉 SURGICAL REMOVAL OPERATIONAL!")
+    print("\n🎉 SURGICAL REMOVAL OPERATIONAL!")
     print("✅ Harmful contamination eliminated")
     print("✅ Script functionality preserved")
     print("✅ Testing infrastructure protected")

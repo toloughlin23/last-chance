@@ -12,15 +12,14 @@ Institutional-grade compliance system for UK/ROI corporate trading
 - NO development shortcuts
 """
 
-import os
 import json
-import time
-from datetime import datetime, UTC, timedelta
-from typing import Dict, List, Any, Optional, Tuple
-from dataclasses import dataclass, asdict
-from enum import Enum
 import logging
+import time
+from dataclasses import asdict, dataclass
+from datetime import UTC, datetime, timedelta
+from enum import Enum
 from pathlib import Path
+from typing import Any, Dict, List, Optional
 
 from utils.env_loader import load_env_from_known_locations
 
@@ -998,7 +997,7 @@ def main():
     print("🔍 Running compliance check...")
     report = compliance.run_compliance_check(test_context)
     
-    print(f"📊 Compliance Report:")
+    print("📊 Compliance Report:")
     print(f"   Overall Status: {report.overall_status.value}")
     print(f"   Compliance Score: {report.summary['compliance_score']:.1f}%")
     print(f"   Total Checks: {report.total_checks}")
@@ -1016,7 +1015,7 @@ def main():
     
     # Get metrics
     metrics = compliance.get_compliance_metrics()
-    print(f"\n📊 Compliance Metrics:")
+    print("\n📊 Compliance Metrics:")
     print(f"   Total Checks Performed: {metrics['total_checks_performed']}")
     print(f"   Compliance Violations: {metrics['compliance_violations']}")
     print(f"   Last Compliance Score: {metrics['last_compliance_score']:.1f}%")

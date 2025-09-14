@@ -1,6 +1,9 @@
 import os
+from datetime import datetime, timedelta
+from datetime import timezone as _timezone
+
 import pytest
-from datetime import datetime, timedelta, timezone as _timezone
+
 UTC = _timezone.utc
 
 from services.quotes_client import QuotesClient

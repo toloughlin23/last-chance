@@ -1,5 +1,6 @@
 import os
-from typing import Any, Dict, Optional, List
+from typing import Any, Dict, List, Optional
+
 import requests  # type: ignore[import-untyped]
 
 from utils.env_loader import load_env_from_known_locations

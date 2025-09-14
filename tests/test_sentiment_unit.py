@@ -1,4 +1,4 @@
-from services.sentiment import score_article, aggregate_symbol_sentiment
+from services.sentiment import aggregate_symbol_sentiment, score_article
 
 
 def test_score_article_basic():

@@ -4,11 +4,12 @@ Deep Diagnosis of Test Environment Issues
 100% GENUINE - NO SHORTCUTS - ALWAYS MAKE BETTER
 """
 
-import sys
+import importlib
 import os
 import subprocess
-import importlib
+import sys
 from pathlib import Path
+
 
 def diagnose_python_environment():
     """Diagnose Python environment and dependencies"""

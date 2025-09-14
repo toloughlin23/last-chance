@@ -4,10 +4,17 @@ Test the Ultra-Institutional Execution Bridge
 """
 
 import sys
+
 sys.path.append('.')
 
-from services.execution_bridge import UltraInstitutionalExecutionBridge, OrderSide, OrderType
 from decimal import Decimal
+
+from services.execution_bridge import (
+    OrderSide,
+    OrderType,
+    UltraInstitutionalExecutionBridge,
+)
+
 
 def test_execution_bridge():
     """Test the execution bridge"""

@@ -4,8 +4,8 @@ Environment Setup Script - 100% GENUINE
 Creates proper .env file for local development
 """
 
-import os
 from pathlib import Path
+
 
 def create_env_file():
     """Create .env file with proper configuration"""
@@ -55,5 +55,6 @@ if __name__ == "__main__":
         print("🎉 Environment setup complete!")
     else:
         print("❌ Environment setup failed!")
+
 
 

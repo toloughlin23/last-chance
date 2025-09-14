@@ -4,9 +4,11 @@ Debug aggs_data type issue
 """
 
 import sys
+
 sys.path.append('.')
 
 from pipeline.enhanced_runner import EnhancedPipelineRunner
+
 # nocontam: allow Development-time diagnostic tool; replaced mocks with genuine integration
 
 def debug_aggs_data():
@@ -22,10 +24,10 @@ def debug_aggs_data():
         print(f"🔍 aggs_data type: {type(aggs_data)}")
         print(f"🔍 aggs_data: {aggs_data}")
         if hasattr(aggs_data, 'get'):
-            print(f"🔍 Has get method: True")
+            print("🔍 Has get method: True")
             print(f"🔍 aggs_data.get('results'): {aggs_data.get('results')}")
         else:
-            print(f"🔍 Has get method: False")
+            print("🔍 Has get method: False")
         return alg_name, 0.5
     
     # Monkey patch the process_algorithm function to diagnose genuine pipeline flow

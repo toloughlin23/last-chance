@@ -21,10 +21,7 @@ def test_polygon_aggregates_daily_integration():
     assert data.get("status") in {"OK", "DELAYED"}
     assert "results" in data
 
-import os
 import pytest
-
-from services.polygon_client import PolygonClient
 
 
 @pytest.mark.integration

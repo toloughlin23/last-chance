@@ -1,4 +1,5 @@
 import os
+
 import pytest
 
 from utils.universe_selector import UniverseSelector

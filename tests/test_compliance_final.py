@@ -4,10 +4,14 @@ Test the UK/ROI Corporate Trading Compliance System with FULLY COMPLIANT data
 """
 
 import sys
+
 sys.path.append('.')
 
+from datetime import datetime, timedelta
+from datetime import timezone as _timezone
+
 from services.compliance_system import UKROIComplianceSystem
-from datetime import datetime, timedelta, timezone as _timezone
+
 UTC = _timezone.utc
 
 def test_compliance_system_final():
@@ -67,7 +71,7 @@ def test_compliance_system_final():
     print("🔍 Running compliance check with FULLY COMPLIANT data...")
     report = compliance.run_compliance_check(test_context)
     
-    print(f"📊 Compliance Report:")
+    print("📊 Compliance Report:")
     print(f"   Overall Status: {report.overall_status.value}")
     print(f"   Compliance Score: {report.summary['compliance_score']:.1f}%")
     print(f"   Total Checks: {report.total_checks}")
@@ -78,7 +82,7 @@ def test_compliance_system_final():
     print(f"   Regulatory Coverage: {report.summary['regulatory_coverage']}")
     
     # Show detailed results
-    print(f"\n📋 Detailed Check Results:")
+    print("\n📋 Detailed Check Results:")
     for check in report.checks:
         status_icon = "✅" if check.status.value == "compliant" else "❌"
         print(f"   {status_icon} {check.rule_id}: {check.status.value} - {check.message}")

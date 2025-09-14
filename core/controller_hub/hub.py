@@ -5,7 +5,6 @@ import threading
 from dataclasses import dataclass
 from typing import Callable, Dict, List, Optional
 
-
 MessageHandler = Callable[[object], None]
 
 
@@ -50,5 +49,6 @@ class Hub:
             except Exception:
                 # Non-fatal: continue delivering to other handlers
                 continue
+
 
 

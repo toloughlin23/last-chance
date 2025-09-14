@@ -1,5 +1,5 @@
-from typing import Any, Dict, Optional
 import time
+from typing import Any, Dict, Optional
 
 import requests  # type: ignore[import-untyped]
 

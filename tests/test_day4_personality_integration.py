@@ -1,8 +1,11 @@
-import numpy as np
-from systems.personality import AuthenticPersonalitySystem, PersonalityProfile
-from CORE_SUPER_BANDITS.optimized_linucb_institutional import OptimizedInstitutionalLinUCB
-from CORE_SUPER_BANDITS.optimized_neural_bandit_institutional import OptimizedInstitutionalNeuralBandit
+from CORE_SUPER_BANDITS.optimized_linucb_institutional import (
+    OptimizedInstitutionalLinUCB,
+)
+from CORE_SUPER_BANDITS.optimized_neural_bandit_institutional import (
+    OptimizedInstitutionalNeuralBandit,
+)
 from CORE_SUPER_BANDITS.optimized_ucbv_institutional import OptimizedInstitutionalUCBV
+from systems.personality import AuthenticPersonalitySystem, PersonalityProfile
 
 
 class _Sent:

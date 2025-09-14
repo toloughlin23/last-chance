@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import subprocess
-import sys
+
 
 def run_git_command(cmd):
     """Run a git command and return the result"""

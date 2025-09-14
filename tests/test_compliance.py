@@ -4,10 +4,14 @@ Test the UK/ROI Corporate Trading Compliance System
 """
 
 import sys
+
 sys.path.append('.')
 
+from datetime import datetime, timedelta
+from datetime import timezone as _timezone
+
 from services.compliance_system import UKROIComplianceSystem
-from datetime import datetime, timedelta, timezone as _timezone
+
 UTC = _timezone.utc
 
 def test_compliance_system():
@@ -52,7 +56,7 @@ def test_compliance_system():
     print("🔍 Running compliance check...")
     report = compliance.run_compliance_check(test_context)
     
-    print(f"📊 Compliance Report:")
+    print("📊 Compliance Report:")
     print(f"   Overall Status: {report.overall_status.value}")
     print(f"   Compliance Score: {report.summary['compliance_score']:.1f}%")
     print(f"   Total Checks: {report.total_checks}")
@@ -70,7 +74,7 @@ def test_compliance_system():
     
     # Get metrics
     metrics = compliance.get_compliance_metrics()
-    print(f"\n📊 Compliance Metrics:")
+    print("\n📊 Compliance Metrics:")
     print(f"   Total Checks Performed: {metrics['total_checks_performed']}")
     print(f"   Compliance Violations: {metrics['compliance_violations']}")
     print(f"   Last Compliance Score: {metrics['last_compliance_score']:.1f}%")

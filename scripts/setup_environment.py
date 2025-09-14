@@ -12,13 +12,8 @@ Comprehensive environment setup for institutional trading system with:
 """
 
 import os
-import sys
-import json
-import time
-import requests
 from pathlib import Path
-from typing import Dict, List, Tuple, Optional, Any
-from datetime import datetime
+
 
 def setup_environment():
     """Setup environment variables for the institutional trading system"""

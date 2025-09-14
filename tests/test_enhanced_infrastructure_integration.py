@@ -12,15 +12,20 @@ Test the 24-thread infrastructure with Redis caching
 - NO development shortcuts
 """
 
-import pytest
 import time
-import threading
-from datetime import datetime, timezone as _timezone
-UTC = _timezone.utc
-from unittest.mock import patch, MagicMock
+from datetime import datetime
+from datetime import timezone as _timezone
 
-from services.infrastructure_manager import InstitutionalInfrastructureManager, ResourceStats
+import pytest
+
+UTC = _timezone.utc
+from unittest.mock import patch
+
 from pipeline.enhanced_runner import EnhancedPipelineRunner
+from services.infrastructure_manager import (
+    InstitutionalInfrastructureManager,
+    ResourceStats,
+)
 
 
 class TestEnhancedInfrastructure:

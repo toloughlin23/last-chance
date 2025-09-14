@@ -1,6 +1,6 @@
-from pathlib import Path
-from typing import Iterable, Dict, Tuple
 import os
+from pathlib import Path
+from typing import Dict, Iterable, Tuple
 
 try:
     from dotenv import load_dotenv

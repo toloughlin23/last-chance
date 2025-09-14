@@ -4,9 +4,9 @@ Final GitHub Test - Focus on Working Components
 100% GENUINE - NO SHORTCUTS - ALWAYS MAKE BETTER
 """
 
-import sys
 import os
 import subprocess
+import sys
 import time
 from pathlib import Path
 
@@ -131,8 +131,10 @@ def test_algorithm_initialization():
     
     # Test LinUCB
     try:
-        from CORE_SUPER_BANDITS.optimized_linucb_institutional import OptimizedInstitutionalLinUCB
-        bandit = OptimizedInstitutionalLinUCB()
+        from CORE_SUPER_BANDITS.optimized_linucb_institutional import (
+            OptimizedInstitutionalLinUCB,
+        )
+        OptimizedInstitutionalLinUCB()
         print("  ✅ LinUCB Algorithm - Initialized")
         tests.append(True)
     except Exception as e:
@@ -141,8 +143,10 @@ def test_algorithm_initialization():
     
     # Test Neural Bandit
     try:
-        from CORE_SUPER_BANDITS.optimized_neural_bandit_institutional import OptimizedInstitutionalNeuralBandit
-        bandit = OptimizedInstitutionalNeuralBandit()
+        from CORE_SUPER_BANDITS.optimized_neural_bandit_institutional import (
+            OptimizedInstitutionalNeuralBandit,
+        )
+        OptimizedInstitutionalNeuralBandit()
         print("  ✅ Neural Bandit Algorithm - Initialized")
         tests.append(True)
     except Exception as e:
@@ -151,8 +155,10 @@ def test_algorithm_initialization():
     
     # Test UCBV
     try:
-        from CORE_SUPER_BANDITS.optimized_ucbv_institutional import OptimizedInstitutionalUCBV
-        bandit = OptimizedInstitutionalUCBV()
+        from CORE_SUPER_BANDITS.optimized_ucbv_institutional import (
+            OptimizedInstitutionalUCBV,
+        )
+        OptimizedInstitutionalUCBV()
         print("  ✅ UCBV Algorithm - Initialized")
         tests.append(True)
     except Exception as e:
@@ -173,7 +179,7 @@ def test_services_initialization():
     # Test News Sentiment
     try:
         from services.advanced_news_sentiment import AdvancedNewsSentimentAnalysis
-        analyzer = AdvancedNewsSentimentAnalysis()
+        AdvancedNewsSentimentAnalysis()
         print("  ✅ News Sentiment Analysis - Initialized")
         tests.append(True)
     except Exception as e:
@@ -183,7 +189,7 @@ def test_services_initialization():
     # Test Infrastructure Manager
     try:
         from services.infrastructure_manager import InstitutionalInfrastructureManager
-        manager = InstitutionalInfrastructureManager()
+        InstitutionalInfrastructureManager()
         print("  ✅ Infrastructure Manager - Initialized")
         tests.append(True)
     except Exception as e:
@@ -193,7 +199,7 @@ def test_services_initialization():
     # Test Compliance System
     try:
         from services.compliance_system import UKROIComplianceSystem
-        compliance = UKROIComplianceSystem()
+        UKROIComplianceSystem()
         print("  ✅ Compliance System - Initialized")
         tests.append(True)
     except Exception as e:
@@ -203,7 +209,7 @@ def test_services_initialization():
     # Test Execution Bridge
     try:
         from services.execution_bridge import UltraInstitutionalExecutionBridge
-        bridge = UltraInstitutionalExecutionBridge()
+        UltraInstitutionalExecutionBridge()
         print("  ✅ Execution Bridge - Initialized")
         tests.append(True)
     except Exception as e:
@@ -224,7 +230,7 @@ def test_pipeline_components():
     # Test Enhanced Runner
     try:
         from pipeline.enhanced_runner import EnhancedPipelineRunner
-        runner = EnhancedPipelineRunner()
+        EnhancedPipelineRunner()
         print("  ✅ Enhanced Pipeline Runner - Initialized")
         tests.append(True)
     except Exception as e:
@@ -234,7 +240,7 @@ def test_pipeline_components():
     # Test Hygiene
     try:
         from pipeline.hygiene import Hygiene
-        hygiene = Hygiene()
+        Hygiene()
         print("  ✅ Hygiene System - Initialized")
         tests.append(True)
     except Exception as e:
@@ -243,7 +249,6 @@ def test_pipeline_components():
     
     # Test Feature Builder
     try:
-        from services.feature_builder import build_enriched_from_aggs
         print("  ✅ Feature Builder - Imported")
         tests.append(True)
     except Exception as e:

@@ -5,8 +5,6 @@ DEEP GENUINE VERIFICATION - 100% NO SHORTCUTS SYSTEM VALIDATION
 """
 
 import sys
-import os
-import subprocess
 import time
 import traceback
 from pathlib import Path
@@ -152,7 +150,9 @@ class DeepGenuineVerifier:
         
         # Check caching integration
         try:
-            from services.infrastructure_manager import InstitutionalInfrastructureManager
+            from services.infrastructure_manager import (
+                InstitutionalInfrastructureManager,
+            )
             manager = InstitutionalInfrastructureManager()
             if manager.redis_enabled:
                 real_integrations.append("External caching - Real connection")
@@ -191,7 +191,9 @@ class DeepGenuineVerifier:
         
         # Check LinUCB
         try:
-            from CORE_SUPER_BANDITS.optimized_linucb_institutional import OptimizedInstitutionalLinUCB
+            from CORE_SUPER_BANDITS.optimized_linucb_institutional import (
+                OptimizedInstitutionalLinUCB,
+            )
             bandit = OptimizedInstitutionalLinUCB()
             
             # Verify it has all expected methods
@@ -211,7 +213,9 @@ class DeepGenuineVerifier:
         
         # Check Neural Bandit
         try:
-            from CORE_SUPER_BANDITS.optimized_neural_bandit_institutional import OptimizedInstitutionalNeuralBandit
+            from CORE_SUPER_BANDITS.optimized_neural_bandit_institutional import (
+                OptimizedInstitutionalNeuralBandit,
+            )
             bandit = OptimizedInstitutionalNeuralBandit()
             
             required_methods = [
@@ -230,7 +234,9 @@ class DeepGenuineVerifier:
         
         # Check UCBV
         try:
-            from CORE_SUPER_BANDITS.optimized_ucbv_institutional import OptimizedInstitutionalUCBV
+            from CORE_SUPER_BANDITS.optimized_ucbv_institutional import (
+                OptimizedInstitutionalUCBV,
+            )
             bandit = OptimizedInstitutionalUCBV()
             
             required_methods = [
@@ -269,11 +275,13 @@ class DeepGenuineVerifier:
         
         # Test Pipeline -> Algorithm integration
         try:
+            from CORE_SUPER_BANDITS.optimized_linucb_institutional import (
+                OptimizedInstitutionalLinUCB,
+            )
             from pipeline.enhanced_runner import EnhancedPipelineRunner
-            from CORE_SUPER_BANDITS.optimized_linucb_institutional import OptimizedInstitutionalLinUCB
             
             runner = EnhancedPipelineRunner()
-            bandit = OptimizedInstitutionalLinUCB()
+            OptimizedInstitutionalLinUCB()
             
             # Verify they can work together
             if hasattr(runner, 'algorithms') and 'linucb' in runner.algorithms:
@@ -309,10 +317,10 @@ class DeepGenuineVerifier:
         
         # Test Services -> Pipeline integration
         try:
-            from services.advanced_news_sentiment import AdvancedNewsSentimentAnalysis
             from pipeline.enhanced_runner import EnhancedPipelineRunner
+            from services.advanced_news_sentiment import AdvancedNewsSentimentAnalysis
             
-            analyzer = AdvancedNewsSentimentAnalysis()
+            AdvancedNewsSentimentAnalysis()
             runner = EnhancedPipelineRunner()
             
             if hasattr(runner, 'news_analyzer') and runner.news_analyzer:
@@ -325,18 +333,16 @@ class DeepGenuineVerifier:
         # Test Compliance -> Execution integration
         try:
             from services.compliance_system import UKROIComplianceSystem
-            from services.execution_bridge import UltraInstitutionalExecutionBridge, OrderSide
+            from services.execution_bridge import (
+                OrderSide,
+                UltraInstitutionalExecutionBridge,
+            )
             
-            compliance = UKROIComplianceSystem()
+            UKROIComplianceSystem()
             bridge = UltraInstitutionalExecutionBridge()
             
             if hasattr(bridge, 'compliance') and bridge.compliance:
                 # Test actual compliance integration
-                test_context = {
-                    'portfolio_value': 1000000,
-                    'positions': [{'symbol': 'AAPL', 'value': 100000}],
-                    'risk_metrics': {'var_95': 50000}
-                }
                 
                 # Test compliance check (use proper enum to avoid type errors)
                 compliance_ok, message = bridge._check_compliance("AAPL", 100, 150, OrderSide.BUY)
@@ -351,7 +357,9 @@ class DeepGenuineVerifier:
         
         # Test Infrastructure -> All components
         try:
-            from services.infrastructure_manager import InstitutionalInfrastructureManager
+            from services.infrastructure_manager import (
+                InstitutionalInfrastructureManager,
+            )
             manager = InstitutionalInfrastructureManager()
             
             if hasattr(manager, 'thread_pools') and len(manager.thread_pools) >= 4:
@@ -427,7 +435,9 @@ class DeepGenuineVerifier:
         
         # Check resource management
         try:
-            from services.infrastructure_manager import InstitutionalInfrastructureManager
+            from services.infrastructure_manager import (
+                InstitutionalInfrastructureManager,
+            )
             manager = InstitutionalInfrastructureManager()
             
             if hasattr(manager, 'memory_limit_mb') and manager.memory_limit_mb > 0:

@@ -12,11 +12,17 @@ Test the enhanced Advanced News Sentiment Analysis system
 """
 
 import os
+from datetime import datetime
+from datetime import timezone as _timezone
+
 import pytest
-from datetime import datetime, timezone as _timezone
+
 UTC = _timezone.utc
 
-from services.advanced_news_sentiment import AdvancedNewsSentimentAnalysis, SentimentResult
+from services.advanced_news_sentiment import (
+    AdvancedNewsSentimentAnalysis,
+    SentimentResult,
+)
 
 
 @pytest.mark.integration

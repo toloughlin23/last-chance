@@ -12,6 +12,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from learning.phase1_learning_loop import Phase1LearningLoop
 
+
 def test_phase1_learning_loop_initialization():
     """Test learning loop initialization"""
     symbols = ['AAPL', 'MSFT', 'GOOGL']

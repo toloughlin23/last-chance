@@ -5,7 +5,6 @@ Tests core functionality without full pytest suite
 """
 
 import sys
-import os
 from pathlib import Path
 
 # Add project root to path
@@ -72,7 +71,7 @@ def test_core_functionality():
     # Test News Sentiment
     try:
         from services.advanced_news_sentiment import AdvancedNewsSentimentAnalysis
-        analyzer = AdvancedNewsSentimentAnalysis()
+        AdvancedNewsSentimentAnalysis()
         print("  ✅ News Sentiment Analysis - Initialization")
         tests.append(True)
     except Exception as e:
@@ -82,7 +81,7 @@ def test_core_functionality():
     # Test Infrastructure Manager
     try:
         from services.infrastructure_manager import InstitutionalInfrastructureManager
-        manager = InstitutionalInfrastructureManager()
+        InstitutionalInfrastructureManager()
         print("  ✅ Infrastructure Manager - Initialization")
         tests.append(True)
     except Exception as e:
@@ -92,7 +91,7 @@ def test_core_functionality():
     # Test Compliance System
     try:
         from services.compliance_system import UKROIComplianceSystem
-        compliance = UKROIComplianceSystem()
+        UKROIComplianceSystem()
         print("  ✅ Compliance System - Initialization")
         tests.append(True)
     except Exception as e:
@@ -102,7 +101,7 @@ def test_core_functionality():
     # Test Feature Builder
     try:
         from services.feature_builder import FeatureBuilder
-        builder = FeatureBuilder()
+        FeatureBuilder()
         print("  ✅ Feature Builder - Initialization")
         tests.append(True)
     except Exception as e:

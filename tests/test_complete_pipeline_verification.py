@@ -4,11 +4,14 @@ Complete pipeline verification with real data
 """
 
 import sys
+
 sys.path.append('.')
 
-from pipeline.enhanced_runner import EnhancedPipelineRunner
-from unittest.mock import patch
 import time
+from unittest.mock import patch
+
+from pipeline.enhanced_runner import EnhancedPipelineRunner
+
 
 def test_complete_pipeline():
     """Test the complete pipeline with comprehensive verification"""
@@ -58,14 +61,14 @@ def test_complete_pipeline():
         end_time = time.time()
         duration = end_time - start_time
         
-        print(f"\n✅ PIPELINE EXECUTION COMPLETED")
+        print("\n✅ PIPELINE EXECUTION COMPLETED")
         print(f"⏱️  Duration: {duration:.2f} seconds")
         print(f"📊 Symbols processed: {len(test_symbols)}")
         print(f"🚀 Average time per symbol: {duration/len(test_symbols):.2f} seconds")
         
         # Verify results
         if results:
-            print(f"\n📈 RESULTS SUMMARY:")
+            print("\n📈 RESULTS SUMMARY:")
             for symbol, result in results.items():
                 print(f"  {symbol}: {result}")
         else:
@@ -73,7 +76,7 @@ def test_complete_pipeline():
     
     runner.shutdown()
     
-    print(f"\n🎯 COMPREHENSIVE VERIFICATION COMPLETE")
+    print("\n🎯 COMPREHENSIVE VERIFICATION COMPLETE")
     print("✅ All systems operational at institutional grade")
 
 if __name__ == "__main__":

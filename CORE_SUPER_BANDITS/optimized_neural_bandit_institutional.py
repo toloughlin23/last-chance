@@ -8,12 +8,14 @@ Deep learning multi-armed bandit with neural network approximation
 Target: >95% accuracy for institutional compliance
 """
 
-import numpy as np
 import math
 import time
-from typing import Dict, List, Any, Optional, Tuple
-from datetime import datetime
-from systems.personality import AuthenticPersonalitySystem, PersonalityProfile
+from typing import Any, Dict, List, Optional
+
+import numpy as np
+
+from systems.personality import AuthenticPersonalitySystem
+
 
 class OptimizedInstitutionalNeuralBandit:
     """
@@ -33,7 +35,7 @@ class OptimizedInstitutionalNeuralBandit:
         self.networks: Dict[str, Dict[str, Any]] = {}
         self.total_selections = 0
         
-        print(f"🧠 INSTITUTIONAL Neural Bandit initialized")
+        print("🧠 INSTITUTIONAL Neural Bandit initialized")
         print(f"✅ Features: {feature_dimension} dimensions")
         print(f"✅ Architecture: {feature_dimension} → {' → '.join(map(str, hidden_sizes))} → 1")
         print(f"✅ Learning rate: {learning_rate}")
@@ -127,7 +129,7 @@ class OptimizedInstitutionalNeuralBandit:
             0.45 * news_conf + 0.35 * sentiment_strength + 0.20 * min(1.0, vol * 20)
         )
         mc_norm = min(1.0, market_component)
-        score = max(0.0, 0.15 * base_confidence + 0.85 * mc_norm - uncertainty_penalty)
+        max(0.0, 0.15 * base_confidence + 0.85 * mc_norm - uncertainty_penalty)
         combined = 0.40 + min(0.55, 0.40 * mc_norm + 0.15 * base_confidence)
         
         # ULTRA-ENHANCED: Add neural network specific variation
@@ -371,7 +373,7 @@ class OptimizedInstitutionalNeuralBandit:
             
             # GENUINE ALGORITHMIC DIVERSITY: Neural Bandit focuses on non-linear patterns and learning
             # Create variation based on neural network characteristics that Neural Bandit naturally responds to
-            prediction_magnitude = abs(prediction)
+            abs(prediction)
             
             # Neural Bandit-specific confidence based on non-linear feature interactions
             feature_interactions = np.sum(features[:3] * features[3:6]) if len(features) >= 6 else 0.0
@@ -606,7 +608,7 @@ class OptimizedInstitutionalNeuralBandit:
             del self.networks[arm_id]
             self.add_arm(arm_id)
             return True
-        except Exception as e:
+        except Exception:
             return False
     
     def reset_all_arms(self) -> int:
@@ -617,7 +619,7 @@ class OptimizedInstitutionalNeuralBandit:
                 if self.reset_arm(arm_id):
                     reset_count += 1
             return reset_count
-        except Exception as e:
+        except Exception:
             return 0
 
 # Alias for compatibility

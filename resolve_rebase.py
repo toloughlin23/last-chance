@@ -3,9 +3,9 @@
 Resolve the stuck git rebase by completing the current commit
 and continuing the rebase process.
 """
-import subprocess
 import os
-import sys
+import subprocess
+
 
 def run_command(cmd, timeout=30):
     """Run a command with timeout"""

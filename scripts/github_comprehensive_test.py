@@ -4,9 +4,8 @@ GitHub Comprehensive Test Suite for Institutional AI Trading System
 100% GENUINE - NO SHORTCUTS - ALWAYS MAKE BETTER
 """
 
-import sys
-import os
 import subprocess
+import sys
 import time
 import traceback
 from pathlib import Path
@@ -72,7 +71,7 @@ class GitHubComprehensiveTester:
             else:
                 print("  ⚠️  GitHub CLI not authenticated (using Git credentials)")
                 tests.append(True)  # Still pass if Git works
-        except Exception as e:
+        except Exception:
             print("  ⚠️  GitHub CLI not available (using Git credentials)")
             tests.append(True)  # Still pass if Git works
         
@@ -167,7 +166,9 @@ class GitHubComprehensiveTester:
         
         # Test LinUCB
         try:
-            from CORE_SUPER_BANDITS.optimized_linucb_institutional import OptimizedInstitutionalLinUCB
+            from CORE_SUPER_BANDITS.optimized_linucb_institutional import (
+                OptimizedInstitutionalLinUCB,
+            )
             bandit = OptimizedInstitutionalLinUCB()
             
             # Test basic functionality
@@ -203,7 +204,9 @@ class GitHubComprehensiveTester:
         
         # Test Neural Bandit
         try:
-            from CORE_SUPER_BANDITS.optimized_neural_bandit_institutional import OptimizedInstitutionalNeuralBandit
+            from CORE_SUPER_BANDITS.optimized_neural_bandit_institutional import (
+                OptimizedInstitutionalNeuralBandit,
+            )
             bandit = OptimizedInstitutionalNeuralBandit()
             
             # Test basic functionality
@@ -239,7 +242,9 @@ class GitHubComprehensiveTester:
         
         # Test UCBV
         try:
-            from CORE_SUPER_BANDITS.optimized_ucbv_institutional import OptimizedInstitutionalUCBV
+            from CORE_SUPER_BANDITS.optimized_ucbv_institutional import (
+                OptimizedInstitutionalUCBV,
+            )
             bandit = OptimizedInstitutionalUCBV()
             
             # Test basic functionality
@@ -301,7 +306,9 @@ class GitHubComprehensiveTester:
         
         # Test Infrastructure Manager
         try:
-            from services.infrastructure_manager import InstitutionalInfrastructureManager
+            from services.infrastructure_manager import (
+                InstitutionalInfrastructureManager,
+            )
             manager = InstitutionalInfrastructureManager()
             
             # Test basic functionality

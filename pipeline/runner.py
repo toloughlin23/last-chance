@@ -1,23 +1,33 @@
-import os
 import csv
+import os
 import time
-from datetime import datetime, UTC
-from typing import List, Dict, Any, Tuple
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from datetime import UTC, datetime
+from typing import Any, Dict, List, Tuple
 
-from services.polygon_client import PolygonClient
-from services.feature_builder import build_enriched_from_aggs
-from CORE_SUPER_BANDITS.optimized_linucb_institutional import OptimizedInstitutionalLinUCB
-from CORE_SUPER_BANDITS.optimized_neural_bandit_institutional import OptimizedInstitutionalNeuralBandit
+from CORE_SUPER_BANDITS.optimized_linucb_institutional import (
+    OptimizedInstitutionalLinUCB,
+)
+from CORE_SUPER_BANDITS.optimized_neural_bandit_institutional import (
+    OptimizedInstitutionalNeuralBandit,
+)
 from CORE_SUPER_BANDITS.optimized_ucbv_institutional import OptimizedInstitutionalUCBV
-from services.alpaca_client import AlpacaClient
-from utils.uk_us_timezone_handler import get_uk_us_handler
-from pipeline.news_priority import build_priority, build_scores, save_priority, load_priority, save_priority_bundle, load_priority_bundle
-from utils.universe_selector import UniverseSelector
 from pipeline.hygiene import Hygiene
+from pipeline.news_priority import (
+    build_priority,
+    build_scores,
+    load_priority_bundle,
+    save_priority,
+    save_priority_bundle,
+)
+from services.alpaca_client import AlpacaClient
+from services.feature_builder import build_enriched_from_aggs
+from services.polygon_client import PolygonClient
 from services.sp500_client import SP500Client
 from utils.sp500_cache import SP500Cache
 from utils.symbols_validator import filter_symbols_present_on_polygon
+from utils.uk_us_timezone_handler import get_uk_us_handler
+from utils.universe_selector import UniverseSelector
 
 
 def run_once_min(symbols: List[str], days: int = 7, log_path: str = "pipeline_min_log.csv") -> None:
@@ -245,7 +255,7 @@ def run_loop(symbols: List[str], lookback_days: int, interval_seconds: int, exec
     tz = get_uk_us_handler()
     client = PolygonClient()
     count = 0
-    hygiene = Hygiene()
+    Hygiene()
     used_today_priority = False
     booster_pass_done_today = False
     last_us_date = None

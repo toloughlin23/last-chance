@@ -16,23 +16,19 @@ REVOLUTIONARY FEATURES:
 NEVER MANUALLY CHECK AGAIN - FULLY AUTOMATED PROTECTION!
 """
 
+import ast
+import json
+import logging
 import os
 import re
-import ast
 import time
-import json
-import hashlib
-import threading
+from dataclasses import asdict, dataclass
 from datetime import datetime
-from typing import Dict, List, Set, Any, Tuple, Optional
-from pathlib import Path
-from dataclasses import dataclass, asdict
 from enum import Enum
-import logging
-from watchdog.observers import Observer
+from typing import Dict, List
+
 from watchdog.events import FileSystemEventHandler
-import subprocess
-import difflib
+from watchdog.observers import Observer
 
 # Configure logging
 logging.basicConfig(
@@ -251,7 +247,7 @@ class UltraAdvancedContaminationDetector:
                     except Exception as e:
                         logger.error(f"Error scanning {file_path}: {e}")
         
-        print(f"\n📊 EXISTING CODEBASE SCAN COMPLETE:")
+        print("\n📊 EXISTING CODEBASE SCAN COMPLETE:")
         print(f"   Files scanned: {total_files_scanned}")
         print(f"   Contaminations found: {total_contaminations_found}")
         print(f"   Contaminated files: {len(contamination_report)}")
@@ -301,7 +297,7 @@ class UltraAdvancedContaminationDetector:
         contaminations = []
         
         for line_num, line in enumerate(lines, 1):
-            line_lower = line.lower().strip()
+            line.lower().strip()
             
             for contamination_type, pattern_info in self.contamination_patterns.items():
                 for pattern in pattern_info['patterns']:
@@ -536,7 +532,7 @@ class UltraAdvancedContaminationPreventionSystem:
         self.monitor = RealTimeContaminationMonitor(self.detector)
         self.observer = Observer()
         
-        print(f"\n🛡️ ULTRA-ADVANCED CONTAMINATION PREVENTION SYSTEM READY")
+        print("\n🛡️ ULTRA-ADVANCED CONTAMINATION PREVENTION SYSTEM READY")
         print(f"📁 Monitoring: {root_path}")
         print("🎯 100% GENUINE - NO SHORTCUTS - ALWAYS MAKE BETTER")
 
@@ -555,7 +551,7 @@ class UltraAdvancedContaminationPreventionSystem:
         existing_contaminations = self.detector.scan_existing_codebase(self.root_path)
         
         if existing_contaminations:
-            print(f"\n🚨 EXISTING CONTAMINATION SUMMARY:")
+            print("\n🚨 EXISTING CONTAMINATION SUMMARY:")
             print(f"   Contaminated files: {len(existing_contaminations)}")
             total_issues = sum(len(contaminations) for contaminations in existing_contaminations.values())
             print(f"   Total issues: {total_issues}")
@@ -631,7 +627,7 @@ class UltraAdvancedContaminationPreventionSystem:
             except Exception as e:
                 logger.error(f"Error auto-fixing {file_path}: {e}")
         
-        print(f"\n🎉 AUTOMATIC ELIMINATION COMPLETE!")
+        print("\n🎉 AUTOMATIC ELIMINATION COMPLETE!")
         print(f"   Fixes applied: {fixes_applied}")
 
     def replace_random_with_genuine(self, line: str) -> str:

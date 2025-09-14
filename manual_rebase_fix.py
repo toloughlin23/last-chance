@@ -7,7 +7,7 @@ Manually resolve the stuck git rebase by:
 """
 import os
 import subprocess
-import sys
+
 
 def run_git_command(cmd, timeout=15):
     """Run git command with timeout"""

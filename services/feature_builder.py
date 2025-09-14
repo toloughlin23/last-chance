@@ -1,6 +1,6 @@
-from dataclasses import dataclass
-from typing import List, Dict, Any
 import math
+from dataclasses import dataclass
+from typing import Any, Dict, List
 
 
 @dataclass
@@ -123,10 +123,10 @@ def build_enriched_from_aggs(aggs: Dict[str, Any]) -> EnrichedData:
     last_low_raw = last.get("l", last_price)
     last_close_raw = last.get("c", last_price)
     
-    last_open = float(last_open_raw[0] if isinstance(last_open_raw, list) and last_open_raw else last_open_raw)
+    float(last_open_raw[0] if isinstance(last_open_raw, list) and last_open_raw else last_open_raw)
     last_high = float(last_high_raw[0] if isinstance(last_high_raw, list) and last_high_raw else last_high_raw)
     last_low = float(last_low_raw[0] if isinstance(last_low_raw, list) and last_low_raw else last_low_raw)
-    last_close = float(last_close_raw[0] if isinstance(last_close_raw, list) and last_close_raw else last_close_raw)
+    float(last_close_raw[0] if isinstance(last_close_raw, list) and last_close_raw else last_close_raw)
 
     return EnrichedData(
         sentiment_analysis=SentimentData(

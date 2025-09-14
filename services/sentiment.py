@@ -1,5 +1,5 @@
-from typing import Dict, Any, List
 import math
+from typing import Any, Dict, List
 
 
 def score_article(article: Dict[str, Any]) -> float:
@@ -8,7 +8,6 @@ def score_article(article: Dict[str, Any]) -> float:
     """
     title = (article.get("title") or "").lower()
     description = (article.get("description") or "").lower()
-    amp_score = 0.0
 
     # Basic positive/negative cues
     positives = ["beat", "surge", "rally", "upgrade", "record", "growth", "raise guidance"]

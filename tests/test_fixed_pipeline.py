@@ -4,10 +4,13 @@ Test the fixed pipeline
 """
 
 import sys
+
 sys.path.append('.')
 
-from pipeline.enhanced_runner import EnhancedPipelineRunner
 from unittest.mock import patch
+
+from pipeline.enhanced_runner import EnhancedPipelineRunner
+
 
 def test_fixed_pipeline():
     """Test the fixed pipeline"""

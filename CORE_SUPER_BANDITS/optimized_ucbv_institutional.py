@@ -14,15 +14,16 @@ ONLY uses:
 100% GENUINE - NO SHORTCUTS - ALWAYS MAKE BETTER
 """
 
-import numpy as np
+import json
 import math
 import time
-from typing import Dict, List, Any, Tuple, Callable, cast, Optional
 from datetime import datetime
-import json
-import os
+from typing import Any, Callable, Dict, List, Optional, Tuple, cast
+
+import numpy as np
 from dotenv import load_dotenv
-from systems.personality import AuthenticPersonalitySystem, PersonalityProfile
+
+from systems.personality import AuthenticPersonalitySystem
 
 # Load real credentials
 load_dotenv()
@@ -83,7 +84,7 @@ class OptimizedInstitutionalUCBV:
         self.position_history: List[Dict[str, float]] = []
         
         print("✅ GENUINE Institutional UCB-V initialized")
-        print(f"🔒 NO synthetic datasets will be accepted")
+        print("🔒 NO synthetic datasets will be accepted")
         print(f"📊 Features: {self.feature_dimension}")
         print(f"📈 Confidence: {self.min_confidence*100:.0f}-{self.max_confidence*100:.0f}%")
         print(f"🎯 Actions: {len(self.actions)} trading strategies")
@@ -120,7 +121,7 @@ class OptimizedInstitutionalUCBV:
         if 'results' in polygon_data and polygon_data['results']:
             price = polygon_data['results'].get('p', 0)
             volume = polygon_data['results'].get('s', 100)
-            timestamp = polygon_data['results'].get('t', 0)
+            polygon_data['results'].get('t', 0)
         else:
             raise ValueError("❌ Invalid Polygon data structure")
         
@@ -137,7 +138,7 @@ class OptimizedInstitutionalUCBV:
         price_change = ((price - prev_close) / prev_close) * 100 if prev_close > 0 else 0
         price_range = high - low
         price_position = (price - low) / price_range if price_range > 0 else 0.5
-        volatility = price_range / price if price > 0 else 0.02
+        price_range / price if price > 0 else 0.02
         
         # Variance indicators
         price_variance = abs(price - vwap) / vwap if vwap > 0 else 0
@@ -261,7 +262,7 @@ class OptimizedInstitutionalUCBV:
         score = base_score if base_score != float('inf') else 1000.0
         
         # Extract indicators
-        price_change = features[0]
+        features[0]
         price_position = (features[1] + 1) / 2
         price_variance = features[2]
         spread = features[8]
@@ -496,7 +497,7 @@ class OptimizedInstitutionalUCBV:
             reward *= 1.2  # Penalty for slow losses
         
         # Update statistics
-        old_mean = self._to_float(arm['mean_reward'])
+        self._to_float(arm['mean_reward'])
         pulls = self._to_int(arm['pulls']) + 1
         total_reward = self._to_float(arm['total_reward']) + reward
         total_reward_squared = self._to_float(arm['total_reward_squared']) + reward ** 2
@@ -1133,7 +1134,7 @@ class OptimizedInstitutionalUCBV:
                 'last_updated': None
             }
             return True
-        except Exception as e:
+        except Exception:
             return False
     
     def reset_all_arms(self) -> int:
@@ -1144,7 +1145,7 @@ class OptimizedInstitutionalUCBV:
                 if self.reset_arm(arm_id):
                     reset_count += 1
             return reset_count
-        except Exception as e:
+        except Exception:
             return 0
 
 

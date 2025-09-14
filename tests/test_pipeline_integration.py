@@ -12,19 +12,20 @@ Test complete pipeline integration with real data flow
 - NO development shortcuts
 """
 
-import sys
 import time
-from datetime import datetime, timedelta, timezone as _timezone
+from datetime import datetime, timedelta
+from datetime import timezone as _timezone
 from unittest.mock import patch
+
+import pytest
 
 # Portable UTC constant for mypy compatibility
 UTC = _timezone.utc
-from unittest.mock import patch
 
 from pipeline.enhanced_runner import EnhancedPipelineRunner
-from services.infrastructure_manager import InstitutionalInfrastructureManager
-from services.compliance_system import UKROIComplianceSystem
 from services.advanced_news_sentiment import AdvancedNewsSentimentAnalysis
+from services.compliance_system import UKROIComplianceSystem
+from services.infrastructure_manager import InstitutionalInfrastructureManager
 
 
 class TestPipelineIntegration:
@@ -389,7 +390,11 @@ def test_integration_workflow():
     
     # Test caching performance
     for i in range(100):
-        test_data = {"id": i, "data": f"test_data_{i}", "timestamp": datetime.now(UTC).isoformat()}
+        test_data = {
+            "id": i,
+            "data": f"test_data_{i}",
+            "timestamp": datetime.now(UTC).isoformat(),
+        }
         infra.cache_data(f"perf_test_{i}", test_data, ttl=60)
     
     # Retrieve cached data
@@ -400,7 +405,8 @@ def test_integration_workflow():
     
     # Get performance report
     report = infra.get_performance_report()
-    print(f"📊 Performance report: {report['performance_metrics']['total_tasks_completed']} tasks completed")
+    total_done = report['performance_metrics']['total_tasks_completed']
+    print(f"📊 Performance report: {total_done} tasks completed")
     
     # Shutdown
     runner.shutdown()

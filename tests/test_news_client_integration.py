@@ -1,4 +1,5 @@
 import os
+
 import pytest
 
 from services.news_client import NewsClient

@@ -4,9 +4,8 @@ Comprehensive Test Runner for Institutional AI Trading System
 100% GENUINE - NO SHORTCUTS - ALWAYS MAKE BETTER
 """
 
-import sys
-import os
 import subprocess
+import sys
 import time
 from pathlib import Path
 
@@ -151,7 +150,7 @@ class InstitutionalTestRunner:
                         print(f"      Error: {result['error']}")
         
         print(f"\n{'='*60}")
-        print(f"📈 OVERALL RESULTS:")
+        print("📈 OVERALL RESULTS:")
         print(f"   Total Tests: {total_tests}")
         print(f"   ✅ Passed: {passed_tests}")
         print(f"   ❌ Failed: {failed_tests}")

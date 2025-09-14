@@ -3,7 +3,7 @@
 Fix terminal blocking by disabling pre-commit hooks and creating fresh GitHub connection
 """
 import os
-import shutil
+
 
 def main():
     print("=== Fixing Terminal Blocking Issue ===")

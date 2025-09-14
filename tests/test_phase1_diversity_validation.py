@@ -8,24 +8,28 @@ Validates >15% algorithmic variance across all 3 optimized algorithms
 with real Polygon market data to ensure Bronze Tier compliance.
 """
 
+import time
+from typing import Any, Dict, List
+
 import numpy as np
 import pytest
-import time
-from typing import Dict, List, Any, Tuple
 from dotenv import load_dotenv
-import os
 
 # Load environment
 load_dotenv()
 
 # Import all 3 optimized algorithms
-from CORE_SUPER_BANDITS.optimized_linucb_institutional import OptimizedInstitutionalLinUCB
-from CORE_SUPER_BANDITS.optimized_neural_bandit_institutional import OptimizedInstitutionalNeuralBandit
+from CORE_SUPER_BANDITS.optimized_linucb_institutional import (
+    OptimizedInstitutionalLinUCB,
+)
+from CORE_SUPER_BANDITS.optimized_neural_bandit_institutional import (
+    OptimizedInstitutionalNeuralBandit,
+)
 from CORE_SUPER_BANDITS.optimized_ucbv_institutional import OptimizedInstitutionalUCBV
-from systems.personality import AuthenticPersonalitySystem, PersonalityProfile
-from services.polygon_client import PolygonClient
 from services.news_client import NewsClient
-from services.feature_builder import build_enriched_from_aggs
+from services.polygon_client import PolygonClient
+from systems.personality import AuthenticPersonalitySystem, PersonalityProfile
+
 
 class Phase1DiversityValidator:
     """
@@ -120,7 +124,7 @@ class Phase1DiversityValidator:
         low = raw_data.get('l', 100.0)
         open_price = raw_data.get('o', 100.0)
         volume = raw_data.get('v', 1000000)
-        timestamp = raw_data.get('t', int(time.time() * 1000))
+        raw_data.get('t', int(time.time() * 1000))
         
         # Feature 1: Sentiment score (simulated based on price movement)
         price_change = (price - open_price) / max(open_price, 0.01)
@@ -287,8 +291,11 @@ class Phase1DiversityValidator:
                     
                     # UCB-V confidence
                     print(f"🔍 Testing UCB-V with features: {features[:3]}...")
-                    ucbv_confidence = self.algorithms['ucbv'].get_confidence_for_context(
-                        'buy_signal', features, features
+                    ucbv = self.algorithms['ucbv']
+                    ucbv_confidence = ucbv.get_confidence_for_context(
+                        'buy_signal',
+                        features,
+                        features,
                     )
                     print(f"   UCB-V result: {ucbv_confidence}")
                     all_confidence_scores['ucbv'].append(ucbv_confidence)
@@ -308,7 +315,10 @@ class Phase1DiversityValidator:
             'bronze_tier_compliant': diversity_metrics['overall_variance'] > 0.15
         }
     
-    def _calculate_diversity_metrics(self, confidence_scores: Dict[str, List[float]]) -> Dict[str, Any]:
+    def _calculate_diversity_metrics(
+        self,
+        confidence_scores: Dict[str, List[float]],
+    ) -> Dict[str, Any]:
         """Calculate comprehensive diversity metrics"""
         metrics: Dict[str, Any] = {}
         
@@ -334,7 +344,9 @@ class Phase1DiversityValidator:
             
             # Calculate coefficient of variation (CV) as diversity measure
             if metrics['overall_mean'] > 0:
-                metrics['coefficient_of_variation'] = float(metrics['overall_std'] / metrics['overall_mean'])
+                overall_std = metrics['overall_std']
+                overall_mean = metrics['overall_mean']
+                metrics['coefficient_of_variation'] = float(overall_std / overall_mean)
             else:
                 metrics['coefficient_of_variation'] = 0.0
         
@@ -359,7 +371,10 @@ class Phase1DiversityValidator:
         
         return metrics
     
-    def validate_bronze_tier_compliance(self, diversity_results: Dict[str, Any]) -> bool:
+    def validate_bronze_tier_compliance(
+        self,
+        diversity_results: Dict[str, Any],
+    ) -> bool:
         """Validate Bronze Tier compliance (>15% variance requirement)"""
         metrics = diversity_results['diversity_metrics']
         
@@ -373,9 +388,12 @@ class Phase1DiversityValidator:
         bronze_tier_compliant = any(variance_checks)
         
         print("\n🎯 BRONZE TIER VALIDATION RESULTS:")
-        print(f"   Overall Variance: {metrics.get('overall_variance', 0):.4f} (>0.15 required)")
-        print(f"   Coefficient of Variation: {metrics.get('coefficient_of_variation', 0):.4f} (>0.15 required)")
-        print(f"   Cross-Algorithm Variance: {metrics.get('cross_algorithm_variance', 0):.4f} (>0.15 required)")
+        ov = metrics.get('overall_variance', 0)
+        cv = metrics.get('coefficient_of_variation', 0)
+        cav = metrics.get('cross_algorithm_variance', 0)
+        print(f"   Overall Variance: {ov:.4f} (>0.15 required)")
+        print(f"   Coefficient of Variation: {cv:.4f} (>0.15 required)")
+        print(f"   Cross-Algorithm Variance: {cav:.4f} (>0.15 required)")
         status = '✅ YES' if bronze_tier_compliant else '❌ NO'
         print(f"   Bronze Tier Compliant: {status}")
         
@@ -404,7 +422,10 @@ def test_phase1_diversity_validation():
     
     # Measure diversity
     print("\n📈 Measuring algorithmic diversity...")
-    diversity_results = validator.measure_algorithm_diversity(features_list, iterations=1)
+    diversity_results = validator.measure_algorithm_diversity(
+        features_list,
+        iterations=1,
+    )
     
     # Debug: Show individual algorithm confidence scores
     print("\n🔍 DEBUGGING: Individual Algorithm Confidence Scores")
@@ -428,9 +449,10 @@ def test_phase1_diversity_validation():
     # Additional diversity assertions
     metrics = diversity_results['diversity_metrics']
     assert metrics.get('overall_variance', 0) > 0.15, "Overall variance insufficient"
-    assert len(diversity_results['confidence_scores']['linucb']) > 0, "LinUCB no confidence scores"
-    assert len(diversity_results['confidence_scores']['neural']) > 0, "Neural no confidence scores"
-    assert len(diversity_results['confidence_scores']['ucbv']) > 0, "UCB-V no confidence scores"
+    conf_scores = diversity_results['confidence_scores']
+    assert len(conf_scores['linucb']) > 0, "LinUCB no confidence scores"
+    assert len(conf_scores['neural']) > 0, "Neural no confidence scores"
+    assert len(conf_scores['ucbv']) > 0, "UCB-V no confidence scores"
     
     print("\n✅ PHASE 1 DIVERSITY VALIDATION PASSED")
     print("✅ Bronze Tier compliance achieved")
@@ -454,7 +476,10 @@ def test_phase1_algorithm_individual_performance():
         
         # Test confidence calculation
         try:
-            confidence = algorithm.get_confidence_for_context('buy_signal', test_features)
+            confidence = algorithm.get_confidence_for_context(
+                'buy_signal',
+                test_features,
+            )
             assert 0.0 <= confidence <= 1.0, f"{algo_name} confidence out of bounds"
             print(f"   ✅ {algo_name} confidence: {confidence:.4f}")
         except Exception as e:
@@ -467,7 +492,7 @@ def test_phase1_algorithm_individual_performance():
             try:
                 conf = algorithm.get_confidence_for_context('buy_signal', test_features)
                 confidences.append(conf)
-            except:
+            except Exception:
                 continue
         
         if confidences:

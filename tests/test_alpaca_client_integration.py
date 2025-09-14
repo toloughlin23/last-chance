@@ -1,4 +1,5 @@
 import os
+
 import pytest
 
 from services.alpaca_client import AlpacaClient

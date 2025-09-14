@@ -4,11 +4,14 @@ Verify Enhanced Pipeline is using 24-thread infrastructure
 """
 
 import sys
+
 sys.path.append('.')
 
-from pipeline.enhanced_runner import EnhancedPipelineRunner
-from unittest.mock import patch, MagicMock
 import time
+from unittest.mock import patch
+
+from pipeline.enhanced_runner import EnhancedPipelineRunner
+
 
 def test_enhanced_pipeline_verification():
     """Verify enhanced pipeline uses 24-thread infrastructure"""

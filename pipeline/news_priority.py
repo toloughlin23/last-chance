@@ -1,10 +1,10 @@
-from typing import List, Dict, Any, Tuple
-from datetime import datetime, timedelta, UTC
 import json
 import os
+from datetime import UTC, datetime, timedelta
+from typing import Dict, List, Tuple
 
 from services.news_client import NewsClient
-from services.sentiment import aggregate_symbol_sentiment, score_article
+from services.sentiment import aggregate_symbol_sentiment
 
 
 def build_scores(symbols: List[str], lookback_hours: int = 16, per_symbol_limit: int = 25) -> Dict[str, float]:

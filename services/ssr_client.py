@@ -1,7 +1,7 @@
 import os
-from typing import Dict, List, Optional
-from datetime import datetime, timedelta, UTC
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from datetime import UTC, datetime, timedelta
+from typing import Dict, List, Optional
 
 from services.http import HttpClient
 from services.polygon_client import PolygonClient
@@ -30,7 +30,6 @@ class SSRClient:
 
     def ssr_active_today(self, symbols: List[str], us_open_local: datetime) -> Dict[str, bool]:
         # Determine SSR based on 10% decline from prior close at any time during the day
-        from datetime import timedelta
         prev_date = (us_open_local.date() - timedelta(days=1)).isoformat()
         open_utc = us_open_local.astimezone(UTC)
         close_utc = us_open_local.replace(hour=16, minute=0, second=0, microsecond=0).astimezone(UTC)

@@ -2,10 +2,11 @@
 """
 Direct test runner that bypasses pytest issues
 """
-import sys
-import os
 import importlib.util
+import os
+import sys
 import traceback
+
 
 def run_test_file(test_file):
     """Run a single test file"""
@@ -78,14 +79,14 @@ def main():
         total_failed += failed
     
     print(f"\n{'='*60}")
-    print(f"FINAL SUMMARY")
+    print("FINAL SUMMARY")
     print(f"{'='*60}")
     print(f"✅ Total Passed: {total_passed}")
     print(f"❌ Total Failed: {total_failed}")
     print(f"📊 Total Tests: {total_passed + total_failed}")
     
     if total_failed == 0:
-        print(f"🎉 ALL TESTS PASSED!")
+        print("🎉 ALL TESTS PASSED!")
         return 0
     else:
         print(f"⚠️  {total_failed} tests failed")
