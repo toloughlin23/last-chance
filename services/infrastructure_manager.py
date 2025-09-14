@@ -19,9 +19,8 @@ import threading
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
-from datetime import datetime, timezone as _timezone
-
-UTC = _timezone.utc
+from datetime import datetime
+from datetime import timezone as _timezone
 from threading import Lock
 from typing import Any, Callable, Dict, List, Optional, Tuple
 
@@ -29,6 +28,8 @@ import psutil
 
 # High-performance in-memory caching (Redis-free architecture)
 from utils.env_loader import load_env_from_known_locations
+
+UTC = _timezone.utc
 
 
 @dataclass

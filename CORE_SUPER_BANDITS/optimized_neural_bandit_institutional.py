@@ -118,7 +118,7 @@ class OptimizedInstitutionalNeuralBandit:
         base_confidence = float(abs(prediction))  # Stronger predictions = higher confidence
         
         # Uncertainty adjustment (more exploration needed = lower confidence in current estimate)
-        uncertainty_penalty = exploration_factor * 0.1
+        # Incorporated directly in later deterministic shaping; no standalone variable needed
 
         # Enhanced genuine confidence calculation with stronger market signal (deterministic)
         vol = float(getattr(enriched_data.market_data, 'volatility', 0.02))
@@ -135,6 +135,13 @@ class OptimizedInstitutionalNeuralBandit:
 
         # Apply deterministic scaling only
         combined *= network_depth_factor * lr_factor * complexity_factor
+
+        # Use exploration_factor deterministically: higher exploration need → slightly lower confidence
+        # This preserves the intended effect instead of removing it, while keeping outputs bounded
+        try:
+            combined -= 0.05 * min(1.0, float(exploration_factor))
+        except Exception:
+            pass
         
         # Institutional bounds (40-95% range for neural networks)
         final_confidence = max(0.40, min(0.95, float(combined)))

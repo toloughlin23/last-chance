@@ -15,9 +15,8 @@ Ultra-institutional execution bridge with real Alpaca integration
 import logging
 import time
 from dataclasses import dataclass
-from datetime import datetime, timedelta, timezone as _timezone
-
-UTC = _timezone.utc
+from datetime import datetime, timedelta
+from datetime import timezone as _timezone
 from decimal import ROUND_DOWN, Decimal
 from enum import Enum
 from typing import Any, Dict, List, Optional, Tuple
@@ -26,6 +25,8 @@ from services.alpaca_client import AlpacaClient
 from services.compliance_system import UKROIComplianceSystem
 from services.infrastructure_manager import InstitutionalInfrastructureManager
 from utils.env_loader import load_env_from_known_locations
+
+UTC = _timezone.utc
 
 
 class OrderType(Enum):

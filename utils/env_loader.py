@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import Dict, Iterable, List, Tuple
 
 try:
-    from dotenv import load_dotenv, find_dotenv
+    from dotenv import find_dotenv, load_dotenv
 except Exception:
     # If python-dotenv is not installed, the loader will be a no-op.
     def load_dotenv(*args, **kwargs):  # type: ignore

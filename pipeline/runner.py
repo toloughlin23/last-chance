@@ -2,9 +2,8 @@ import csv
 import os
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from datetime import datetime, timezone as _timezone
-
-UTC = _timezone.utc
+from datetime import datetime
+from datetime import timezone as _timezone
 from typing import Any, Dict, List, Tuple
 
 from CORE_SUPER_BANDITS.optimized_linucb_institutional import (
@@ -30,6 +29,8 @@ from utils.sp500_cache import SP500Cache
 from utils.symbols_validator import filter_symbols_present_on_polygon
 from utils.uk_us_timezone_handler import get_uk_us_handler
 from utils.universe_selector import UniverseSelector
+
+UTC = _timezone.utc
 
 
 def run_once_min(symbols: List[str], days: int = 7, log_path: str = "pipeline_min_log.csv") -> None:

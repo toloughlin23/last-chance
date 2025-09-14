@@ -1,13 +1,14 @@
 import os
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from datetime import datetime, timedelta, timezone as _timezone
-
-UTC = _timezone.utc
+from datetime import datetime, timedelta
+from datetime import timezone as _timezone
 from typing import Dict, List, Optional
 
 from services.http import HttpClient
 from services.polygon_client import PolygonClient
 from utils.env_loader import load_env_from_known_locations
+
+UTC = _timezone.utc
 
 
 class SSRClient:

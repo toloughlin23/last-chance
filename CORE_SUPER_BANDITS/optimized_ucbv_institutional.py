@@ -1014,7 +1014,9 @@ class OptimizedInstitutionalUCBV:
             # Directional sensitivity to early features to avoid identical mapping across close contexts
             dir_term = 0.0
             if features_arr is not None and len(features_arr) >= 3:
-                f0 = float(features_arr[0]); f1 = float(features_arr[1]); f2 = float(features_arr[2])
+                f0 = float(features_arr[0])
+                f1 = float(features_arr[1])
+                f2 = float(features_arr[2])
                 dir_term = 0.06 * math.tanh(20.0 * (0.6 * f0 + 0.3 * f1 + 0.1 * f2))
 
             raw = 0.12 + 0.14 * s_std + 0.10 * s_norm + 0.06 * s_range + 0.02 * s_head + dir_term

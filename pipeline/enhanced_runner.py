@@ -14,9 +14,8 @@
 import csv
 import os
 import time
-from datetime import date, datetime, timedelta, timezone as _timezone
-
-UTC = _timezone.utc
+from datetime import date, datetime, timedelta
+from datetime import timezone as _timezone
 from typing import Any, Dict, List, Optional, Tuple
 
 from CORE_SUPER_BANDITS.optimized_linucb_institutional import (
@@ -34,6 +33,8 @@ from services.infrastructure_manager import InstitutionalInfrastructureManager
 from services.polygon_client import PolygonClient
 from utils.uk_us_timezone_handler import get_uk_us_handler
 from utils.universe_selector import UniverseSelector
+
+UTC = _timezone.utc
 
 
 class EnhancedPipelineRunner:

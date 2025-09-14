@@ -16,14 +16,15 @@ import json
 import logging
 import time
 from dataclasses import asdict, dataclass
-from datetime import datetime, timedelta, timezone as _timezone
-
-UTC = _timezone.utc
+from datetime import datetime, timedelta
+from datetime import timezone as _timezone
 from enum import Enum
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 from utils.env_loader import load_env_from_known_locations
+
+UTC = _timezone.utc
 
 
 class ComplianceLevel(Enum):
