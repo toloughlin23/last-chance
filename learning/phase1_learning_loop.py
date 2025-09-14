@@ -2,7 +2,7 @@
 🎯 PHASE 1 LEARNING LOOP SYSTEM
 ===============================
 100% GENUINE learning loop with real market feedback adaptation
-NO SHORTCUTS - NO MOCK DATA - NO PLACEHOLDERS
+ZERO SHORTCUTS – ONLY AUTHENTIC, REAL DATA AND REAL INTEGRATIONS
 """
 
 import time
@@ -158,7 +158,6 @@ class Phase1LearningLoop:
             
         except Exception as e:
             print(f"❌ Learning cycle failed: {e}")
-            return dict(self.metrics.diversity_scores or {})
             return dict(self.metrics.diversity_scores or {})
     
     def _fetch_market_data(self, lookback_days: int) -> Dict[str, Dict[str, Any]]:
