@@ -142,13 +142,13 @@ jobs:
     - name: Run system validation
       run: |
         python -c "
-        from CORE_SUPER_BANDITS.optimized_linucb_institutional import LinUCBInstitutional
+        from CORE_SUPER_BANDITS.optimized_linucb_institutional import OptimizedInstitutionalLinUCB
         from CORE_SUPER_BANDITS.neural_bandit_institutional import NeuralBanditInstitutional
         from CORE_SUPER_BANDITS.ucbv_bandit_institutional import UCBVInstitutional
         import numpy as np
         
         # Test all algorithms
-        linucb = LinUCBInstitutional()
+        linucb = OptimizedInstitutionalLinUCB()
         neural = NeuralBanditInstitutional()
         ucbv = UCBVInstitutional()
         
@@ -202,10 +202,10 @@ jobs:
         python -c "
         import time
         import numpy as np
-        from CORE_SUPER_BANDITS.optimized_linucb_institutional import LinUCBInstitutional
+        from CORE_SUPER_BANDITS.optimized_linucb_institutional import OptimizedInstitutionalLinUCB
         
         # Load test
-        linucb = LinUCBInstitutional()
+        linucb = OptimizedInstitutionalLinUCB()
         start_time = time.time()
         
         for i in range(1000):
@@ -328,7 +328,7 @@ jobs:
         import traceback
         
         try:
-            from CORE_SUPER_BANDITS.optimized_linucb_institutional import LinUCBInstitutional
+            from CORE_SUPER_BANDITS.optimized_linucb_institutional import OptimizedInstitutionalLinUCB
             from CORE_SUPER_BANDITS.neural_bandit_institutional import NeuralBanditInstitutional
             from CORE_SUPER_BANDITS.ucbv_bandit_institutional import UCBVInstitutional
             import numpy as np
@@ -336,7 +336,7 @@ jobs:
             print('✅ All imports successful')
             
             # Test algorithm instantiation
-            linucb = LinUCBInstitutional()
+            linucb = OptimizedInstitutionalLinUCB()
             neural = NeuralBanditInstitutional()
             ucbv = UCBVInstitutional()
             
