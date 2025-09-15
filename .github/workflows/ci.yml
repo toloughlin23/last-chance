@@ -143,14 +143,14 @@ jobs:
       run: |
         python -c "
         from CORE_SUPER_BANDITS.optimized_linucb_institutional import OptimizedInstitutionalLinUCB
-        from CORE_SUPER_BANDITS.neural_bandit_institutional import NeuralBanditInstitutional
-        from CORE_SUPER_BANDITS.ucbv_bandit_institutional import UCBVInstitutional
+        from CORE_SUPER_BANDITS.optimized_neural_bandit_institutional import OptimizedInstitutionalNeuralBandit
+        from CORE_SUPER_BANDITS.optimized_ucbv_institutional import OptimizedInstitutionalUCBV
         import numpy as np
         
         # Test all algorithms
         linucb = OptimizedInstitutionalLinUCB()
-        neural = NeuralBanditInstitutional()
-        ucbv = UCBVInstitutional()
+        neural = OptimizedInstitutionalNeuralBandit()
+        ucbv = OptimizedInstitutionalUCBV()
         
         # Test with sample data
         features = np.random.random(15) * 2 - 1
