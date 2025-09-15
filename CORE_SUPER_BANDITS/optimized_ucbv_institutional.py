@@ -1065,14 +1065,15 @@ class OptimizedInstitutionalUCBV:
                 
                 # Create deterministic variation based on feature characteristics
                 # Each component contributes to different aspects of UCB-V behavior
-                sum_variation = 0.3 * (abs(feature_sum) % 1.0)
-                std_variation = 0.4 * (abs(feature_std) % 1.0)
-                range_variation = 0.3 * (abs(feature_range) % 1.0)
-                skew_variation = 0.2 * (abs(feature_skew) % 1.0)
+                # Conservative multipliers for untrained state
+                sum_variation = 0.1 * (abs(feature_sum) % 1.0)
+                std_variation = 0.15 * (abs(feature_std) % 1.0)
+                range_variation = 0.1 * (abs(feature_range) % 1.0)
+                skew_variation = 0.05 * (abs(feature_skew) % 1.0)
                 
-                # Combine variations to create genuine diversity
+                # Combine variations - minimal until trained
                 total_variation = sum_variation + std_variation + range_variation + skew_variation
-                variation_factor = 0.1 + total_variation  # Range: 0.1 to 1.0
+                variation_factor = 0.25 + total_variation * 0.5  # Conservative range
             else:
                 variation_factor = 0.25  # Default variation
             
@@ -1085,8 +1086,8 @@ class OptimizedInstitutionalUCBV:
             
             # Add genuine variation based on feature characteristics
             # Scale variation to stay within bounds while maintaining meaningful differences
-            # variation_factor ranges from 0.1 to 1.0, so center it around 0.55
-            variation_adjustment = (variation_factor - 0.55) * 0.25  # ±0.1125 adjustment for controlled variation
+            # Conservative variation for untrained state
+            variation_adjustment = (variation_factor - 0.35) * 0.1  # Small adjustment until trained
             mapped = base_mapped + variation_adjustment
             
             # Final bounds check to ensure institutional compliance
