@@ -329,16 +329,16 @@ jobs:
         
         try:
             from CORE_SUPER_BANDITS.optimized_linucb_institutional import OptimizedInstitutionalLinUCB
-            from CORE_SUPER_BANDITS.neural_bandit_institutional import NeuralBanditInstitutional
-            from CORE_SUPER_BANDITS.ucbv_bandit_institutional import UCBVInstitutional
+            from CORE_SUPER_BANDITS.optimized_neural_bandit_institutional import OptimizedInstitutionalNeuralBandit
+            from CORE_SUPER_BANDITS.optimized_ucbv_institutional import OptimizedInstitutionalUCBV
             import numpy as np
             
             print('✅ All imports successful')
             
             # Test algorithm instantiation
             linucb = OptimizedInstitutionalLinUCB()
-            neural = NeuralBanditInstitutional()
-            ucbv = UCBVInstitutional()
+            neural = OptimizedInstitutionalNeuralBandit()
+            ucbv = OptimizedInstitutionalUCBV()
             
             print('✅ All algorithms instantiated')
             
