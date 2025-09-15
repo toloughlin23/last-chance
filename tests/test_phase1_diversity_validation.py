@@ -492,7 +492,11 @@ def test_phase1_algorithm_individual_performance():
             try:
                 # Use unique arm_id for each test to ensure variation
                 unique_arm_id = f'buy_signal_{algo_name}_{i}'
-                conf = algorithm.get_confidence_for_context(unique_arm_id, test_features)
+                # UCB-V needs 3 parameters: (arm_id, context_data, features)
+                if algo_name == 'ucbv':
+                    conf = algorithm.get_confidence_for_context(unique_arm_id, test_features, test_features)
+                else:
+                    conf = algorithm.get_confidence_for_context(unique_arm_id, test_features)
                 confidences.append(conf)
             except Exception:
                 continue
