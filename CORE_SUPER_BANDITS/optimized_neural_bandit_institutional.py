@@ -495,7 +495,20 @@ class OptimizedInstitutionalNeuralBandit:
             # Ensure within Neural Bandit's natural range [0.4, 0.95] after deterministic shaping
             confidence = float(max(0.40, min(0.95, confidence)))
             
-            print(f"🔍 Neural: pattern={pattern_contribution:.3f}, uncertainty={uncertainty_contribution:.3f}, distribution={distribution_contribution:.3f}, nonlinear={nonlinear_contribution:.3f}, utilization={utilization_contribution:.3f}, learning={learning_contribution:.3f}, complexity={complexity_variation:.3f}, interaction={interaction_variation:.3f}, entropy={entropy_variation:.3f}, skewness={skewness_variation:.3f}, range={range_variation:.3f}, final={confidence:.3f}")
+            print(
+                f"🔍 Neural: pattern={pattern_contribution:.3f}, "
+                f"uncertainty={uncertainty_contribution:.3f}, "
+                f"distribution={distribution_contribution:.3f}, "
+                f"nonlinear={nonlinear_contribution:.3f}, "
+                f"utilization={utilization_contribution:.3f}, "
+                f"learning={learning_contribution:.3f}, "
+                f"complexity={complexity_variation:.3f}, "
+                f"interaction={interaction_variation:.3f}, "
+                f"entropy={entropy_variation:.3f}, "
+                f"skewness={skewness_variation:.3f}, "
+                f"range={range_variation:.3f}, "
+                f"final={confidence:.3f}"
+            )
             
             # Add selection count influence (more selections = higher confidence)
             selection_boost = min(network['selections'] * 0.01, 0.2)

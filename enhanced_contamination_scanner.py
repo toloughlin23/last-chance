@@ -7,8 +7,9 @@ Focused on our actual codebase, not dependencies
 
 import os
 import re
+from datetime import datetime
 from pathlib import Path
-from typing import List, Dict, Any
+from typing import Any, Dict, List
 
 # Directories to scan (our actual codebase)
 SCAN_DIRECTORIES = [
@@ -150,11 +151,12 @@ def check_algorithm_saturation(file_path: str) -> List[str]:
 def test_algorithm_diversity() -> Dict[str, Any]:
     """Test algorithm diversity to detect saturation"""
     try:
+        import numpy as np
+
         from CORE_SUPER_BANDITS.optimized_linucb_institutional import OptimizedInstitutionalLinUCB
         from CORE_SUPER_BANDITS.optimized_neural_bandit_institutional import OptimizedInstitutionalNeuralBandit
         from CORE_SUPER_BANDITS.optimized_ucbv_institutional import OptimizedInstitutionalUCBV
-        import numpy as np
-        
+
         # Test with multiple different feature sets
         test_features = [
             np.random.random(15) * 2 - 1,  # High volatility
@@ -216,13 +218,13 @@ def main():
                     violations = scan_file(file_path)
                     all_violations.extend(violations)
     
-    print(f'\n📊 SCAN RESULTS:')
+    print(f'\n📊 SCAN RESULTS: {len(all_violations)} violations found across {len(python_files)} files')
     print(f'Directories scanned: {SCAN_DIRECTORIES}')
     print(f'Total files scanned: {len(python_files)}')
     print(f'Violations found: {len(all_violations)}')
     
     if all_violations:
-        print(f'\n🚨 CONTAMINATION VIOLATIONS DETECTED:')
+        print(f'\n🚨 CONTAMINATION VIOLATIONS DETECTED: {len(all_violations)} issues requiring immediate fix!')
         print('=' * 60)
         
         # Group by file
@@ -240,7 +242,7 @@ def main():
         print('\n✅ NO CONTAMINATION VIOLATIONS DETECTED')
     
     # Check for algorithm saturation patterns specifically
-    print(f'\n🔍 ALGORITHM SATURATION CHECK:')
+    print(f'\n🔍 ALGORITHM SATURATION CHECK: Testing 3 core algorithms (LinUCB, Neural, UCB-V) for genuine variation')
     print('=' * 40)
     
     saturation_files = [
@@ -259,7 +261,7 @@ def main():
             print('  ✅ No saturation patterns detected')
     
     # Test algorithm diversity
-    print(f'\n🧪 ALGORITHM DIVERSITY TEST:')
+    print(f'\n🧪 ALGORITHM DIVERSITY TEST: Measuring confidence variation across 3 core algorithms')
     print('=' * 40)
     
     diversity_results = test_algorithm_diversity()
@@ -279,7 +281,7 @@ def main():
             print('  ⚠️  Neural showing low variation - potential saturation')
     
     # Summary
-    print(f'\n📋 SUMMARY:')
+    print(f'\n📋 SUMMARY: Scan completed at {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}')
     print(f'Total violations: {len(all_violations)}')
     if len(all_violations) > 0:
         print('❌ CONTAMINATION DETECTED - FIX REQUIRED')

@@ -402,7 +402,7 @@ class GitHubComprehensiveTester:
         # Test Feature Builder
         try:
             from services.feature_builder import build_enriched_from_aggs
-            
+
             # Test basic functionality
             test_aggs = {
                 'c': 150.0,

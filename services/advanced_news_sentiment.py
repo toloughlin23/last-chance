@@ -15,16 +15,13 @@ Multi-source news sentiment with genuine NLP processing
 INSTITUTIONAL-GRADE SENTIMENT ANALYSIS
 """
 
+import json
 import os
 import re
-import math
-import time
-import json
-from typing import Dict, List, Any, Optional, Tuple
-from datetime import datetime, timedelta, UTC
-from dataclasses import dataclass
 from concurrent.futures import ThreadPoolExecutor, as_completed
-import requests
+from dataclasses import dataclass
+from datetime import UTC, datetime, timedelta
+from typing import Any, Dict, List, Optional, Tuple
 
 from services.http import HttpClient
 from utils.env_loader import load_env_from_known_locations
