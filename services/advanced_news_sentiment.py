@@ -2,7 +2,7 @@
 """
 🎯 ADVANCED NEWS SENTIMENT ANALYSIS SYSTEM
 =========================================
-Authentic, institutional-grade sentiment analysis — real data, real integrations
+100% GENUINE - NO SHORTCUTS - ALWAYS MAKE BETTER
 
 Multi-source news sentiment with genuine NLP processing
 - Real news sources integration (Polygon, Alpha Vantage, NewsAPI)
@@ -10,24 +10,24 @@ Multi-source news sentiment with genuine NLP processing
 - Multi-source aggregation with confidence scoring
 - Real-time news sentiment scoring
 - Market impact assessment
-- Zero tolerance for synthetic sentiment generators
+- NO fake sentiment generators
 
 INSTITUTIONAL-GRADE SENTIMENT ANALYSIS
 """
 
-import json
 import os
 import re
-from concurrent.futures import ThreadPoolExecutor, as_completed
+import math
+import time
+import json
+from typing import Dict, List, Any, Optional, Tuple
+from datetime import datetime, timedelta, UTC
 from dataclasses import dataclass
-from datetime import datetime, timedelta
-from datetime import timezone as _timezone
-from typing import Any, Dict, List, Tuple
+from concurrent.futures import ThreadPoolExecutor, as_completed
+import requests
 
 from services.http import HttpClient
 from utils.env_loader import load_env_from_known_locations
-
-UTC = _timezone.utc
 
 
 @dataclass
@@ -164,8 +164,8 @@ class AdvancedNewsSentimentAnalysis:
             },
             'negative': {
                 'strong': [
-                    r'\b(miss|misses|crash|plunge|collapse|tank|dive|slump|disaster)\b',
-                    r'\b(downgrade|cut|cuts|reduce|decrease|decline|fall|drop|sink)\b',
+                    r'\b(miss|crash|plunge|collapse|tank|dive|slump|crash|disaster)\b',
+                    r'\b(downgrade|cut|reduce|decrease|decline|fall|drop|sink)\b',
                     r'\b(lawsuit|probe|investigation|scandal|fraud|violation)\b',
                     r'\b(guidance cut|outlook negative|bearish|pessimistic)\b'
                 ],

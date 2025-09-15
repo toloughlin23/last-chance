@@ -280,36 +280,36 @@ class OptimizedInstitutionalLinUCB:
             feature_norm = float(np.linalg.norm(features))
 
             base_confidence = 0.50
-            # Balanced sensitivity to ensure measurable variation without saturation
-            contribution_norm = min(0.12, feature_norm * 0.05)  # Conservative values
-            contribution_std = min(0.06, feature_std * 0.60)    # Conservative values
-            contribution_mean = min(0.06, feature_mean_abs * 0.40)  # Conservative values
+            # ENHANCED sensitivity to ensure meaningful variation for personality integration
+            contribution_norm = min(0.15, feature_norm * 0.08)  # Enhanced from 0.05 to 0.08
+            contribution_std = min(0.10, feature_std * 0.80)    # Enhanced from 0.60 to 0.80
+            contribution_mean = min(0.10, feature_mean_abs * 0.60)  # Enhanced from 0.40 to 0.60
 
-            # 2. Feature interaction variation (LinUCB's linear combination strength)
+            # 2. Feature interaction variation (LinUCB's linear combination strength) - ENHANCED
             feature_interactions = 0.0
             if len(features) >= 3:
                 for i in range(min(3, len(features))):
                     for j in range(i+1, min(i+3, len(features))):
                         feature_interactions += abs(features[i] * features[j])
-            interaction_contrib = min(0.08, feature_interactions * 0.25)  # Conservative values
+            interaction_contrib = min(0.12, feature_interactions * 0.35)  # Enhanced from 0.25 to 0.35
 
-            # 3. Feature range variation (LinUCB's exploration range sensitivity)
+            # 3. Feature range variation (LinUCB's exploration range sensitivity) - ENHANCED
             feature_range = float(np.max(features) - np.min(features)) if len(features) > 0 else 0.0
-            range_contrib = min(0.05, feature_range * 0.3)  # Conservative values
+            range_contrib = min(0.08, feature_range * 0.50)  # Enhanced from 0.3 to 0.50
 
-            # 4. Feature skewness variation (LinUCB's distribution sensitivity)
+            # 4. Feature skewness variation (LinUCB's distribution sensitivity) - ENHANCED
             feature_skewness = np.mean((features - np.mean(features)) ** 3) / (np.std(features) ** 3) if np.std(features) > 0 else 0.0
-            skewness_contrib = min(0.04, abs(feature_skewness) * 0.15)  # Conservative values
+            skewness_contrib = min(0.06, abs(feature_skewness) * 0.25)  # Enhanced from 0.15 to 0.25
 
-            # 5. Feature variance variation (LinUCB's uncertainty sensitivity)
+            # 5. Feature variance variation (LinUCB's uncertainty sensitivity) - ENHANCED
             feature_variance = float(np.var(features))
-            variance_contrib = min(0.05, feature_variance * 0.4)  # Conservative values
+            variance_contrib = min(0.08, feature_variance * 0.60)  # Enhanced from 0.4 to 0.60
 
-            # Targeted domain contributions for first market features
-            sentiment_contrib = min(0.02, abs(float(features[0])) * 0.20) if len(features) > 0 else 0.0
-            momentum_contrib = min(0.03, abs(float(features[1])) * 0.70) if len(features) > 1 else 0.0
-            volatility_contrib = min(0.04, max(0.0, float(features[2])) * 0.70) if len(features) > 2 else 0.0
-            volume_ratio_contrib = min(0.04, max(0.0, float(features[4]) - 1.0) * 0.12) if len(features) > 4 else 0.0
+            # Targeted domain contributions for first market features - ENHANCED
+            sentiment_contrib = min(0.04, abs(float(features[0])) * 0.30) if len(features) > 0 else 0.0  # Enhanced from 0.20 to 0.30
+            momentum_contrib = min(0.06, abs(float(features[1])) * 0.90) if len(features) > 1 else 0.0  # Enhanced from 0.70 to 0.90
+            volatility_contrib = min(0.06, max(0.0, float(features[2])) * 0.90) if len(features) > 2 else 0.0  # Enhanced from 0.70 to 0.90
+            volume_ratio_contrib = min(0.06, max(0.0, float(features[4]) - 1.0) * 0.18) if len(features) > 4 else 0.0  # Enhanced from 0.12 to 0.18
 
             confidence = (base_confidence +
                           contribution_norm + contribution_std + contribution_mean +
@@ -318,11 +318,11 @@ class OptimizedInstitutionalLinUCB:
 
             # Deterministic personality influence (no randomness)
             if self.personality is not None:
-                # Confidence bias centered at 0.5 → shift in [-0.08, +0.08]
+                # Confidence bias centered at 0.5 → shift in [-0.15, +0.15] for meaningful variation
                 bias = float(self.personality.confidence_bias())
-                confidence += (bias - 0.5) * 0.16
-                # Exploration bias provides a small additional spread in [0, +0.04]
-                confidence += float(self.personality.exploration_bias()) * 0.04
+                confidence += (bias - 0.5) * 0.30  # Increased from 0.16 to 0.30
+                # Exploration bias provides additional spread in [-0.08, +0.08]
+                confidence += float(self.personality.exploration_bias()) * 0.16  # Increased from 0.04 to 0.16
 
             # GENUINE LinUCB Enhancement: Ensure meaningful variation within bounds
             # Add feature-based variation that creates genuine diversity
@@ -348,7 +348,7 @@ class OptimizedInstitutionalLinUCB:
             confidence += kurtosis_contrib
 
             # Clamp to institutional bounds with genuine variation
-            return max(0.20, min(0.90, float(confidence)))
+            return max(0.45, min(0.90, float(confidence)))
             
         except Exception:
             return 0.6  # Institutional fallback confidence
