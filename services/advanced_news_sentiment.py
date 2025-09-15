@@ -145,18 +145,17 @@ class AdvancedNewsSentimentAnalysis:
         print(f"✅ News sources configured: {len(self.sources)} sources")
         print(f"   Sources: {[s.name for s in self.sources]}")
         
-        # Advanced NLP sentiment patterns
+        # Advanced NLP sentiment patterns - ENHANCED for better matching
         self.sentiment_patterns = {
             'positive': {
                 'strong': [
-                    r'\b(beat|exceed|surge|rally|soar|jump|leap|spike|boom|explode)\b',
-                    r'\b(record|breakthrough|milestone|achievement|success|win|victory)\b',
-                    r'\b(upgrade|raise|increase|boost|enhance|improve|optimize)\b',
-                    r'\b(guidance raised|outlook positive|bullish|optimistic)\b'
+                    r'\b(beat|beats|exceed|exceeds|surge|surges|rally|rallies|soar|soars|jump|jumps|leap|leaps|spike|spikes|boom|booms|explode|explodes)\b',
+                    r'\b(record|records|breakthrough|breakthroughs|milestone|milestones|achievement|achievements|success|successes|win|wins|victory|victories)\b',
+                    r'\b(upgrade|upgrades|raise|raises|increase|increases|boost|boosts|enhance|enhances|improve|improves|optimize|optimizes)\b',
+                    r'\b(guidance raised|outlook positive|bullish|optimistic|strong guidance|positive outlook)\b'
                 ],
                 'moderate': [
-                    r'\b(growth|gain|rise|up|positive|favorable|strong|solid)\b',
-                    r'\b(earnings beat|revenue up|profit increase|margin expansion)\b'
+                    r'\b(growth|gains|rise|rises|up|positive|favorable|strong|solid|earnings beat|revenue up|profit increase|margin expansion)\b'
                 ],
                 'weak': [
                     r'\b(good|better|nice|decent|acceptable|stable|steady)\b'
@@ -164,14 +163,13 @@ class AdvancedNewsSentimentAnalysis:
             },
             'negative': {
                 'strong': [
-                    r'\b(miss|crash|plunge|collapse|tank|dive|slump|crash|disaster)\b',
-                    r'\b(downgrade|cut|reduce|decrease|decline|fall|drop|sink)\b',
-                    r'\b(lawsuit|probe|investigation|scandal|fraud|violation)\b',
-                    r'\b(guidance cut|outlook negative|bearish|pessimistic)\b'
+                    r'\b(miss|misses|crash|crashes|plunge|plunges|collapse|collapses|tank|tanks|dive|dives|slump|slumps|disaster|disasters)\b',
+                    r'\b(downgrade|downgrades|cut|cuts|reduce|reduces|decrease|decreases|decline|declines|fall|falls|drop|drops|sink|sinks)\b',
+                    r'\b(lawsuit|lawsuits|probe|probes|investigation|investigations|scandal|scandals|fraud|frauds|violation|violations)\b',
+                    r'\b(guidance cut|outlook negative|bearish|pessimistic|weak guidance|negative outlook)\b'
                 ],
                 'moderate': [
-                    r'\b(weak|soft|slow|challenging|difficult|struggle|concern)\b',
-                    r'\b(earnings miss|revenue down|profit decline|margin compression)\b'
+                    r'\b(weak|soft|slow|challenging|challenges|difficult|struggle|struggles|concern|concerns|earnings miss|revenue down|profit decline|margin compression)\b'
                 ],
                 'weak': [
                     r'\b(bad|worse|poor|disappointing|concerning|uncertain)\b'

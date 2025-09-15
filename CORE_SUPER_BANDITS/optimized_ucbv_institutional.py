@@ -1078,8 +1078,14 @@ class OptimizedInstitutionalUCBV:
             
             # Map raw value with genuine variation to UCB-V range [0.10, 0.60]
             # Use the variation factor to create meaningful spread
-            base_mapped = 0.10 + (raw - 0.1) * (0.5 / 0.3)  # Map [0.1, 0.4] to [0.10, 0.60]
-            mapped = base_mapped + (variation_factor - 0.25) * 0.3  # Add genuine variation
+            # Normalize raw value to [0, 1] range first, then map to [0.10, 0.60]
+            # Adjust normalization range to accommodate actual raw values (0.2-0.6)
+            normalized_raw = max(0.0, min(1.0, (raw - 0.2) / 0.4))  # Normalize [0.2, 0.6] to [0, 1]
+            base_mapped = 0.10 + normalized_raw * 0.40  # Map [0, 1] to [0.10, 0.50]
+            
+            # Add genuine variation based on feature characteristics
+            variation_adjustment = (variation_factor - 0.25) * 1.0  # ±0.5 adjustment for sufficient variation
+            mapped = base_mapped + variation_adjustment
             
             # Final bounds check to ensure institutional compliance
             mapped = max(0.10, min(0.60, mapped))

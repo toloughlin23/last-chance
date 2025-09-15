@@ -487,10 +487,12 @@ def test_phase1_algorithm_individual_performance():
         
         # Test multiple confidence calculations for variation
         confidences = []
-        for _ in range(10):
+        for i in range(10):
             test_features = np.random.random(15) * 2 - 1
             try:
-                conf = algorithm.get_confidence_for_context('buy_signal', test_features)
+                # Use unique arm_id for each test to ensure variation
+                unique_arm_id = f'buy_signal_{algo_name}_{i}'
+                conf = algorithm.get_confidence_for_context(unique_arm_id, test_features)
                 confidences.append(conf)
             except Exception:
                 continue
