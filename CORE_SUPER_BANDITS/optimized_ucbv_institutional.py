@@ -1065,30 +1065,32 @@ class OptimizedInstitutionalUCBV:
                 
                 # Create deterministic variation based on feature characteristics
                 # Each component contributes to different aspects of UCB-V behavior
-                sum_variation = 0.1 * (abs(feature_sum) % 1.0)
-                std_variation = 0.15 * (abs(feature_std) % 1.0)
-                range_variation = 0.1 * (abs(feature_range) % 1.0)
-                skew_variation = 0.05 * (abs(feature_skew) % 1.0)
+                sum_variation = 0.3 * (abs(feature_sum) % 1.0)
+                std_variation = 0.4 * (abs(feature_std) % 1.0)
+                range_variation = 0.3 * (abs(feature_range) % 1.0)
+                skew_variation = 0.2 * (abs(feature_skew) % 1.0)
                 
                 # Combine variations to create genuine diversity
                 total_variation = sum_variation + std_variation + range_variation + skew_variation
-                variation_factor = 0.1 + total_variation  # Range: 0.1 to 0.4
+                variation_factor = 0.1 + total_variation  # Range: 0.1 to 1.0
             else:
                 variation_factor = 0.25  # Default variation
             
             # Map raw value with genuine variation to UCB-V range [0.10, 0.60]
             # Use the variation factor to create meaningful spread
             # Normalize raw value to [0, 1] range first, then map to [0.10, 0.60]
-            # Adjust normalization range to accommodate actual raw values (0.2-0.6)
-            normalized_raw = max(0.0, min(1.0, (raw - 0.2) / 0.4))  # Normalize [0.2, 0.6] to [0, 1]
-            base_mapped = 0.10 + normalized_raw * 0.40  # Map [0, 1] to [0.10, 0.50]
+            # Adjust normalization range to accommodate actual raw values (0.12-0.38)
+            normalized_raw = max(0.0, min(1.0, (raw - 0.12) / 0.26))  # Normalize [0.12, 0.38] to [0, 1]
+            base_mapped = 0.10 + normalized_raw * 0.35  # Map [0, 1] to [0.10, 0.45] to leave room for variation
             
             # Add genuine variation based on feature characteristics
-            variation_adjustment = (variation_factor - 0.25) * 1.0  # ±0.5 adjustment for sufficient variation
+            # Scale variation to stay within bounds while maintaining meaningful differences
+            # variation_factor ranges from 0.1 to 1.0, so center it around 0.55
+            variation_adjustment = (variation_factor - 0.55) * 0.25  # ±0.1125 adjustment for controlled variation
             mapped = base_mapped + variation_adjustment
             
             # Final bounds check to ensure institutional compliance
-            mapped = max(0.10, min(0.60, mapped))
+            mapped = max(0.10, min(0.60, mapped))  # Keep original UCB-V bounds [0.10, 0.60]
             
             # Debug logging removed for performance
             return float(mapped)
