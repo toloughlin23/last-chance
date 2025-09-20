@@ -12,7 +12,9 @@ UTC = _timezone.utc
 
 
 class SSRClient:
-    def __init__(self, api_key: Optional[str] = None, http: Optional[HttpClient] = None, polygon: Optional[PolygonClient] = None):
+    def __init__(
+        self, api_key: Optional[str] = None, http: Optional[HttpClient] = None, polygon: Optional[PolygonClient] = None
+    ):
         load_env_from_known_locations()
         self.api_key = api_key or os.getenv("POLYGON_API_KEY")
         if not self.api_key:
@@ -26,7 +28,16 @@ class SSRClient:
         return float(rows[0].get("c", 0.0)) if rows else 0.0
 
     def _intraday_low(self, symbol: str, open_ts_utc: datetime, close_ts_utc: datetime) -> float:
-        data = self.polygon.get_aggs(symbol, 1, "minute", open_ts_utc.isoformat().replace("+00:00", "Z"), close_ts_utc.isoformat().replace("+00:00", "Z"), limit=200, adjusted=True, sort="asc")
+        data = self.polygon.get_aggs(
+            symbol,
+            1,
+            "minute",
+            open_ts_utc.isoformat().replace("+00:00", "Z"),
+            close_ts_utc.isoformat().replace("+00:00", "Z"),
+            limit=200,
+            adjusted=True,
+            sort="asc",
+        )
         rows = data.get("results") or []
         lows = [float(r.get("l", 0.0)) for r in rows if r]
         return min(lows) if lows else 0.0
@@ -59,4 +70,3 @@ class SSRClient:
             return False
         decline = (prev_close - intraday_low) / prev_close
         return decline >= 0.10
-

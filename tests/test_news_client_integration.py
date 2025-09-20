@@ -17,4 +17,3 @@ def test_news_client_fetch_symbol_news():
         first = items[0]
         assert isinstance(first, dict)
         assert "title" in first
-

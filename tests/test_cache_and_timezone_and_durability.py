@@ -57,9 +57,16 @@ def test_pipeline_two_iterations_durability(tmp_path):
     runner = EnhancedPipelineRunner()
 
     # Keep it small and offline-safe (no execution, news prioritization off)
-    runner.run_enhanced_loop(["AAPL", "MSFT"], lookback_days=7, interval_seconds=1,
-                             iterations=2, execute=False, log_path=str(log_path),
-                             prioritize_by_news=False, batch_size=0)
+    runner.run_enhanced_loop(
+        ["AAPL", "MSFT"],
+        lookback_days=7,
+        interval_seconds=1,
+        iterations=2,
+        execute=False,
+        log_path=str(log_path),
+        prioritize_by_news=False,
+        batch_size=0,
+    )
 
     assert log_path.exists()
     # Validate header and at least some rows
@@ -118,8 +125,3 @@ def test_linucb_confidence_invariants(sentiment, momentum, volatility):
     ctx2 = _E(min(1.0, sentiment + 0.2), momentum, volatility)
     c2 = bandit.get_confidence_for_context(arm, ctx2)
     assert c2 >= 0.45 and c2 <= 0.90
-
-
-
-
-

@@ -112,30 +112,34 @@ class UniverseSelector:
             metrics_by_symbol[sym] = metrics
         # Price + ATR filters
         filtered = [
-            s for s, m in metrics_by_symbol.items()
-            if m["median_close"] >= min_price and m["atr_pct"] >= min_atr_pct
+            s for s, m in metrics_by_symbol.items() if m["median_close"] >= min_price and m["atr_pct"] >= min_atr_pct
         ]
         # If too few pass, relax ATR% to half
         if len(filtered) < min(80, target_size // 2):
             filtered = [
-                s for s, m in metrics_by_symbol.items()
+                s
+                for s, m in metrics_by_symbol.items()
                 if m["median_close"] >= min_price and m["atr_pct"] >= (min_atr_pct * 0.5)
             ]
         # Spread filter (NBBO)
         if spread_filter_enabled and filtered:
             sf = [
-                s for s in filtered
-                if self._passes_spread_filter(s, spread_max_dollars, spread_max_bps, spread_lookback_days, spread_core_hours_only)
+                s
+                for s in filtered
+                if self._passes_spread_filter(
+                    s, spread_max_dollars, spread_max_bps, spread_lookback_days, spread_core_hours_only
+                )
             ]
             # If too few after spread filter, relax thresholds moderately
             if len(sf) < min(80, target_size // 2):
                 sf = [
-                    s for s in filtered
-                    if self._passes_spread_filter(s, spread_max_dollars * 1.5, spread_max_bps * 1.7, spread_lookback_days, spread_core_hours_only)
+                    s
+                    for s in filtered
+                    if self._passes_spread_filter(
+                        s, spread_max_dollars * 1.5, spread_max_bps * 1.7, spread_lookback_days, spread_core_hours_only
+                    )
                 ]
             filtered = sf
         # Rank by ADV descending
         ranked = sorted(filtered, key=lambda s: metrics_by_symbol[s]["adv"], reverse=True)
         return ranked[:target_size]
-
-

@@ -5,22 +5,22 @@ from CORE_SUPER_BANDITS.optimized_ucbv_institutional import OptimizedInstitution
 
 def make_polygon(price: float, prev_close: float, high: float, low: float, volume: int, vwap: float):
     return {
-        'status': 'OK',
-        'results': {
-            'p': price,
-            's': volume,
-            't': int(datetime.now().timestamp() * 1000),
-            'c': [1],
-            'o': prev_close,
-            'h': high,
-            'l': low,
-            'v': volume,
-            'vw': vwap,
+        "status": "OK",
+        "results": {
+            "p": price,
+            "s": volume,
+            "t": int(datetime.now().timestamp() * 1000),
+            "c": [1],
+            "o": prev_close,
+            "h": high,
+            "l": low,
+            "v": volume,
+            "vw": vwap,
         },
-        'prev_close': prev_close,
-        'high': high,
-        'low': low,
-        'vwap': vwap,
+        "prev_close": prev_close,
+        "high": high,
+        "low": low,
+        "vwap": vwap,
     }
 
 
@@ -51,14 +51,12 @@ def test_ucbv_update_changes_state():
     data = make_polygon(price=100.0, prev_close=100.0, high=101.0, low=99.0, volume=25000, vwap=100.0)
 
     action, conf = ucbv.select_action(data)
-    before_pulls = ucbv.arms[action]['pulls']
+    before_pulls = ucbv.arms[action]["pulls"]
 
     feats = ucbv.extract_features_from_polygon(data)
-    alpaca_data = {'order_id': 'test123', 'holding_time': 300}
+    alpaca_data = {"order_id": "test123", "holding_time": 300}
     ucbv.update_with_real_pnl(action, feats, real_pnl=50.0, alpaca_data=alpaca_data)
 
-    after_pulls = ucbv.arms[action]['pulls']
+    after_pulls = ucbv.arms[action]["pulls"]
     assert after_pulls == before_pulls + 1
-    assert ucbv.arms[action]['variance'] >= 0.001
-
-
+    assert ucbv.arms[action]["variance"] >= 0.001

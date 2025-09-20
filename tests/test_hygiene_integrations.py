@@ -32,6 +32,3 @@ def test_ssr_filter_runs_without_error():
     h = Hygiene()
     out = h.filter_symbols(["AAPL", "MSFT"], strategy_profile="mean_reversion", ssr_exclude=True)
     assert isinstance(out, list)
-
-
-

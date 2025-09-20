@@ -8,6 +8,7 @@ except Exception:
     # If python-dotenv is not installed, the loader will be a no-op.
     def load_dotenv(*args, **kwargs):  # type: ignore
         return False
+
     def find_dotenv(*args, **kwargs):  # type: ignore
         return ""
 
@@ -36,7 +37,7 @@ def load_env_from_known_locations() -> Dict[str, str]:
     # utils/ is a direct child of project root
     project_root = Path(__file__).resolve().parent.parent
     loaded_vars = {}
-    
+
     # 1) Load nearest .env discovered by python-dotenv as a safety-net
     auto_path = find_dotenv(usecwd=True)
     if auto_path:
@@ -49,16 +50,17 @@ def load_env_from_known_locations() -> Dict[str, str]:
             if result:
                 # Read the file to get loaded variables
                 try:
-                    with open(dotenv_path, 'r') as f:
+                    with open(dotenv_path, "r") as f:
                         for line in f:
                             line = line.strip()
-                            if line and not line.startswith('#') and '=' in line:
-                                key, value = line.split('=', 1)
+                            if line and not line.startswith("#") and "=" in line:
+                                key, value = line.split("=", 1)
                                 loaded_vars[key.strip()] = value.strip()
                 except Exception as e:
                     print(f"Warning: Could not read {dotenv_path}: {e}")
-    
+
     return loaded_vars
+
 
 def require_env(keys: Iterable[str]) -> Tuple[bool, Dict[str, str]]:
     """Validate required environment variables are present.
@@ -86,6 +88,8 @@ def require_env_or_raise(keys: Iterable[str]) -> None:
     if auto:
         searched.insert(0, auto)
     raise RuntimeError(
-        "Missing required env keys: " + ", ".join(missing.keys()) +
-        "\nSearched .env locations (no override):\n - " + "\n - ".join(searched)
+        "Missing required env keys: "
+        + ", ".join(missing.keys())
+        + "\nSearched .env locations (no override):\n - "
+        + "\n - ".join(searched)
     )

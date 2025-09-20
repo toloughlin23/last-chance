@@ -32,4 +32,3 @@ class SnapshotClient:
             if sym:
                 out[sym] = halted
         return out
-

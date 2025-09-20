@@ -18,5 +18,3 @@ def test_universe_selector_basic():
     assert len(selected) <= 2
     for s in selected:
         assert s in candidates
-
-

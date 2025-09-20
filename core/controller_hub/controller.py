@@ -32,9 +32,12 @@ class Phase1Controller:
         # to generate DecisionMessage entries. This avoids modifying the learning loop's internals.
         market_data = self.learning._fetch_market_data(lookback_days)
         for symbol, data in market_data.items():
-            enriched = self.learning._safe_build_enriched(data) if hasattr(self.learning, "_safe_build_enriched") else None
+            enriched = (
+                self.learning._safe_build_enriched(data) if hasattr(self.learning, "_safe_build_enriched") else None
+            )
             if enriched is None:
                 from services.feature_builder import build_enriched_from_aggs
+
                 enriched = build_enriched_from_aggs(data)
 
             decisions = self.learning._get_algorithm_decisions(symbol, enriched)
@@ -45,7 +48,7 @@ class Phase1Controller:
                     decision=decision,
                     confidence=float(avg_conf),
                     all_confidences=[float(x) for x in all_conf],
-                    metadata={}
+                    metadata={},
                 )
                 self.hub.publish(self.channel_decisions, msg, block=True)
 
@@ -56,14 +59,8 @@ class Phase1Controller:
             coefficient_of_variation=float(metrics.get("coefficient_of_variation", 0.0)),
             total_pnl=float(self.learning.metrics.total_pnl),
             learning_rate=float(self.learning.learning_rate),
-            extra={}
+            extra={},
         )
         self.hub.publish(self.channel_metrics, m, block=True)
 
         return metrics
-
-
-
-
-
-

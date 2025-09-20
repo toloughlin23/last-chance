@@ -21,6 +21,7 @@ def test_polygon_aggregates_daily_integration():
     assert data.get("status") in {"OK", "DELAYED"}
     assert "results" in data
 
+
 import pytest
 
 
@@ -39,4 +40,3 @@ def test_polygon_client_aggs_real_api():
     first = results[0]
     for field in ("o", "h", "l", "c", "v", "t"):
         assert field in first
-

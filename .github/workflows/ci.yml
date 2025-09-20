@@ -121,8 +121,8 @@ jobs:
         neural = OptimizedInstitutionalNeuralBandit()
         ucbv = OptimizedInstitutionalUCBV()
         
-        # Test with sample data
-        features = np.random.random(15) * 2 - 1
+        # Test with DETERMINISTIC data - NO RANDOM
+        features = np.array([0.1, -0.2, 0.3, -0.4, 0.5, -0.6, 0.7, -0.8, 0.9, -1.0, 0.8, -0.7, 0.6, -0.5, 0.4])
         arm_id = 'test_arm'
         
         linucb_conf = linucb.get_confidence_for_context(arm_id, features)
@@ -177,7 +177,25 @@ jobs:
         start_time = time.time()
         
         for i in range(1000):
-            features = np.random.random(15) * 2 - 1
+            # DETERMINISTIC features based on iteration - NO RANDOM
+            base_val = (i % 100) / 100.0
+            features = np.array([
+                base_val * 2 - 1,
+                (base_val * 0.5) * 2 - 1,
+                (base_val * 0.3) * 2 - 1,
+                (base_val * 0.7) * 2 - 1,
+                (base_val * 0.9) * 2 - 1,
+                (base_val * 0.2) * 2 - 1,
+                (base_val * 0.8) * 2 - 1,
+                (base_val * 0.4) * 2 - 1,
+                (base_val * 0.6) * 2 - 1,
+                (base_val * 0.1) * 2 - 1,
+                (base_val * 0.95) * 2 - 1,
+                (base_val * 0.15) * 2 - 1,
+                (base_val * 0.85) * 2 - 1,
+                (base_val * 0.35) * 2 - 1,
+                (base_val * 0.65) * 2 - 1,
+            ])
             arm_id = f'test_arm_{i}'
             conf = linucb.get_confidence_for_context(arm_id, features)
         
@@ -323,8 +341,8 @@ jobs:
             
             print('✅ All algorithms instantiated')
             
-            # Test confidence calculations
-            features = np.random.random(15) * 2 - 1
+            # Test confidence calculations - DETERMINISTIC DATA
+            features = np.array([0.5, -0.5, 0.3, -0.3, 0.7, -0.7, 0.2, -0.2, 0.8, -0.8, 0.4, -0.4, 0.6, -0.6, 0.9])
             arm_id = 'final_test_arm'
             
             linucb_conf = linucb.get_confidence_for_context(arm_id, features)

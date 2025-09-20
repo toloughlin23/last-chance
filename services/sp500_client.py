@@ -23,7 +23,7 @@ class SP500Client:
                 # Remove non-alphanumeric except . and -
                 filtered: List[str] = []
                 for s in cleaned:
-                    keep = ''.join(ch for ch in s if ch.isalnum() or ch in ['.', '-'])
+                    keep = "".join(ch for ch in s if ch.isalnum() or ch in [".", "-"])
                     if keep:
                         filtered.append(keep)
                 # Deduplicate preserving order
@@ -35,4 +35,3 @@ class SP500Client:
                         ordered.append(s)
                 return ordered
         return []
-

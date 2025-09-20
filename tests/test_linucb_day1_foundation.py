@@ -53,4 +53,3 @@ def test_linucb_day1_variation_over_inputs():
     c2 = bandit.get_confidence_for_context(a2, d2)
 
     assert abs(c2 - c1) >= 0.05
-

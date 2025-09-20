@@ -43,4 +43,3 @@ class EarningsClient:
                 except Exception:
                     out[sym] = False
         return out
-

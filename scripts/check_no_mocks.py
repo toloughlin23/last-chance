@@ -9,7 +9,20 @@ from typing import Iterable, List, Tuple
 IGNORE_DIRS = {".git", ".venv", "venv", "node_modules", ".cursor", ".idea", ".vscode", "__pycache__"}
 # File extensions to scan (keep focused to reduce false positives)
 SCAN_EXTENSIONS = {
-    ".py", ".ts", ".tsx", ".js", ".jsx", ".json", ".yml", ".yaml", ".toml", ".ini", ".cfg", ".sh", ".ps1", ".bat"
+    ".py",
+    ".ts",
+    ".tsx",
+    ".js",
+    ".jsx",
+    ".json",
+    ".yml",
+    ".yaml",
+    ".toml",
+    ".ini",
+    ".cfg",
+    ".sh",
+    ".ps1",
+    ".bat",
 }
 # Extensions to skip (docs may mention banned words legitimately)
 SKIP_EXTENSIONS = {".md", ".rst", ".txt", ".env"}
@@ -20,7 +33,10 @@ BANNED_PATTERNS: List[Tuple[str, re.Pattern]] = [
     ("mock data", re.compile(r"\bmock\s+data\b", re.IGNORECASE)),
     ("dummy data", re.compile(r"\bdummy\s+data\b", re.IGNORECASE)),
     ("fake data", re.compile(r"\bfake\s+data\b", re.IGNORECASE)),
-    ("placeholder token", re.compile(r"\b(place\s*holder|placeholder|REPLACE_ME|CHANGEME|YOUR_API_KEY)\b", re.IGNORECASE)),
+    (
+        "placeholder token",
+        re.compile(r"\b(place\s*holder|placeholder|REPLACE_ME|CHANGEME|YOUR_API_KEY)\b", re.IGNORECASE),
+    ),
     ("stubbed", re.compile(r"\bstubbed?\b", re.IGNORECASE)),
     ("example.com/api", re.compile(r"example\.com/(api|v\d+/?)", re.IGNORECASE)),
 ]

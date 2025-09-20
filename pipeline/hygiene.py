@@ -7,7 +7,12 @@ from utils.uk_us_timezone_handler import get_uk_us_handler
 
 
 class Hygiene:
-    def __init__(self, snapshot: SnapshotClient | None = None, earnings: EarningsClient | None = None, ssr: SSRClient | None = None):
+    def __init__(
+        self,
+        snapshot: SnapshotClient | None = None,
+        earnings: EarningsClient | None = None,
+        ssr: SSRClient | None = None,
+    ):
         self.snapshot = snapshot or SnapshotClient()
         self.earnings = earnings or EarningsClient()
         self.ssr = ssr or SSRClient()
@@ -25,11 +30,11 @@ class Hygiene:
             return []
         # Auto defaults
         if earnings_exclude is None:
-            earnings_exclude = (strategy_profile != "momentum")
+            earnings_exclude = strategy_profile != "momentum"
         if halts_exclude is None:
             halts_exclude = True
         if ssr_exclude is None:
-            ssr_exclude = (strategy_profile != "long_only")
+            ssr_exclude = strategy_profile != "long_only"
 
         filtered = list(symbols)
 

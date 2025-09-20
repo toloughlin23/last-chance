@@ -11,6 +11,7 @@ def run_cmd(cmd):
     except Exception as e:
         return -1, "", str(e)
 
+
 print("=== Git Status Check ===")
 code, out, err = run_cmd("git status --porcelain")
 print(f"Git status code: {code}")

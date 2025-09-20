@@ -49,9 +49,3 @@ class Hub:
             except Exception:
                 # Non-fatal: continue delivering to other handlers
                 continue
-
-
-
-
-
-

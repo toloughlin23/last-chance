@@ -49,8 +49,7 @@ class HttpClient:
                 if attempt >= self.max_retries:
                     break
                 # Exponential backoff with jitter
-                sleep_seconds = self.backoff * (2 ** attempt)
+                sleep_seconds = self.backoff * (2**attempt)
                 time.sleep(sleep_seconds)
 
         raise HttpError(str(last_exc) if last_exc else "HTTP request failed")
-

@@ -23,7 +23,9 @@ class QuotesClient:
         p["apiKey"] = self.api_key
         return p
 
-    def fetch_quotes_window(self, ticker: str, start_utc: datetime, end_utc: datetime, limit: int = 50000) -> List[Dict[str, Any]]:
+    def fetch_quotes_window(
+        self, ticker: str, start_utc: datetime, end_utc: datetime, limit: int = 50000
+    ) -> List[Dict[str, Any]]:
         """Fetch NBBO quotes for a ticker in [start_utc, end_utc]. Uses v3 quotes.
         Note: Results are paginated; this returns up to 'limit' quotes for the window.
         """
@@ -83,7 +85,7 @@ class QuotesClient:
             if core_hours_only:
                 # Approx core hours in UTC; DST shifts handled by Polygon timestamps, this is a pragmatic window
                 start_utc = day_start.replace(hour=13, minute=30)  # 13:30 UTC ≈ 9:30 ET (non-DST approx)
-                end_utc = day_start.replace(hour=20, minute=0)     # 20:00 UTC ≈ 16:00 ET
+                end_utc = day_start.replace(hour=20, minute=0)  # 20:00 UTC ≈ 16:00 ET
             else:
                 start_utc = day_start
                 end_utc = day_start.replace(hour=23, minute=59, second=59)
@@ -93,4 +95,3 @@ class QuotesClient:
         dollar = sorted([m[0] for m in medians])
         bps = sorted([m[1] for m in medians])
         return dollar[len(dollar) // 2], bps[len(bps) // 2]
-

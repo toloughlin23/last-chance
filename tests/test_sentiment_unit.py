@@ -14,9 +14,8 @@ def test_score_article_basic():
 def test_aggregate_symbol_sentiment():
     articles = [
         {"title": "upgrade expected", "description": "analyst upgrade"},
-        {"title": "record profit", "description": "surge in demand"}
+        {"title": "record profit", "description": "surge in demand"},
     ]
     score = aggregate_symbol_sentiment(articles)
     assert score > 0
     assert -1.0 <= score <= 1.0
-

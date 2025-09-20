@@ -46,4 +46,3 @@ def aggregate_symbol_sentiment(articles: List[Dict[str, Any]]) -> float:
     # Confidence by article count (sqrt law)
     conf = min(1.0, math.sqrt(len(scores)) / 5.0)  # ~1.0 at 25 articles
     return max(-1.0, min(1.0, avg * (0.5 + 0.5 * conf)))
-

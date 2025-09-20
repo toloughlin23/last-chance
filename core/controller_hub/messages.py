@@ -15,6 +15,7 @@ class DecisionMessage:
 
     100% genuine values from real feature extraction and confidence calculations.
     """
+
     symbol: str
     algorithm: str
     decision: str
@@ -27,6 +28,7 @@ class DecisionMessage:
 @dataclass
 class MetricsMessage:
     """Cycle-level learning metrics and diversity statistics."""
+
     diversity_overall: float
     diversity_cross_algorithm: float
     coefficient_of_variation: float
@@ -34,9 +36,3 @@ class MetricsMessage:
     learning_rate: float
     extra: Dict[str, Any] = field(default_factory=dict)
     timestamp: datetime = field(default_factory=utcnow)
-
-
-
-
-
-

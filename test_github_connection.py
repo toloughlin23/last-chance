@@ -15,9 +15,10 @@ def run_command(cmd, timeout=10):
     except Exception as e:
         return -1, "", str(e)
 
+
 def main():
     print("=== GitHub Connection & Test Suite ===")
-    
+
     # Test 1: Check git status
     print("\n1. Checking git status...")
     code, out, err = run_command("git status --porcelain")
@@ -25,7 +26,7 @@ def main():
     print(f"   Output: {out}")
     if err:
         print(f"   Error: {err}")
-    
+
     # Test 2: Check GitHub remote
     print("\n2. Checking GitHub remote...")
     code, out, err = run_command("git remote -v")
@@ -33,7 +34,7 @@ def main():
     print(f"   Output: {out}")
     if err:
         print(f"   Error: {err}")
-    
+
     # Test 3: Check current branch
     print("\n3. Checking current branch...")
     code, out, err = run_command("git branch --show-current")
@@ -41,7 +42,7 @@ def main():
     print(f"   Output: {out}")
     if err:
         print(f"   Error: {err}")
-    
+
     # Test 4: Run contamination scan
     print("\n4. Running contamination scan...")
     code, out, err = run_command("python scripts/check_no_mocks.py")
@@ -49,7 +50,7 @@ def main():
     print(f"   Output: {out}")
     if err:
         print(f"   Error: {err}")
-    
+
     # Test 5: Run pytest with plugins disabled
     print("\n5. Running pytest suite...")
     code, out, err = run_command("python -m pytest -q --tb=short")
@@ -57,8 +58,9 @@ def main():
     print(f"   Output: {out}")
     if err:
         print(f"   Error: {err}")
-    
+
     print("\n=== Test Complete ===")
+
 
 if __name__ == "__main__":
     main()

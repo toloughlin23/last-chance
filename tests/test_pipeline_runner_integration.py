@@ -15,4 +15,3 @@ def test_pipeline_run_once_no_execute(tmp_path):
     assert log_file.exists()
     contents = log_file.read_text(encoding="utf-8")
     assert "AAPL" in contents
-

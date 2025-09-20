@@ -21,7 +21,9 @@ class PolygonClient:
             params.update(extra)
         return params
 
-    def get_aggregates_daily(self, symbol: str, start: date, end: date, adjusted: bool = True, limit: int = 50000) -> Dict[str, Any]:
+    def get_aggregates_daily(
+        self, symbol: str, start: date, end: date, adjusted: bool = True, limit: int = 50000
+    ) -> Dict[str, Any]:
         """Fetch daily aggregate bars for a symbol between two dates (inclusive)."""
         path = f"/v2/aggs/ticker/{symbol}/range/1/day/{start.isoformat()}/{end.isoformat()}"
         url = f"{self.BASE_URL}{path}"
@@ -42,9 +44,7 @@ class PolygonClient:
     ) -> Dict[str, Any]:
         path = f"/v2/aggs/ticker/{ticker}/range/{multiplier}/{timespan}/{from_date}/{to_date}"
         url = f"{self.BASE_URL}{path}"
-        params = self._auth_params(
-            {"adjusted": str(adjusted).lower(), "sort": sort, "limit": limit}
-        )
+        params = self._auth_params({"adjusted": str(adjusted).lower(), "sort": sort, "limit": limit})
         return self.http.get_json(url, params=params)
 
     def get_last_n_days(self, ticker: str, days: int = 5, adjusted: bool = True) -> Dict[str, Any]:
@@ -53,4 +53,3 @@ class PolygonClient:
         end = date.today()
         start = end - timedelta(days=days)
         return self.get_aggregates_daily(ticker, start=start, end=end, adjusted=adjusted)
-

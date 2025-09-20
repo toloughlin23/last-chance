@@ -29,16 +29,25 @@ def test_day7_single_bandit_diversity_with_real_polygon_aggs():
     arm_lin = lin.select_arm(enriched)
     conf_lin = lin.get_confidence_for_context(arm_lin, enriched)
 
-    neu.add_arm('buy_signal')
-    conf_neu = neu.get_confidence('buy_signal', enriched)
+    neu.add_arm("buy_signal")
+    conf_neu = neu.get_confidence("buy_signal", enriched)
 
     polygon_like = {
-        'status': 'OK',
-        'results': {'p': getattr(enriched.market_data, 'price', 100.0), 's': int(getattr(enriched.market_data, 'volume', 1000000)), 't': 0, 'c': [1], 'o': 0, 'h': 0, 'l': 0, 'v': int(getattr(enriched.market_data, 'volume', 1000000)), 'vw': getattr(enriched.market_data, 'price', 100.0)}
+        "status": "OK",
+        "results": {
+            "p": getattr(enriched.market_data, "price", 100.0),
+            "s": int(getattr(enriched.market_data, "volume", 1000000)),
+            "t": 0,
+            "c": [1],
+            "o": 0,
+            "h": 0,
+            "l": 0,
+            "v": int(getattr(enriched.market_data, "volume", 1000000)),
+            "vw": getattr(enriched.market_data, "price", 100.0),
+        },
     }
     action_ucv, conf_ucv = ucv.select_action(polygon_like)
 
     # Diversity: at least two confidences should differ by >= 5%
     values = [conf_lin, conf_neu, conf_ucv]
     assert max(values) - min(values) >= 0.05
-

@@ -9,10 +9,10 @@ from pathlib import Path
 
 def create_env_file():
     """Create .env file with proper configuration"""
-    
+
     # Get the project root directory
     project_root = Path(__file__).parent.parent
-    
+
     # Environment configuration
     env_content = """# Redis Configuration (Local Development)
 REDIS_HOST=localhost
@@ -34,11 +34,11 @@ NEWS_API_KEY=PKG7KD1YOVP9GXEHSWB9
 # Cache Configuration
 CACHE_TTL=300
 """
-    
+
     # Write .env file
-    env_path = project_root / '.env'
+    env_path = project_root / ".env"
     try:
-        with open(env_path, 'w') as f:
+        with open(env_path, "w") as f:
             f.write(env_content)
         print(f"✅ Created .env file at: {env_path}")
         print("✅ Redis configured for localhost (will use in-memory fallback if Redis unavailable)")
@@ -48,6 +48,7 @@ CACHE_TTL=300
         print(f"❌ Failed to create .env file: {e}")
         return False
 
+
 if __name__ == "__main__":
     print("🚀 Setting up environment for 100% GENUINE system...")
     success = create_env_file()
@@ -55,8 +56,3 @@ if __name__ == "__main__":
         print("🎉 Environment setup complete!")
     else:
         print("❌ Environment setup failed!")
-
-
-
-
-

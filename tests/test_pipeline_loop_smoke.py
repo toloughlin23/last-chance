@@ -15,4 +15,3 @@ def test_pipeline_run_loop_single_iteration(tmp_path):
     assert log_file.exists()
     text = log_file.read_text(encoding="utf-8")
     assert "AAPL" in text
-

@@ -21,11 +21,13 @@ class AlpacaClient:
             # Assert for type-narrowing: enabled implies keys are present
             assert self.api_key is not None
             assert self.secret_key is not None
-            self.session.headers.update({
-                "APCA-API-KEY-ID": self.api_key,
-                "APCA-API-SECRET-KEY": self.secret_key,
-                "Content-Type": "application/json"
-            })
+            self.session.headers.update(
+                {
+                    "APCA-API-KEY-ID": self.api_key,
+                    "APCA-API-SECRET-KEY": self.secret_key,
+                    "Content-Type": "application/json",
+                }
+            )
 
     def _require_configured(self) -> None:
         """Ensure credentials are configured before making network calls."""
@@ -42,38 +44,42 @@ class AlpacaClient:
         resp.raise_for_status()
         return resp.json()
 
-    def place_order(self, symbol: str, qty: int, side: str, type_: str = "market", time_in_force: str = "day", paper_guard: bool = True) -> Dict[str, Any]:
+    def place_order(
+        self,
+        symbol: str,
+        qty: int,
+        side: str,
+        type_: str = "market",
+        time_in_force: str = "day",
+        paper_guard: bool = True,
+    ) -> Dict[str, Any]:
         self._require_configured()
         if paper_guard and not self.paper:
             raise RuntimeError("Safety: live trading blocked without explicit opt-in")
-        order = {
-            "symbol": symbol,
-            "qty": qty,
-            "side": side,
-            "type": type_,
-            "time_in_force": time_in_force
-        }
+        order = {"symbol": symbol, "qty": qty, "side": side, "type": type_, "time_in_force": time_in_force}
         resp = self._session().post(f"{self.base}/v2/orders", json=order, timeout=30)
         resp.raise_for_status()
         return resp.json()
 
-    def submit_order(self, symbol: str, qty: str, side: str, type: str, time_in_force: str = "day", 
-                    limit_price: Optional[str] = None, stop_price: Optional[str] = None) -> Dict[str, Any]:
+    def submit_order(
+        self,
+        symbol: str,
+        qty: str,
+        side: str,
+        type: str,
+        time_in_force: str = "day",
+        limit_price: Optional[str] = None,
+        stop_price: Optional[str] = None,
+    ) -> Dict[str, Any]:
         """Submit order with enhanced parameters"""
         self._require_configured()
-        order = {
-            "symbol": symbol,
-            "qty": qty,
-            "side": side,
-            "type": type,
-            "time_in_force": time_in_force
-        }
-        
+        order = {"symbol": symbol, "qty": qty, "side": side, "type": type, "time_in_force": time_in_force}
+
         if limit_price:
             order["limit_price"] = limit_price
         if stop_price:
             order["stop_price"] = stop_price
-            
+
         resp = self._session().post(f"{self.base}/v2/orders", json=order, timeout=30)
         resp.raise_for_status()
         return resp.json()
@@ -96,7 +102,7 @@ class AlpacaClient:
         params: Dict[str, Any] = {"limit": limit}
         if status:
             params["status"] = status
-            
+
         resp = self._session().get(f"{self.base}/v2/orders", params=params, timeout=30)
         resp.raise_for_status()
         return resp.json()
@@ -127,4 +133,3 @@ class AlpacaClient:
             return True
         except Exception:
             return False
-
