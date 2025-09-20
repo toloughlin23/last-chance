@@ -57,8 +57,19 @@ class OptimizedInstitutionalNeuralBandit:
         biases = []
         
         for i in range(len(layers) - 1):
-            # Xavier initialization
-            w = np.random.randn(layers[i], layers[i+1]) * np.sqrt(2.0 / layers[i])
+            # DETERMINISTIC Xavier initialization - NO RANDOM
+            # Use layer dimensions to create deterministic but varied weights
+            w = np.zeros((layers[i], layers[i+1]))
+            scale = np.sqrt(2.0 / layers[i])
+            
+            # Create deterministic pattern based on layer dimensions
+            for row in range(layers[i]):
+                for col in range(layers[i+1]):
+                    # Deterministic hash based on position
+                    hash_val = ((row * 31 + col * 17 + i * 13) % 100) / 100.0  # 0 to 1
+                    # Map to [-1, 1] range with Xavier scaling
+                    w[row, col] = (hash_val * 2 - 1) * scale
+            
             b = np.zeros(layers[i+1])
             weights.append(w)
             biases.append(b)

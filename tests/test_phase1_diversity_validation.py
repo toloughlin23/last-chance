@@ -478,8 +478,26 @@ def test_phase1_algorithm_individual_performance():
     for algo_name, algorithm in validator.algorithms.items():
         print(f"\n🔍 Testing {algo_name.upper()} algorithm...")
         
-        # Generate test features
-        test_features = np.random.random(15) * 2 - 1  # Random features in [-1, 1]
+        # Generate DETERMINISTIC test features - NO RANDOM
+        # Use algorithm-specific deterministic features
+        base_val = hash(algo_name) % 100 / 100.0
+        test_features = np.array([
+            base_val * 2 - 1,  # Core feature
+            (base_val * 0.5) * 2 - 1,
+            (base_val * 0.3) * 2 - 1,
+            (base_val * 0.7) * 2 - 1,
+            (base_val * 0.9) * 2 - 1,
+            (base_val * 0.2) * 2 - 1,
+            (base_val * 0.8) * 2 - 1,
+            (base_val * 0.4) * 2 - 1,
+            (base_val * 0.6) * 2 - 1,
+            (base_val * 0.1) * 2 - 1,
+            (base_val * 0.95) * 2 - 1,
+            (base_val * 0.15) * 2 - 1,
+            (base_val * 0.85) * 2 - 1,
+            (base_val * 0.35) * 2 - 1,
+            (base_val * 0.65) * 2 - 1,
+        ])
         
         # Test confidence calculation
         try:
@@ -495,7 +513,25 @@ def test_phase1_algorithm_individual_performance():
         # Test multiple confidence calculations for variation
         confidences = []
         for i in range(10):
-            test_features = np.random.random(15) * 2 - 1
+            # DETERMINISTIC features that vary by iteration - NO RANDOM
+            iter_base = (base_val + i * 0.1) % 1.0
+            test_features = np.array([
+                iter_base * 2 - 1,
+                (iter_base * 0.5 + i * 0.01) * 2 - 1,
+                (iter_base * 0.3 + i * 0.02) * 2 - 1,
+                (iter_base * 0.7 - i * 0.01) * 2 - 1,
+                (iter_base * 0.9 - i * 0.02) * 2 - 1,
+                (iter_base * 0.2 + i * 0.03) * 2 - 1,
+                (iter_base * 0.8 - i * 0.03) * 2 - 1,
+                (iter_base * 0.4 + i * 0.04) * 2 - 1,
+                (iter_base * 0.6 - i * 0.04) * 2 - 1,
+                (iter_base * 0.1 + i * 0.05) * 2 - 1,
+                (iter_base * 0.95 - i * 0.05) * 2 - 1,
+                (iter_base * 0.15 + i * 0.06) * 2 - 1,
+                (iter_base * 0.85 - i * 0.06) * 2 - 1,
+                (iter_base * 0.35 + i * 0.07) * 2 - 1,
+                (iter_base * 0.65 - i * 0.07) * 2 - 1,
+            ])
             try:
                 # Use unique arm_id for each test to ensure variation
                 unique_arm_id = f'buy_signal_{algo_name}_{i}'

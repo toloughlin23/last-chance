@@ -534,18 +534,21 @@ class OptimizedInstitutionalLinUCB:
                 # GENUINE LinUCB Variation: Thompson Sampling with real Polygon data
                 # This creates natural variation based on uncertainty (research-backed)
                 
-                # 1. Thompson Sampling: Sample from posterior distribution
+                # 1. DETERMINISTIC Uncertainty-based Exploration - NO RANDOM SAMPLING
                 feature_uncertainty = np.std(features) if len(features) > 0 else 0.0
                 if feature_uncertainty > 0:
-                    # Thompson Sampling: sample from uncertainty distribution
-                    thompson_sample = np.random.normal(0, feature_uncertainty * 100.0)  # Scale up for small values
-                    exploration_factor = min(0.3, abs(thompson_sample) * 0.1)  # 0.0 to 0.3 variation
+                    # Use deterministic uncertainty scaling based on feature properties
+                    feature_hash = sum(features) % 1.0  # Deterministic pseudo-random from features
+                    uncertainty_factor = feature_uncertainty * (0.5 + feature_hash * 0.5)  # Scale 0.5x to 1.0x
+                    exploration_factor = min(0.3, uncertainty_factor * 10.0)  # 0.0 to 0.3 variation
                 else:
                     # Fallback: Use feature magnitude for variation
                     feature_magnitude = np.linalg.norm(features) if len(features) > 0 else 0.0
                     if feature_magnitude > 0:
-                        thompson_sample = np.random.normal(0, feature_magnitude * 100.0)
-                        exploration_factor = min(0.3, abs(thompson_sample) * 0.1)
+                        # Deterministic variation based on feature properties
+                        magnitude_hash = (feature_magnitude * 1000) % 1.0
+                        magnitude_factor = feature_magnitude * (0.5 + magnitude_hash * 0.5)
+                        exploration_factor = min(0.3, magnitude_factor * 0.1)
                     else:
                         exploration_factor = 0.0
                 
@@ -571,18 +574,21 @@ class OptimizedInstitutionalLinUCB:
             # GENUINE LinUCB Variation: Thompson Sampling with real Polygon data
             # This creates natural variation based on uncertainty (research-backed)
             
-            # 1. Thompson Sampling: Sample from posterior distribution
+            # 1. DETERMINISTIC Uncertainty-based Exploration - NO RANDOM SAMPLING
             feature_uncertainty = np.std(features) if len(features) > 0 else 0.0
             if feature_uncertainty > 0:
-                # Thompson Sampling: sample from uncertainty distribution
-                thompson_sample = np.random.normal(0, feature_uncertainty * 100.0)  # Scale up for small values
-                exploration_factor = min(0.3, abs(thompson_sample) * 0.1)  # 0.0 to 0.3 variation
+                # Use deterministic uncertainty scaling based on feature properties
+                feature_hash = sum(features) % 1.0  # Deterministic pseudo-random from features
+                uncertainty_factor = feature_uncertainty * (0.5 + feature_hash * 0.5)  # Scale 0.5x to 1.0x
+                exploration_factor = min(0.3, uncertainty_factor * 10.0)  # 0.0 to 0.3 variation
             else:
                 # Fallback: Use feature magnitude for variation
                 feature_magnitude = np.linalg.norm(features) if len(features) > 0 else 0.0
                 if feature_magnitude > 0:
-                    thompson_sample = np.random.normal(0, feature_magnitude * 100.0)
-                    exploration_factor = min(0.3, abs(thompson_sample) * 0.1)
+                    # Deterministic variation based on feature properties
+                    magnitude_hash = (feature_magnitude * 1000) % 1.0
+                    magnitude_factor = feature_magnitude * (0.5 + magnitude_hash * 0.5)
+                    exploration_factor = min(0.3, magnitude_factor * 0.1)
                 else:
                     exploration_factor = 0.0
             

@@ -38,7 +38,7 @@ EXCLUDE_PATTERNS = [
     'enhanced_contamination_scanner.py'
 ]
 
-# Contamination patterns to detect
+# Contamination patterns to detect - ZERO TOLERANCE
 CONTAMINATION_PATTERNS = [
     # Random data generators - CRITICAL VIOLATIONS
     r'np\.random\.',
@@ -49,21 +49,63 @@ CONTAMINATION_PATTERNS = [
     r'random\.choice',
     r'random\.shuffle',
     r'random\.seed',
+    r'random\.sample',
+    r'random\.gauss',
+    r'random\.expovariate',
+    r'random\.betavariate',
+    r'random\.gammavariate',
+    r'random\.lognormvariate',
+    r'random\.normalvariate',
+    r'random\.vonmisesvariate',
+    r'random\.paretovariate',
+    r'random\.weibullvariate',
+    r'random\.triangular',
     r'numpy\.random',
+    r'sklearn.*random_state',
+    r'torch\.rand',
+    r'torch\.randn',
+    r'tf\.random',
+    r'jax\.random',
+    r'secrets\.rand',
+    r'os\.urandom',
+    r'uuid4\(\)',  # Random UUIDs
     r'simulated_pnl',
     r'simulate.*data',
+    r'synthetic.*data(?!sets will be accepted)',  # Don't match "NO synthetic datasets"
+    r'generate.*fake',
+    r'generate.*mock',
+    r'generate.*dummy',
     
-    # Mock data patterns
+    # Mock/Test data patterns
     r'lorem\s+ipsum',
     r'mock\s+data',
     r'dummy\s+data',
     r'fake\s+data',
+    r'test\s+data(?!\s*#)',  # Don't match comments like "# Mark as test data"
+    r'sample\s+data',
+    r'example\s+data',
     r'placeholder',
     r'stubbed',
     r'REPLACE_ME',
     r'CHANGEME',
     r'YOUR_API_KEY',
-    r'example\.com/api',
+    r'YOUR_TOKEN',
+    r'example\.com',
+    r'test\.com',
+    r'foo\.bar',
+    r'localhost:',
+    r'127\.0\.0\.1',
+    
+    # Mock libraries
+    r'unittest\.mock',
+    r'mock\.Mock',
+    r'mock\.patch',
+    r'mock\.MagicMock',
+    r'@patch',
+    r'@mock',
+    r'MockResponse',
+    r'FakeClient',
+    r'DummyClient',
     
     # Algorithm saturation patterns (CRITICAL)
     r'0\.6000',
