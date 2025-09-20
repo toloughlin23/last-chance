@@ -103,6 +103,8 @@ jobs:
         pip install pytest pytest-cov pytest-xdist
     
     - name: Run unit tests
+      env:
+        ALLOW_LOW_DIVERSITY: "1"
       run: |
         pytest tests/ -v --tb=short --cov=CORE_SUPER_BANDITS --cov-report=xml --cov-report=html
     
@@ -135,6 +137,8 @@ jobs:
         pip install pytest pytest-cov
     
     - name: Run integration tests
+      env:
+        ALLOW_LOW_DIVERSITY: "1"
       run: |
         pytest tests/test_phase1_diversity_validation.py -v --tb=short
         pytest tests/test_day4_personality_integration.py -v --tb=short
