@@ -8,7 +8,6 @@ Verify the training module is 100% GENUINE with NO fake data
 import ast
 import os
 import re
-from pathlib import Path
 
 
 def verify_training_module():
