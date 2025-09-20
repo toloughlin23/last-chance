@@ -13,25 +13,26 @@ Key Features:
 - Comprehensive bias prevention
 """
 
-import os
-import sys
-from datetime import datetime, timedelta
-from typing import Dict, List, Optional, Tuple, Any
-from dataclasses import dataclass, field
-import numpy as np
-import pandas as pd
-from collections import defaultdict
 import json
 import logging
+import os
+import sys
+from collections import defaultdict
+from dataclasses import dataclass
+from datetime import datetime, timedelta
+from typing import Any, Dict, List, Optional
+
+import numpy as np
+import pandas as pd
 
 # Add parent directory to path for imports
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from services.polygon_client import PolygonClient
-from services.advanced_news_sentiment import AdvancedNewsSentimentAnalyzer
 from CORE_SUPER_BANDITS.optimized_linucb_institutional import OptimizedInstitutionalLinUCB
 from CORE_SUPER_BANDITS.optimized_neural_bandit_institutional import OptimizedInstitutionalNeuralBandit
 from CORE_SUPER_BANDITS.optimized_ucbv_institutional import OptimizedInstitutionalUCBV
+from services.advanced_news_sentiment import AdvancedNewsSentimentAnalyzer
+from services.polygon_client import PolygonClient
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -279,7 +280,7 @@ class HistoricalTrainingModule:
             raw_return -= transaction_cost
             
         # Annualize based on holding period
-        annualization_factor = 252 / max(1, holding_period)
+        # annualization_factor = 252  # For future use in annualized metrics / max(1, holding_period)
         
         return raw_return * 100  # Return in basis points
     

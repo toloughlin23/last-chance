@@ -5,17 +5,16 @@
 Easy-to-use script for running historical training
 """
 
+import argparse
+import json
 import os
 import sys
-import argparse
-from datetime import datetime
-import json
 
 # Add parent directory to path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from training.historical_training_module import HistoricalTrainingModule, TrainingConfig
-from training.training_config import TrainingPresets, TrainingValidation, TRAINING_BEST_PRACTICES
+from training.training_config import TRAINING_BEST_PRACTICES, TrainingPresets, TrainingValidation
 
 
 def main():

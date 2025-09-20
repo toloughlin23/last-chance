@@ -5,7 +5,7 @@ Centralized configuration for historical training module
 """
 
 from datetime import datetime
-from typing import List, Dict, Any
+from typing import Any, Dict, List
 
 
 class TrainingPresets:
