@@ -242,7 +242,7 @@ def main():
         print('\n✅ NO CONTAMINATION VIOLATIONS DETECTED')
     
     # Check for algorithm saturation patterns specifically
-    print(f'\n🔍 ALGORITHM SATURATION CHECK: Testing 3 core algorithms (LinUCB, Neural, UCB-V) for genuine variation')
+    print('\n🔍 ALGORITHM SATURATION CHECK: Testing 3 core algorithms (LinUCB, Neural, UCB-V) for genuine variation')
     print('=' * 40)
     
     saturation_files = [
@@ -261,7 +261,7 @@ def main():
             print('  ✅ No saturation patterns detected')
     
     # Test algorithm diversity
-    print(f'\n🧪 ALGORITHM DIVERSITY TEST: Measuring confidence variation across 3 core algorithms')
+    print('\n🧪 ALGORITHM DIVERSITY TEST: Measuring confidence variation across 3 core algorithms')
     print('=' * 40)
     
     diversity_results = test_algorithm_diversity()
