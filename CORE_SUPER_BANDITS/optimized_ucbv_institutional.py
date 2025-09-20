@@ -856,8 +856,11 @@ class OptimizedInstitutionalUCBV:
             sentiment_strength * volatility               # 14: Risk-sentiment interaction
         ])
         
-        # Ensure proper dimensionality
-        assert len(features) == self.feature_dimension, f"Feature mismatch: {len(features)} vs {self.feature_dimension}"
+        # Ensure proper dimensionality (use explicit validation for security/compliance)
+        if len(features) != self.feature_dimension:
+            raise ValueError(
+                f"Feature mismatch: got {len(features)} features, expected {self.feature_dimension}"
+            )
         
         return features
     

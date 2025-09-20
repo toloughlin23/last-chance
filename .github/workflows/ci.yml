@@ -293,6 +293,7 @@ jobs:
         fi
     
     - name: Upload documentation
+      if: ${{ hashFiles('docs/_build/html/index.html') != '' }}
       uses: actions/upload-artifact@v4
       with:
         name: documentation
