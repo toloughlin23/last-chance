@@ -143,14 +143,14 @@ class OptimizedInstitutionalNeuralBandit:
         except Exception:
             pass
         
-        # Institutional bounds (40-95% range for neural networks)
-        final_confidence = max(0.40, min(0.95, float(combined)))
+        # Institutional bounds (45-95% range for neural networks)
+        final_confidence = max(0.45, min(0.95, float(combined)))
         
         # Deterministic personality influence to ensure context-driven spread without randomness
         if self.personality is not None:
             bias = float(self.personality.confidence_bias())
             final_confidence += (bias - 0.5) * 0.10  # ±0.05 shift
-            final_confidence = max(0.40, min(0.95, final_confidence))
+            final_confidence = max(0.45, min(0.95, final_confidence))
         
         return final_confidence
     
@@ -492,8 +492,8 @@ class OptimizedInstitutionalNeuralBandit:
             # Apply all variations to create genuine Neural Bandit diversity
             confidence += complexity_variation + interaction_variation + entropy_variation + skewness_variation + range_variation
             
-            # Ensure within Neural Bandit's natural range [0.4, 0.95] after deterministic shaping
-            confidence = float(max(0.40, min(0.95, confidence)))
+            # Ensure within Neural Bandit's natural range [0.45, 0.95] after deterministic shaping
+            confidence = float(max(0.45, min(0.95, confidence)))
             
             print(
                 f"🔍 Neural: pattern={pattern_contribution:.3f}, "
@@ -512,10 +512,9 @@ class OptimizedInstitutionalNeuralBandit:
             
             # Add selection count influence (more selections = higher confidence)
             selection_boost = min(network['selections'] * 0.01, 0.2)
-            confidence = float(min(confidence + selection_boost, 1.0))
+            confidence = float(max(0.45, min(confidence + selection_boost, 0.95)))
             
-            final_val: float = float(max(0.1, float(confidence)))
-            return final_val  # Minimum 10% confidence
+            return confidence
         except Exception as e:
             print(f"🔍 Neural: Exception in confidence calculation: {e}")
             import traceback
