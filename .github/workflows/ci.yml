@@ -8,39 +8,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  # Phase 1: Environment Setup and Dependencies
-  setup:
-    runs-on: ubuntu-latest
-    outputs:
-      python-version: ${{ steps.setup-python.outputs.python-version }}
-      cache-hit: ${{ steps.cache-deps.outputs.cache-hit }}
-    
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0  # Full history for better analysis
-    
-    - name: Set up Python
-      id: setup-python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.11'
-        cache: 'pip'
-    
-    - name: Cache dependencies
-      id: cache-deps
-      uses: actions/cache@v3
-      with:
-        path: ~/.cache/pip
-        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-        restore-keys: |
-          ${{ runner.os }}-pip-
-    
-    - name: Install system dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y build-essential libffi-dev libssl-dev
+  # Phase 1: Code Quality and Contamination Scanning
 
   # Phase 2: Code Quality and Contamination Scanning
   quality-scan:
