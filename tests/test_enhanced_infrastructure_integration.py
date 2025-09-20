@@ -13,7 +13,7 @@ Test the 24-thread infrastructure with Redis caching
 """
 
 import time
-from datetime import datetime
+from datetime import datetime, timedelta
 from datetime import timezone as _timezone
 
 import pytest
@@ -231,7 +231,7 @@ class TestEnhancedInfrastructure:
             execute=False, prioritize_by_news=False
         )
         
-        print("✅ Successfully processed REAL market data - NO FAKE DATA!")
+        print("✅ Successfully processed REAL market data - 100% GENUINE!")
         
         runner.shutdown()
     

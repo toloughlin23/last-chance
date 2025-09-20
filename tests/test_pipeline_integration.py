@@ -197,7 +197,7 @@ class TestPipelineIntegration:
             execute=False, prioritize_by_news=True, news_booster_enabled=True
         )
         
-        print("✅ Successfully processed REAL market data - NO FAKE DATA!")
+        print("✅ Successfully processed REAL market data - 100% GENUINE!")
         
         # Test compliance check
         test_context = {

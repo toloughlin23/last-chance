@@ -35,7 +35,7 @@ def test_fixed_pipeline():
         prioritize_by_news=False
     )
     
-    print("✅ Pipeline working with REAL DATA - NO FAKE DATA!")
+    print("✅ Pipeline working with REAL DATA - 100% GENUINE!")
     
     runner.shutdown()
 
