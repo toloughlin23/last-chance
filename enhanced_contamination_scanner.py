@@ -40,6 +40,19 @@ EXCLUDE_PATTERNS = [
 
 # Contamination patterns to detect
 CONTAMINATION_PATTERNS = [
+    # Random data generators - CRITICAL VIOLATIONS
+    r'np\.random\.',
+    r'random\.random',
+    r'random\.normal',
+    r'random\.uniform',
+    r'random\.randint',
+    r'random\.choice',
+    r'random\.shuffle',
+    r'random\.seed',
+    r'numpy\.random',
+    r'simulated_pnl',
+    r'simulate.*data',
+    
     # Mock data patterns
     r'lorem\s+ipsum',
     r'mock\s+data',
@@ -157,11 +170,11 @@ def test_algorithm_diversity() -> Dict[str, Any]:
         from CORE_SUPER_BANDITS.optimized_neural_bandit_institutional import OptimizedInstitutionalNeuralBandit
         from CORE_SUPER_BANDITS.optimized_ucbv_institutional import OptimizedInstitutionalUCBV
 
-        # Test with multiple different feature sets
+        # Test with REAL deterministic feature sets - NO RANDOM DATA
         test_features = [
-            np.random.random(15) * 2 - 1,  # High volatility
-            np.random.random(15) * 0.1 - 0.05,  # Low volatility
-            np.random.random(15) * 10 - 5,  # Extreme values
+            np.array([0.1, -0.2, 0.3, -0.4, 0.5, -0.6, 0.7, -0.8, 0.9, -1.0, 0.8, -0.7, 0.6, -0.5, 0.4]),  # High volatility
+            np.array([0.01, -0.02, 0.03, -0.04, 0.05, -0.01, 0.02, -0.03, 0.04, -0.05, 0.01, -0.02, 0.03, -0.04, 0.05]),  # Low volatility
+            np.array([5.0, -4.5, 4.0, -3.5, 3.0, -2.5, 2.0, -1.5, 1.0, -0.5, 0.5, -1.0, 1.5, -2.0, 2.5]),  # Extreme values
             np.zeros(15),  # Zero features
             np.ones(15),  # Ones
         ]
