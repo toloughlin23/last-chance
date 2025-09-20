@@ -7,6 +7,8 @@ Centralized configuration for historical training module
 from datetime import datetime
 from typing import Any, Dict, List
 
+from utils.proven_symbol_expander import get_proven_expanded_symbols
+
 
 class TrainingPresets:
     """Pre-configured training scenarios"""
@@ -84,6 +86,21 @@ class TrainingPresets:
             'validate_no_future_data': True,
             'save_checkpoints': True,
             'checkpoint_frequency': 60  # Bi-monthly
+        }
+    
+    @staticmethod
+    def curated_120_training() -> Dict[str, Any]:
+        """CURATED 120 SYMBOLS - OPTIMIZED FOR DAY TRADING (RECOMMENDED)"""
+        return {
+            'training_start_date': datetime(2024, 1, 1),
+            'training_end_date': datetime(2024, 12, 31),
+            'symbols': get_proven_expanded_symbols(),  # 120 symbols from proven candidates + REAL Polygon data
+            'lookback_window': 20,
+            'news_lookback_hours': 24,
+            'validate_no_future_data': True,
+            'save_checkpoints': True,
+            'checkpoint_frequency': 30,  # Monthly
+            'description': '120 symbols curated for optimal day trading performance'
         }
     
     @staticmethod
