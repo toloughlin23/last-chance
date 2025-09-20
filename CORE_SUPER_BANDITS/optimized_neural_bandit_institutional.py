@@ -8,6 +8,7 @@ Deep learning multi-armed bandit with neural network approximation
 Target: >95% accuracy for institutional compliance
 """
 
+import logging
 import math
 import time
 from typing import Any, Dict, List, Optional
@@ -15,6 +16,9 @@ from typing import Any, Dict, List, Optional
 import numpy as np
 
 from systems.personality import AuthenticPersonalitySystem
+
+# Configure logger for bulletproof error handling
+logger = logging.getLogger(__name__)
 
 
 class OptimizedInstitutionalNeuralBandit:
@@ -140,8 +144,9 @@ class OptimizedInstitutionalNeuralBandit:
         # This preserves the intended effect instead of removing it, while keeping outputs bounded
         try:
             combined -= 0.05 * min(1.0, float(exploration_factor))
-        except Exception:
-            pass
+        except Exception as e:
+            # Log exploration factor adjustment failure for debugging (bulletproof implementation)
+            logger.warning(f"Failed to apply exploration factor adjustment: {e}")
         
         # Institutional bounds (45-95% range for neural networks)
         final_confidence = max(0.45, min(0.95, float(combined)))
