@@ -7,7 +7,7 @@ import sys
 
 sys.path.append('.')
 
-from unittest.mock import patch
+# NO MOCKS - 100% GENUINE REAL DATA ONLY
 
 from pipeline.enhanced_runner import EnhancedPipelineRunner
 
@@ -19,34 +19,23 @@ def test_fixed_pipeline():
     
     runner = EnhancedPipelineRunner()
     
-    print("Testing fixed pipeline...")
+    print("🔥 Using REAL market data from Polygon API - NO MOCKS!")
     
-    with patch.object(runner.polygon_client, 'get_aggs') as mock_get_aggs:
-        mock_get_aggs.return_value = {
-            'results': [
-                {
-                    'p': 150.0,
-                    's': 1000000,
-                    't': 1640995200000,
-                    'c': [1],
-                    'o': 145.0,
-                    'h': 155.0,
-                    'l': 140.0,
-                    'v': 1000000,
-                    'vw': 150.0
-                }
-            ]
-        }
-        
-        runner.run_enhanced_once(
-            ['AAPL'], 
-            '2023-01-03', 
-            '2023-01-10', 
-            execute=False, 
-            prioritize_by_news=False
-        )
-        
-        print("✅ Pipeline working!")
+    # Use recent dates to ensure data availability
+    from datetime import datetime, timedelta
+    end_date = datetime.now().strftime("%Y-%m-%d")
+    start_date = (datetime.now() - timedelta(days=7)).strftime("%Y-%m-%d")
+    
+    # Run with REAL market data
+    runner.run_enhanced_once(
+        ['AAPL'], 
+        start_date, 
+        end_date, 
+        execute=False, 
+        prioritize_by_news=False
+    )
+    
+    print("✅ Pipeline working with REAL DATA - NO FAKE DATA!")
     
     runner.shutdown()
 
