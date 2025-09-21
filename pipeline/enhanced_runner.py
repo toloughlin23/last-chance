@@ -29,6 +29,7 @@ from services.infrastructure_manager import InstitutionalInfrastructureManager
 from services.polygon_client import PolygonClient
 from utils.uk_us_timezone_handler import get_uk_us_handler
 from utils.universe_selector import UniverseSelector
+from utils.active_universe_provider import ActiveUniverseProvider
 
 UTC = _timezone.utc
 
@@ -60,6 +61,7 @@ class EnhancedPipelineRunner:
         # ENHANCED: Initialize other services
         self.hygiene = Hygiene()
         self.universe_selector = UniverseSelector()
+        self.universe_provider = ActiveUniverseProvider(self.polygon_client)
         # Dynamic universe settings
         self.dynamic_universe_enabled = True
         self.universe_cache_path = "data/active_universe_120.json"
@@ -427,7 +429,7 @@ class EnhancedPipelineRunner:
                 active_symbols = symbols
                 if self.dynamic_universe_enabled:
                     try:
-                        active_symbols = self.universe_selector.get_or_build_universe(
+                        active_symbols = self.universe_provider.get_active_universe(
                             target_size=self.universe_target_size,
                             analysis_days=self.universe_analysis_days,
                             cache_path=self.universe_cache_path,
