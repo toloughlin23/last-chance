@@ -240,3 +240,4 @@ if __name__ == "__main__":
     validation = expander.validate_pool_performance(lookback_days=30)
     
     print(f"\n🚀 Ready for day trading with proven symbols + REAL Polygon data!")
+

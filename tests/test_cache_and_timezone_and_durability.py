@@ -125,3 +125,4 @@ def test_linucb_confidence_invariants(sentiment, momentum, volatility):
     ctx2 = _E(min(1.0, sentiment + 0.2), momentum, volatility)
     c2 = bandit.get_confidence_for_context(arm, ctx2)
     assert c2 >= 0.45 and c2 <= 0.90
+

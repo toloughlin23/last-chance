@@ -64,3 +64,4 @@ class Phase1Controller:
         self.hub.publish(self.channel_metrics, m, block=True)
 
         return metrics
+

@@ -15,3 +15,4 @@ def test_http_client_timeout_signature():
     # Verify requests.get is called with timeout arg by inspecting source
     src = inspect.getsource(HttpClient.get_json)
     assert "timeout=" in src
+

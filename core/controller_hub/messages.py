@@ -36,3 +36,4 @@ class MetricsMessage:
     learning_rate: float
     extra: Dict[str, Any] = field(default_factory=dict)
     timestamp: datetime = field(default_factory=utcnow)
+
