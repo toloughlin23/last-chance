@@ -53,3 +53,21 @@ class PolygonClient:
         end = date.today()
         start = end - timedelta(days=days)
         return self.get_aggregates_daily(ticker, start=start, end=end, adjusted=adjusted)
+
+    # Earnings calendar - real integration should use Polygon's official endpoint.
+    # Intentionally unimplemented rather than faked; provider checks for availability before use.
+    def get_earnings_calendar(self, symbol: str, start: date, end: date) -> Dict[str, Any]:
+        # Benzinga earnings via Polygon partner API
+        # Docs: GET /v1/partners/benzinga/earnings
+        # Query (commonly used): company_tickers, from, to, limit
+        path = "/v1/partners/benzinga/earnings"
+        url = f"{self.BASE_URL}{path}"
+        params = self._auth_params(
+            {
+                "company_tickers": symbol,
+                "from": start.isoformat(),
+                "to": end.isoformat(),
+                "limit": 1000,
+            }
+        )
+        return self.http.get_json(url, params=params)

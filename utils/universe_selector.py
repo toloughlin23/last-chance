@@ -131,6 +131,9 @@ class UniverseSelector:
         start_date: str,
         end_date: str,
         target_size: int = 120,
+        target_max_size: int = 150,
+        allow_expand_above_target: bool = True,
+        expand_margin: float = 0.9,
         # Filters
         min_price: float = 10.0,
         min_atr_pct: float = 0.01,
@@ -144,6 +147,12 @@ class UniverseSelector:
         # Optional exclusion: earnings within +/- 3 days of end_date
         earnings_exclusion: Optional[Callable[[str, str, str], List[str]]] = None,
         earnings_buffer_days: int = 3,
+        # Sector balancing (optional)
+        sector_classifier: Optional[Callable[[str], Optional[str]]] = None,
+        sector_index_weights: Optional[Dict[str, float]] = None,  # e.g., {"Technology": 0.29, ...}
+        sector_cap_bonus: float = 0.10,  # +10pp above index weight
+        sector_cap_floor: float = 0.05,  # at least 5%
+        sector_cap_hard_ceiling: float = 0.35,  # 35% absolute cap
         # Ranking weights (composite)
         weight_adv: float = 0.4,
         weight_spread: float = 0.3,
@@ -245,4 +254,67 @@ class UniverseSelector:
             )
 
         ranked = sorted(spread_filtered, key=composite_score, reverse=True)
-        return ranked[:target_size]
+
+        # If no sector constraints, optionally expand and return
+        if sector_classifier is None or sector_index_weights is None:
+            if not allow_expand_above_target or target_max_size <= target_size or not ranked:
+                return ranked[:target_size]
+            base_k = min(target_size, len(ranked))
+            base_threshold = composite_score(ranked[base_k - 1]) if base_k > 0 else 0.0
+            expanded: List[str] = ranked[:base_k]
+            for sym in ranked[base_k:]:
+                if len(expanded) >= target_max_size:
+                    break
+                if composite_score(sym) >= base_threshold * expand_margin:
+                    expanded.append(sym)
+                else:
+                    break  # scores only decrease
+            return expanded
+
+        # Sector-aware selection with index-aware caps
+        # Compute per-sector cap fractions
+        def sector_cap_fraction(sector: str) -> float:
+            w = float(sector_index_weights.get(sector, 0.0))
+            cap = min(sector_cap_hard_ceiling, w + sector_cap_bonus)
+            return max(sector_cap_floor, cap)
+
+        # Allowed counts at target and max sizes
+        sector_caps_target: Dict[str, int] = {}
+        sector_caps_max: Dict[str, int] = {}
+        for sec, w in sector_index_weights.items():
+            frac = sector_cap_fraction(sec)
+            sector_caps_target[sec] = max(1, int(frac * target_size))
+            sector_caps_max[sec] = max(1, int(frac * target_max_size))
+
+        # Fill to target_size enforcing sector caps
+        picks: List[str] = []
+        counts: Dict[str, int] = {}
+        for sym in ranked:
+            if len(picks) >= target_size:
+                break
+            sec = sector_classifier(sym) or "Unknown"
+            allowed = sector_caps_target.get(sec, max(1, int(sector_cap_floor * target_size)))
+            if counts.get(sec, 0) < allowed:
+                picks.append(sym)
+                counts[sec] = counts.get(sec, 0) + 1
+
+        # Optional expansion to target_max_size for strong contenders
+        if allow_expand_above_target and target_max_size > target_size and len(picks) < target_max_size:
+            if picks:
+                base_threshold = composite_score(picks[-1])
+            else:
+                base_threshold = composite_score(ranked[min(target_size, len(ranked)) - 1]) if ranked else 0.0
+            for sym in ranked:
+                if len(picks) >= target_max_size:
+                    break
+                if sym in picks:
+                    continue
+                if composite_score(sym) < base_threshold * expand_margin:
+                    break
+                sec = sector_classifier(sym) or "Unknown"
+                allowed_max = sector_caps_max.get(sec, max(1, int(sector_cap_floor * target_max_size)))
+                if counts.get(sec, 0) < allowed_max:
+                    picks.append(sym)
+                    counts[sec] = counts.get(sec, 0) + 1
+
+        return picks

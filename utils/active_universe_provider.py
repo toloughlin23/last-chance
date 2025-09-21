@@ -20,6 +20,41 @@ class ActiveUniverseProvider:
     def __init__(self, polygon_client: Optional[PolygonClient] = None) -> None:
         self.polygon_client = polygon_client or PolygonClient()
 
+    def _build_sector_classifier_and_weights(self, candidates: List[str]):
+        """Build a sector classifier and sector weights using Polygon ticker metadata if available.
+
+        Returns (sector_classifier, sector_index_weights) or (None, None) if unavailable.
+        """
+        sector_by_symbol = {}
+        try:
+            if hasattr(self.polygon_client, "get_tickers"):
+                data = self.polygon_client.get_tickers(market="stocks", active=True, limit=1000)
+                results = data.get("results") if isinstance(data, dict) else None
+                if results:
+                    for t in results:
+                        sym = t.get("ticker")
+                        # Polygon may expose fields like "sic_sector", "sector" or "industry"
+                        sector = t.get("sector") or t.get("sic_sector") or t.get("industry")
+                        if isinstance(sym, str) and sym in candidates and isinstance(sector, str) and sector:
+                            sector_by_symbol[sym] = sector
+        except Exception:
+            sector_by_symbol = {}
+
+        if not sector_by_symbol:
+            return None, None
+
+        # Derive approximate weights from the candidate distribution when index weights are not available
+        total = max(1, len(sector_by_symbol))
+        weights = {}
+        for sec in set(sector_by_symbol.values()):
+            count = sum(1 for s in sector_by_symbol if sector_by_symbol[s] == sec)
+            weights[sec] = count / total
+
+        def sector_classifier(sym: str) -> Optional[str]:
+            return sector_by_symbol.get(sym)
+
+        return sector_classifier, weights
+
     def _discover_candidates(self) -> List[str]:
         candidates: List[str] = []
         try:
@@ -102,12 +137,39 @@ class ActiveUniverseProvider:
         sd: date = ed - timedelta(days=analysis_days)
 
         candidates = self._discover_candidates()
+        sector_classifier, sector_index_weights = self._build_sector_classifier_and_weights(candidates)
         selector = UniverseSelector()
+
+        # Earnings exclusion hook using Polygon client if available
+        def earnings_exclusion(sym: str, start_iso: str, end_iso: str) -> List[str]:
+            try:
+                if hasattr(self.polygon_client, "get_earnings_calendar"):
+                    from datetime import date as _d
+                    s = _d.fromisoformat(start_iso)
+                    e = _d.fromisoformat(end_iso)
+                    data = self.polygon_client.get_earnings_calendar(sym, s, e)
+                    # Expecting a structure with list of dates; be strict and fail closed if unexpected
+                    results = data.get("results") if isinstance(data, dict) else None
+                    if isinstance(results, list):
+                        dates: List[str] = []
+                        for item in results:
+                            d = item.get("date") or item.get("earningsDate") or item.get("reportDate")
+                            if isinstance(d, str):
+                                dates.append(d)
+                        return dates
+            except NotImplementedError:
+                return []
+            except Exception:
+                return []
+            return []
         symbols = selector.select_universe(
             candidates=candidates,
             start_date=sd.isoformat(),
             end_date=ed.isoformat(),
             target_size=target_size,
+            target_max_size=150,
+            allow_expand_above_target=True,
+            expand_margin=0.95,
             min_price=min_price,
             min_atr_pct=min_atr_pct,
             max_atr_pct=max_atr_pct,
@@ -117,6 +179,10 @@ class ActiveUniverseProvider:
             spread_max_bps=spread_max_bps,
             spread_lookback_days=spread_lookback_days,
             spread_core_hours_only=spread_core_hours_only,
+            sector_classifier=sector_classifier,
+            sector_index_weights=sector_index_weights,
+            earnings_exclusion=earnings_exclusion,
+            earnings_buffer_days=3,
         )
 
         payload = {
