@@ -60,6 +60,12 @@ class EnhancedPipelineRunner:
         # ENHANCED: Initialize other services
         self.hygiene = Hygiene()
         self.universe_selector = UniverseSelector()
+        # Dynamic universe settings
+        self.dynamic_universe_enabled = True
+        self.universe_cache_path = "data/active_universe_120.json"
+        self.universe_max_age_days = 1
+        self.universe_analysis_days = 180
+        self.universe_target_size = 120
 
         print("🚀 Enhanced Pipeline Runner initialized")
         print("✅ 24-thread infrastructure active")
@@ -417,6 +423,23 @@ class EnhancedPipelineRunner:
 
         try:
             while True:
+                # Dynamic universe refresh (daily)
+                active_symbols = symbols
+                if self.dynamic_universe_enabled:
+                    try:
+                        active_symbols = self.universe_selector.get_or_build_universe(
+                            target_size=self.universe_target_size,
+                            analysis_days=self.universe_analysis_days,
+                            cache_path=self.universe_cache_path,
+                            max_age_days=self.universe_max_age_days,
+                            force_refresh=False,
+                        )
+                        if active_symbols:
+                            print(f"📚 Active universe loaded: {len(active_symbols)} symbols")
+                    except Exception as e:
+                        print(f"⚠️ Universe refresh failed, using provided symbols: {e}")
+                        active_symbols = symbols
+
                 # ENHANCED: Check market hours with infrastructure monitoring
                 is_open = tz.is_us_market_open()
                 if market_hours_only and not is_open:
@@ -432,7 +455,7 @@ class EnhancedPipelineRunner:
 
                 # ENHANCED: Run with enhanced processing
                 self.run_enhanced_once(
-                    symbols,
+                    active_symbols,
                     start.isoformat(),
                     end.isoformat(),
                     execute=execute,
