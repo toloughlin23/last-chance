@@ -5,10 +5,11 @@ Uses existing proven symbols and expands them systematically using
 REAL Polygon data to create the optimal 120-symbol pool.
 """
 
-from typing import List, Dict, Any
-from datetime import datetime, timedelta
 import json
 import os
+from datetime import datetime, timedelta
+from typing import Any, Dict, List
+
 from dotenv import load_dotenv
 
 from services.polygon_client import PolygonClient
@@ -83,14 +84,14 @@ class ProvenSymbolExpander:
             try:
                 with open(cache_file, 'r') as f:
                     cached_data = json.load(f)
-                
+
                 # Check if cache is recent (within 7 days)
                 cache_date = datetime.fromisoformat(cached_data.get("analysis_date", "2020-01-01"))
                 if (datetime.now() - cache_date).days < 7:
                     print("📂 Using cached proven expanded symbol pool...")
                     return cached_data.get("symbols", [])
-            except:
-                pass
+            except Exception as e:
+                print(f"⚠️ Failed to read proven expanded cache: {e}")
         
         print(f"🔍 Expanding proven symbols with {analysis_days} days of REAL Polygon data...")
         
@@ -199,8 +200,8 @@ class ProvenSymbolExpander:
             "pool_stability": "HIGH" if len(overlap) / len(current_pool) > 0.8 else "MEDIUM" if len(overlap) / len(current_pool) > 0.6 else "LOW"
         }
         
-        print(f"✅ Validation complete:")
-        print(f"   - Data source: Proven symbols + Polygon API")
+        print("✅ Validation complete:")
+        print("   - Data source: Proven symbols + Polygon API")
         print(f"   - Pool stability: {validation_metrics['pool_stability']}")
         print(f"   - Overlap: {len(overlap)}/{len(current_pool)} symbols ({validation_metrics['overlap_percentage']:.1f}%)")
         
@@ -239,5 +240,6 @@ if __name__ == "__main__":
     # Validate performance
     validation = expander.validate_pool_performance(lookback_days=30)
     
-    print(f"\n🚀 Ready for day trading with proven symbols + REAL Polygon data!")
+    print("\n🚀 Ready for day trading with proven symbols + REAL Polygon data!")
+
 

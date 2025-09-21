@@ -2,12 +2,8 @@ import os
 
 import pytest
 
-from CORE_SUPER_BANDITS.optimized_linucb_institutional import (
-    OptimizedInstitutionalLinUCB,
-)
-from CORE_SUPER_BANDITS.optimized_neural_bandit_institutional import (
-    OptimizedInstitutionalNeuralBandit,
-)
+from CORE_SUPER_BANDITS.optimized_linucb_institutional import OptimizedInstitutionalLinUCB
+from CORE_SUPER_BANDITS.optimized_neural_bandit_institutional import OptimizedInstitutionalNeuralBandit
 from CORE_SUPER_BANDITS.optimized_ucbv_institutional import OptimizedInstitutionalUCBV
 from services.feature_builder import build_enriched_from_aggs
 from services.polygon_client import PolygonClient

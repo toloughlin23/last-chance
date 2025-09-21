@@ -7,9 +7,7 @@ import sys
 
 sys.path.append(".")
 
-from CORE_SUPER_BANDITS.optimized_linucb_institutional import (
-    OptimizedInstitutionalLinUCB,
-)
+from CORE_SUPER_BANDITS.optimized_linucb_institutional import OptimizedInstitutionalLinUCB
 from services.advanced_news_sentiment import AdvancedNewsSentimentAnalysis
 from services.feature_builder import build_enriched_from_aggs
 

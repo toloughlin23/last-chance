@@ -16,3 +16,4 @@ def test_http_client_timeout_signature():
     src = inspect.getsource(HttpClient.get_json)
     assert "timeout=" in src
 
+

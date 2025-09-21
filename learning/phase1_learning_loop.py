@@ -13,12 +13,8 @@ from typing import Any, Dict, List, Optional, Tuple
 import numpy as np
 
 # Import our optimized algorithms
-from CORE_SUPER_BANDITS.optimized_linucb_institutional import (
-    OptimizedInstitutionalLinUCB,
-)
-from CORE_SUPER_BANDITS.optimized_neural_bandit_institutional import (
-    OptimizedInstitutionalNeuralBandit,
-)
+from CORE_SUPER_BANDITS.optimized_linucb_institutional import OptimizedInstitutionalLinUCB
+from CORE_SUPER_BANDITS.optimized_neural_bandit_institutional import OptimizedInstitutionalNeuralBandit
 from CORE_SUPER_BANDITS.optimized_ucbv_institutional import OptimizedInstitutionalUCBV
 from services.alpaca_client import AlpacaClient
 from services.feature_builder import build_enriched_from_aggs

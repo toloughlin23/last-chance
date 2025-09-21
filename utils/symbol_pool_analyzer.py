@@ -5,11 +5,11 @@ Analyzes historical data to create the optimal 120-symbol pool
 for active day trading based on REAL performance metrics.
 """
 
-from typing import List, Dict, Any, Tuple
-from datetime import datetime, timedelta
 import json
 import os
 from dataclasses import dataclass
+from datetime import datetime, timedelta
+from typing import List
 
 from services.polygon_client import PolygonClient
 from services.quotes_client import QuotesClient
@@ -101,7 +101,7 @@ class SymbolPoolAnalyzer:
             prev_close = float(results[i-1].get("c", 0))
             high = float(results[i].get("h", 0))
             low = float(results[i].get("l", 0))
-            close = float(results[i].get("c", 0))
+            _close = float(results[i].get("c", 0))
             
             if prev_close > 0:
                 true_range = max(high - low, abs(high - prev_close), abs(low - prev_close))
@@ -115,7 +115,8 @@ class SymbolPoolAnalyzer:
             spread_dollars, spread_bps = self.quotes_client.median_spread_over_days(
                 symbol, days=30, core_hours_only=True
             )
-        except:
+        except Exception as e:
+            print(f"⚠️ Spread fetch failed for {symbol}: {e}")
             spread_dollars, spread_bps = 0.05, 10.0  # Conservative defaults
         
         # Calculate price stability (inverse of price volatility)
@@ -185,26 +186,19 @@ class SymbolPoolAnalyzer:
         
         # Get S&P 500 symbols from Polygon (more reliable than Wikipedia)
         try:
-            # Use Polygon's tickers endpoint to get large-cap stocks
-            sp500_data = self.polygon_client.get_tickers(
-                market="stocks",
-                active=True,
-                limit=1000
-            )
-            
-            if sp500_data and sp500_data.get("results"):
-                # Filter for S&P 500-like symbols (market cap > 8B)
-                sp500_symbols = []
-                for ticker in sp500_data["results"]:
-                    symbol = ticker.get("ticker", "")
-                    market_cap = ticker.get("market_cap", 0)
-                    
-                    if symbol and market_cap and market_cap > 8_000_000_000:
-                        sp500_symbols.append(symbol)
-                
-                print(f"📊 Found {len(sp500_symbols)} large-cap symbols from Polygon")
-            else:
-                sp500_symbols = []
+            # Use Polygon's tickers endpoint if available to get large-cap stocks
+            sp500_symbols = []
+            if hasattr(self.polygon_client, "get_tickers"):
+                sp500_data = self.polygon_client.get_tickers(
+                    market="stocks", active=True, limit=1000
+                )
+                if sp500_data and sp500_data.get("results"):
+                    for ticker in sp500_data["results"]:
+                        symbol = ticker.get("ticker", "")
+                        market_cap = ticker.get("market_cap", 0)
+                        if symbol and market_cap and market_cap > 8_000_000_000:
+                            sp500_symbols.append(symbol)
+                    print(f"📊 Found {len(sp500_symbols)} large-cap symbols from Polygon")
         except Exception as e:
             print(f"⚠️ Polygon API error: {e}")
             sp500_symbols = []
@@ -262,7 +256,7 @@ class SymbolPoolAnalyzer:
         # Take top performers
         top_metrics = all_metrics[:target_pool_size]
         
-        print(f"✅ Analysis complete!")
+        print("✅ Analysis complete!")
         print(f"   - Analyzed: {len(all_metrics)} symbols with sufficient data")
         print(f"   - Selected: {len(top_metrics)} top performers")
         
@@ -294,7 +288,7 @@ class SymbolPoolAnalyzer:
         curated_symbols = [m.symbol for m in top_metrics]
         
         # Print summary
-        print(f"\n📈 TOP 10 SYMBOLS:")
+        print("\n📈 TOP 10 SYMBOLS:")
         for i, metrics in enumerate(top_metrics[:10]):
             print(f"   {i+1:2d}. {metrics.symbol:6s} - Score: {metrics.overall_score:.3f} "
                   f"(Vol: ${metrics.avg_dollar_volume/1e6:.1f}M, "
@@ -368,4 +362,4 @@ if __name__ == "__main__":
     )
     
     print(f"\n✅ Curated pool created with {len(curated_symbols)} symbols!")
-    print(f"🎯 Ready for day trading optimization!")
+    print("🎯 Ready for day trading optimization!")

@@ -170,9 +170,7 @@ class DeepGenuineVerifier:
 
         # Check caching integration
         try:
-            from services.infrastructure_manager import (
-                InstitutionalInfrastructureManager,
-            )
+            from services.infrastructure_manager import InstitutionalInfrastructureManager
 
             manager = InstitutionalInfrastructureManager()
             if manager.redis_enabled:
@@ -213,9 +211,7 @@ class DeepGenuineVerifier:
 
         # Check LinUCB
         try:
-            from CORE_SUPER_BANDITS.optimized_linucb_institutional import (
-                OptimizedInstitutionalLinUCB,
-            )
+            from CORE_SUPER_BANDITS.optimized_linucb_institutional import OptimizedInstitutionalLinUCB
 
             bandit = OptimizedInstitutionalLinUCB()
 
@@ -240,9 +236,7 @@ class DeepGenuineVerifier:
 
         # Check Neural Bandit
         try:
-            from CORE_SUPER_BANDITS.optimized_neural_bandit_institutional import (
-                OptimizedInstitutionalNeuralBandit,
-            )
+            from CORE_SUPER_BANDITS.optimized_neural_bandit_institutional import OptimizedInstitutionalNeuralBandit
 
             bandit = OptimizedInstitutionalNeuralBandit()
 
@@ -266,9 +260,7 @@ class DeepGenuineVerifier:
 
         # Check UCBV
         try:
-            from CORE_SUPER_BANDITS.optimized_ucbv_institutional import (
-                OptimizedInstitutionalUCBV,
-            )
+            from CORE_SUPER_BANDITS.optimized_ucbv_institutional import OptimizedInstitutionalUCBV
 
             bandit = OptimizedInstitutionalUCBV()
 
@@ -312,9 +304,7 @@ class DeepGenuineVerifier:
 
         # Test Pipeline -> Algorithm integration
         try:
-            from CORE_SUPER_BANDITS.optimized_linucb_institutional import (
-                OptimizedInstitutionalLinUCB,
-            )
+            from CORE_SUPER_BANDITS.optimized_linucb_institutional import OptimizedInstitutionalLinUCB
             from pipeline.enhanced_runner import EnhancedPipelineRunner
 
             runner = EnhancedPipelineRunner()
@@ -382,10 +372,7 @@ class DeepGenuineVerifier:
         # Test Compliance -> Execution integration
         try:
             from services.compliance_system import UKROIComplianceSystem
-            from services.execution_bridge import (
-                OrderSide,
-                UltraInstitutionalExecutionBridge,
-            )
+            from services.execution_bridge import OrderSide, UltraInstitutionalExecutionBridge
 
             UKROIComplianceSystem()
             bridge = UltraInstitutionalExecutionBridge()
@@ -406,9 +393,7 @@ class DeepGenuineVerifier:
 
         # Test Infrastructure -> All components
         try:
-            from services.infrastructure_manager import (
-                InstitutionalInfrastructureManager,
-            )
+            from services.infrastructure_manager import InstitutionalInfrastructureManager
 
             manager = InstitutionalInfrastructureManager()
 
@@ -492,9 +477,7 @@ class DeepGenuineVerifier:
 
         # Check resource management
         try:
-            from services.infrastructure_manager import (
-                InstitutionalInfrastructureManager,
-            )
+            from services.infrastructure_manager import InstitutionalInfrastructureManager
 
             manager = InstitutionalInfrastructureManager()
 

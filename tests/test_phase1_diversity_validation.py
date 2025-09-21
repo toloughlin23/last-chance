@@ -20,12 +20,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Import all 3 optimized algorithms
-from CORE_SUPER_BANDITS.optimized_linucb_institutional import (
-    OptimizedInstitutionalLinUCB,
-)
-from CORE_SUPER_BANDITS.optimized_neural_bandit_institutional import (
-    OptimizedInstitutionalNeuralBandit,
-)
+from CORE_SUPER_BANDITS.optimized_linucb_institutional import OptimizedInstitutionalLinUCB
+from CORE_SUPER_BANDITS.optimized_neural_bandit_institutional import OptimizedInstitutionalNeuralBandit
 from CORE_SUPER_BANDITS.optimized_ucbv_institutional import OptimizedInstitutionalUCBV
 from services.news_client import NewsClient
 from services.polygon_client import PolygonClient

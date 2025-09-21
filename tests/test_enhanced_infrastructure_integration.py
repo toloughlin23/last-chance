@@ -22,10 +22,7 @@ UTC = _timezone.utc
 # NO MOCKS - 100% GENUINE REAL DATA ONLY
 
 from pipeline.enhanced_runner import EnhancedPipelineRunner
-from services.infrastructure_manager import (
-    InstitutionalInfrastructureManager,
-    ResourceStats,
-)
+from services.infrastructure_manager import InstitutionalInfrastructureManager, ResourceStats
 
 
 class TestEnhancedInfrastructure:

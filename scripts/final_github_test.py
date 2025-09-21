@@ -134,9 +134,7 @@ def test_algorithm_initialization():
 
     # Test LinUCB
     try:
-        from CORE_SUPER_BANDITS.optimized_linucb_institutional import (
-            OptimizedInstitutionalLinUCB,
-        )
+        from CORE_SUPER_BANDITS.optimized_linucb_institutional import OptimizedInstitutionalLinUCB
 
         OptimizedInstitutionalLinUCB()
         print("  ✅ LinUCB Algorithm - Initialized")
@@ -147,9 +145,7 @@ def test_algorithm_initialization():
 
     # Test Neural Bandit
     try:
-        from CORE_SUPER_BANDITS.optimized_neural_bandit_institutional import (
-            OptimizedInstitutionalNeuralBandit,
-        )
+        from CORE_SUPER_BANDITS.optimized_neural_bandit_institutional import OptimizedInstitutionalNeuralBandit
 
         OptimizedInstitutionalNeuralBandit()
         print("  ✅ Neural Bandit Algorithm - Initialized")
@@ -160,9 +156,7 @@ def test_algorithm_initialization():
 
     # Test UCBV
     try:
-        from CORE_SUPER_BANDITS.optimized_ucbv_institutional import (
-            OptimizedInstitutionalUCBV,
-        )
+        from CORE_SUPER_BANDITS.optimized_ucbv_institutional import OptimizedInstitutionalUCBV
 
         OptimizedInstitutionalUCBV()
         print("  ✅ UCBV Algorithm - Initialized")

@@ -5,11 +5,11 @@ Uses REAL Polygon API data to create the optimal 120-symbol pool
 for active day trading based on actual market performance.
 """
 
-from typing import List, Dict, Any
-from datetime import datetime, timedelta
 import json
 import os
-import os
+from datetime import datetime, timedelta
+from typing import Any, Dict, List
+
 from dotenv import load_dotenv
 
 from services.polygon_client import PolygonClient
@@ -63,14 +63,14 @@ class PolygonDrivenSymbolPool:
             try:
                 with open(cache_file, 'r') as f:
                     cached_data = json.load(f)
-                
+
                 # Check if cache is recent (within 7 days)
                 cache_date = datetime.fromisoformat(cached_data.get("analysis_date", "2020-01-01"))
                 if (datetime.now() - cache_date).days < 7:
                     print("📂 Using cached polygon-driven symbol pool...")
                     return cached_data.get("symbols", [])
-            except:
-                pass
+            except Exception as e:
+                print(f"⚠️ Failed to read polygon-driven cache: {e}")
         
         print(f"🔍 Analyzing symbols with {analysis_days} days of REAL Polygon data...")
         
@@ -113,30 +113,27 @@ class PolygonDrivenSymbolPool:
         """Get candidate symbols from Polygon API"""
         try:
             print("📡 Fetching symbols from Polygon API...")
-            
-            # Get active stock tickers from Polygon
-            tickers_data = self.polygon_client.get_tickers(
-                market="stocks",
-                active=True,
-                limit=1000
-            )
-            
-            if not tickers_data or not tickers_data.get("results"):
-                print("⚠️ No tickers from Polygon, using fallback...")
+
+            # Use existing client capability; if not available, fall back safely
+            if hasattr(self.polygon_client, "get_tickers"):
+                tickers_data = self.polygon_client.get_tickers(
+                    market="stocks", active=True, limit=1000
+                )
+                if not tickers_data or not tickers_data.get("results"):
+                    print("⚠️ No tickers from Polygon, using fallback...")
+                    return self._get_fallback_symbols()
+                candidates = []
+                for ticker in tickers_data["results"]:
+                    symbol = ticker.get("ticker", "")
+                    market_cap = ticker.get("market_cap", 0)
+                    if symbol and market_cap and market_cap > 8_000_000_000:
+                        candidates.append(symbol)
+                print(f"📈 Found {len(candidates)} large-cap candidates from Polygon")
+                return candidates
+            else:
+                print("⚠️ PolygonClient.get_tickers not available; using fallback candidates")
                 return self._get_fallback_symbols()
-            
-            # Filter for large-cap stocks (market cap > 8B)
-            candidates = []
-            for ticker in tickers_data["results"]:
-                symbol = ticker.get("ticker", "")
-                market_cap = ticker.get("market_cap", 0)
-                
-                if symbol and market_cap and market_cap > 8_000_000_000:
-                    candidates.append(symbol)
-            
-            print(f"📈 Found {len(candidates)} large-cap candidates from Polygon")
-            return candidates
-            
+
         except Exception as e:
             print(f"⚠️ Polygon API error: {e}")
             print("🔄 Using fallback high-volume symbols...")
@@ -259,8 +256,8 @@ class PolygonDrivenSymbolPool:
             "pool_stability": "HIGH" if len(overlap) / len(current_pool) > 0.8 else "MEDIUM" if len(overlap) / len(current_pool) > 0.6 else "LOW"
         }
         
-        print(f"✅ Validation complete:")
-        print(f"   - Data source: Polygon API")
+        print("✅ Validation complete:")
+        print("   - Data source: Polygon API")
         print(f"   - Pool stability: {validation_metrics['pool_stability']}")
         print(f"   - Overlap: {len(overlap)}/{len(current_pool)} symbols ({validation_metrics['overlap_percentage']:.1f}%)")
         
@@ -299,5 +296,6 @@ if __name__ == "__main__":
     # Validate performance
     validation = pool.validate_pool_performance(lookback_days=30)
     
-    print(f"\n🚀 Ready for day trading with REAL Polygon data!")
+    print("\n🚀 Ready for day trading with REAL Polygon data!")
+
 

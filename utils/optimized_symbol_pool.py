@@ -5,15 +5,15 @@ Uses existing UniverseSelector with Polygon data to find the best 120 symbols
 for active day trading based on REAL historical performance.
 """
 
-from typing import List, Dict, Any
-from datetime import datetime, timedelta
 import json
 import os
+from datetime import datetime, timedelta
+from typing import Any, Dict, List
 
 from services.polygon_client import PolygonClient
 from services.quotes_client import QuotesClient
-from utils.universe_selector import UniverseSelector
 from services.sp500_client import SP500Client
+from utils.universe_selector import UniverseSelector
 
 
 class OptimizedSymbolPool:
@@ -58,14 +58,14 @@ class OptimizedSymbolPool:
             try:
                 with open(cache_file, 'r') as f:
                     cached_data = json.load(f)
-                
+
                 # Check if cache is recent (within 7 days)
                 cache_date = datetime.fromisoformat(cached_data.get("analysis_date", "2020-01-01"))
                 if (datetime.now() - cache_date).days < 7:
                     print("📂 Using cached optimized symbol pool...")
                     return cached_data.get("symbols", [])
-            except:
-                pass
+            except Exception as e:
+                print(f"⚠️ Failed to read optimized symbol pool cache: {e}")
         
         print(f"🔍 Analyzing symbols with {analysis_days} days of REAL Polygon data...")
         
@@ -236,7 +236,7 @@ class OptimizedSymbolPool:
             "pool_stability": "HIGH" if len(overlap) / len(current_pool) > 0.8 else "MEDIUM" if len(overlap) / len(current_pool) > 0.6 else "LOW"
         }
         
-        print(f"✅ Validation complete:")
+        print("✅ Validation complete:")
         print(f"   - Pool stability: {validation_metrics['pool_stability']}")
         print(f"   - Overlap: {len(overlap)}/{len(current_pool)} symbols ({validation_metrics['overlap_percentage']:.1f}%)")
         
@@ -275,5 +275,6 @@ if __name__ == "__main__":
     # Validate performance
     validation = pool.validate_pool_performance(lookback_days=30)
     
-    print(f"\n🚀 Ready for day trading with REAL Polygon data!")
+    print("\n🚀 Ready for day trading with REAL Polygon data!")
+
 

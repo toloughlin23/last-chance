@@ -11,9 +11,7 @@ project_root = Path(__file__).parent
 sys.path.insert(0, str(project_root))
 
 try:
-    from CORE_SUPER_BANDITS.optimized_linucb_institutional import (
-        OptimizedInstitutionalLinUCB,
-    )
+    from CORE_SUPER_BANDITS.optimized_linucb_institutional import OptimizedInstitutionalLinUCB
 
     print("✅ LinUCB imported successfully")
 

@@ -161,9 +161,7 @@ class GitHubComprehensiveTester:
 
         # Test LinUCB
         try:
-            from CORE_SUPER_BANDITS.optimized_linucb_institutional import (
-                OptimizedInstitutionalLinUCB,
-            )
+            from CORE_SUPER_BANDITS.optimized_linucb_institutional import OptimizedInstitutionalLinUCB
 
             bandit = OptimizedInstitutionalLinUCB()
 
@@ -206,9 +204,7 @@ class GitHubComprehensiveTester:
 
         # Test Neural Bandit
         try:
-            from CORE_SUPER_BANDITS.optimized_neural_bandit_institutional import (
-                OptimizedInstitutionalNeuralBandit,
-            )
+            from CORE_SUPER_BANDITS.optimized_neural_bandit_institutional import OptimizedInstitutionalNeuralBandit
 
             bandit = OptimizedInstitutionalNeuralBandit()
 
@@ -251,9 +247,7 @@ class GitHubComprehensiveTester:
 
         # Test UCBV
         try:
-            from CORE_SUPER_BANDITS.optimized_ucbv_institutional import (
-                OptimizedInstitutionalUCBV,
-            )
+            from CORE_SUPER_BANDITS.optimized_ucbv_institutional import OptimizedInstitutionalUCBV
 
             bandit = OptimizedInstitutionalUCBV()
 
@@ -323,9 +317,7 @@ class GitHubComprehensiveTester:
 
         # Test Infrastructure Manager
         try:
-            from services.infrastructure_manager import (
-                InstitutionalInfrastructureManager,
-            )
+            from services.infrastructure_manager import InstitutionalInfrastructureManager
 
             manager = InstitutionalInfrastructureManager()
 

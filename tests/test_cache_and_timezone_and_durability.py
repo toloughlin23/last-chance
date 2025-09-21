@@ -108,9 +108,7 @@ def test_linucb_confidence_invariants(sentiment, momentum, volatility):
             self.data_quality_score = 0.8
             self.market_data = _M(pm, vol, 1.0)
 
-    from CORE_SUPER_BANDITS.optimized_linucb_institutional import (
-        OptimizedInstitutionalLinUCB,
-    )
+    from CORE_SUPER_BANDITS.optimized_linucb_institutional import OptimizedInstitutionalLinUCB
 
     bandit = OptimizedInstitutionalLinUCB()
 
@@ -125,4 +123,5 @@ def test_linucb_confidence_invariants(sentiment, momentum, volatility):
     ctx2 = _E(min(1.0, sentiment + 0.2), momentum, volatility)
     c2 = bandit.get_confidence_for_context(arm, ctx2)
     assert c2 >= 0.45 and c2 <= 0.90
+
 

@@ -9,11 +9,7 @@ sys.path.append(".")
 
 from decimal import Decimal
 
-from services.execution_bridge import (
-    OrderSide,
-    OrderType,
-    UltraInstitutionalExecutionBridge,
-)
+from services.execution_bridge import OrderSide, OrderType, UltraInstitutionalExecutionBridge
 
 
 def test_execution_bridge():

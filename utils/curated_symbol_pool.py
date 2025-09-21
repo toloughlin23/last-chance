@@ -5,15 +5,15 @@ Pre-optimized pool of 120 symbols selected for active day trading
 based on historical volume, spreads, volatility, and liquidity metrics.
 """
 
-from typing import List, Dict, Any
-from datetime import datetime, timedelta
 import json
 import os
+from datetime import datetime, timedelta
+from typing import Any, Dict, List
 
 from services.polygon_client import PolygonClient
 from services.quotes_client import QuotesClient
-from utils.universe_selector import UniverseSelector
 from utils.symbol_pool_analyzer import create_curated_pool
+from utils.universe_selector import UniverseSelector
 
 
 class CuratedSymbolPool:
@@ -90,14 +90,14 @@ class CuratedSymbolPool:
             try:
                 with open(cache_file, 'r') as f:
                     cached_data = json.load(f)
-                
+
                 # Check if cache is recent (within 7 days)
                 cache_date = datetime.fromisoformat(cached_data.get("analysis_date", "2020-01-01"))
                 if (datetime.now() - cache_date).days < 7:
                     print("📂 Using cached symbol analysis...")
                     return [s["symbol"] for s in cached_data.get("symbols", [])]
-            except:
-                pass
+            except Exception as e:
+                print(f"⚠️ Failed to read cached symbol analysis: {e}")
         
         # Generate fresh analysis
         print("🔍 Generating fresh symbol analysis...")
@@ -147,7 +147,7 @@ class CuratedSymbolPool:
             "lookback_days": lookback_days
         }
         
-        print(f"✅ Validation complete:")
+        print("✅ Validation complete:")
         print(f"   - Curated pool: {len(self.CURATED_SYMBOLS)} symbols")
         print(f"   - Current top performers: {len(top_performers)} symbols")
         print(f"   - Overlap: {len(overlap)} symbols ({performance_metrics['overlap_percentage']:.1f}%)")
@@ -287,15 +287,15 @@ if __name__ == "__main__":
     
     # Show sector breakdown
     sectors = pool.get_sector_breakdown()
-    print(f"\n📈 Sector breakdown:")
+    print("\n📈 Sector breakdown:")
     for sector, syms in sectors.items():
         print(f"   {sector}: {len(syms)} symbols")
     
     # Validate performance
-    print(f"\n🔍 Validating pool performance...")
+    print("\n🔍 Validating pool performance...")
     metrics = pool.validate_pool_performance(lookback_days=30)
     
     # Save to file
     pool.save_pool_to_file()
     
-    print(f"\n✅ Curated symbol pool ready for day trading!")
+    print("\n✅ Curated symbol pool ready for day trading!")

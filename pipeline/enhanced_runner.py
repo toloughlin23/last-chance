@@ -18,12 +18,8 @@ from datetime import date, datetime, timedelta
 from datetime import timezone as _timezone
 from typing import Any, Dict, List, Optional, Tuple
 
-from CORE_SUPER_BANDITS.optimized_linucb_institutional import (
-    OptimizedInstitutionalLinUCB,
-)
-from CORE_SUPER_BANDITS.optimized_neural_bandit_institutional import (
-    OptimizedInstitutionalNeuralBandit,
-)
+from CORE_SUPER_BANDITS.optimized_linucb_institutional import OptimizedInstitutionalLinUCB
+from CORE_SUPER_BANDITS.optimized_neural_bandit_institutional import OptimizedInstitutionalNeuralBandit
 from CORE_SUPER_BANDITS.optimized_ucbv_institutional import OptimizedInstitutionalUCBV
 from pipeline.hygiene import Hygiene
 from services.advanced_news_sentiment import AdvancedNewsSentimentAnalysis

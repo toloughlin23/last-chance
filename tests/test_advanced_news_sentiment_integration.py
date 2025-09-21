@@ -19,10 +19,7 @@ import pytest
 
 UTC = _timezone.utc
 
-from services.advanced_news_sentiment import (
-    AdvancedNewsSentimentAnalysis,
-    SentimentResult,
-)
+from services.advanced_news_sentiment import AdvancedNewsSentimentAnalysis, SentimentResult
 
 
 @pytest.mark.integration

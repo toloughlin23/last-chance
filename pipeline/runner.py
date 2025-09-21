@@ -6,21 +6,11 @@ from datetime import datetime
 from datetime import timezone as _timezone
 from typing import Any, Dict, List, Tuple
 
-from CORE_SUPER_BANDITS.optimized_linucb_institutional import (
-    OptimizedInstitutionalLinUCB,
-)
-from CORE_SUPER_BANDITS.optimized_neural_bandit_institutional import (
-    OptimizedInstitutionalNeuralBandit,
-)
+from CORE_SUPER_BANDITS.optimized_linucb_institutional import OptimizedInstitutionalLinUCB
+from CORE_SUPER_BANDITS.optimized_neural_bandit_institutional import OptimizedInstitutionalNeuralBandit
 from CORE_SUPER_BANDITS.optimized_ucbv_institutional import OptimizedInstitutionalUCBV
 from pipeline.hygiene import Hygiene
-from pipeline.news_priority import (
-    build_priority,
-    build_scores,
-    load_priority_bundle,
-    save_priority,
-    save_priority_bundle,
-)
+from pipeline.news_priority import build_priority, build_scores, load_priority_bundle, save_priority, save_priority_bundle
 from services.alpaca_client import AlpacaClient
 from services.feature_builder import build_enriched_from_aggs
 from services.polygon_client import PolygonClient
