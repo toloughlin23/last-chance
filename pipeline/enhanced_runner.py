@@ -27,9 +27,9 @@ from services.alpaca_client import AlpacaClient
 from services.feature_builder import build_enriched_from_aggs
 from services.infrastructure_manager import InstitutionalInfrastructureManager
 from services.polygon_client import PolygonClient
+from utils.active_universe_provider import ActiveUniverseProvider
 from utils.uk_us_timezone_handler import get_uk_us_handler
 from utils.universe_selector import UniverseSelector
-from utils.active_universe_provider import ActiveUniverseProvider
 
 UTC = _timezone.utc
 
