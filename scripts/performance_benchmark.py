@@ -305,7 +305,7 @@ def benchmark_api_efficiency():
             for symbol in batch:
                 try:
                     # Make a real API call
-                    data = client.get_aggs(
+                    _ = client.get_aggs(
                         symbol,
                         1,
                         "day",

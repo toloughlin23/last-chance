@@ -30,18 +30,22 @@ def main():
             "MA",
         ]
 
-    provider._discover_candidates = small_discover
+    try:
+        provider._discover_candidates = small_discover
 
-    # Get active universe with reduced analysis window
-    print("Testing with 10 symbols...")
-    selected = provider.get_active_universe(
-        target_size=5,
-        analysis_days=7,  # Just 1 week to reduce API calls
-        force_refresh=True,
-        prefilter_max_symbols=10,  # Limit prefilter too
-    )
+        # Get active universe with reduced analysis window
+        print("Testing with 10 symbols...")
+        selected = provider.get_active_universe(
+            target_size=5,
+            analysis_days=7,  # Just 1 week to reduce API calls
+            force_refresh=True,
+            prefilter_max_symbols=10,  # Limit prefilter too
+        )
 
-    print(f"Selected {len(selected)} symbols: {selected}")
+        print(f"Selected {len(selected)} symbols: {selected}")
+    finally:
+        # Restore original method to avoid side effects
+        provider._discover_candidates = original_discover
 
 
 if __name__ == "__main__":
