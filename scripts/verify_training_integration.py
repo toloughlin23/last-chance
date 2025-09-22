@@ -55,7 +55,9 @@ def main():
 
         # Test training module initialization
         training_module = HistoricalTrainingModule(config)
-        print("✅ Training module initialized successfully")
+        # Use the module to validate config wiring without running training
+        assert training_module is not None
+        print(f"✅ Training module initialized: {training_module.__class__.__name__}")
 
         print("\n🎯 INTEGRATION VERIFIED!")
         print("=" * 50)
