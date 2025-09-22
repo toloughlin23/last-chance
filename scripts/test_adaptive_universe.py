@@ -5,6 +5,7 @@ Test the Adaptive Universe Provider to ensure we get 120-150 symbols.
 
 import os
 import sys
+
 from dotenv import load_dotenv
 
 try:
@@ -12,6 +13,8 @@ try:
 except ImportError:
     sys.path.insert(0, os.path.abspath("."))
     from utils.adaptive_universe_provider import AdaptiveUniverseProvider
+
+load_dotenv()
 
 
 def test_adaptive_universe():

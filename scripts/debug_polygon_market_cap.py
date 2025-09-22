@@ -5,6 +5,7 @@ Debug Polygon API market cap access to see what's really happening.
 
 import os
 import sys
+
 from dotenv import load_dotenv
 
 try:
@@ -12,6 +13,8 @@ try:
 except ImportError:
     sys.path.insert(0, os.path.abspath("."))
     from services.polygon_client import PolygonClient
+
+load_dotenv()
 
 
 def debug_polygon_market_cap():

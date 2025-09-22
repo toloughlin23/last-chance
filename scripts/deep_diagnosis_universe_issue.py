@@ -7,6 +7,7 @@ Let's trace through the entire process step by step.
 import os
 import sys
 from datetime import date, timedelta
+
 from dotenv import load_dotenv
 
 try:
@@ -16,6 +17,8 @@ except ImportError:
     sys.path.insert(0, os.path.abspath("."))
     from services.polygon_client import PolygonClient
     from services.quotes_client import QuotesClient
+
+load_dotenv()
 
 
 def deep_diagnosis():

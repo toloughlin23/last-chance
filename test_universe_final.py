@@ -5,6 +5,7 @@ Final test of the universe provider to see the complete results.
 
 import os
 import sys
+
 from dotenv import load_dotenv
 
 try:
@@ -12,6 +13,8 @@ try:
 except ImportError:
     sys.path.insert(0, os.path.abspath("."))
     from utils.active_universe_provider import ActiveUniverseProvider
+
+load_dotenv()
 
 
 def test_final_universe():

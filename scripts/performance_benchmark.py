@@ -105,7 +105,7 @@ def benchmark_adv_prefiltering():
         )
 
         print(
-            f"  Batch {batch_size:2d}: {len(candidates):3d}→{len(prefiltered):2d} in {elapsed:.2f}s ({memory_used:.1f}MB)"
+            f"  Batch {batch_size:2d}: {len(candidates):3d}→{len(_prefiltered_results):2d} in {elapsed:.2f}s ({memory_used:.1f}MB)"
         )
 
     return results

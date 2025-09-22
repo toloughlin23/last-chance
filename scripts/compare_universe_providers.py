@@ -5,6 +5,7 @@ Compare different universe providers to show the difference in symbol counts.
 
 import os
 import sys
+
 from dotenv import load_dotenv
 
 # Prefer top-level imports; if running outside project root, patch sys.path lazily
@@ -15,6 +16,9 @@ except ImportError:
     sys.path.insert(0, os.path.abspath("."))
     from utils.active_universe_provider import ActiveUniverseProvider
     from utils.adaptive_universe_provider import AdaptiveUniverseProvider
+
+# Ensure environment variables are loaded for genuine Polygon integration
+load_dotenv()
 
 
 def compare_providers():

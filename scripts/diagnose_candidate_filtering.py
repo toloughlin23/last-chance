@@ -6,6 +6,7 @@ Diagnose why we're only getting 45 candidates instead of 200-300.
 import os
 import sys
 from datetime import date, timedelta
+
 from dotenv import load_dotenv
 
 try:
@@ -15,6 +16,8 @@ except ImportError:
     sys.path.insert(0, os.path.abspath("."))
     from services.polygon_client import PolygonClient
     from services.quotes_client import QuotesClient
+
+load_dotenv()
 
 
 def diagnose_filtering():
