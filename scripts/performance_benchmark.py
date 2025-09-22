@@ -244,7 +244,7 @@ def benchmark_memory_usage():
     # After prefiltering
     end_date = date.today()
     start_date = end_date - timedelta(days=60)
-        _prefiltered_results = provider._prefilter_by_adv_and_price(
+    _prefiltered_results = provider._prefilter_by_adv_and_price(
         candidates,
         start_date.isoformat(),
         end_date.isoformat(),
@@ -254,9 +254,9 @@ def benchmark_memory_usage():
         batch_size=20,
     )
     after_prefilter = process.memory_info().rss / 1024 / 1024
-        print(
-            f"    After prefilter: {after_prefilter:.1f} MB (+{after_prefilter - after_discovery:.1f})"
-        )
+    print(
+        f"    After prefilter: {after_prefilter:.1f} MB (+{after_prefilter - after_discovery:.1f})"
+    )
 
     # After full selection
     universe = provider.get_active_universe(
