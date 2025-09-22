@@ -34,7 +34,10 @@ from watchdog.observers import Observer
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s",
-    handlers=[logging.FileHandler("contamination_prevention.log"), logging.StreamHandler()],
+    handlers=[
+        logging.FileHandler("contamination_prevention.log"),
+        logging.StreamHandler(),
+    ],
 )
 logger = logging.getLogger(__name__)
 
@@ -211,7 +214,9 @@ class UltraAdvancedContaminationDetector:
         print("✅ Machine learning detection active")
         print("✅ Real-time monitoring prepared")
 
-    def scan_existing_codebase(self, root_path: str) -> Dict[str, List[ContaminationDetection]]:
+    def scan_existing_codebase(
+        self, root_path: str
+    ) -> Dict[str, List[ContaminationDetection]]:
         """
         🔍 COMPREHENSIVE EXISTING CODEBASE SCAN
         ======================================
@@ -241,7 +246,9 @@ class UltraAdvancedContaminationDetector:
 
                             print(f"🚨 CONTAMINATION FOUND: {relative_path}")
                             for contamination in contaminations:
-                                print(f"   Line {contamination.line_number}: {contamination.contamination_type.value}")
+                                print(
+                                    f"   Line {contamination.line_number}: {contamination.contamination_type.value}"
+                                )
                         else:
                             print(f"✅ CLEAN: {relative_path}")
 
@@ -260,7 +267,9 @@ class UltraAdvancedContaminationDetector:
 
         return contamination_report
 
-    def analyze_file_comprehensive(self, file_path: str) -> List[ContaminationDetection]:
+    def analyze_file_comprehensive(
+        self, file_path: str
+    ) -> List[ContaminationDetection]:
         """
         🧠 COMPREHENSIVE FILE ANALYSIS
         =============================
@@ -295,7 +304,9 @@ class UltraAdvancedContaminationDetector:
 
         return contaminations
 
-    def analyze_regex_patterns(self, file_path: str, lines: List[str]) -> List[ContaminationDetection]:
+    def analyze_regex_patterns(
+        self, file_path: str, lines: List[str]
+    ) -> List[ContaminationDetection]:
         """Advanced regex pattern analysis"""
         contaminations = []
 
@@ -320,7 +331,9 @@ class UltraAdvancedContaminationDetector:
 
         return contaminations
 
-    def analyze_ast_patterns(self, file_path: str, content: str) -> List[ContaminationDetection]:
+    def analyze_ast_patterns(
+        self, file_path: str, content: str
+    ) -> List[ContaminationDetection]:
         """Advanced AST-based code analysis"""
         contaminations = []
 
@@ -330,7 +343,10 @@ class UltraAdvancedContaminationDetector:
             for node in ast.walk(tree):
                 # Check for mock/fake class definitions
                 if isinstance(node, ast.ClassDef):
-                    if any(pattern in node.name.lower() for pattern in ["mock", "fake", "test", "dummy"]):
+                    if any(
+                        pattern in node.name.lower()
+                        for pattern in ["mock", "fake", "test", "dummy"]
+                    ):
                         contamination = ContaminationDetection(
                             file_path=file_path,
                             line_number=node.lineno,
@@ -346,7 +362,10 @@ class UltraAdvancedContaminationDetector:
 
                 # Check for mock/fake function definitions
                 if isinstance(node, ast.FunctionDef):
-                    if any(pattern in node.name.lower() for pattern in ["mock", "fake", "test", "dummy"]):
+                    if any(
+                        pattern in node.name.lower()
+                        for pattern in ["mock", "fake", "test", "dummy"]
+                    ):
                         contamination = ContaminationDetection(
                             file_path=file_path,
                             line_number=node.lineno,
@@ -366,7 +385,8 @@ class UltraAdvancedContaminationDetector:
                         if (
                             hasattr(node.func.value, "id")
                             and node.func.value.id in ["np", "random"]
-                            and node.func.attr in ["random", "randint", "uniform", "choice"]
+                            and node.func.attr
+                            in ["random", "randint", "uniform", "choice"]
                         ):
                             contamination = ContaminationDetection(
                                 file_path=file_path,
@@ -389,7 +409,9 @@ class UltraAdvancedContaminationDetector:
 
         return contaminations
 
-    def analyze_semantic_patterns(self, file_path: str, lines: List[str]) -> List[ContaminationDetection]:
+    def analyze_semantic_patterns(
+        self, file_path: str, lines: List[str]
+    ) -> List[ContaminationDetection]:
         """Advanced semantic analysis for contamination patterns"""
         contaminations = []
 
@@ -398,7 +420,10 @@ class UltraAdvancedContaminationDetector:
             line_clean = line.strip().lower()
 
             # Detect artificial uniformity patterns
-            if re.search(r"return\s+0\.5|confidence\s*=\s*0\.5|probability\s*=\s*0\.5", line_clean):
+            if re.search(
+                r"return\s+0\.5|confidence\s*=\s*0\.5|probability\s*=\s*0\.5",
+                line_clean,
+            ):
                 contamination = ContaminationDetection(
                     file_path=file_path,
                     line_number=line_num,
@@ -414,7 +439,8 @@ class UltraAdvancedContaminationDetector:
 
             # Detect placeholder implementations  # nocontam: allow detector comment
             if any(
-                phrase in line_clean for phrase in ["todo", "fixme", "hack", "temporary", "placeholder"]
+                phrase in line_clean
+                for phrase in ["todo", "fixme", "hack", "temporary", "placeholder"]
             ):  # nocontam: allow detector keyword
                 contamination = ContaminationDetection(
                     file_path=file_path,
@@ -431,7 +457,9 @@ class UltraAdvancedContaminationDetector:
 
         return contaminations
 
-    def analyze_ml_patterns(self, file_path: str, lines: List[str]) -> List[ContaminationDetection]:
+    def analyze_ml_patterns(
+        self, file_path: str, lines: List[str]
+    ) -> List[ContaminationDetection]:
         """Machine learning-based pattern recognition"""
         contaminations = []
 
@@ -505,7 +533,9 @@ class RealTimeContaminationMonitor(FileSystemEventHandler):
             return
 
         file_path = event.src_path
-        if not any(file_path.endswith(ext) for ext in self.detector.monitored_extensions):
+        if not any(
+            file_path.endswith(ext) for ext in self.detector.monitored_extensions
+        ):
             return
 
         # Prevent duplicate scans
@@ -522,7 +552,9 @@ class RealTimeContaminationMonitor(FileSystemEventHandler):
         if contaminations:
             print(f"🚨 CONTAMINATION ALERT! {len(contaminations)} issues found:")
             for contamination in contaminations:
-                print(f"   🔴 Line {contamination.line_number}: {contamination.description}")
+                print(
+                    f"   🔴 Line {contamination.line_number}: {contamination.description}"
+                )
                 print(f"      💡 Fix: {contamination.suggested_fix}")
         else:
             print("✅ File is clean - no contamination detected")
@@ -562,7 +594,10 @@ class UltraAdvancedContaminationPreventionSystem:
         if existing_contaminations:
             print("\n🚨 EXISTING CONTAMINATION SUMMARY:")
             print(f"   Contaminated files: {len(existing_contaminations)}")
-            total_issues = sum(len(contaminations) for contaminations in existing_contaminations.values())
+            total_issues = sum(
+                len(contaminations)
+                for contaminations in existing_contaminations.values()
+            )
             print(f"   Total issues: {total_issues}")
 
             # Offer automatic cleanup
@@ -596,7 +631,9 @@ class UltraAdvancedContaminationPreventionSystem:
             self.observer.stop()
             self.observer.join()
 
-    def auto_fix_contamination(self, contamination_report: Dict[str, List[ContaminationDetection]]):
+    def auto_fix_contamination(
+        self, contamination_report: Dict[str, List[ContaminationDetection]]
+    ):
         """
         🔧 AUTOMATIC CONTAMINATION ELIMINATION
         ====================================
@@ -617,7 +654,10 @@ class UltraAdvancedContaminationPreventionSystem:
                 modified = False
 
                 for contamination in contaminations:
-                    if contamination.contamination_type == ContaminationType.RANDOM_GENERATOR:
+                    if (
+                        contamination.contamination_type
+                        == ContaminationType.RANDOM_GENERATOR
+                    ):
                         # Replace random generators with genuine data calls
                         old_line = lines[contamination.line_number - 1]
                         new_line = self.replace_random_with_genuine(old_line)
@@ -625,7 +665,9 @@ class UltraAdvancedContaminationPreventionSystem:
                             lines[contamination.line_number - 1] = new_line
                             modified = True
                             fixes_applied += 1
-                            print(f"   ✅ Fixed random generator in {file_path}:{contamination.line_number}")
+                            print(
+                                f"   ✅ Fixed random generator in {file_path}:{contamination.line_number}"
+                            )
 
                 if modified:
                     # Save the fixed file

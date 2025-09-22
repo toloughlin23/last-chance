@@ -22,7 +22,10 @@ UTC = _timezone.utc
 # NO MOCKS - 100% GENUINE REAL DATA ONLY
 
 from pipeline.enhanced_runner import EnhancedPipelineRunner
-from services.infrastructure_manager import InstitutionalInfrastructureManager, ResourceStats
+from services.infrastructure_manager import (
+    InstitutionalInfrastructureManager,
+    ResourceStats,
+)
 
 
 class TestEnhancedInfrastructure:
@@ -164,7 +167,9 @@ class TestEnhancedInfrastructure:
         infra = InstitutionalInfrastructureManager(redis_enabled=False)
 
         # Execute some tasks to generate metrics
-        tasks = [(f"task_{i}", lambda x: f"Result {x}", (f"task_{i}",)) for i in range(5)]
+        tasks = [
+            (f"task_{i}", lambda x: f"Result {x}", (f"task_{i}",)) for i in range(5)
+        ]
         infra.execute_parallel_tasks(tasks, "data_fetching")
 
         # Generate performance report
@@ -217,7 +222,9 @@ class TestEnhancedInfrastructure:
         start_date = (datetime.now() - timedelta(days=7)).strftime("%Y-%m-%d")
 
         # Run with REAL market data
-        runner.run_enhanced_once(test_symbols, start_date, end_date, execute=False, prioritize_by_news=False)
+        runner.run_enhanced_once(
+            test_symbols, start_date, end_date, execute=False, prioritize_by_news=False
+        )
 
         print("✅ Successfully processed REAL market data - 100% GENUINE!")
 
@@ -243,10 +250,26 @@ class TestEnhancedInfrastructure:
         infra = InstitutionalInfrastructureManager(redis_enabled=False)
 
         expected_configs = {
-            "data_fetching": {"max_workers": 8, "priority": 1, "reserved_memory_mb": 512},
-            "algorithm_processing": {"max_workers": 10, "priority": 2, "reserved_memory_mb": 1024},
-            "news_sentiment": {"max_workers": 4, "priority": 3, "reserved_memory_mb": 256},
-            "execution_bridge": {"max_workers": 2, "priority": 4, "reserved_memory_mb": 128},
+            "data_fetching": {
+                "max_workers": 8,
+                "priority": 1,
+                "reserved_memory_mb": 512,
+            },
+            "algorithm_processing": {
+                "max_workers": 10,
+                "priority": 2,
+                "reserved_memory_mb": 1024,
+            },
+            "news_sentiment": {
+                "max_workers": 4,
+                "priority": 3,
+                "reserved_memory_mb": 256,
+            },
+            "execution_bridge": {
+                "max_workers": 2,
+                "priority": 4,
+                "reserved_memory_mb": 128,
+            },
         }
 
         for pool_name, expected in expected_configs.items():
@@ -275,7 +298,10 @@ def test_integration_workflow():
         return f"Complex task {task_id} completed with result {result:.2f}"
 
     # Create complex tasks
-    tasks = [(f"complex_task_{i}", complex_task, (f"complex_task_{i}", i % 5 + 1)) for i in range(20)]
+    tasks = [
+        (f"complex_task_{i}", complex_task, (f"complex_task_{i}", i % 5 + 1))
+        for i in range(20)
+    ]
 
     # Execute with different thread pools
     for pool_name in ["data_fetching", "algorithm_processing", "news_sentiment"]:
@@ -290,7 +316,11 @@ def test_integration_workflow():
     # Test caching performance
     print("💾 Testing caching performance...")
     for i in range(100):
-        test_data = {"id": i, "data": f"test_data_{i}", "timestamp": datetime.now(UTC).isoformat()}
+        test_data = {
+            "id": i,
+            "data": f"test_data_{i}",
+            "timestamp": datetime.now(UTC).isoformat(),
+        }
         infra.cache_data(f"perf_test_{i}", test_data, ttl=60)
 
     # Retrieve cached data

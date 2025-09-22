@@ -10,8 +10,24 @@ def score_article(article: Dict[str, Any]) -> float:
     description = (article.get("description") or "").lower()
 
     # Basic positive/negative cues
-    positives = ["beat", "surge", "rally", "upgrade", "record", "growth", "raise guidance"]
-    negatives = ["miss", "fall", "drop", "downgrade", "cut guidance", "lawsuit", "probe"]
+    positives = [
+        "beat",
+        "surge",
+        "rally",
+        "upgrade",
+        "record",
+        "growth",
+        "raise guidance",
+    ]
+    negatives = [
+        "miss",
+        "fall",
+        "drop",
+        "downgrade",
+        "cut guidance",
+        "lawsuit",
+        "probe",
+    ]
 
     pos_hits = sum(1 for w in positives if w in title or w in description)
     neg_hits = sum(1 for w in negatives if w in title or w in description)
@@ -24,11 +40,27 @@ def score_article(article: Dict[str, Any]) -> float:
 
     # Publisher weighting (if present)
     publisher = (article.get("publisher") or {}).get("name") or ""
-    trusted_publishers = ["Bloomberg", "Reuters", "The Wall Street Journal", "Financial Times"]
-    trust = 0.1 if any(tp.lower() in publisher.lower() for tp in trusted_publishers) else 0.0
+    trusted_publishers = [
+        "Bloomberg",
+        "Reuters",
+        "The Wall Street Journal",
+        "Financial Times",
+    ]
+    trust = (
+        0.1
+        if any(tp.lower() in publisher.lower() for tp in trusted_publishers)
+        else 0.0
+    )
 
     # Impact heuristic: mentions of earnings, guidance, SEC, investigation
-    impact_terms = ["earnings", "guidance", "sec", "investigation", "merger", "acquisition"]
+    impact_terms = [
+        "earnings",
+        "guidance",
+        "sec",
+        "investigation",
+        "merger",
+        "acquisition",
+    ]
     impact_hits = sum(1 for w in impact_terms if w in title or w in description)
     impact = min(0.2, 0.05 * impact_hits)
 

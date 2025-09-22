@@ -88,7 +88,12 @@ class TestPipelineIntegration:
             "position_size": 50000.0,
             "total_market_cap": 1000000000.0,
             "transaction_time": datetime.now(UTC),
-            "transaction_data": {"client_id": "CLIENT_001", "instrument": "AAPL", "quantity": 100, "price": 150.0},
+            "transaction_data": {
+                "client_id": "CLIENT_001",
+                "instrument": "AAPL",
+                "quantity": 100,
+                "price": 150.0,
+            },
             "target_market_validation": True,
             "risk_warning_provided": True,
             "order_rate": 500,
@@ -187,7 +192,12 @@ class TestPipelineIntegration:
 
         # Run with REAL market data
         runner.run_enhanced_once(
-            test_symbols, start_date, end_date, execute=False, prioritize_by_news=True, news_booster_enabled=True
+            test_symbols,
+            start_date,
+            end_date,
+            execute=False,
+            prioritize_by_news=True,
+            news_booster_enabled=True,
         )
 
         print("✅ Successfully processed REAL market data - 100% GENUINE!")
@@ -201,7 +211,12 @@ class TestPipelineIntegration:
             "position_size": 50000.0,
             "total_market_cap": 1000000000.0,
             "transaction_time": datetime.now(UTC),
-            "transaction_data": {"client_id": "CLIENT_001", "instrument": "AAPL", "quantity": 100, "price": 150.0},
+            "transaction_data": {
+                "client_id": "CLIENT_001",
+                "instrument": "AAPL",
+                "quantity": 100,
+                "price": 150.0,
+            },
             "target_market_validation": True,
             "risk_warning_provided": True,
             "order_rate": 500,
@@ -229,7 +244,9 @@ class TestPipelineIntegration:
         infra = InstitutionalInfrastructureManager(redis_enabled=False)
 
         # Execute some tasks to generate metrics
-        tasks = [(f"task_{i}", lambda x: f"Result {x}", (f"task_{i}",)) for i in range(5)]
+        tasks = [
+            (f"task_{i}", lambda x: f"Result {x}", (f"task_{i}",)) for i in range(5)
+        ]
         infra.execute_parallel_tasks(tasks, "data_fetching")
 
         # Get performance report
@@ -280,7 +297,10 @@ class TestPipelineIntegration:
             infra.cache_data(key, value, ttl=60)
             return infra.get_cached_data(key)
 
-        tasks = [(f"cache_task_{i}", cache_operation, (f"key_{i}", f"value_{i}")) for i in range(10)]
+        tasks = [
+            (f"cache_task_{i}", cache_operation, (f"key_{i}", f"value_{i}"))
+            for i in range(10)
+        ]
 
         results = infra.execute_parallel_tasks(tasks, "data_fetching")
 
@@ -314,7 +334,12 @@ def test_integration_workflow():
         "position_size": 50000.0,
         "total_market_cap": 1000000000.0,
         "transaction_time": datetime.now(UTC),
-        "transaction_data": {"client_id": "CLIENT_001", "instrument": "AAPL", "quantity": 100, "price": 150.0},
+        "transaction_data": {
+            "client_id": "CLIENT_001",
+            "instrument": "AAPL",
+            "quantity": 100,
+            "price": 150.0,
+        },
         "target_market_validation": True,
         "risk_warning_provided": True,
         "order_rate": 500,
@@ -345,7 +370,10 @@ def test_integration_workflow():
             result += i**0.5
         return f"Complex task {task_id} completed with result {result:.2f}"
 
-    tasks = [(f"complex_task_{i}", test_task, (f"complex_task_{i}", i % 5 + 1)) for i in range(20)]
+    tasks = [
+        (f"complex_task_{i}", test_task, (f"complex_task_{i}", i % 5 + 1))
+        for i in range(20)
+    ]
 
     results = infra.execute_parallel_tasks(tasks, "algorithm_processing")
     print(f"🔄 Completed {len(results)} parallel tasks")

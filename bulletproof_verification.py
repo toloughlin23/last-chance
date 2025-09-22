@@ -57,7 +57,9 @@ class RandomDetectorVisitor(ast.NodeVisitor):
     def visit_Import(self, node):
         """Check import statements"""
         for alias in node.names:
-            if alias.name in FORBIDDEN_IMPORTS or any(forbidden in alias.name for forbidden in FORBIDDEN_IMPORTS):
+            if alias.name in FORBIDDEN_IMPORTS or any(
+                forbidden in alias.name for forbidden in FORBIDDEN_IMPORTS
+            ):
                 self.violations.append(
                     {
                         "type": "forbidden_import",
@@ -71,7 +73,9 @@ class RandomDetectorVisitor(ast.NodeVisitor):
 
     def visit_ImportFrom(self, node):
         """Check from X import Y statements"""
-        if node.module and any(forbidden in node.module for forbidden in FORBIDDEN_IMPORTS):
+        if node.module and any(
+            forbidden in node.module for forbidden in FORBIDDEN_IMPORTS
+        ):
             for alias in node.names:
                 self.violations.append(
                     {
@@ -87,7 +91,9 @@ class RandomDetectorVisitor(ast.NodeVisitor):
     def visit_Call(self, node):
         """Check function calls"""
         func_name = self._get_function_name(node.func)
-        if func_name and any(forbidden in func_name for forbidden in FORBIDDEN_FUNCTIONS):
+        if func_name and any(
+            forbidden in func_name for forbidden in FORBIDDEN_FUNCTIONS
+        ):
             self.violations.append(
                 {
                     "type": "forbidden_function",
@@ -153,7 +159,11 @@ def verify_no_random_usage() -> Tuple[bool, List[Dict[str, Any]]]:
     python_files = list(Path(".").rglob("*.py"))
 
     # Skip scanner files and this file
-    skip_files = {"enhanced_contamination_scanner.py", "bulletproof_verification.py", "contamination_scanner.py"}
+    skip_files = {
+        "enhanced_contamination_scanner.py",
+        "bulletproof_verification.py",
+        "contamination_scanner.py",
+    }
 
     for pyfile in python_files:
         if pyfile.name in skip_files or ".git" in str(pyfile) or ".venv" in str(pyfile):
@@ -196,7 +206,11 @@ def verify_no_random_usage() -> Tuple[bool, List[Dict[str, Any]]]:
     suspicious_extensions = [".pyc", ".pyo", ".so", ".dll", ".pyd"]
     for ext in suspicious_extensions:
         for file in Path(".").rglob(f"*{ext}"):
-            if ".git" not in str(file) and "__pycache__" not in str(file) and ".venv" not in str(file):
+            if (
+                ".git" not in str(file)
+                and "__pycache__" not in str(file)
+                and ".venv" not in str(file)
+            ):
                 all_violations.append(
                     {
                         "type": "suspicious_file",

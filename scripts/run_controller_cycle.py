@@ -10,7 +10,9 @@ def main() -> None:
     # Example subscriptions
     def on_decision(msg):
         try:
-            print(f"DECISION {msg.symbol} {msg.algorithm} {msg.decision} conf={msg.confidence:.3f}")
+            print(
+                f"DECISION {msg.symbol} {msg.algorithm} {msg.decision} conf={msg.confidence:.3f}"
+            )
         except Exception:
             pass
 
@@ -31,9 +33,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-
-
-
-
-
-

@@ -65,7 +65,14 @@ def diagnose_project_structure():
     project_root = Path(__file__).parent.parent
 
     # Check critical directories
-    critical_dirs = ["CORE_SUPER_BANDITS", "services", "pipeline", "tests", "utils", "scripts"]
+    critical_dirs = [
+        "CORE_SUPER_BANDITS",
+        "services",
+        "pipeline",
+        "tests",
+        "utils",
+        "scripts",
+    ]
 
     print("📁 DIRECTORY STRUCTURE:")
     for dir_name in critical_dirs:
@@ -133,7 +140,10 @@ def diagnose_pytest_issues():
     try:
         # Try to run pytest with version
         result = subprocess.run(
-            [sys.executable, "-m", "pytest", "--version"], capture_output=True, text=True, timeout=10
+            [sys.executable, "-m", "pytest", "--version"],
+            capture_output=True,
+            text=True,
+            timeout=10,
         )
 
         if result.returncode == 0:

@@ -11,7 +11,9 @@ project_root = Path(__file__).parent
 sys.path.insert(0, str(project_root))
 
 try:
-    from CORE_SUPER_BANDITS.optimized_linucb_institutional import OptimizedInstitutionalLinUCB
+    from CORE_SUPER_BANDITS.optimized_linucb_institutional import (
+        OptimizedInstitutionalLinUCB,
+    )
 
     print("✅ LinUCB imported successfully")
 
@@ -26,7 +28,9 @@ try:
     # Check specific methods
     print(f"✅ get_arm_statistics exists: {hasattr(bandit, 'get_arm_statistics')}")
     print(f"✅ reset_arm exists: {hasattr(bandit, 'reset_arm')}")
-    print(f"✅ get_confidence_for_context exists: {hasattr(bandit, 'get_confidence_for_context')}")
+    print(
+        f"✅ get_confidence_for_context exists: {hasattr(bandit, 'get_confidence_for_context')}"
+    )
 
     # Try to call the methods
     try:

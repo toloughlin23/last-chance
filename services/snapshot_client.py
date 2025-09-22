@@ -6,7 +6,9 @@ from utils.env_loader import load_env_from_known_locations
 
 
 class SnapshotClient:
-    def __init__(self, api_key: Optional[str] = None, http: Optional[HttpClient] = None):
+    def __init__(
+        self, api_key: Optional[str] = None, http: Optional[HttpClient] = None
+    ):
         load_env_from_known_locations()
         self.api_key = api_key or os.getenv("POLYGON_API_KEY")
         if not self.api_key:

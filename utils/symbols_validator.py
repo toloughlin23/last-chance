@@ -3,7 +3,9 @@ from typing import List
 from services.snapshot_client import SnapshotClient
 
 
-def filter_symbols_present_on_polygon(symbols: List[str], chunk_size: int = 50) -> List[str]:
+def filter_symbols_present_on_polygon(
+    symbols: List[str], chunk_size: int = 50
+) -> List[str]:
     if not symbols:
         return []
     client = SnapshotClient()

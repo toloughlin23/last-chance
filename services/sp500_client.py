@@ -16,10 +16,20 @@ class SP500Client:
         for tbl in tables:
             cols = [str(c).strip().lower() for c in tbl.columns]
             if any(c.startswith("symbol") for c in cols):
-                symbol_col = [c for c in tbl.columns if str(c).strip().lower().startswith("symbol")][0]
-                syms = [str(s).strip().upper().replace(" \u2013 ", "-") for s in tbl[symbol_col].tolist()]
+                symbol_col = [
+                    c
+                    for c in tbl.columns
+                    if str(c).strip().lower().startswith("symbol")
+                ][0]
+                syms = [
+                    str(s).strip().upper().replace(" \u2013 ", "-")
+                    for s in tbl[symbol_col].tolist()
+                ]
                 # Clean common artifacts (e.g., '.' separators kept for class shares like BRK.B)
-                cleaned = [s.replace("\u200a", "").replace(" ", "").replace("/WS", "") for s in syms]
+                cleaned = [
+                    s.replace("\u200a", "").replace(" ", "").replace("/WS", "")
+                    for s in syms
+                ]
                 # Remove non-alphanumeric except . and -
                 filtered: List[str] = []
                 for s in cleaned:

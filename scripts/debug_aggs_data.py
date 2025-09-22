@@ -38,7 +38,13 @@ def debug_aggs_data():
     pipeline.enhanced_runner.process_algorithm = debug_process_algorithm
     try:
         # Run with real Polygon data (requires genuine API key)
-        runner.run_enhanced_once(["AAPL"], "2023-01-03", "2023-01-10", execute=False, prioritize_by_news=False)
+        runner.run_enhanced_once(
+            ["AAPL"],
+            "2023-01-03",
+            "2023-01-10",
+            execute=False,
+            prioritize_by_news=False,
+        )
     finally:
         # Restore original function
         pipeline.enhanced_runner.process_algorithm = original_process_algorithm

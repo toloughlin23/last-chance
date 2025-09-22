@@ -62,9 +62,13 @@ def setup_environment():
         f.write("# INSTITUTIONAL AI TRADING SYSTEM - ENVIRONMENT CONFIGURATION\n")
         f.write("# 100% GENUINE - NO SHORTCUTS - ALWAYS MAKE BETTER\n\n")
 
-        f.write("# =============================================================================\n")
+        f.write(
+            "# =============================================================================\n"
+        )
         f.write("# MARKET DATA API KEYS\n")
-        f.write("# =============================================================================\n\n")
+        f.write(
+            "# =============================================================================\n\n"
+        )
 
         f.write("# Polygon.io - Primary market data source\n")
         f.write(f"POLYGON_API_KEY={env_vars['POLYGON_API_KEY']}\n\n")
@@ -75,26 +79,38 @@ def setup_environment():
         f.write("# NewsAPI - News sentiment analysis\n")
         f.write(f"NEWS_API_KEY={env_vars['NEWS_API_KEY']}\n\n")
 
-        f.write("# =============================================================================\n")
+        f.write(
+            "# =============================================================================\n"
+        )
         f.write("# BROKERAGE API KEYS\n")
-        f.write("# =============================================================================\n\n")
+        f.write(
+            "# =============================================================================\n\n"
+        )
 
         f.write("# Alpaca Trading - Paper trading (recommended for testing)\n")
         f.write(f"ALPACA_API_KEY={env_vars['ALPACA_API_KEY']}\n")
         f.write(f"ALPACA_SECRET_KEY={env_vars['ALPACA_SECRET_KEY']}\n\n")
 
-        f.write("# =============================================================================\n")
+        f.write(
+            "# =============================================================================\n"
+        )
         f.write("# INFRASTRUCTURE CONFIGURATION\n")
-        f.write("# =============================================================================\n\n")
+        f.write(
+            "# =============================================================================\n\n"
+        )
 
         f.write("# Redis Configuration\n")
         f.write(f"REDIS_HOST={env_vars['REDIS_HOST']}\n")
         f.write(f"REDIS_PORT={env_vars['REDIS_PORT']}\n")
         f.write(f"REDIS_PASSWORD={env_vars['REDIS_PASSWORD']}\n\n")
 
-        f.write("# =============================================================================\n")
+        f.write(
+            "# =============================================================================\n"
+        )
         f.write("# SYSTEM CONFIGURATION\n")
-        f.write("# =============================================================================\n\n")
+        f.write(
+            "# =============================================================================\n\n"
+        )
 
         f.write("# Logging Level\n")
         f.write(f"LOG_LEVEL={env_vars['LOG_LEVEL']}\n\n")

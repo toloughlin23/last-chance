@@ -43,7 +43,10 @@ class DeepGenuineVerifier:
             skip_paths = [
                 str(self.project_root / "scripts" / "check_no_mocks.py"),
                 str(self.project_root / "SURGICAL_CONTAMINATION_REMOVAL_SYSTEM.py"),
-                str(self.project_root / "ULTRA_ADVANCED_CONTAMINATION_PREVENTION_SYSTEM.py"),
+                str(
+                    self.project_root
+                    / "ULTRA_ADVANCED_CONTAMINATION_PREVENTION_SYSTEM.py"
+                ),
                 str(self.project_root / "scripts" / "deep_genuine_verification.py"),
                 str(self.project_root / "scripts" / "debug_aggs_data.py"),
             ]
@@ -56,7 +59,9 @@ class DeepGenuineVerifier:
                 or "\\site-packages\\" in path_str
             ):
                 continue
-            if "__pycache__" in path_str or any(path_str.endswith(p) for p in skip_paths):
+            if "__pycache__" in path_str or any(
+                path_str.endswith(p) for p in skip_paths
+            ):
                 continue
 
             files_scanned += 1
@@ -90,18 +95,28 @@ class DeepGenuineVerifier:
                                     continue
 
                                 # Skip if it's in a docstring explaining the system
-                                if line.strip().startswith('"""') or line.strip().startswith("'''"):
+                                if line.strip().startswith(
+                                    '"""'
+                                ) or line.strip().startswith("'''"):
                                     continue
 
                                 # Skip if it's in a print statement showing system status
                                 if line.strip().startswith("print(") and any(
-                                    phrase in line_lower for phrase in ["no fake", "no mock", "genuine", "real"]
+                                    phrase in line_lower
+                                    for phrase in [
+                                        "no fake",
+                                        "no mock",
+                                        "genuine",
+                                        "real",
+                                    ]
                                 ):
                                     continue
 
                                 context = str(py_file)
                                 is_test = "tests" in context or "test_" in context
-                                is_scripts = str(self.project_root / "scripts") in context
+                                is_scripts = (
+                                    str(self.project_root / "scripts") in context
+                                )
                                 classification = "production"
                                 if is_test or is_scripts:
                                     classification = "non_production"
@@ -119,16 +134,24 @@ class DeepGenuineVerifier:
                 print(f"  ⚠️  Error scanning {py_file}: {e}")
 
         print(f"  📊 Files scanned: {files_scanned}")
-        prod_issues = [c for c in contamination_found if c.get("classification") == "production"]
-        nonprod_issues = [c for c in contamination_found if c.get("classification") != "production"]
+        prod_issues = [
+            c for c in contamination_found if c.get("classification") == "production"
+        ]
+        nonprod_issues = [
+            c for c in contamination_found if c.get("classification") != "production"
+        ]
         print(
             f"  🔍 Contamination patterns found: {len(contamination_found)} (production: {len(prod_issues)}, non-production: {len(nonprod_issues)})"
         )
 
         if contamination_found:
             print("  ❌ CONTAMINATION DETECTED:")
-            for item in prod_issues[:5] if prod_issues else contamination_found[:5]:  # Prioritize production
-                print(f"    - {item['file']}:{item['line']} - '{item['pattern']}' in '{item['content']}'")
+            for item in (
+                prod_issues[:5] if prod_issues else contamination_found[:5]
+            ):  # Prioritize production
+                print(
+                    f"    - {item['file']}:{item['line']} - '{item['pattern']}' in '{item['content']}'"
+                )
             if len(contamination_found) > 5:
                 print(f"    ... and {len(contamination_found) - 5} more")
         else:
@@ -170,13 +193,17 @@ class DeepGenuineVerifier:
 
         # Check caching integration
         try:
-            from services.infrastructure_manager import InstitutionalInfrastructureManager
+            from services.infrastructure_manager import (
+                InstitutionalInfrastructureManager,
+            )
 
             manager = InstitutionalInfrastructureManager()
             if manager.redis_enabled:
                 real_integrations.append("External caching - Real connection")
             else:
-                real_integrations.append("In-memory caching - High-performance (optimal)")
+                real_integrations.append(
+                    "In-memory caching - High-performance (optimal)"
+                )
         except Exception as e:
             mock_integrations.append(f"Caching - Error: {e}")
 
@@ -211,7 +238,9 @@ class DeepGenuineVerifier:
 
         # Check LinUCB
         try:
-            from CORE_SUPER_BANDITS.optimized_linucb_institutional import OptimizedInstitutionalLinUCB
+            from CORE_SUPER_BANDITS.optimized_linucb_institutional import (
+                OptimizedInstitutionalLinUCB,
+            )
 
             bandit = OptimizedInstitutionalLinUCB()
 
@@ -225,7 +254,9 @@ class DeepGenuineVerifier:
                 "reset_arm",
             ]
 
-            missing_methods = [method for method in required_methods if not hasattr(bandit, method)]
+            missing_methods = [
+                method for method in required_methods if not hasattr(bandit, method)
+            ]
 
             if not missing_methods:
                 algorithms.append("LinUCB - Complete implementation")
@@ -236,7 +267,9 @@ class DeepGenuineVerifier:
 
         # Check Neural Bandit
         try:
-            from CORE_SUPER_BANDITS.optimized_neural_bandit_institutional import OptimizedInstitutionalNeuralBandit
+            from CORE_SUPER_BANDITS.optimized_neural_bandit_institutional import (
+                OptimizedInstitutionalNeuralBandit,
+            )
 
             bandit = OptimizedInstitutionalNeuralBandit()
 
@@ -249,7 +282,9 @@ class DeepGenuineVerifier:
                 "reset_arm",
             ]
 
-            missing_methods = [method for method in required_methods if not hasattr(bandit, method)]
+            missing_methods = [
+                method for method in required_methods if not hasattr(bandit, method)
+            ]
 
             if not missing_methods:
                 algorithms.append("Neural Bandit - Complete implementation")
@@ -260,7 +295,9 @@ class DeepGenuineVerifier:
 
         # Check UCBV
         try:
-            from CORE_SUPER_BANDITS.optimized_ucbv_institutional import OptimizedInstitutionalUCBV
+            from CORE_SUPER_BANDITS.optimized_ucbv_institutional import (
+                OptimizedInstitutionalUCBV,
+            )
 
             bandit = OptimizedInstitutionalUCBV()
 
@@ -273,7 +310,9 @@ class DeepGenuineVerifier:
                 "reset_arm",
             ]
 
-            missing_methods = [method for method in required_methods if not hasattr(bandit, method)]
+            missing_methods = [
+                method for method in required_methods if not hasattr(bandit, method)
+            ]
 
             if not missing_methods:
                 algorithms.append("UCBV - Complete implementation")
@@ -282,8 +321,12 @@ class DeepGenuineVerifier:
         except Exception as e:
             algorithms.append(f"UCBV - Error: {e}")
 
-        complete_algorithms = [alg for alg in algorithms if "Complete implementation" in alg]
-        incomplete_algorithms = [alg for alg in algorithms if "Complete implementation" not in alg]
+        complete_algorithms = [
+            alg for alg in algorithms if "Complete implementation" in alg
+        ]
+        incomplete_algorithms = [
+            alg for alg in algorithms if "Complete implementation" not in alg
+        ]
 
         print(f"  ✅ Complete algorithms: {len(complete_algorithms)}")
         for alg in complete_algorithms:
@@ -294,7 +337,11 @@ class DeepGenuineVerifier:
             for alg in incomplete_algorithms:
                 print(f"    ❌ {alg}")
 
-        return len(incomplete_algorithms) == 0, complete_algorithms, incomplete_algorithms
+        return (
+            len(incomplete_algorithms) == 0,
+            complete_algorithms,
+            incomplete_algorithms,
+        )
 
     def verify_system_integration(self):
         """Verify all components work together correctly"""
@@ -304,7 +351,9 @@ class DeepGenuineVerifier:
 
         # Test Pipeline -> Algorithm integration
         try:
-            from CORE_SUPER_BANDITS.optimized_linucb_institutional import OptimizedInstitutionalLinUCB
+            from CORE_SUPER_BANDITS.optimized_linucb_institutional import (
+                OptimizedInstitutionalLinUCB,
+            )
             from pipeline.enhanced_runner import EnhancedPipelineRunner
 
             runner = EnhancedPipelineRunner()
@@ -348,9 +397,13 @@ class DeepGenuineVerifier:
                 if selected_arm:
                     integration_tests.append("Pipeline -> Algorithm integration")
                 else:
-                    integration_tests.append("Pipeline -> Algorithm integration - Not working")
+                    integration_tests.append(
+                        "Pipeline -> Algorithm integration - Not working"
+                    )
             else:
-                integration_tests.append("Pipeline -> Algorithm integration - Not connected")
+                integration_tests.append(
+                    "Pipeline -> Algorithm integration - Not connected"
+                )
         except Exception as e:
             integration_tests.append(f"Pipeline -> Algorithm integration - Error: {e}")
 
@@ -365,14 +418,19 @@ class DeepGenuineVerifier:
             if hasattr(runner, "news_analyzer") and runner.news_analyzer:
                 integration_tests.append("Services -> Pipeline integration")
             else:
-                integration_tests.append("Services -> Pipeline integration - Not connected")
+                integration_tests.append(
+                    "Services -> Pipeline integration - Not connected"
+                )
         except Exception as e:
             integration_tests.append(f"Services -> Pipeline integration - Error: {e}")
 
         # Test Compliance -> Execution integration
         try:
             from services.compliance_system import UKROIComplianceSystem
-            from services.execution_bridge import OrderSide, UltraInstitutionalExecutionBridge
+            from services.execution_bridge import (
+                OrderSide,
+                UltraInstitutionalExecutionBridge,
+            )
 
             UKROIComplianceSystem()
             bridge = UltraInstitutionalExecutionBridge()
@@ -381,35 +439,53 @@ class DeepGenuineVerifier:
                 # Test actual compliance integration
 
                 # Test compliance check (use proper enum to avoid type errors)
-                compliance_ok, message = bridge._check_compliance("AAPL", 100, 150, OrderSide.BUY)
+                compliance_ok, message = bridge._check_compliance(
+                    "AAPL", 100, 150, OrderSide.BUY
+                )
                 if compliance_ok is not None:
                     integration_tests.append("Compliance -> Execution integration")
                 else:
-                    integration_tests.append("Compliance -> Execution integration - Not working")
+                    integration_tests.append(
+                        "Compliance -> Execution integration - Not working"
+                    )
             else:
-                integration_tests.append("Compliance -> Execution integration - Not connected")
+                integration_tests.append(
+                    "Compliance -> Execution integration - Not connected"
+                )
         except Exception as e:
-            integration_tests.append(f"Compliance -> Execution integration - Error: {e}")
+            integration_tests.append(
+                f"Compliance -> Execution integration - Error: {e}"
+            )
 
         # Test Infrastructure -> All components
         try:
-            from services.infrastructure_manager import InstitutionalInfrastructureManager
+            from services.infrastructure_manager import (
+                InstitutionalInfrastructureManager,
+            )
 
             manager = InstitutionalInfrastructureManager()
 
             if hasattr(manager, "thread_pools") and len(manager.thread_pools) >= 4:
                 integration_tests.append("Infrastructure -> All components")
             else:
-                integration_tests.append("Infrastructure -> All components - Insufficient threads")
+                integration_tests.append(
+                    "Infrastructure -> All components - Insufficient threads"
+                )
         except Exception as e:
             integration_tests.append(f"Infrastructure -> All components - Error: {e}")
 
         working_integrations = [
             test
             for test in integration_tests
-            if "integration" in test and "Error" not in test and "Not connected" not in test
+            if "integration" in test
+            and "Error" not in test
+            and "Not connected" not in test
         ]
-        broken_integrations = [test for test in integration_tests if "Error" in test or "Not connected" in test]
+        broken_integrations = [
+            test
+            for test in integration_tests
+            if "Error" in test or "Not connected" in test
+        ]
 
         print(f"  ✅ Working integrations: {len(working_integrations)}")
         for test in working_integrations:
@@ -477,7 +553,9 @@ class DeepGenuineVerifier:
 
         # Check resource management
         try:
-            from services.infrastructure_manager import InstitutionalInfrastructureManager
+            from services.infrastructure_manager import (
+                InstitutionalInfrastructureManager,
+            )
 
             manager = InstitutionalInfrastructureManager()
 
@@ -498,10 +576,16 @@ class DeepGenuineVerifier:
             if "No " in check:
                 return False
             # Treat generic "Error" only as broken when it's an actual error message
-            return not check.startswith("Error ") and not check.endswith("Error") and " Error" not in check
+            return (
+                not check.startswith("Error ")
+                and not check.endswith("Error")
+                and " Error" not in check
+            )
 
         working_checks = [check for check in production_checks if _is_working(check)]
-        broken_checks = [check for check in production_checks if check not in working_checks]
+        broken_checks = [
+            check for check in production_checks if check not in working_checks
+        ]
 
         print(f"  ✅ Working production features: {len(working_checks)}")
         for check in working_checks:
@@ -531,22 +615,30 @@ class DeepGenuineVerifier:
                 all_passed = False
 
             # 2. Verify real integrations
-            real_integrations_ok, real_integrations, mock_integrations = self.verify_real_integrations()
+            real_integrations_ok, real_integrations, mock_integrations = (
+                self.verify_real_integrations()
+            )
             if not real_integrations_ok:
                 all_passed = False
 
             # 3. Verify algorithm completeness
-            algorithms_complete, complete_algorithms, incomplete_algorithms = self.verify_algorithm_completeness()
+            algorithms_complete, complete_algorithms, incomplete_algorithms = (
+                self.verify_algorithm_completeness()
+            )
             if not algorithms_complete:
                 all_passed = False
 
             # 4. Verify system integration
-            integration_ok, working_integrations, broken_integrations = self.verify_system_integration()
+            integration_ok, working_integrations, broken_integrations = (
+                self.verify_system_integration()
+            )
             if not integration_ok:
                 all_passed = False
 
             # 5. Verify production readiness
-            production_ready, working_checks, broken_checks = self.verify_production_readiness()
+            production_ready, working_checks, broken_checks = (
+                self.verify_production_readiness()
+            )
             if not production_ready:
                 all_passed = False
 

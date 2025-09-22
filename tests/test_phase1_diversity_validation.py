@@ -20,8 +20,12 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Import all 3 optimized algorithms
-from CORE_SUPER_BANDITS.optimized_linucb_institutional import OptimizedInstitutionalLinUCB
-from CORE_SUPER_BANDITS.optimized_neural_bandit_institutional import OptimizedInstitutionalNeuralBandit
+from CORE_SUPER_BANDITS.optimized_linucb_institutional import (
+    OptimizedInstitutionalLinUCB,
+)
+from CORE_SUPER_BANDITS.optimized_neural_bandit_institutional import (
+    OptimizedInstitutionalNeuralBandit,
+)
 from CORE_SUPER_BANDITS.optimized_ucbv_institutional import OptimizedInstitutionalUCBV
 from services.news_client import NewsClient
 from services.polygon_client import PolygonClient
@@ -49,7 +53,9 @@ class Phase1DiversityValidator:
                 alpha=1.0,
                 regularization=1.0,
                 personality=AuthenticPersonalitySystem(
-                    PersonalityProfile(risk_tolerance=0.3, decision_speed=0.7, aggression=0.4)
+                    PersonalityProfile(
+                        risk_tolerance=0.3, decision_speed=0.7, aggression=0.4
+                    )
                 ),
             ),
             "neural": OptimizedInstitutionalNeuralBandit(
@@ -57,12 +63,16 @@ class Phase1DiversityValidator:
                 hidden_sizes=[32, 24, 16, 8],
                 learning_rate=0.01,
                 personality=AuthenticPersonalitySystem(
-                    PersonalityProfile(risk_tolerance=0.8, decision_speed=0.3, aggression=0.9)
+                    PersonalityProfile(
+                        risk_tolerance=0.8, decision_speed=0.3, aggression=0.9
+                    )
                 ),
             ),
             "ucbv": OptimizedInstitutionalUCBV(
                 personality=AuthenticPersonalitySystem(
-                    PersonalityProfile(risk_tolerance=0.5, decision_speed=0.5, aggression=0.6)
+                    PersonalityProfile(
+                        risk_tolerance=0.5, decision_speed=0.5, aggression=0.6
+                    )
                 )
             ),
         }
@@ -71,15 +81,23 @@ class Phase1DiversityValidator:
         print("✅ All 3 optimized algorithms loaded with different personalities")
         print("✅ Real Polygon API integration ready")
 
-    def fetch_real_market_data(self, symbol: str = "AAPL", days: int = 5) -> List[Dict[str, Any]]:
+    def fetch_real_market_data(
+        self, symbol: str = "AAPL", days: int = 5
+    ) -> List[Dict[str, Any]]:
         """Fetch real market data from Polygon API"""
         try:
             # Get real historical data
             end_date = time.strftime("%Y-%m-%d")
-            start_date = time.strftime("%Y-%m-%d", time.localtime(time.time() - days * 24 * 3600))
+            start_date = time.strftime(
+                "%Y-%m-%d", time.localtime(time.time() - days * 24 * 3600)
+            )
 
             aggs_data = self.polygon_client.get_aggs(
-                ticker=symbol, multiplier=1, timespan="day", from_date=start_date, to_date=end_date
+                ticker=symbol,
+                multiplier=1,
+                timespan="day",
+                from_date=start_date,
+                to_date=end_date,
             )
 
             if not aggs_data or "results" not in aggs_data:
@@ -91,7 +109,9 @@ class Phase1DiversityValidator:
             print(f"❌ Failed to fetch real market data: {e}")
             raise
 
-    def extract_features_from_real_data(self, market_data: List[Dict[str, Any]]) -> List[np.ndarray]:
+    def extract_features_from_real_data(
+        self, market_data: List[Dict[str, Any]]
+    ) -> List[np.ndarray]:
         """Extract 15-dimensional features from real market data"""
         features_list = []
 
@@ -109,7 +129,9 @@ class Phase1DiversityValidator:
 
         return features_list
 
-    def _extract_15d_features_from_raw(self, raw_data: Dict[str, Any], index: int) -> np.ndarray:
+    def _extract_15d_features_from_raw(
+        self, raw_data: Dict[str, Any], index: int
+    ) -> np.ndarray:
         """Extract 15-dimensional features directly from raw market data"""
         # Extract basic market data
         price = raw_data.get("c", 100.0)
@@ -185,7 +207,9 @@ class Phase1DiversityValidator:
             ]
         )
 
-    def _extract_15d_features(self, enriched_data, raw_data: Dict[str, Any]) -> np.ndarray:
+    def _extract_15d_features(
+        self, enriched_data, raw_data: Dict[str, Any]
+    ) -> np.ndarray:
         """Extract 15-dimensional features from enriched data"""
         # Feature 1: Sentiment score
         sentiment_score = enriched_data.sentiment_analysis.overall_sentiment
@@ -255,12 +279,20 @@ class Phase1DiversityValidator:
             ]
         )
 
-    def measure_algorithm_diversity(self, features_list: List[np.ndarray], iterations: int = 50) -> Dict[str, Any]:
+    def measure_algorithm_diversity(
+        self, features_list: List[np.ndarray], iterations: int = 50
+    ) -> Dict[str, Any]:
         """Measure diversity across all 3 algorithms with real data"""
-        print(f"🔍 Measuring diversity across {len(features_list)} real market data points...")
+        print(
+            f"🔍 Measuring diversity across {len(features_list)} real market data points..."
+        )
 
         # Collect confidence scores from all algorithms
-        all_confidence_scores: Dict[str, List[float]] = {"linucb": [], "neural": [], "ucbv": []}
+        all_confidence_scores: Dict[str, List[float]] = {
+            "linucb": [],
+            "neural": [],
+            "ucbv": [],
+        }
 
         # Test each algorithm multiple times with different market conditions
         for i in range(iterations):
@@ -268,13 +300,17 @@ class Phase1DiversityValidator:
                 try:
                     # LinUCB confidence
                     print(f"🔍 Testing LinUCB with features: {features[:3]}...")
-                    linucb_confidence = self.algorithms["linucb"].get_confidence_for_context("buy_signal", features)
+                    linucb_confidence = self.algorithms[
+                        "linucb"
+                    ].get_confidence_for_context("buy_signal", features)
                     print(f"   LinUCB result: {linucb_confidence}")
                     all_confidence_scores["linucb"].append(linucb_confidence)
 
                     # Neural Bandit confidence
                     print(f"🔍 Testing Neural with features: {features[:3]}...")
-                    neural_confidence = self.algorithms["neural"].get_confidence_for_context("buy_signal", features)
+                    neural_confidence = self.algorithms[
+                        "neural"
+                    ].get_confidence_for_context("buy_signal", features)
                     print(f"   Neural result: {neural_confidence}")
                     all_confidence_scores["neural"].append(neural_confidence)
 
@@ -433,7 +469,9 @@ def test_phase1_diversity_validation():
     pretraining_mode = os.getenv("ALLOW_LOW_DIVERSITY") == "1"
     if pretraining_mode:
         # Pre-training: diversity may be low by design. Validate sanity and bounds.
-        print("\n🏁 Pre-training mode: Skipping Bronze Tier variance thresholds; validating bounds and outputs only.")
+        print(
+            "\n🏁 Pre-training mode: Skipping Bronze Tier variance thresholds; validating bounds and outputs only."
+        )
         conf_scores = diversity_results["confidence_scores"]
         assert len(conf_scores["linucb"]) > 0, "LinUCB no confidence scores"
         assert len(conf_scores["neural"]) > 0, "Neural no confidence scores"
@@ -441,14 +479,20 @@ def test_phase1_diversity_validation():
     else:
         # Post-training: enforce Bronze Tier thresholds strictly
         print("\n🏆 Validating Bronze Tier compliance...")
-        bronze_tier_compliant = validator.validate_bronze_tier_compliance(diversity_results)
+        bronze_tier_compliant = validator.validate_bronze_tier_compliance(
+            diversity_results
+        )
 
         # Assertions for test success
-        assert bronze_tier_compliant, "Bronze Tier compliance not achieved - variance <15%"
+        assert (
+            bronze_tier_compliant
+        ), "Bronze Tier compliance not achieved - variance <15%"
 
         # Additional diversity assertions
         metrics = diversity_results["diversity_metrics"]
-        assert metrics.get("overall_variance", 0) > 0.15, "Overall variance insufficient"
+        assert (
+            metrics.get("overall_variance", 0) > 0.15
+        ), "Overall variance insufficient"
 
     print("\n✅ PHASE 1 DIVERSITY VALIDATION PASSED")
     print("✅ Bronze Tier compliance achieved")
@@ -530,9 +574,13 @@ def test_phase1_algorithm_individual_performance():
                 unique_arm_id = f"buy_signal_{algo_name}_{i}"
                 # UCB-V needs 3 parameters: (arm_id, context_data, features)
                 if algo_name == "ucbv":
-                    conf = algorithm.get_confidence_for_context(unique_arm_id, test_features, test_features)
+                    conf = algorithm.get_confidence_for_context(
+                        unique_arm_id, test_features, test_features
+                    )
                 else:
-                    conf = algorithm.get_confidence_for_context(unique_arm_id, test_features)
+                    conf = algorithm.get_confidence_for_context(
+                        unique_arm_id, test_features
+                    )
                 confidences.append(conf)
             except Exception:
                 continue

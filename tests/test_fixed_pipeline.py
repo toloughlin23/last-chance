@@ -28,7 +28,9 @@ def test_fixed_pipeline():
     start_date = (datetime.now() - timedelta(days=7)).strftime("%Y-%m-%d")
 
     # Run with REAL market data
-    runner.run_enhanced_once(["AAPL"], start_date, end_date, execute=False, prioritize_by_news=False)
+    runner.run_enhanced_once(
+        ["AAPL"], start_date, end_date, execute=False, prioritize_by_news=False
+    )
 
     print("✅ Pipeline working with REAL DATA - 100% GENUINE!")
 

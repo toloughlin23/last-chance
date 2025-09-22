@@ -35,7 +35,15 @@ class InstitutionalTestRunner:
                 try:
                     # Run individual test file
                     result = subprocess.run(
-                        [sys.executable, "-m", "pytest", str(test_path), "-v", "--tb=short", "--no-header"],
+                        [
+                            sys.executable,
+                            "-m",
+                            "pytest",
+                            str(test_path),
+                            "-v",
+                            "--tb=short",
+                            "--no-header",
+                        ],
                         capture_output=True,
                         text=True,
                         timeout=60,
@@ -81,7 +89,10 @@ class InstitutionalTestRunner:
                 "test_ucbv_day3_foundation.py",
                 "test_day7_single_bandit_diversity.py",
             ],
-            "INFRASTRUCTURE": ["test_enhanced_infrastructure_integration.py", "test_redis_institutional.py"],
+            "INFRASTRUCTURE": [
+                "test_enhanced_infrastructure_integration.py",
+                "test_redis_institutional.py",
+            ],
             "DATA SERVICES": [
                 "test_alpaca_client_integration.py",
                 "test_polygon_client_integration.py",

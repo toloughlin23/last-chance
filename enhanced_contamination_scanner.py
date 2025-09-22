@@ -12,7 +12,15 @@ from pathlib import Path
 from typing import Any, Dict, List
 
 # Directories to scan (our actual codebase)
-SCAN_DIRECTORIES = ["CORE_SUPER_BANDITS", "core", "learning", "services", "utils", "tests", "scripts"]
+SCAN_DIRECTORIES = [
+    "CORE_SUPER_BANDITS",
+    "core",
+    "learning",
+    "services",
+    "utils",
+    "tests",
+    "scripts",
+]
 
 # Files to exclude
 EXCLUDE_PATTERNS = [
@@ -152,7 +160,12 @@ def scan_file(file_path: Path) -> List[Dict[str, Any]]:
                 for pattern in CONTAMINATION_PATTERNS:
                     if re.search(pattern, line, re.IGNORECASE):
                         violations.append(
-                            {"file": str(file_path), "line": line_num, "pattern": pattern, "content": line.strip()}
+                            {
+                                "file": str(file_path),
+                                "line": line_num,
+                                "pattern": pattern,
+                                "content": line.strip(),
+                            }
                         )
     except Exception as e:
         print(f"Error scanning {file_path}: {e}")
@@ -194,20 +207,74 @@ def test_algorithm_diversity() -> Dict[str, Any]:
     try:
         import numpy as np
 
-        from CORE_SUPER_BANDITS.optimized_linucb_institutional import OptimizedInstitutionalLinUCB
-        from CORE_SUPER_BANDITS.optimized_neural_bandit_institutional import OptimizedInstitutionalNeuralBandit
-        from CORE_SUPER_BANDITS.optimized_ucbv_institutional import OptimizedInstitutionalUCBV
+        from CORE_SUPER_BANDITS.optimized_linucb_institutional import (
+            OptimizedInstitutionalLinUCB,
+        )
+        from CORE_SUPER_BANDITS.optimized_neural_bandit_institutional import (
+            OptimizedInstitutionalNeuralBandit,
+        )
+        from CORE_SUPER_BANDITS.optimized_ucbv_institutional import (
+            OptimizedInstitutionalUCBV,
+        )
 
         # Test with REAL deterministic feature sets - NO RANDOM DATA
         test_features = [
             np.array(
-                [0.1, -0.2, 0.3, -0.4, 0.5, -0.6, 0.7, -0.8, 0.9, -1.0, 0.8, -0.7, 0.6, -0.5, 0.4]
+                [
+                    0.1,
+                    -0.2,
+                    0.3,
+                    -0.4,
+                    0.5,
+                    -0.6,
+                    0.7,
+                    -0.8,
+                    0.9,
+                    -1.0,
+                    0.8,
+                    -0.7,
+                    0.6,
+                    -0.5,
+                    0.4,
+                ]
             ),  # High volatility
             np.array(
-                [0.01, -0.02, 0.03, -0.04, 0.05, -0.01, 0.02, -0.03, 0.04, -0.05, 0.01, -0.02, 0.03, -0.04, 0.05]
+                [
+                    0.01,
+                    -0.02,
+                    0.03,
+                    -0.04,
+                    0.05,
+                    -0.01,
+                    0.02,
+                    -0.03,
+                    0.04,
+                    -0.05,
+                    0.01,
+                    -0.02,
+                    0.03,
+                    -0.04,
+                    0.05,
+                ]
             ),  # Low volatility
             np.array(
-                [5.0, -4.5, 4.0, -3.5, 3.0, -2.5, 2.0, -1.5, 1.0, -0.5, 0.5, -1.0, 1.5, -2.0, 2.5]
+                [
+                    5.0,
+                    -4.5,
+                    4.0,
+                    -3.5,
+                    3.0,
+                    -2.5,
+                    2.0,
+                    -1.5,
+                    1.0,
+                    -0.5,
+                    0.5,
+                    -1.0,
+                    1.5,
+                    -2.0,
+                    2.5,
+                ]
             ),  # Extreme values
             np.zeros(15),  # Zero features
             np.ones(15),  # Ones
@@ -222,8 +289,12 @@ def test_algorithm_diversity() -> Dict[str, Any]:
         ucbv_confs = []
 
         for features in test_features:
-            linucb_confs.append(linucb.get_confidence_for_context("buy_signal", features))
-            neural_confs.append(neural.get_confidence_for_context("buy_signal", features))
+            linucb_confs.append(
+                linucb.get_confidence_for_context("buy_signal", features)
+            )
+            neural_confs.append(
+                neural.get_confidence_for_context("buy_signal", features)
+            )
             ucbv_confs.append(ucbv.get_confidence_for_context("buy_signal", features))
 
         # Check for saturation
@@ -266,13 +337,17 @@ def main():
                     violations = scan_file(file_path)
                     all_violations.extend(violations)
 
-    print(f"\n📊 SCAN RESULTS: {len(all_violations)} violations found across {len(python_files)} files")
+    print(
+        f"\n📊 SCAN RESULTS: {len(all_violations)} violations found across {len(python_files)} files"
+    )
     print(f"Directories scanned: {SCAN_DIRECTORIES}")
     print(f"Total files scanned: {len(python_files)}")
     print(f"Violations found: {len(all_violations)}")
 
     if all_violations:
-        print(f"\n🚨 CONTAMINATION VIOLATIONS DETECTED: {len(all_violations)} issues requiring immediate fix!")
+        print(
+            f"\n🚨 CONTAMINATION VIOLATIONS DETECTED: {len(all_violations)} issues requiring immediate fix!"
+        )
         print("=" * 60)
 
         # Group by file
@@ -290,7 +365,9 @@ def main():
         print("\n✅ NO CONTAMINATION VIOLATIONS DETECTED")
 
     # Check for algorithm saturation patterns specifically
-    print("\n🔍 ALGORITHM SATURATION CHECK: Testing 3 core algorithms (LinUCB, Neural, UCB-V) for genuine variation")
+    print(
+        "\n🔍 ALGORITHM SATURATION CHECK: Testing 3 core algorithms (LinUCB, Neural, UCB-V) for genuine variation"
+    )
     print("=" * 40)
 
     saturation_files = [
@@ -309,16 +386,24 @@ def main():
             print("  ✅ No saturation patterns detected")
 
     # Test algorithm diversity
-    print("\n🧪 ALGORITHM DIVERSITY TEST: Measuring confidence variation across 3 core algorithms")
+    print(
+        "\n🧪 ALGORITHM DIVERSITY TEST: Measuring confidence variation across 3 core algorithms"
+    )
     print("=" * 40)
 
     diversity_results = test_algorithm_diversity()
     if "error" in diversity_results:
         print(f'  ❌ Error testing diversity: {diversity_results["error"]}')
     else:
-        print(f'  LinUCB: {diversity_results["linucb_unique"]}/5 unique, std={diversity_results["linucb_std"]:.6f}')
-        print(f'  Neural: {diversity_results["neural_unique"]}/5 unique, std={diversity_results["neural_std"]:.6f}')
-        print(f'  UCB-V:  {diversity_results["ucbv_unique"]}/5 unique, std={diversity_results["ucbv_std"]:.6f}')
+        print(
+            f'  LinUCB: {diversity_results["linucb_unique"]}/5 unique, std={diversity_results["linucb_std"]:.6f}'
+        )
+        print(
+            f'  Neural: {diversity_results["neural_unique"]}/5 unique, std={diversity_results["neural_std"]:.6f}'
+        )
+        print(
+            f'  UCB-V:  {diversity_results["ucbv_unique"]}/5 unique, std={diversity_results["ucbv_std"]:.6f}'
+        )
 
         # Check for saturation
         if diversity_results["ucbv_unique"] < 3:
@@ -329,7 +414,9 @@ def main():
             print("  ⚠️  Neural showing low variation - potential saturation")
 
     # Summary
-    print(f'\n📋 SUMMARY: Scan completed at {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}')
+    print(
+        f'\n📋 SUMMARY: Scan completed at {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}'
+    )
     print(f"Total violations: {len(all_violations)}")
     if len(all_violations) > 0:
         print("❌ CONTAMINATION DETECTED - FIX REQUIRED")

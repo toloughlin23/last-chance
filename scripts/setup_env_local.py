@@ -41,7 +41,9 @@ CACHE_TTL=300
         with open(env_path, "w") as f:
             f.write(env_content)
         print(f"✅ Created .env file at: {env_path}")
-        print("✅ Redis configured for localhost (will use in-memory fallback if Redis unavailable)")
+        print(
+            "✅ Redis configured for localhost (will use in-memory fallback if Redis unavailable)"
+        )
         print("✅ All API keys configured with real credentials")
         return True
     except Exception as e:
@@ -56,9 +58,3 @@ if __name__ == "__main__":
         print("🎉 Environment setup complete!")
     else:
         print("❌ Environment setup failed!")
-
-
-
-
-
-

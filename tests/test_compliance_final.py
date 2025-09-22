@@ -36,7 +36,12 @@ def test_compliance_system_final():
         "total_market_cap": 1000000000.0,
         # Transaction reporting - complete data
         "transaction_time": datetime.now(UTC),
-        "transaction_data": {"client_id": "CLIENT_001", "instrument": "AAPL", "quantity": 100, "price": 150.0},
+        "transaction_data": {
+            "client_id": "CLIENT_001",
+            "instrument": "AAPL",
+            "quantity": 100,
+            "price": 150.0,
+        },
         # Product governance
         "target_market_validation": True,
         "risk_warning_provided": True,
@@ -74,15 +79,24 @@ def test_compliance_system_final():
     print("\n📋 Detailed Check Results:")
     for check in report.checks:
         status_icon = "✅" if check.status.value == "compliant" else "❌"
-        print(f"   {status_icon} {check.rule_id}: {check.status.value} - {check.message}")
+        print(
+            f"   {status_icon} {check.rule_id}: {check.status.value} - {check.message}"
+        )
 
     # Verify success
-    if report.overall_status.value == "compliant" and report.summary["compliance_score"] >= 95:
+    if (
+        report.overall_status.value == "compliant"
+        and report.summary["compliance_score"] >= 95
+    ):
         print("\n✅ Compliance system test PASSED - All checks compliant!")
         assert True, "Compliance system working correctly"
     else:
-        print(f"\n❌ Compliance system test FAILED - Score: {report.summary['compliance_score']:.1f}%")
-        assert False, f"Compliance score {report.summary['compliance_score']:.1f}% below threshold 95%"
+        print(
+            f"\n❌ Compliance system test FAILED - Score: {report.summary['compliance_score']:.1f}%"
+        )
+        assert (
+            False
+        ), f"Compliance score {report.summary['compliance_score']:.1f}% below threshold 95%"
 
 
 if __name__ == "__main__":

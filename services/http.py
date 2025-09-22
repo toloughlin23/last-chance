@@ -1,8 +1,8 @@
 import time
 from typing import Any, Dict, Optional
 
-import requests  # type: ignore[import-untyped]
 import certifi  # type: ignore[import-untyped]
+import requests  # type: ignore[import-untyped]
 
 
 class HttpError(Exception):
@@ -17,7 +17,9 @@ class HttpClient:
     - Stops after a finite number of attempts
     """
 
-    def __init__(self, timeout: float = 30.0, max_retries: int = 3, backoff: float = 0.5) -> None:
+    def __init__(
+        self, timeout: float = 30.0, max_retries: int = 3, backoff: float = 0.5
+    ) -> None:
         self.timeout: float = timeout
         self.max_retries: int = max(0, max_retries)
         self.backoff: float = max(0.0, backoff)
@@ -51,7 +53,9 @@ class HttpClient:
 
                 # Non-transient client/server error
                 resp.raise_for_status()
-                return resp.json()  # Defensive; raise_for_status above should have thrown for errors
+                return (
+                    resp.json()
+                )  # Defensive; raise_for_status above should have thrown for errors
 
             except Exception as exc:
                 last_exc = exc

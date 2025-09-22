@@ -9,7 +9,11 @@ sys.path.append(".")
 
 from decimal import Decimal
 
-from services.execution_bridge import OrderSide, OrderType, UltraInstitutionalExecutionBridge
+from services.execution_bridge import (
+    OrderSide,
+    OrderType,
+    UltraInstitutionalExecutionBridge,
+)
 
 
 def test_execution_bridge():
@@ -35,29 +39,39 @@ def test_execution_bridge():
     print(f"   Total Orders: {exec_metrics['total_orders_executed']}")
     print(f"   Successful: {exec_metrics['successful_orders']}")
     print(f"   Failed: {exec_metrics['failed_orders']}")
-    print(f"   Average Execution Time: {exec_metrics['average_execution_time_ms']:.1f}ms")
+    print(
+        f"   Average Execution Time: {exec_metrics['average_execution_time_ms']:.1f}ms"
+    )
 
     # Test risk assessment
     print("\n⚠️ Testing risk assessment...")
-    risk_level, risk_score, risk_message = bridge._assess_risk("AAPL", Decimal("100"), Decimal("150"), OrderSide.BUY)
+    risk_level, risk_score, risk_message = bridge._assess_risk(
+        "AAPL", Decimal("100"), Decimal("150"), OrderSide.BUY
+    )
     print(f"   Risk Level: {risk_level.value}")
     print(f"   Risk Score: {risk_score:.2f}")
     print(f"   Risk Message: {risk_message}")
 
     # Test compliance check
     print("\n🏛️ Testing compliance check...")
-    compliance_ok, compliance_message = bridge._check_compliance("AAPL", Decimal("100"), Decimal("150"), OrderSide.BUY)
+    compliance_ok, compliance_message = bridge._check_compliance(
+        "AAPL", Decimal("100"), Decimal("150"), OrderSide.BUY
+    )
     print(f"   Compliance OK: {compliance_ok}")
     print(f"   Compliance Message: {compliance_message}")
 
     # Test position size calculation
     print("\n📏 Testing position size calculation...")
-    position_size = bridge._calculate_position_size("AAPL", 0.8, Decimal("150"), Decimal("100000"))
+    position_size = bridge._calculate_position_size(
+        "AAPL", 0.8, Decimal("150"), Decimal("100000")
+    )
     print(f"   Position Size: {position_size:.2%}")
 
     # Test order creation
     print("\n📝 Testing order creation...")
-    order = bridge._create_order("AAPL", OrderSide.BUY, Decimal("100"), OrderType.MARKET, Decimal("150"))
+    order = bridge._create_order(
+        "AAPL", OrderSide.BUY, Decimal("100"), OrderType.MARKET, Decimal("150")
+    )
     print(f"   Order ID: {order.order_id}")
     print(f"   Symbol: {order.symbol}")
     print(f"   Side: {order.side.value}")

@@ -6,7 +6,9 @@ from utils.env_loader import load_env_from_known_locations
 
 
 class NewsClient:
-    def __init__(self, api_key: Optional[str] = None, http: Optional[HttpClient] = None):
+    def __init__(
+        self, api_key: Optional[str] = None, http: Optional[HttpClient] = None
+    ):
         load_env_from_known_locations()
         self.api_key = api_key or os.getenv("POLYGON_API_KEY")
         if not self.api_key:
@@ -20,7 +22,11 @@ class NewsClient:
         return p
 
     def fetch_symbol_news(
-        self, ticker: str, published_gte_utc: Optional[str] = None, limit: int = 50, order: str = "desc"
+        self,
+        ticker: str,
+        published_gte_utc: Optional[str] = None,
+        limit: int = 50,
+        order: str = "desc",
     ) -> List[Dict[str, Any]]:
         """Fetch recent news for a ticker.
         published_gte_utc: ISO8601 UTC string (e.g., 2025-09-01T00:00:00Z)

@@ -37,7 +37,13 @@ class Hub:
         with self._locks[channel]:
             self._handlers[channel].append(handler)
 
-    def publish(self, channel: str, message: object, block: bool = True, timeout: Optional[float] = None) -> None:
+    def publish(
+        self,
+        channel: str,
+        message: object,
+        block: bool = True,
+        timeout: Optional[float] = None,
+    ) -> None:
         self.ensure_channel(channel)
         q = self._channels[channel]
         # Put message with backpressure
@@ -49,9 +55,3 @@ class Hub:
             except Exception:
                 # Non-fatal: continue delivering to other handlers
                 continue
-
-
-
-
-
-

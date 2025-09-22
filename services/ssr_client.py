@@ -13,7 +13,10 @@ UTC = _timezone.utc
 
 class SSRClient:
     def __init__(
-        self, api_key: Optional[str] = None, http: Optional[HttpClient] = None, polygon: Optional[PolygonClient] = None
+        self,
+        api_key: Optional[str] = None,
+        http: Optional[HttpClient] = None,
+        polygon: Optional[PolygonClient] = None,
     ):
         load_env_from_known_locations()
         self.api_key = api_key or os.getenv("POLYGON_API_KEY")
@@ -23,11 +26,22 @@ class SSRClient:
         self.polygon = polygon or PolygonClient(api_key=self.api_key, http=self.http)
 
     def _prev_close(self, symbol: str, prev_date_iso: str) -> float:
-        data = self.polygon.get_aggs(symbol, 1, "day", prev_date_iso, prev_date_iso, limit=1, adjusted=True, sort="asc")
+        data = self.polygon.get_aggs(
+            symbol,
+            1,
+            "day",
+            prev_date_iso,
+            prev_date_iso,
+            limit=1,
+            adjusted=True,
+            sort="asc",
+        )
         rows = data.get("results") or []
         return float(rows[0].get("c", 0.0)) if rows else 0.0
 
-    def _intraday_low(self, symbol: str, open_ts_utc: datetime, close_ts_utc: datetime) -> float:
+    def _intraday_low(
+        self, symbol: str, open_ts_utc: datetime, close_ts_utc: datetime
+    ) -> float:
         data = self.polygon.get_aggs(
             symbol,
             1,
@@ -42,11 +56,15 @@ class SSRClient:
         lows = [float(r.get("l", 0.0)) for r in rows if r]
         return min(lows) if lows else 0.0
 
-    def ssr_active_today(self, symbols: List[str], us_open_local: datetime) -> Dict[str, bool]:
+    def ssr_active_today(
+        self, symbols: List[str], us_open_local: datetime
+    ) -> Dict[str, bool]:
         # Determine SSR based on 10% decline from prior close at any time during the day
         prev_date = (us_open_local.date() - timedelta(days=1)).isoformat()
         open_utc = us_open_local.astimezone(UTC)
-        close_utc = us_open_local.replace(hour=16, minute=0, second=0, microsecond=0).astimezone(UTC)
+        close_utc = us_open_local.replace(
+            hour=16, minute=0, second=0, microsecond=0
+        ).astimezone(UTC)
 
         out: Dict[str, bool] = {}
         with ThreadPoolExecutor(max_workers=min(12, max(1, len(symbols)))) as ex:
@@ -61,7 +79,9 @@ class SSRClient:
                     out[sym] = False
         return out
 
-    def _check_one(self, symbol: str, prev_date_iso: str, open_utc: datetime, close_utc: datetime) -> bool:
+    def _check_one(
+        self, symbol: str, prev_date_iso: str, open_utc: datetime, close_utc: datetime
+    ) -> bool:
         prev_close = self._prev_close(symbol, prev_date_iso)
         if prev_close <= 0:
             return False

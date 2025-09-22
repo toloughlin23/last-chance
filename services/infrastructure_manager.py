@@ -74,16 +74,28 @@ class InstitutionalInfrastructureManager:
         # ENHANCED: Thread pool configurations for different workloads
         self.thread_pools = {
             "data_fetching": ThreadPoolConfig(
-                max_workers=8, thread_name_prefix="data-fetch", priority=1, reserved_memory_mb=512
+                max_workers=8,
+                thread_name_prefix="data-fetch",
+                priority=1,
+                reserved_memory_mb=512,
             ),
             "algorithm_processing": ThreadPoolConfig(
-                max_workers=10, thread_name_prefix="algo-proc", priority=2, reserved_memory_mb=1024
+                max_workers=10,
+                thread_name_prefix="algo-proc",
+                priority=2,
+                reserved_memory_mb=1024,
             ),
             "news_sentiment": ThreadPoolConfig(
-                max_workers=4, thread_name_prefix="news-sent", priority=3, reserved_memory_mb=256
+                max_workers=4,
+                thread_name_prefix="news-sent",
+                priority=3,
+                reserved_memory_mb=256,
             ),
             "execution_bridge": ThreadPoolConfig(
-                max_workers=2, thread_name_prefix="exec-bridge", priority=4, reserved_memory_mb=128
+                max_workers=2,
+                thread_name_prefix="exec-bridge",
+                priority=4,
+                reserved_memory_mb=128,
             ),
         }
 
@@ -140,9 +152,12 @@ class InstitutionalInfrastructureManager:
             if pool_name not in self.active_pools:
                 config = self.thread_pools[pool_name]
                 self.active_pools[pool_name] = ThreadPoolExecutor(
-                    max_workers=config.max_workers, thread_name_prefix=config.thread_name_prefix
+                    max_workers=config.max_workers,
+                    thread_name_prefix=config.thread_name_prefix,
                 )
-                print(f"✅ Created thread pool: {pool_name} ({config.max_workers} workers)")
+                print(
+                    f"✅ Created thread pool: {pool_name} ({config.max_workers} workers)"
+                )
 
             return self.active_pools[pool_name]
 
@@ -155,7 +170,10 @@ class InstitutionalInfrastructureManager:
 
         # High-performance in-memory caching
         with self.cache_lock:
-            self.memory_cache[key] = {"data": serialized_data, "expires": time.time() + ttl}
+            self.memory_cache[key] = {
+                "data": serialized_data,
+                "expires": time.time() + ttl,
+            }
             return True
 
     def get_cached_data(self, key: str) -> Optional[Any]:
@@ -179,7 +197,9 @@ class InstitutionalInfrastructureManager:
                 return None
 
     def execute_parallel_tasks(
-        self, tasks: List[Tuple[str, Callable, tuple]], pool_name: str = "algorithm_processing"
+        self,
+        tasks: List[Tuple[str, Callable, tuple]],
+        pool_name: str = "algorithm_processing",
     ) -> List[Any]:
         """
         ENHANCED: Execute tasks in parallel with resource monitoring
@@ -201,7 +221,8 @@ class InstitutionalInfrastructureManager:
         try:
             # Submit tasks
             future_to_task = {
-                thread_pool.submit(task_func, *args): (task_id, task_func, args) for task_id, task_func, args in tasks
+                thread_pool.submit(task_func, *args): (task_id, task_func, args)
+                for task_id, task_func, args in tasks
             }
 
             # Collect results as they complete
@@ -254,7 +275,9 @@ class InstitutionalInfrastructureManager:
             return
 
         self.monitoring_active = True
-        self.monitoring_thread = threading.Thread(target=self.resource_monitor.monitor_resources, daemon=True)
+        self.monitoring_thread = threading.Thread(
+            target=self.resource_monitor.monitor_resources, daemon=True
+        )
         self.monitoring_thread.start()
         print("✅ Resource monitoring started")
 
@@ -275,12 +298,18 @@ class InstitutionalInfrastructureManager:
         cpu_percent = psutil.cpu_percent(interval=0.1)
 
         # Calculate cache hit rate
-        total_cache_requests = self.performance_metrics["cache_hits"] + self.performance_metrics["cache_misses"]
-        cache_hit_rate = self.performance_metrics["cache_hits"] / max(1, total_cache_requests)
+        total_cache_requests = (
+            self.performance_metrics["cache_hits"]
+            + self.performance_metrics["cache_misses"]
+        )
+        cache_hit_rate = self.performance_metrics["cache_hits"] / max(
+            1, total_cache_requests
+        )
 
         # Count active threads
         active_threads = sum(
-            pool._threads.__len__() if hasattr(pool, "_threads") else 0 for pool in self.active_pools.values()
+            pool._threads.__len__() if hasattr(pool, "_threads") else 0
+            for pool in self.active_pools.values()
         )
 
         return ResourceStats(
@@ -368,8 +397,15 @@ class InstitutionalInfrastructureManager:
                 for name, config in self.thread_pools.items()
             },
             # Maintain backwards compatibility for tests referencing 'redis_status'
-            "redis_status": {"enabled": False, "note": "Redis removed – using high-performance in-memory cache"},
-            "cache_status": {"type": "in-memory", "enabled": True, "entries": len(self.memory_cache)},
+            "redis_status": {
+                "enabled": False,
+                "note": "Redis removed – using high-performance in-memory cache",
+            },
+            "cache_status": {
+                "type": "in-memory",
+                "enabled": True,
+                "entries": len(self.memory_cache),
+            },
         }
 
 
@@ -392,14 +428,20 @@ class ResourceMonitor:
                 stats = self.infrastructure_manager.get_resource_stats()
 
                 # Store history
-                self.infrastructure_manager.performance_metrics["memory_usage_history"].append(stats.memory_percent)
-                self.infrastructure_manager.performance_metrics["cpu_usage_history"].append(stats.cpu_percent)
+                self.infrastructure_manager.performance_metrics[
+                    "memory_usage_history"
+                ].append(stats.memory_percent)
+                self.infrastructure_manager.performance_metrics[
+                    "cpu_usage_history"
+                ].append(stats.cpu_percent)
 
                 # Trim history
                 for key in ["memory_usage_history", "cpu_usage_history"]:
                     history = self.infrastructure_manager.performance_metrics[key]
                     if len(history) > self.max_history:
-                        self.infrastructure_manager.performance_metrics[key] = history[-self.max_history :]
+                        self.infrastructure_manager.performance_metrics[key] = history[
+                            -self.max_history :
+                        ]
 
                 # Auto-optimize if needed
                 if stats.memory_percent > 85 or stats.cpu_percent > 90:

@@ -20,7 +20,10 @@ def test_core_imports():
 
     tests = [
         ("CORE_SUPER_BANDITS.optimized_linucb_institutional", "LinUCB Algorithm"),
-        ("CORE_SUPER_BANDITS.optimized_neural_bandit_institutional", "Neural Bandit Algorithm"),
+        (
+            "CORE_SUPER_BANDITS.optimized_neural_bandit_institutional",
+            "Neural Bandit Algorithm",
+        ),
         ("CORE_SUPER_BANDITS.optimized_ucbv_institutional", "UCBV Algorithm"),
         ("services.advanced_news_sentiment", "Advanced News Sentiment"),
         ("services.infrastructure_manager", "Infrastructure Manager"),
@@ -59,7 +62,9 @@ def test_algorithm_initialization():
 
     # Test LinUCB
     try:
-        from CORE_SUPER_BANDITS.optimized_linucb_institutional import OptimizedInstitutionalLinUCB
+        from CORE_SUPER_BANDITS.optimized_linucb_institutional import (
+            OptimizedInstitutionalLinUCB,
+        )
 
         OptimizedInstitutionalLinUCB()
         print("  ✅ LinUCB Algorithm - Initialized")
@@ -70,7 +75,9 @@ def test_algorithm_initialization():
 
     # Test Neural Bandit
     try:
-        from CORE_SUPER_BANDITS.optimized_neural_bandit_institutional import OptimizedInstitutionalNeuralBandit
+        from CORE_SUPER_BANDITS.optimized_neural_bandit_institutional import (
+            OptimizedInstitutionalNeuralBandit,
+        )
 
         OptimizedInstitutionalNeuralBandit()
         print("  ✅ Neural Bandit Algorithm - Initialized")
@@ -81,7 +88,9 @@ def test_algorithm_initialization():
 
     # Test UCBV
     try:
-        from CORE_SUPER_BANDITS.optimized_ucbv_institutional import OptimizedInstitutionalUCBV
+        from CORE_SUPER_BANDITS.optimized_ucbv_institutional import (
+            OptimizedInstitutionalUCBV,
+        )
 
         OptimizedInstitutionalUCBV()
         print("  ✅ UCBV Algorithm - Initialized")
@@ -215,7 +224,13 @@ def run_individual_test_files():
                     test_code = f.read()
 
                 # Create a safe execution environment
-                exec_globals = {"__name__": "__main__", "__file__": str(test_path), "sys": sys, "os": os, "Path": Path}
+                exec_globals = {
+                    "__name__": "__main__",
+                    "__file__": str(test_path),
+                    "sys": sys,
+                    "os": os,
+                    "Path": Path,
+                }
 
                 # Add project root to sys.path in the execution environment
                 exec_globals["sys"].path.insert(0, str(project_root))

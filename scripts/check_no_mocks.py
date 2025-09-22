@@ -6,7 +6,16 @@ from pathlib import Path
 from typing import Iterable, List, Tuple
 
 # Files and directories to ignore entirely
-IGNORE_DIRS = {".git", ".venv", "venv", "node_modules", ".cursor", ".idea", ".vscode", "__pycache__"}
+IGNORE_DIRS = {
+    ".git",
+    ".venv",
+    "venv",
+    "node_modules",
+    ".cursor",
+    ".idea",
+    ".vscode",
+    "__pycache__",
+}
 # File extensions to scan (keep focused to reduce false positives)
 SCAN_EXTENSIONS = {
     ".py",
@@ -35,7 +44,10 @@ BANNED_PATTERNS: List[Tuple[str, re.Pattern]] = [
     ("fake data", re.compile(r"\bfake\s+data\b", re.IGNORECASE)),
     (
         "placeholder token",
-        re.compile(r"\b(place\s*holder|placeholder|REPLACE_ME|CHANGEME|YOUR_API_KEY)\b", re.IGNORECASE),
+        re.compile(
+            r"\b(place\s*holder|placeholder|REPLACE_ME|CHANGEME|YOUR_API_KEY)\b",
+            re.IGNORECASE,
+        ),
     ),
     ("stubbed", re.compile(r"\bstubbed?\b", re.IGNORECASE)),
     ("example.com/api", re.compile(r"example\.com/(api|v\d+/?)", re.IGNORECASE)),
@@ -52,7 +64,9 @@ def should_scan(file_path: Path) -> bool:
     if any(part in IGNORE_DIRS for part in file_path.parts):
         return False
     # Skip provider env directories' .env files
-    if file_path.name == ".env" and any(part in PROVIDER_ENV_DIRS for part in file_path.parts):
+    if file_path.name == ".env" and any(
+        part in PROVIDER_ENV_DIRS for part in file_path.parts
+    ):
         return False
     # Skip any file explicitly named .env anywhere
     if file_path.name == ".env":
@@ -101,7 +115,12 @@ def main() -> int:
         print("Found contamination policy violations:", file=sys.stderr)
         for v in all_violations:
             print(v, file=sys.stderr)
-        print("\nTo allow a specific occurrence, append '" + ALLOW_MARKER + "' to the line.", file=sys.stderr)
+        print(
+            "\nTo allow a specific occurrence, append '"
+            + ALLOW_MARKER
+            + "' to the line.",
+            file=sys.stderr,
+        )
         return 1
 
     print("No contamination patterns detected.")

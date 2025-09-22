@@ -56,7 +56,9 @@ class Hygiene:
         # SSR (current day −10% from prior close)
         if ssr_exclude and filtered:
             now_us = self.tz.get_us_market_time()
-            ssr_map = self.ssr.ssr_active_today(filtered, now_us.replace(hour=9, minute=30, second=0, microsecond=0))
+            ssr_map = self.ssr.ssr_active_today(
+                filtered, now_us.replace(hour=9, minute=30, second=0, microsecond=0)
+            )
             filtered = [s for s in filtered if not ssr_map.get(s, False)]
 
         return filtered

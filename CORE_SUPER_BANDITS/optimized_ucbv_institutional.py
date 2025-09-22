@@ -95,7 +95,9 @@ class OptimizedInstitutionalUCBV:
         print("✅ GENUINE Institutional UCB-V initialized")
         print("🔒 NO synthetic datasets will be accepted")
         print(f"📊 Features: {self.feature_dimension}")
-        print(f"📈 Confidence: {self.min_confidence*100:.0f}-{self.max_confidence*100:.0f}%")
+        print(
+            f"📈 Confidence: {self.min_confidence*100:.0f}-{self.max_confidence*100:.0f}%"
+        )
         print(f"🎯 Actions: {len(self.actions)} trading strategies")
 
     def _to_float(self, value: Any) -> float:
@@ -144,7 +146,9 @@ class OptimizedInstitutionalUCBV:
         self.current_price = price
 
         # Calculate VARIANCE-FOCUSED indicators
-        price_change = ((price - prev_close) / prev_close) * 100 if prev_close > 0 else 0
+        price_change = (
+            ((price - prev_close) / prev_close) * 100 if prev_close > 0 else 0
+        )
         price_range = high - low
         price_position = (price - low) / price_range if price_range > 0 else 0.5
         price_range / price if price > 0 else 0.02
@@ -178,7 +182,11 @@ class OptimizedInstitutionalUCBV:
             np.sign(price_change) * math.log(abs(price_change) + 1),  # Log change
             # Volume variance features (3)
             liquidity_proxy,  # Liquidity measure
-            1.0 if volume > np.percentile([10000, 20000, 30000, volume], 75) else -0.5,  # Volume outlier
+            (
+                1.0
+                if volume > np.percentile([10000, 20000, 30000, volume], 75)
+                else -0.5
+            ),  # Volume outlier
             min(2.0, volume / 15000) - 1,  # Normalized volume
             # Market microstructure (3)
             spread_estimate * 100,  # Spread in basis points
@@ -210,7 +218,9 @@ class OptimizedInstitutionalUCBV:
 
         # Update unrealized P&L
         if self.current_position != 0 and self.current_price > 0:
-            self.unrealized_pnl = (self.current_price - self.average_entry_price) * self.current_position
+            self.unrealized_pnl = (
+                self.current_price - self.average_entry_price
+            ) * self.current_position
 
         # UCB-V algorithm with variance awareness
         action_scores = {}
@@ -229,7 +239,9 @@ class OptimizedInstitutionalUCBV:
 
                 # UCB-V formula
                 n_int = self._to_int(n)
-                exploration_bonus = math.sqrt(2 * math.log(max(self.total_decisions, 1)) / max(n_int, 1))
+                exploration_bonus = math.sqrt(
+                    2 * math.log(max(self.total_decisions, 1)) / max(n_int, 1)
+                )
                 if self.personality:
                     exploration_bonus *= 1.0 + self.personality.exploration_bias()
                 variance_float = self._to_float(variance)
@@ -241,7 +253,9 @@ class OptimizedInstitutionalUCBV:
                 ucb_score = mean_float + exploration_bonus + variance_bonus
 
             # Apply trading logic
-            adjusted_score = self._apply_ucbv_trading_logic(action, ucb_score, features, real_polygon_data, arm)
+            adjusted_score = self._apply_ucbv_trading_logic(
+                action, ucb_score, features, real_polygon_data, arm
+            )
 
             action_scores[action] = adjusted_score
 
@@ -252,9 +266,13 @@ class OptimizedInstitutionalUCBV:
             if unexplored:
                 best_action = unexplored[0]
             else:
-                best_action = max(action_scores, key=cast(Callable[[str], float], action_scores.get))
+                best_action = max(
+                    action_scores, key=cast(Callable[[str], float], action_scores.get)
+                )
         else:
-            best_action = max(action_scores, key=cast(Callable[[str], float], action_scores.get))
+            best_action = max(
+                action_scores, key=cast(Callable[[str], float], action_scores.get)
+            )
 
         # Calculate confidence
         confidence = self._calculate_ucbv_confidence(best_action, features)
@@ -262,7 +280,12 @@ class OptimizedInstitutionalUCBV:
         return best_action, confidence
 
     def _apply_ucbv_trading_logic(
-        self, action: str, base_score: float, features: np.ndarray, market_data: Dict, arm: Dict
+        self,
+        action: str,
+        base_score: float,
+        features: np.ndarray,
+        market_data: Dict,
+        arm: Dict,
     ) -> float:
         """Apply UCB-V specific trading logic with variance awareness"""
         score = base_score if base_score != float("inf") else 1000.0
@@ -354,7 +377,11 @@ class OptimizedInstitutionalUCBV:
 
         elif action == "scalp_short":
             # Short scalps at resistance
-            if not has_position and resistance_proximity < -0.8 and price_variance < 0.4:
+            if (
+                not has_position
+                and resistance_proximity < -0.8
+                and price_variance < 0.4
+            ):
                 score *= 1.1
             else:
                 score *= 0.4
@@ -385,13 +412,17 @@ class OptimizedInstitutionalUCBV:
             mean_reward = self._to_float(arm["mean_reward"])
             performance_bonus = max(0, mean_reward) * 0.3
 
-            base_confidence = 0.4 + 0.3 * experience_factor * variance_penalty + performance_bonus
+            base_confidence = (
+                0.4 + 0.3 * experience_factor * variance_penalty + performance_bonus
+            )
 
         # Market condition confidence
         price_variance = abs(float(features[2]))
         range_ratio_norm = float(max(0.0, features[3]))  # already normalized (/0.03)
         # Variance proxy blends price-vs-VWAP and intraday range
-        variance_proxy = min(1.0, 0.6 * price_variance + 0.4 * min(1.0, range_ratio_norm))
+        variance_proxy = min(
+            1.0, 0.6 * price_variance + 0.4 * min(1.0, range_ratio_norm)
+        )
         spread = float(features[8])
 
         market_confidence = 1.0
@@ -399,7 +430,9 @@ class OptimizedInstitutionalUCBV:
         if variance_proxy < 0.2:
             market_confidence *= 1.18  # Calm market (slightly stronger lift)
         elif variance_proxy > 0.6:
-            market_confidence *= 0.70  # High variance market (slightly stronger reduction)
+            market_confidence *= (
+                0.70  # High variance market (slightly stronger reduction)
+            )
         if spread > 0.01:
             market_confidence *= 0.9  # Wide spread
 
@@ -425,7 +458,9 @@ class OptimizedInstitutionalUCBV:
         confidence *= self.confidence_boost
         variance_level = variance_proxy
         # Dampen confidence in turbulent markets; slightly lift in calm markets
-        confidence = confidence * (1.0 - 0.25 * variance_level) + 0.05 * max(0.0, 0.3 - variance_level)
+        confidence = confidence * (1.0 - 0.25 * variance_level) + 0.05 * max(
+            0.0, 0.3 - variance_level
+        )
 
         # Deterministic personality influence BEFORE mapping to bounds
         # Multiplies raw confidence by ±20% based on bias centered at 0.5
@@ -461,7 +496,13 @@ class OptimizedInstitutionalUCBV:
 
         return confidence
 
-    def update_with_real_pnl(self, action: str, features: np.ndarray, real_pnl: float, alpaca_data: Dict[str, Any]):
+    def update_with_real_pnl(
+        self,
+        action: str,
+        features: np.ndarray,
+        real_pnl: float,
+        alpaca_data: Dict[str, Any],
+    ):
         """
         Update UCB-V with REAL P&L and variance tracking
         NO simulated rewards accepted
@@ -516,7 +557,10 @@ class OptimizedInstitutionalUCBV:
 
         # Update position if provided
         if "new_position" in alpaca_data:
-            self.update_position(alpaca_data["new_position"], alpaca_data.get("avg_price", self.current_price))
+            self.update_position(
+                alpaca_data["new_position"],
+                alpaca_data.get("avg_price", self.current_price),
+            )
 
         print(
             f"✅ UCB-V updated {action}: P&L=${real_pnl:.2f}, reward={reward:.3f}, "
@@ -533,7 +577,13 @@ class OptimizedInstitutionalUCBV:
             self.unrealized_pnl = 0.0
 
         # Track position history
-        self.position_history.append({"position": new_position, "price": avg_price, "timestamp": float(time.time())})
+        self.position_history.append(
+            {
+                "position": new_position,
+                "price": avg_price,
+                "timestamp": float(time.time()),
+            }
+        )
 
         if len(self.position_history) > 100:
             self.position_history.pop(0)
@@ -543,8 +593,12 @@ class OptimizedInstitutionalUCBV:
     def get_performance_stats(self) -> Dict[str, Any]:
         """Get REAL performance statistics with variance info"""
 
-        total_trades = int(sum(self._to_int(arm["pulls"]) for arm in self.arms.values()))
-        total_pnl = float(sum(self._to_float(arm["total_pnl"]) for arm in self.arms.values()))
+        total_trades = int(
+            sum(self._to_int(arm["pulls"]) for arm in self.arms.values())
+        )
+        total_pnl = float(
+            sum(self._to_float(arm["total_pnl"]) for arm in self.arms.values())
+        )
 
         action_stats = {}
         for action, arm in self.arms.items():
@@ -639,7 +693,9 @@ class OptimizedInstitutionalUCBV:
             features = context_or_enriched_data
             if len(features) != self.feature_dimension:
                 if len(features) < self.feature_dimension:
-                    features = np.pad(features, (0, self.feature_dimension - len(features)))
+                    features = np.pad(
+                        features, (0, self.feature_dimension - len(features))
+                    )
                 else:
                     features = features[: self.feature_dimension]
 
@@ -701,12 +757,18 @@ class OptimizedInstitutionalUCBV:
             else:
                 # Use deterministic small features (no randomness)
                 features = np.array(
-                    [math.sin((i + 1) * 0.37) * 0.1 for i in range(self.feature_dimension)], dtype=float
+                    [
+                        math.sin((i + 1) * 0.37) * 0.1
+                        for i in range(self.feature_dimension)
+                    ],
+                    dtype=float,
                 )
 
             # Use existing confidence calculation method (ALWAYS MAKE BETTER - don't duplicate)
             # mypy: features is an ndarray at this point
-            base_confidence = float(self._calculate_ucbv_confidence(arm_id, cast(np.ndarray, features)))
+            base_confidence = float(
+                self._calculate_ucbv_confidence(arm_id, cast(np.ndarray, features))
+            )
             print(f"🔍 UCB-V: base_confidence={base_confidence}")
 
             # ULTRA-ENHANCED: Create MAXIMUM variation for >15% overall variance
@@ -714,32 +776,46 @@ class OptimizedInstitutionalUCBV:
             if features is not None and len(features) >= 3:
                 # Create completely different base confidence using feature characteristics
                 feature_base = float(
-                    abs(features[0]) * 20.0 + abs(features[1]) * 15.0 + abs(features[2]) * 10.0
+                    abs(features[0]) * 20.0
+                    + abs(features[1]) * 15.0
+                    + abs(features[2]) * 10.0
                 )  # MASSIVE multipliers
-                base_confidence = float(0.1 + min(0.8, feature_base))  # 0.1 to 0.9 range
+                base_confidence = float(
+                    0.1 + min(0.8, feature_base)
+                )  # 0.1 to 0.9 range
 
             # Add massive feature-based variation
-            feature_variation = float(np.std(features) * 2.0)  # DOUBLED for maximum spread
+            feature_variation = float(
+                np.std(features) * 2.0
+            )  # DOUBLED for maximum spread
 
             # Add massive personality variation
             personality_variation = 0.0
             if self.personality:
-                personality_variation = (self.personality.confidence_bias() - 0.5) * 2.0  # DOUBLED for maximum spread
+                personality_variation = (
+                    self.personality.confidence_bias() - 0.5
+                ) * 2.0  # DOUBLED for maximum spread
 
             # Add massive time-based variation for uniqueness
             import time
 
-            time_variation = float((int(time.time() * 1000) % 1000) / 1000.0)  # 0.0 to 1.0 range
+            time_variation = float(
+                (int(time.time() * 1000) % 1000) / 1000.0
+            )  # 0.0 to 1.0 range
 
             # Add massive arm-specific variation
             arm_variation = float((hash(arm_id) % 1000) / 1000.0)  # 0.0 to 1.0 range
 
             # Add feature sum variation for even more diversity
-            feature_sum_variation = float(np.sum(features[3:6]) * 0.1) if len(features) > 5 else 0.0
+            feature_sum_variation = (
+                float(np.sum(features[3:6]) * 0.1) if len(features) > 5 else 0.0
+            )
 
             # Add feature range variation for maximum diversity
             feature_range_variation = (
-                float((np.max(features[6:9]) - np.min(features[6:9])) * 0.5) if len(features) > 8 else 0.0
+                float((np.max(features[6:9]) - np.min(features[6:9])) * 0.5)
+                if len(features) > 8
+                else 0.0
             )
 
             confidence = float(
@@ -751,7 +827,9 @@ class OptimizedInstitutionalUCBV:
                 + feature_sum_variation
                 + feature_range_variation
             )
-            confidence = float(max(0.1, min(0.9, confidence)))  # Keep in reasonable range
+            confidence = float(
+                max(0.1, min(0.9, confidence))
+            )  # Keep in reasonable range
             print(
                 f"🔍 UCB-V: feature_var={feature_variation:.3f}, personality_var={personality_variation:.3f}, time_var={time_variation:.3f}, arm_var={arm_variation:.3f}, final={confidence:.3f}"
             )
@@ -768,25 +846,53 @@ class OptimizedInstitutionalUCBV:
             if isinstance(enriched_data, np.ndarray):
                 features = enriched_data
             else:
-                features = np.array([0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 0.1, 0.2, 0.3, 0.4, 0.5])
+                features = np.array(
+                    [
+                        0.1,
+                        0.2,
+                        0.3,
+                        0.4,
+                        0.5,
+                        0.6,
+                        0.7,
+                        0.8,
+                        0.9,
+                        1.0,
+                        0.1,
+                        0.2,
+                        0.3,
+                        0.4,
+                        0.5,
+                    ]
+                )
 
             # Generate varied confidence based on features
             feature_variation = float(np.std(features) * 0.25)
             personality_variation = 0.0
             if self.personality:
-                personality_variation = (self.personality.confidence_bias() - 0.5) * 0.15
+                personality_variation = (
+                    self.personality.confidence_bias() - 0.5
+                ) * 0.15
 
             import time
 
             time_variation = float((int(time.time() * 1000) % 1000) / 10000.0)
             arm_variation = float((hash(arm_id) % 1000) / 10000.0)
 
-            confidence = float(0.35 + feature_variation + personality_variation + time_variation + arm_variation)
+            confidence = float(
+                0.35
+                + feature_variation
+                + personality_variation
+                + time_variation
+                + arm_variation
+            )
             confidence = float(max(0.15, min(0.75, confidence)))
             print(f"🔍 UCB-V: FALLBACK confidence={confidence:.3f}")
             return confidence
 
-    def _calculate_genuine_value_range(self, min_value: float, max_value: float) -> float:
+    def _calculate_genuine_value_range(
+        self, min_value: float, max_value: float
+    ) -> float:
         """Deterministic bounded fallback without randomness (used only when data missing)."""
         phase = (math.sin(time.time() * 0.69) + 1.0) * 0.5
         return min_value + phase * (max_value - min_value)
@@ -820,14 +926,20 @@ class OptimizedInstitutionalUCBV:
             "status": "OK",  # Required for Polygon validation
             "results": {  # Required for Polygon validation
                 "p": getattr(enriched_data.market_data, "price", 100.0),  # price
-                "s": int(getattr(enriched_data.market_data, "volume", 1000000)),  # size/volume
+                "s": int(
+                    getattr(enriched_data.market_data, "volume", 1000000)
+                ),  # size/volume
                 "t": int(time.time() * 1000),  # timestamp in milliseconds
                 "c": [1, 2],  # conditions (authentic Polygon field)
                 "o": getattr(enriched_data.market_data, "price", 100.0) * 0.999,  # open
                 "h": getattr(enriched_data.market_data, "price", 100.0) * 1.001,  # high
                 "l": getattr(enriched_data.market_data, "price", 100.0) * 0.998,  # low
-                "v": int(getattr(enriched_data.market_data, "volume", 1000000)),  # volume
-                "vw": getattr(enriched_data.market_data, "price", 100.0),  # volume weighted average
+                "v": int(
+                    getattr(enriched_data.market_data, "volume", 1000000)
+                ),  # volume
+                "vw": getattr(
+                    enriched_data.market_data, "price", 100.0
+                ),  # volume weighted average
             },
             "symbol": "AAPL",  # Authentic symbol
             "sentiment": enriched_data.sentiment_analysis.overall_sentiment,
@@ -863,14 +975,23 @@ class OptimizedInstitutionalUCBV:
                 enriched_data.market_data, "previous_close"
             ):
                 price_momentum = (
-                    enriched_data.market_data.close_price - enriched_data.market_data.previous_close
+                    enriched_data.market_data.close_price
+                    - enriched_data.market_data.previous_close
                 ) / enriched_data.market_data.previous_close
             else:
                 # Use feature-based deterministic value
                 price_momentum = self._calculate_genuine_value_range(-0.02, 0.02)
 
-        volatility = getattr(enriched_data.market_data, "volatility", self._calculate_genuine_value_range(0.01, 0.05))
-        volume_ratio = getattr(enriched_data.market_data, "volume_ratio", self._calculate_genuine_value_range(0.6, 1.8))
+        volatility = getattr(
+            enriched_data.market_data,
+            "volatility",
+            self._calculate_genuine_value_range(0.01, 0.05),
+        )
+        volume_ratio = getattr(
+            enriched_data.market_data,
+            "volume_ratio",
+            self._calculate_genuine_value_range(0.6, 1.8),
+        )
 
         # UCB-V specific feature engineering (15 dimensions)
         features = np.array(
@@ -886,7 +1007,8 @@ class OptimizedInstitutionalUCBV:
                 volume_ratio,  # 8: Volume analysis
                 sentiment * news_confidence,  # 9: Sentiment-confidence interaction
                 market_impact * data_quality,  # 10: Impact-quality interaction
-                sentiment_strength * (1.0 - news_confidence),  # 11: Uncertainty indicator
+                sentiment_strength
+                * (1.0 - news_confidence),  # 11: Uncertainty indicator
                 math.log(1 + news_volume),  # 12: Log news volume
                 volatility * self.zeta,  # 13: UCB-V variance factor
                 sentiment_strength * volatility,  # 14: Risk-sentiment interaction
@@ -895,11 +1017,15 @@ class OptimizedInstitutionalUCBV:
 
         # Ensure proper dimensionality (use explicit validation for security/compliance)
         if len(features) != self.feature_dimension:
-            raise ValueError(f"Feature mismatch: got {len(features)} features, expected {self.feature_dimension}")
+            raise ValueError(
+                f"Feature mismatch: got {len(features)} features, expected {self.feature_dimension}"
+            )
 
         return features
 
-    def get_confidence_for_context(self, arm_id: str, context_data, features: Optional[np.ndarray] = None) -> float:
+    def get_confidence_for_context(
+        self, arm_id: str, context_data, features: Optional[np.ndarray] = None
+    ) -> float:
         """Get confidence for specific arm and context - 100% GENUINE"""
         try:
             print(
@@ -922,16 +1048,24 @@ class OptimizedInstitutionalUCBV:
 
             # Calculate base confidence - create distinct range for UCB-V
             if n == 0:
-                base_confidence = 0.2  # Lower base confidence for UCB-V to create separation
+                base_confidence = (
+                    0.2  # Lower base confidence for UCB-V to create separation
+                )
             else:
                 # Calculate UCB-V confidence based on variance and exploration
                 variance = self._to_float(arm["variance"])
-                exploration_term = math.sqrt(2 * math.log(max(self.total_decisions, 1)) / n)
-                variance_term = variance * math.sqrt(self.zeta * math.log(max(self.total_decisions, 1)) / n)
+                exploration_term = math.sqrt(
+                    2 * math.log(max(self.total_decisions, 1)) / n
+                )
+                variance_term = variance * math.sqrt(
+                    self.zeta * math.log(max(self.total_decisions, 1)) / n
+                )
 
                 # Convert to confidence score [0,1] - keep UCB-V in lower range
                 total_uncertainty = exploration_term + variance_term
-                base_confidence = max(0.1, min(0.6, 1.0 / (1.0 + total_uncertainty)))  # Cap at 0.6 for UCB-V
+                base_confidence = max(
+                    0.1, min(0.6, 1.0 / (1.0 + total_uncertainty))
+                )  # Cap at 0.6 for UCB-V
 
             print(f"🔍 UCB-V base_confidence: {base_confidence}")
 
@@ -950,25 +1084,41 @@ class OptimizedInstitutionalUCBV:
                 # UCB-V-specific confidence based on variance and risk characteristics
                 feature_variance = np.var(features_arr[:3])
                 feature_skewness = (
-                    np.mean((features_arr[:3] - np.mean(features_arr[:3])) ** 3) / (np.std(features_arr[:3]) ** 3)
+                    np.mean((features_arr[:3] - np.mean(features_arr[:3])) ** 3)
+                    / (np.std(features_arr[:3]) ** 3)
                     if np.std(features_arr[:3]) > 0
                     else 0.0
                 )
                 feature_risk = np.max(features_arr[:3]) - np.min(features_arr[:3])
 
                 # UCB-V responds to variance, risk, and uncertainty characteristics
-                base_confidence = 0.15 + (feature_variance * 0.3) + (abs(feature_skewness) * 0.2) + (feature_risk * 0.1)
+                base_confidence = (
+                    0.15
+                    + (feature_variance * 0.3)
+                    + (abs(feature_skewness) * 0.2)
+                    + (feature_risk * 0.1)
+                )
                 print(f"🔍 UCB-V variance-based base_confidence: {base_confidence}")
 
             # GENUINE UCB-V ALGORITHMIC DIVERSITY: Leverage variance-aware learning characteristics
             # UCB-V naturally responds to variance, risk assessment, and uncertainty quantification
 
             # 1. VARIANCE-AWARE LEARNING: UCB-V's core strength
-            feature_variance = np.var(features_arr) if features_arr is not None and len(features_arr) > 0 else 0.0
-            variance_confidence = min(0.15, feature_variance * 0.5)  # Higher variance = more uncertainty
+            feature_variance = (
+                np.var(features_arr)
+                if features_arr is not None and len(features_arr) > 0
+                else 0.0
+            )
+            variance_confidence = min(
+                0.15, feature_variance * 0.5
+            )  # Higher variance = more uncertainty
 
             # 2. RISK ASSESSMENT: UCB-V's risk evaluation component
-            feature_std = np.std(features_arr) if features_arr is not None and len(features_arr) > 0 else 0.0
+            feature_std = (
+                np.std(features_arr)
+                if features_arr is not None and len(features_arr) > 0
+                else 0.0
+            )
             risk_level = min(0.10, feature_std * 0.3)  # Higher std = higher risk
 
             # 3. UNCERTAINTY QUANTIFICATION: UCB-V's uncertainty measurement
@@ -977,28 +1127,50 @@ class OptimizedInstitutionalUCBV:
                 if features_arr is not None and len(features_arr) > 0
                 else 0.0
             )
-            uncertainty_level = min(0.08, feature_range * 0.2)  # Larger range = more uncertainty
+            uncertainty_level = min(
+                0.08, feature_range * 0.2
+            )  # Larger range = more uncertainty
 
             # 4. DISTRIBUTION ASYMMETRY: UCB-V's skewness sensitivity
             feature_skewness = (
-                np.mean((features_arr - np.mean(features_arr)) ** 3) / (np.std(features_arr) ** 3)
-                if features_arr is not None and len(features_arr) > 0 and np.std(features_arr) > 0
+                np.mean((features_arr - np.mean(features_arr)) ** 3)
+                / (np.std(features_arr) ** 3)
+                if features_arr is not None
+                and len(features_arr) > 0
+                and np.std(features_arr) > 0
                 else 0.0
             )
-            asymmetry_impact = min(0.05, abs(feature_skewness) * 0.1)  # Skewness affects risk assessment
+            asymmetry_impact = min(
+                0.05, abs(feature_skewness) * 0.1
+            )  # Skewness affects risk assessment
 
             # 5. TAIL RISK: UCB-V's kurtosis sensitivity
             feature_kurtosis = (
-                np.mean((features_arr - np.mean(features_arr)) ** 4) / (np.std(features_arr) ** 4)
-                if features_arr is not None and len(features_arr) > 0 and np.std(features_arr) > 0
+                np.mean((features_arr - np.mean(features_arr)) ** 4)
+                / (np.std(features_arr) ** 4)
+                if features_arr is not None
+                and len(features_arr) > 0
+                and np.std(features_arr) > 0
                 else 0.0
             )
-            tail_risk = min(0.05, abs(feature_kurtosis) * 0.05)  # Kurtosis affects tail risk
+            tail_risk = min(
+                0.05, abs(feature_kurtosis) * 0.05
+            )  # Kurtosis affects tail risk
 
             # 6. FEATURE STABILITY: UCB-V's stability assessment
-            feature_median = np.median(features_arr) if features_arr is not None and len(features_arr) > 0 else 0.0
-            feature_mean = np.mean(features_arr) if features_arr is not None and len(features_arr) > 0 else 0.0
-            stability_factor = min(0.07, abs(feature_median - feature_mean) * 0.2)  # Median vs mean stability
+            feature_median = (
+                np.median(features_arr)
+                if features_arr is not None and len(features_arr) > 0
+                else 0.0
+            )
+            feature_mean = (
+                np.mean(features_arr)
+                if features_arr is not None and len(features_arr) > 0
+                else 0.0
+            )
+            stability_factor = min(
+                0.07, abs(feature_median - feature_mean) * 0.2
+            )  # Median vs mean stability
 
             # GENUINE UCB-V CONFIDENCE CALCULATION
             # Base confidence from variance-aware characteristics
@@ -1040,14 +1212,20 @@ class OptimizedInstitutionalUCBV:
             if feature_std > 0:
                 # Deterministic variation based on feature standard deviation
                 thompson_sample = float(feature_std * 50.0)  # Deterministic scaling
-                risk_penalty = min(0.3, abs(thompson_sample) * 0.1)  # 0.0 to 0.3 variation
+                risk_penalty = min(
+                    0.3, abs(thompson_sample) * 0.1
+                )  # 0.0 to 0.3 variation
             else:
                 # Fallback: Use feature magnitude for variation
                 feature_magnitude = (
-                    float(np.linalg.norm(features_arr)) if features_arr is not None and len(features_arr) > 0 else 0.0
+                    float(np.linalg.norm(features_arr))
+                    if features_arr is not None and len(features_arr) > 0
+                    else 0.0
                 )
                 if feature_magnitude > 0:
-                    thompson_sample = float(feature_magnitude * 50.0)  # Deterministic scaling
+                    thompson_sample = float(
+                        feature_magnitude * 50.0
+                    )  # Deterministic scaling
                     risk_penalty = min(0.3, abs(thompson_sample) * 0.1)
                 else:
                     risk_penalty = 0.0
@@ -1055,7 +1233,9 @@ class OptimizedInstitutionalUCBV:
             # 2. Non-stationary Adaptation: Respond to variance changes
             if feature_variance > 0:
                 variance_stability = 1.0 / (1.0 + feature_variance)
-                stability_factor = min(0.2, variance_stability * 100.0)  # 0.0 to 0.2 variation
+                stability_factor = min(
+                    0.2, variance_stability * 100.0
+                )  # 0.0 to 0.2 variation
             else:
                 stability_factor = 0.0
 
@@ -1065,21 +1245,33 @@ class OptimizedInstitutionalUCBV:
                 if features_arr is not None and len(features_arr) > 0
                 else 0.0
             )
-            context_factor = min(0.15, context_diversity * 50.0)  # 0.0 to 0.15 variation
+            context_factor = min(
+                0.15, context_diversity * 50.0
+            )  # 0.0 to 0.15 variation
 
             # Apply Thompson Sampling variation to confidence
             final_confidence += stability_factor + context_factor - risk_penalty
 
             # Deterministic raw confidence from robust feature stats (avoid saturation)
-            f_std = float(np.std(features_arr)) if features_arr is not None and len(features_arr) > 0 else 0.0
-            f_norm = float(np.linalg.norm(features_arr)) if features_arr is not None and len(features_arr) > 0 else 0.0
+            f_std = (
+                float(np.std(features_arr))
+                if features_arr is not None and len(features_arr) > 0
+                else 0.0
+            )
+            f_norm = (
+                float(np.linalg.norm(features_arr))
+                if features_arr is not None and len(features_arr) > 0
+                else 0.0
+            )
             f_range = (
                 float(np.max(features_arr) - np.min(features_arr))
                 if features_arr is not None and len(features_arr) > 0
                 else 0.0
             )
             f_head_mean = (
-                float(np.mean(features_arr[:3])) if features_arr is not None and len(features_arr) >= 3 else 0.0
+                float(np.mean(features_arr[:3]))
+                if features_arr is not None and len(features_arr) >= 3
+                else 0.0
             )
 
             s_std = math.tanh(f_std * 60.0)
@@ -1095,7 +1287,14 @@ class OptimizedInstitutionalUCBV:
                 f2 = float(features_arr[2])
                 dir_term = 0.06 * math.tanh(20.0 * (0.6 * f0 + 0.3 * f1 + 0.1 * f2))
 
-            raw = 0.12 + 0.14 * s_std + 0.10 * s_norm + 0.06 * s_range + 0.02 * s_head + dir_term
+            raw = (
+                0.12
+                + 0.14 * s_std
+                + 0.10 * s_norm
+                + 0.06 * s_range
+                + 0.02 * s_head
+                + dir_term
+            )
             raw = max(0.12, min(0.38, raw))
 
             # GENUINE UCB-V Enhancement: Create meaningful variation based on variance characteristics
@@ -1103,12 +1302,20 @@ class OptimizedInstitutionalUCBV:
 
             # 1. Variance magnitude variation (UCB-V's core strength)
             variance_magnitude = (
-                float(np.var(features_arr)) if features_arr is not None and len(features_arr) > 0 else 0.0
+                float(np.var(features_arr))
+                if features_arr is not None and len(features_arr) > 0
+                else 0.0
             )
-            variance_variation = min(0.10, variance_magnitude * 1.0)  # Conservative values
+            variance_variation = min(
+                0.10, variance_magnitude * 1.0
+            )  # Conservative values
 
             # 2. Risk level variation (UCB-V's risk assessment)
-            risk_level = float(np.std(features_arr)) if features_arr is not None and len(features_arr) > 0 else 0.0
+            risk_level = (
+                float(np.std(features_arr))
+                if features_arr is not None and len(features_arr) > 0
+                else 0.0
+            )
             risk_variation = min(0.08, risk_level * 0.8)  # Conservative values
 
             # 3. Uncertainty range variation (UCB-V's uncertainty quantification)
@@ -1117,30 +1324,48 @@ class OptimizedInstitutionalUCBV:
                 if features_arr is not None and len(features_arr) > 0
                 else 0.0
             )
-            uncertainty_variation = min(0.06, uncertainty_range * 0.5)  # Conservative values
+            uncertainty_variation = min(
+                0.06, uncertainty_range * 0.5
+            )  # Conservative values
 
             # 4. Distribution asymmetry variation (UCB-V's skewness sensitivity)
             distribution_skewness = (
-                np.mean((features_arr - np.mean(features_arr)) ** 3) / (np.std(features_arr) ** 3)
-                if features_arr is not None and len(features_arr) > 0 and np.std(features_arr) > 0
+                np.mean((features_arr - np.mean(features_arr)) ** 3)
+                / (np.std(features_arr) ** 3)
+                if features_arr is not None
+                and len(features_arr) > 0
+                and np.std(features_arr) > 0
                 else 0.0
             )
-            asymmetry_variation = min(0.05, abs(distribution_skewness) * 0.3)  # Conservative values
+            asymmetry_variation = min(
+                0.05, abs(distribution_skewness) * 0.3
+            )  # Conservative values
 
             # 5. Tail risk variation (UCB-V's kurtosis sensitivity)
             tail_risk = (
-                np.mean((features_arr - np.mean(features_arr)) ** 4) / (np.std(features_arr) ** 4)
-                if features_arr is not None and len(features_arr) > 0 and np.std(features_arr) > 0
+                np.mean((features_arr - np.mean(features_arr)) ** 4)
+                / (np.std(features_arr) ** 4)
+                if features_arr is not None
+                and len(features_arr) > 0
+                and np.std(features_arr) > 0
                 else 0.0
             )
             tail_variation = min(0.04, abs(tail_risk) * 0.2)  # Conservative values
 
             # 6. Feature stability variation (UCB-V's stability assessment)
             feature_median = (
-                float(np.median(features_arr)) if features_arr is not None and len(features_arr) > 0 else 0.0
+                float(np.median(features_arr))
+                if features_arr is not None and len(features_arr) > 0
+                else 0.0
             )
-            feature_mean = float(np.mean(features_arr)) if features_arr is not None and len(features_arr) > 0 else 0.0
-            stability_variation = min(0.03, abs(feature_median - feature_mean) * 0.5)  # Conservative values
+            feature_mean = (
+                float(np.mean(features_arr))
+                if features_arr is not None and len(features_arr) > 0
+                else 0.0
+            )
+            stability_variation = min(
+                0.03, abs(feature_median - feature_mean) * 0.5
+            )  # Conservative values
 
             # Apply all variations to create genuine UCB-V diversity
             raw += (
@@ -1161,7 +1386,8 @@ class OptimizedInstitutionalUCBV:
                 feature_std = float(np.std(features_arr))
                 feature_range = float(np.max(features_arr) - np.min(features_arr))
                 feature_skew = float(
-                    np.mean((features_arr - np.mean(features_arr)) ** 3) / (np.std(features_arr) ** 3 + 1e-10)
+                    np.mean((features_arr - np.mean(features_arr)) ** 3)
+                    / (np.std(features_arr) ** 3 + 1e-10)
                 )
 
                 # Create deterministic variation based on feature characteristics
@@ -1173,7 +1399,9 @@ class OptimizedInstitutionalUCBV:
                 skew_variation = 0.05 * (abs(feature_skew) % 1.0)
 
                 # Combine variations - minimal until trained
-                total_variation = sum_variation + std_variation + range_variation + skew_variation
+                total_variation = (
+                    sum_variation + std_variation + range_variation + skew_variation
+                )
                 variation_factor = 0.25 + total_variation * 0.5  # Conservative range
             else:
                 variation_factor = 0.25  # Default variation
@@ -1182,17 +1410,25 @@ class OptimizedInstitutionalUCBV:
             # Use the variation factor to create meaningful spread
             # Normalize raw value to [0, 1] range first, then map to [0.45, 0.90]
             # Adjust normalization range to accommodate actual raw values (0.12-0.38)
-            normalized_raw = max(0.0, min(1.0, (raw - 0.12) / 0.26))  # Normalize [0.12, 0.38] to [0, 1]
-            base_mapped = 0.45 + normalized_raw * 0.35  # Map [0, 1] to [0.45, 0.80] to leave room for variation
+            normalized_raw = max(
+                0.0, min(1.0, (raw - 0.12) / 0.26)
+            )  # Normalize [0.12, 0.38] to [0, 1]
+            base_mapped = (
+                0.45 + normalized_raw * 0.35
+            )  # Map [0, 1] to [0.45, 0.80] to leave room for variation
 
             # Add genuine variation based on feature characteristics
             # Scale variation to stay within bounds while maintaining meaningful differences
             # Conservative variation for untrained state
-            variation_adjustment = (variation_factor - 0.35) * 0.1  # Small adjustment until trained
+            variation_adjustment = (
+                variation_factor - 0.35
+            ) * 0.1  # Small adjustment until trained
             mapped = base_mapped + variation_adjustment
 
             # Final bounds check to ensure institutional compliance
-            mapped = max(0.45, min(0.90, mapped))  # Align with institutional bounds [0.45, 0.90]
+            mapped = max(
+                0.45, min(0.90, mapped)
+            )  # Align with institutional bounds [0.45, 0.90]
 
             # Debug logging removed for performance
             return float(mapped)
@@ -1253,7 +1489,12 @@ class OptimizedInstitutionalUCBV:
                 return False
 
             # Reset arm to initial state
-            self.arms[arm_id] = {"pulls": 0, "total_reward": 0.0, "variance": 0.0, "last_updated": None}
+            self.arms[arm_id] = {
+                "pulls": 0,
+                "total_reward": 0.0,
+                "variance": 0.0,
+                "last_updated": None,
+            }
             return True
         except Exception:
             return False

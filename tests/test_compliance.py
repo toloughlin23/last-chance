@@ -32,7 +32,12 @@ def test_compliance_system():
         "position_size": 50000.0,
         "total_market_cap": 1000000000.0,
         "transaction_time": datetime.now(UTC),
-        "transaction_data": {"client_id": "CLIENT_001", "instrument": "AAPL", "quantity": 100, "price": 150.0},
+        "transaction_data": {
+            "client_id": "CLIENT_001",
+            "instrument": "AAPL",
+            "quantity": 100,
+            "price": 150.0,
+        },
         "target_market_validation": True,
         "risk_warning_provided": True,
         "order_rate": 500,

@@ -62,7 +62,10 @@ class OptimizedInstitutionalLinUCB:
     """
 
     def __init__(
-        self, alpha: float = 1.0, regularization: float = 1.0, personality: Optional[AuthenticPersonalitySystem] = None
+        self,
+        alpha: float = 1.0,
+        regularization: float = 1.0,
+        personality: Optional[AuthenticPersonalitySystem] = None,
     ):
         # ENHANCED: 15-dimensional feature space
         self.feature_dimension = 15
@@ -112,7 +115,9 @@ class OptimizedInstitutionalLinUCB:
         else:
             try:
                 self.personality = AuthenticPersonalitySystem(
-                    PersonalityProfile(risk_tolerance=0.5, decision_speed=0.5, aggression=0.5)
+                    PersonalityProfile(
+                        risk_tolerance=0.5, decision_speed=0.5, aggression=0.5
+                    )
                 )
             except Exception:
                 self.personality = None
@@ -139,7 +144,9 @@ class OptimizedInstitutionalLinUCB:
             volume_ratio = market.volume_ratio
 
             # Calculate technical indicators
-            price_position = (market.price - market.low) / max(market.high - market.low, 0.001)
+            price_position = (market.price - market.low) / max(
+                market.high - market.low, 0.001
+            )
             rsi = self._calculate_rsi(market)
             macd = self._calculate_macd(market)
             bollinger_position = self._calculate_bollinger_position(market)
@@ -150,7 +157,9 @@ class OptimizedInstitutionalLinUCB:
             resistance_proximity = self._calculate_resistance_proximity(market)
 
             # Calculate correlation strength
-            correlation_strength = self.correlation_analyzer.get_correlation_strength(market)
+            correlation_strength = self.correlation_analyzer.get_correlation_strength(
+                market
+            )
 
             # Market regime detection
             market_regime = self.regime_detector.detect_regime(market)
@@ -271,7 +280,9 @@ class OptimizedInstitutionalLinUCB:
     def get_confidence_for_context(self, arm_id: str, enriched_data) -> float:
         """Get confidence for specific arm and context - 100% GENUINE"""
         try:
-            print(f"🔍 LinUCB: arm_id={arm_id}, enriched_data type={type(enriched_data)}")
+            print(
+                f"🔍 LinUCB: arm_id={arm_id}, enriched_data type={type(enriched_data)}"
+            )
 
             # Initialize arm if it doesn't exist - 100% GENUINE
             if arm_id not in self.arms:
@@ -302,9 +313,15 @@ class OptimizedInstitutionalLinUCB:
 
             base_confidence = 0.50
             # ENHANCED sensitivity to ensure meaningful variation for personality integration
-            contribution_norm = min(0.15, feature_norm * 0.08)  # Enhanced from 0.05 to 0.08
-            contribution_std = min(0.10, feature_std * 0.80)  # Enhanced from 0.60 to 0.80
-            contribution_mean = min(0.10, feature_mean_abs * 0.60)  # Enhanced from 0.40 to 0.60
+            contribution_norm = min(
+                0.15, feature_norm * 0.08
+            )  # Enhanced from 0.05 to 0.08
+            contribution_std = min(
+                0.10, feature_std * 0.80
+            )  # Enhanced from 0.60 to 0.80
+            contribution_mean = min(
+                0.10, feature_mean_abs * 0.60
+            )  # Enhanced from 0.40 to 0.60
 
             # 2. Feature interaction variation (LinUCB's linear combination strength) - ENHANCED
             feature_interactions = 0.0
@@ -312,21 +329,31 @@ class OptimizedInstitutionalLinUCB:
                 for i in range(min(3, len(features))):
                     for j in range(i + 1, min(i + 3, len(features))):
                         feature_interactions += abs(features[i] * features[j])
-            interaction_contrib = min(0.12, feature_interactions * 0.35)  # Enhanced from 0.25 to 0.35
+            interaction_contrib = min(
+                0.12, feature_interactions * 0.35
+            )  # Enhanced from 0.25 to 0.35
 
             # 3. Feature range variation (LinUCB's exploration range sensitivity) - ENHANCED
-            feature_range = float(np.max(features) - np.min(features)) if len(features) > 0 else 0.0
+            feature_range = (
+                float(np.max(features) - np.min(features)) if len(features) > 0 else 0.0
+            )
             range_contrib = min(0.08, feature_range * 0.50)  # Enhanced from 0.3 to 0.50
 
             # 4. Feature skewness variation (LinUCB's distribution sensitivity) - ENHANCED
             feature_skewness = (
-                np.mean((features - np.mean(features)) ** 3) / (np.std(features) ** 3) if np.std(features) > 0 else 0.0
+                np.mean((features - np.mean(features)) ** 3) / (np.std(features) ** 3)
+                if np.std(features) > 0
+                else 0.0
             )
-            skewness_contrib = min(0.06, abs(feature_skewness) * 0.25)  # Enhanced from 0.15 to 0.25
+            skewness_contrib = min(
+                0.06, abs(feature_skewness) * 0.25
+            )  # Enhanced from 0.15 to 0.25
 
             # 5. Feature variance variation (LinUCB's uncertainty sensitivity) - ENHANCED
             feature_variance = float(np.var(features))
-            variance_contrib = min(0.08, feature_variance * 0.60)  # Enhanced from 0.4 to 0.60
+            variance_contrib = min(
+                0.08, feature_variance * 0.60
+            )  # Enhanced from 0.4 to 0.60
 
             # Targeted domain contributions for first market features - ENHANCED
             sentiment_contrib = (
@@ -336,10 +363,14 @@ class OptimizedInstitutionalLinUCB:
                 min(0.06, abs(float(features[1])) * 0.90) if len(features) > 1 else 0.0
             )  # Enhanced from 0.70 to 0.90
             volatility_contrib = (
-                min(0.06, max(0.0, float(features[2])) * 0.90) if len(features) > 2 else 0.0
+                min(0.06, max(0.0, float(features[2])) * 0.90)
+                if len(features) > 2
+                else 0.0
             )  # Enhanced from 0.70 to 0.90
             volume_ratio_contrib = (
-                min(0.06, max(0.0, float(features[4]) - 1.0) * 0.18) if len(features) > 4 else 0.0
+                min(0.06, max(0.0, float(features[4]) - 1.0) * 0.18)
+                if len(features) > 4
+                else 0.0
             )  # Enhanced from 0.12 to 0.18
 
             confidence = (
@@ -363,7 +394,9 @@ class OptimizedInstitutionalLinUCB:
                 bias = float(self.personality.confidence_bias())
                 confidence += (bias - 0.5) * 0.30  # Increased from 0.16 to 0.30
                 # Exploration bias provides additional spread in [-0.08, +0.08]
-                confidence += float(self.personality.exploration_bias()) * 0.16  # Increased from 0.04 to 0.16
+                confidence += (
+                    float(self.personality.exploration_bias()) * 0.16
+                )  # Increased from 0.04 to 0.16
 
             # GENUINE LinUCB Enhancement: Ensure meaningful variation within bounds
             # Add feature-based variation that creates genuine diversity
@@ -385,7 +418,9 @@ class OptimizedInstitutionalLinUCB:
 
             # Feature distribution variation (LinUCB's distribution sensitivity)
             feature_kurtosis = (
-                np.mean((features - np.mean(features)) ** 4) / (np.std(features) ** 4) if np.std(features) > 0 else 0.0
+                np.mean((features - np.mean(features)) ** 4) / (np.std(features) ** 4)
+                if np.std(features) > 0
+                else 0.0
             )
             kurtosis_contrib = min(0.04, abs(feature_kurtosis) * 0.1)
             confidence += kurtosis_contrib
@@ -423,7 +458,9 @@ class OptimizedInstitutionalLinUCB:
                 "last_updated": arm.last_updated,
                 "arm_type": arm.arm_type.value if arm.arm_type else "unknown",
                 "dimension": arm.dimension,
-                "theta_norm": float(np.linalg.norm(arm.theta)) if arm.theta is not None else 0.0,
+                "theta_norm": (
+                    float(np.linalg.norm(arm.theta)) if arm.theta is not None else 0.0
+                ),
             }
         except Exception as e:
             return {
@@ -485,13 +522,21 @@ class OptimizedInstitutionalLinUCB:
             A_inv = np.eye(self.feature_dimension) / self.base_regularization
 
             self.arms[arm_id] = OptimizedLinUCBArmState(
-                arm_id=arm_id, arm_type=arm_type, dimension=self.feature_dimension, A=A, b=b, theta=theta, A_inv=A_inv
+                arm_id=arm_id,
+                arm_type=arm_type,
+                dimension=self.feature_dimension,
+                A=A,
+                b=b,
+                theta=theta,
+                A_inv=A_inv,
             )
 
         except Exception as e:
             print(f"Error initializing arm {arm_id}: {e}")
 
-    def _calculate_linucb_confidence(self, arm: OptimizedLinUCBArmState, features: np.ndarray, alpha: float) -> float:
+    def _calculate_linucb_confidence(
+        self, arm: OptimizedLinUCBArmState, features: np.ndarray, alpha: float
+    ) -> float:
         """Calculate genuine confidence for newly initialized LinUCB arm - NO FAKE VALUES!"""
         try:
             if arm is None:
@@ -501,7 +546,9 @@ class OptimizedInstitutionalLinUCB:
             if arm.pull_count == 0:
                 # ULTRA-ENHANCED: Multi-dimensional feature analysis for maximum variation
                 feature_variance = np.var(features)
-                market_volatility = np.std(features[:5])  # First 5 features are market indicators
+                market_volatility = np.std(
+                    features[:5]
+                )  # First 5 features are market indicators
                 np.max(features) - np.min(features)
                 np.mean(features)
 
@@ -554,19 +601,32 @@ class OptimizedInstitutionalLinUCB:
                     base_confidence += exploration_bias * 0.5
 
                 # ULTRA-ENHANCED: Apply alpha influence for personality variation with higher sensitivity
-                alpha_influence = (alpha - 0.8) * 0.8  # Much higher sensitivity to alpha differences
+                alpha_influence = (
+                    alpha - 0.8
+                ) * 0.8  # Much higher sensitivity to alpha differences
                 base_confidence += alpha_influence
 
                 # ULTRA-ENHANCED: Ensure significant variation range with personality influence
                 personality_multiplier = 1.0
                 if self.personality:
-                    personality_multiplier = 0.5 + (self.personality.confidence_bias() * 1.0)  # 0.5 to 1.5 range
+                    personality_multiplier = 0.5 + (
+                        self.personality.confidence_bias() * 1.0
+                    )  # 0.5 to 1.5 range
 
                 # ULTRA-ENHANCED: Add more variation through feature-based scaling
-                feature_scale = 1.0 + (feature_variance * 0.5)  # Scale based on feature variance
-                market_scale = 1.0 + (market_volatility * 0.3)  # Scale based on market volatility
+                feature_scale = 1.0 + (
+                    feature_variance * 0.5
+                )  # Scale based on feature variance
+                market_scale = 1.0 + (
+                    market_volatility * 0.3
+                )  # Scale based on market volatility
 
-                final_confidence = base_confidence * personality_multiplier * feature_scale * market_scale
+                final_confidence = (
+                    base_confidence
+                    * personality_multiplier
+                    * feature_scale
+                    * market_scale
+                )
 
                 # GENUINE LinUCB Variation: Thompson Sampling with real Polygon data
                 # This creates natural variation based on uncertainty (research-backed)
@@ -575,16 +635,26 @@ class OptimizedInstitutionalLinUCB:
                 feature_uncertainty = np.std(features) if len(features) > 0 else 0.0
                 if feature_uncertainty > 0:
                     # Use deterministic uncertainty scaling based on feature properties
-                    feature_hash = sum(features) % 1.0  # Deterministic pseudo-random from features
-                    uncertainty_factor = feature_uncertainty * (0.5 + feature_hash * 0.5)  # Scale 0.5x to 1.0x
-                    exploration_factor = min(0.3, uncertainty_factor * 10.0)  # 0.0 to 0.3 variation
+                    feature_hash = (
+                        sum(features) % 1.0
+                    )  # Deterministic pseudo-random from features
+                    uncertainty_factor = feature_uncertainty * (
+                        0.5 + feature_hash * 0.5
+                    )  # Scale 0.5x to 1.0x
+                    exploration_factor = min(
+                        0.3, uncertainty_factor * 10.0
+                    )  # 0.0 to 0.3 variation
                 else:
                     # Fallback: Use feature magnitude for variation
-                    feature_magnitude = np.linalg.norm(features) if len(features) > 0 else 0.0
+                    feature_magnitude = (
+                        np.linalg.norm(features) if len(features) > 0 else 0.0
+                    )
                     if feature_magnitude > 0:
                         # Deterministic variation based on feature properties
                         magnitude_hash = (feature_magnitude * 1000) % 1.0
-                        magnitude_factor = feature_magnitude * (0.5 + magnitude_hash * 0.5)
+                        magnitude_factor = feature_magnitude * (
+                            0.5 + magnitude_hash * 0.5
+                        )
                         exploration_factor = min(0.3, magnitude_factor * 0.1)
                     else:
                         exploration_factor = 0.0
@@ -592,15 +662,21 @@ class OptimizedInstitutionalLinUCB:
                 # 2. Non-stationary Adaptation: Respond to market changes
                 market_volatility = np.var(features[:5]) if len(features) >= 5 else 0.0
                 if market_volatility > 0:
-                    regime_factor = min(0.25, market_volatility * 100.0)  # 0.0 to 0.25 variation
+                    regime_factor = min(
+                        0.25, market_volatility * 100.0
+                    )  # 0.0 to 0.25 variation
                 else:
                     regime_factor = 0.0
 
                 # 3. Contextual Sensitivity: LinUCB responds to different contexts
                 context_diversity = (
-                    len(set([round(f, 2) for f in features])) / len(features) if len(features) > 0 else 0.0
+                    len(set([round(f, 2) for f in features])) / len(features)
+                    if len(features) > 0
+                    else 0.0
                 )
-                context_factor = min(0.2, context_diversity * 50.0)  # 0.0 to 0.2 variation
+                context_factor = min(
+                    0.2, context_diversity * 50.0
+                )  # 0.0 to 0.2 variation
 
                 # Apply Thompson Sampling variation to confidence
                 final_confidence += regime_factor + context_factor - exploration_factor
@@ -617,12 +693,20 @@ class OptimizedInstitutionalLinUCB:
             feature_uncertainty = np.std(features) if len(features) > 0 else 0.0
             if feature_uncertainty > 0:
                 # Use deterministic uncertainty scaling based on feature properties
-                feature_hash = sum(features) % 1.0  # Deterministic pseudo-random from features
-                uncertainty_factor = feature_uncertainty * (0.5 + feature_hash * 0.5)  # Scale 0.5x to 1.0x
-                exploration_factor = min(0.3, uncertainty_factor * 10.0)  # 0.0 to 0.3 variation
+                feature_hash = (
+                    sum(features) % 1.0
+                )  # Deterministic pseudo-random from features
+                uncertainty_factor = feature_uncertainty * (
+                    0.5 + feature_hash * 0.5
+                )  # Scale 0.5x to 1.0x
+                exploration_factor = min(
+                    0.3, uncertainty_factor * 10.0
+                )  # 0.0 to 0.3 variation
             else:
                 # Fallback: Use feature magnitude for variation
-                feature_magnitude = np.linalg.norm(features) if len(features) > 0 else 0.0
+                feature_magnitude = (
+                    np.linalg.norm(features) if len(features) > 0 else 0.0
+                )
                 if feature_magnitude > 0:
                     # Deterministic variation based on feature properties
                     magnitude_hash = (feature_magnitude * 1000) % 1.0
@@ -634,12 +718,18 @@ class OptimizedInstitutionalLinUCB:
             # 2. Non-stationary Adaptation: Respond to market changes
             market_volatility = np.var(features[:5]) if len(features) >= 5 else 0.0
             if market_volatility > 0:
-                regime_factor = min(0.25, market_volatility * 100.0)  # 0.0 to 0.25 variation
+                regime_factor = min(
+                    0.25, market_volatility * 100.0
+                )  # 0.0 to 0.25 variation
             else:
                 regime_factor = 0.0
 
             # 3. Contextual Sensitivity: LinUCB responds to different contexts
-            context_diversity = len(set([round(f, 2) for f in features])) / len(features) if len(features) > 0 else 0.0
+            context_diversity = (
+                len(set([round(f, 2) for f in features])) / len(features)
+                if len(features) > 0
+                else 0.0
+            )
             context_factor = min(0.2, context_diversity * 50.0)  # 0.0 to 0.2 variation
 
             # Apply Thompson Sampling variation to confidence

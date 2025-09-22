@@ -128,7 +128,11 @@ class AdvancedNewsSentimentAnalysis:
             print("⚠️  No news API keys found - using fallback sources")
             # Add fallback sources for testing
             fallback_source = NewsSource(
-                name="Fallback", api_key_env="", base_url="", weight=1.0, reliability_score=0.5
+                name="Fallback",
+                api_key_env="",
+                base_url="",
+                weight=1.0,
+                reliability_score=0.5,
             )
             self.sources.append(fallback_source)
             self.news_sources.append(fallback_source)
@@ -219,15 +223,27 @@ class AdvancedNewsSentimentAnalysis:
         print("✅ Advanced confidence scoring system ready")
         print("✅ Market condition awareness enabled")
 
-    def _fetch_polygon_news(self, symbol: str, lookback_hours: int = 24) -> List[Dict[str, Any]]:
+    def _fetch_polygon_news(
+        self, symbol: str, lookback_hours: int = 24
+    ) -> List[Dict[str, Any]]:
         """Fetch news from Polygon API"""
         api_key = os.getenv("POLYGON_API_KEY")
         if not api_key:
             return []
 
-        since = (datetime.now(UTC) - timedelta(hours=lookback_hours)).isoformat().replace("+00:00", "Z")
+        since = (
+            (datetime.now(UTC) - timedelta(hours=lookback_hours))
+            .isoformat()
+            .replace("+00:00", "Z")
+        )
         url = "https://api.polygon.io/v2/reference/news"
-        params = {"ticker": symbol, "published_utc.gte": since, "limit": 50, "order": "desc", "apiKey": api_key}
+        params = {
+            "ticker": symbol,
+            "published_utc.gte": since,
+            "limit": 50,
+            "order": "desc",
+            "apiKey": api_key,
+        }
 
         try:
             response = self.http.get_json(url, params=params)
@@ -236,14 +252,21 @@ class AdvancedNewsSentimentAnalysis:
             print(f"⚠️ Polygon news fetch failed for {symbol}: {e}")
             return []
 
-    def _fetch_alphavantage_news(self, symbol: str, lookback_hours: int = 24) -> List[Dict[str, Any]]:
+    def _fetch_alphavantage_news(
+        self, symbol: str, lookback_hours: int = 24
+    ) -> List[Dict[str, Any]]:
         """Fetch news from Alpha Vantage API"""
         api_key = os.getenv("ALPHA_VANTAGE_API_KEY")
         if not api_key:
             return []
 
         url = "https://www.alphavantage.co/query"
-        params = {"function": "NEWS_SENTIMENT", "tickers": symbol, "limit": 50, "apikey": api_key}
+        params = {
+            "function": "NEWS_SENTIMENT",
+            "tickers": symbol,
+            "limit": 50,
+            "apikey": api_key,
+        }
 
         try:
             response = self.http.get_json(url, params=params)
@@ -252,7 +275,9 @@ class AdvancedNewsSentimentAnalysis:
             print(f"⚠️ Alpha Vantage news fetch failed for {symbol}: {e}")
             return []
 
-    def _fetch_newsapi_news(self, symbol: str, lookback_hours: int = 24) -> List[Dict[str, Any]]:
+    def _fetch_newsapi_news(
+        self, symbol: str, lookback_hours: int = 24
+    ) -> List[Dict[str, Any]]:
         """Fetch news from NewsAPI"""
         api_key = os.getenv("NEWS_API_KEY")
         if not api_key:
@@ -295,7 +320,9 @@ class AdvancedNewsSentimentAnalysis:
                 matches = len(re.findall(pattern, text_lower))
                 if matches > 0:
                     # ENHANCED: Dynamic weighting based on pattern strength and frequency
-                    weighted_score = matches * strength_weight * 0.1 * (1 + 0.1 * matches)
+                    weighted_score = (
+                        matches * strength_weight * 0.1 * (1 + 0.1 * matches)
+                    )
                     sentiment_score += weighted_score
                     confidence_factors.append(strength_weight * (1 + 0.05 * matches))
                     pattern_match_count += matches
@@ -307,22 +334,34 @@ class AdvancedNewsSentimentAnalysis:
                 matches = len(re.findall(pattern, text_lower))
                 if matches > 0:
                     # ENHANCED: Dynamic weighting based on pattern strength and frequency
-                    weighted_score = matches * strength_weight * 0.1 * (1 + 0.1 * matches)
+                    weighted_score = (
+                        matches * strength_weight * 0.1 * (1 + 0.1 * matches)
+                    )
                     sentiment_score -= weighted_score
                     confidence_factors.append(strength_weight * (1 + 0.05 * matches))
                     pattern_match_count += matches
 
         # ENHANCED: Advanced confidence calculation using multiple factors
-        text_length_factor = min(1.0, len(text) / 200.0)  # Full confidence at 200+ chars
-        pattern_confidence = sum(confidence_factors) / max(1, len(confidence_factors)) if confidence_factors else 0.0
+        text_length_factor = min(
+            1.0, len(text) / 200.0
+        )  # Full confidence at 200+ chars
+        pattern_confidence = (
+            sum(confidence_factors) / max(1, len(confidence_factors))
+            if confidence_factors
+            else 0.0
+        )
 
         # ENHANCED: Pattern density factor (more patterns = higher confidence)
-        pattern_density = min(1.0, pattern_match_count / 10.0)  # Full confidence at 10+ pattern matches
+        pattern_density = min(
+            1.0, pattern_match_count / 10.0
+        )  # Full confidence at 10+ pattern matches
 
         # ENHANCED: Text quality assessment
         word_count = len(text.split())
         sentence_count = len([s for s in text.split(".") if s.strip()])
-        text_quality = min(1.0, (word_count / 50.0) * (sentence_count / 3.0))  # Quality based on structure
+        text_quality = min(
+            1.0, (word_count / 50.0) * (sentence_count / 3.0)
+        )  # Quality based on structure
 
         # ENHANCED: Weighted confidence calculation
         confidence = (
@@ -358,13 +397,17 @@ class AdvancedNewsSentimentAnalysis:
             content = f"{title} {description}"
 
             # Count impact indicators
-            impact_hits = sum(1 for indicator in self.impact_indicators if indicator in content)
+            impact_hits = sum(
+                1 for indicator in self.impact_indicators if indicator in content
+            )
             impact_score += min(1.0, impact_hits * 0.2)  # Max 1.0 per article
 
         return min(1.0, impact_score / total_articles)
 
     def _aggregate_multi_source_sentiment(
-        self, source_results: List[Tuple[str, List[Dict[str, Any]]]], symbol: str = "UNKNOWN"
+        self,
+        source_results: List[Tuple[str, List[Dict[str, Any]]]],
+        symbol: str = "UNKNOWN",
     ) -> SentimentResult:
         """
         ENHANCED: Aggregate sentiment from multiple sources with advanced confidence weighting
@@ -381,7 +424,9 @@ class AdvancedNewsSentimentAnalysis:
                 continue
 
             # Find source configuration
-            source_config = next((s for s in self.sources if s.name == source_name), None)
+            source_config = next(
+                (s for s in self.sources if s.name == source_name), None
+            )
             if not source_config:
                 continue
 
@@ -411,7 +456,9 @@ class AdvancedNewsSentimentAnalysis:
             if not articles:
                 continue
 
-            source_config = next((s for s in self.sources if s.name == source_name), None)
+            source_config = next(
+                (s for s in self.sources if s.name == source_name), None
+            )
             if not source_config:
                 continue
 
@@ -437,28 +484,39 @@ class AdvancedNewsSentimentAnalysis:
             # ENHANCED: Calculate source-level aggregation
             if source_sentiments:
                 source_avg_sentiment = sum(source_sentiments) / len(source_sentiments)
-                source_avg_confidence = sum(source_confidences) / len(source_confidences)
-                source_weighted_sentiments.append((source_avg_sentiment, source_avg_confidence, len(articles)))
+                source_avg_confidence = sum(source_confidences) / len(
+                    source_confidences
+                )
+                source_weighted_sentiments.append(
+                    (source_avg_sentiment, source_avg_confidence, len(articles))
+                )
 
         # ENHANCED: Multi-level aggregation with advanced confidence calculation
         if article_sentiments:
             # Calculate overall weighted sentiment
             if source_weighted_sentiments:
                 # ENHANCED: Source-weighted aggregation
-                total_weight = sum(weight for _, _, weight in source_weighted_sentiments)
+                total_weight = sum(
+                    weight for _, _, weight in source_weighted_sentiments
+                )
                 weighted_sentiment = sum(
-                    sent * conf * weight for sent, conf, weight in source_weighted_sentiments
+                    sent * conf * weight
+                    for sent, conf, weight in source_weighted_sentiments
                 ) / max(1, total_weight)
             else:
                 weighted_sentiment = sum(article_sentiments) / len(article_sentiments)
 
             # ENHANCED: Advanced confidence calculation
             avg_confidence = sum(article_confidences) / len(article_confidences)
-            source_reliability = sum(source_confidences) / max(1, len(source_confidences))
+            source_reliability = sum(source_confidences) / max(
+                1, len(source_confidences)
+            )
             article_count_factor = min(1.0, len(article_sentiments) / 10.0)
 
             # ENHANCED: Source diversity factor (more sources = higher confidence)
-            source_diversity_factor = min(1.0, len(sources_used) / 3.0)  # Full confidence at 3+ sources
+            source_diversity_factor = min(
+                1.0, len(sources_used) / 3.0
+            )  # Full confidence at 3+ sources
 
             # ENHANCED: Weighted confidence calculation
             final_confidence = (
@@ -537,9 +595,15 @@ class AdvancedNewsSentimentAnalysis:
 
         with ThreadPoolExecutor(max_workers=3) as executor:
             futures = {
-                executor.submit(self._fetch_polygon_news, symbol, lookback_hours): "Polygon",
-                executor.submit(self._fetch_alphavantage_news, symbol, lookback_hours): "AlphaVantage",
-                executor.submit(self._fetch_newsapi_news, symbol, lookback_hours): "NewsAPI",
+                executor.submit(
+                    self._fetch_polygon_news, symbol, lookback_hours
+                ): "Polygon",
+                executor.submit(
+                    self._fetch_alphavantage_news, symbol, lookback_hours
+                ): "AlphaVantage",
+                executor.submit(
+                    self._fetch_newsapi_news, symbol, lookback_hours
+                ): "NewsAPI",
             }
 
             for future in as_completed(futures):
@@ -557,14 +621,23 @@ class AdvancedNewsSentimentAnalysis:
 
         # ENHANCED: Cache the result for real-time efficiency
         if use_cache:
-            self.processing_cache[f"{symbol}_{lookback_hours}"] = (result, datetime.now(UTC))
+            self.processing_cache[f"{symbol}_{lookback_hours}"] = (
+                result,
+                datetime.now(UTC),
+            )
 
-        print(f"   📊 Final: {result.sentiment_score:.3f} sentiment, {result.confidence:.3f} confidence")
-        print(f"   📈 Impact: {result.market_impact:.3f}, Sources: {result.source_count}")
+        print(
+            f"   📊 Final: {result.sentiment_score:.3f} sentiment, {result.confidence:.3f} confidence"
+        )
+        print(
+            f"   📈 Impact: {result.market_impact:.3f}, Sources: {result.source_count}"
+        )
 
         return result
 
-    def analyze_multiple_symbols(self, symbols: List[str], lookback_hours: int = 24) -> Dict[str, SentimentResult]:
+    def analyze_multiple_symbols(
+        self, symbols: List[str], lookback_hours: int = 24
+    ) -> Dict[str, SentimentResult]:
         """
         Analyze sentiment for multiple symbols in parallel
         """
@@ -574,7 +647,10 @@ class AdvancedNewsSentimentAnalysis:
 
         with ThreadPoolExecutor(max_workers=min(8, len(symbols))) as executor:
             futures = {
-                executor.submit(self.analyze_symbol_sentiment, symbol, lookback_hours): symbol for symbol in symbols
+                executor.submit(
+                    self.analyze_symbol_sentiment, symbol, lookback_hours
+                ): symbol
+                for symbol in symbols
             }
 
             for future in as_completed(futures):
@@ -606,14 +682,22 @@ class AdvancedNewsSentimentAnalysis:
         results = self.analyze_multiple_symbols(symbols, lookback_hours)
 
         # Filter by confidence and sort by sentiment
-        filtered_results = {symbol: result for symbol, result in results.items() if result.confidence >= min_confidence}
+        filtered_results = {
+            symbol: result
+            for symbol, result in results.items()
+            if result.confidence >= min_confidence
+        }
 
         # Sort by sentiment score (highest first)
-        prioritized = sorted(filtered_results.items(), key=lambda x: x[1].sentiment_score, reverse=True)
+        prioritized = sorted(
+            filtered_results.items(), key=lambda x: x[1].sentiment_score, reverse=True
+        )
 
         return [symbol for symbol, _ in prioritized]
 
-    def save_sentiment_analysis(self, results: Dict[str, SentimentResult], filepath: str):
+    def save_sentiment_analysis(
+        self, results: Dict[str, SentimentResult], filepath: str
+    ):
         """Save sentiment analysis results to file"""
         # ENHANCED: Handle empty filepath and ensure directory exists
         if not filepath:
@@ -642,14 +726,18 @@ class AdvancedNewsSentimentAnalysis:
 
         print(f"💾 Sentiment analysis saved to {filepath}")
 
-    def get_real_time_sentiment_summary(self, symbols: List[str], lookback_hours: int = 1) -> Dict[str, Any]:
+    def get_real_time_sentiment_summary(
+        self, symbols: List[str], lookback_hours: int = 1
+    ) -> Dict[str, Any]:
         """
         ENHANCED: Get real-time sentiment summary for monitoring dashboard
         """
         results = self.analyze_multiple_symbols(symbols, lookback_hours)
 
         # ENHANCED: Calculate summary statistics
-        sentiment_scores = [r.sentiment_score for r in results.values() if r.confidence > 0.3]
+        sentiment_scores = [
+            r.sentiment_score for r in results.values() if r.confidence > 0.3
+        ]
         confidence_scores = [r.confidence for r in results.values()]
         market_impacts = [r.market_impact for r in results.values()]
 
@@ -658,7 +746,8 @@ class AdvancedNewsSentimentAnalysis:
             "symbol_count": len(symbols),
             "analyzed_count": len(sentiment_scores),
             "average_sentiment": sum(sentiment_scores) / max(1, len(sentiment_scores)),
-            "average_confidence": sum(confidence_scores) / max(1, len(confidence_scores)),
+            "average_confidence": sum(confidence_scores)
+            / max(1, len(confidence_scores)),
             "average_market_impact": sum(market_impacts) / max(1, len(market_impacts)),
             "high_confidence_count": len([c for c in confidence_scores if c > 0.7]),
             "positive_sentiment_count": len([s for s in sentiment_scores if s > 0.1]),

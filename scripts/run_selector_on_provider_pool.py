@@ -35,7 +35,7 @@ def main() -> None:
         analysis_days=analysis_days,
         start_date=sd,
         end_date=ed,
-        max_candidates=300,          # allow up to 300 from provider
+        max_candidates=300,  # allow up to 300 from provider
         batch_size=10,
     )
     print(f"📊 Provider ranked candidates: {len(candidates)}")
@@ -43,7 +43,9 @@ def main() -> None:
         print("⚠️ No candidates found from provider.")
         return
 
-    sector_classifier, sector_index_weights = provider._build_sector_classifier_and_weights(candidates)
+    sector_classifier, sector_index_weights = (
+        provider._build_sector_classifier_and_weights(candidates)
+    )
 
     selector = UniverseSelector()
     print("🎯 Running selector on provider pool...")
@@ -74,6 +76,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-
-
-

@@ -32,7 +32,9 @@ def main():
     try:
         import subprocess
 
-        result = subprocess.run(["git", "status", "--porcelain"], capture_output=True, text=True, timeout=5)
+        result = subprocess.run(
+            ["git", "status", "--porcelain"], capture_output=True, text=True, timeout=5
+        )
         print(f"   Status code: {result.returncode}")
         print(f"   Output: {result.stdout}")
         if result.stderr:
@@ -43,7 +45,9 @@ def main():
     # Step 3: Check GitHub remote
     print("\n3. Checking GitHub remote...")
     try:
-        result = subprocess.run(["git", "remote", "-v"], capture_output=True, text=True, timeout=5)
+        result = subprocess.run(
+            ["git", "remote", "-v"], capture_output=True, text=True, timeout=5
+        )
         print(f"   Remote code: {result.returncode}")
         print(f"   Remotes: {result.stdout}")
         if result.stderr:
@@ -54,7 +58,12 @@ def main():
     # Step 4: Test if terminal commands work now
     print("\n4. Testing terminal commands...")
     try:
-        result = subprocess.run(["git", "branch", "--show-current"], capture_output=True, text=True, timeout=5)
+        result = subprocess.run(
+            ["git", "branch", "--show-current"],
+            capture_output=True,
+            text=True,
+            timeout=5,
+        )
         print(f"   Branch command: {result.returncode}")
         print(f"   Current branch: {result.stdout.strip()}")
     except Exception as e:

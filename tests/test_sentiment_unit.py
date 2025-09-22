@@ -2,8 +2,14 @@ from services.sentiment import aggregate_symbol_sentiment, score_article
 
 
 def test_score_article_basic():
-    a_pos = {"title": "Company beats earnings and raises guidance", "description": "Strong growth"}
-    a_neg = {"title": "Company misses estimates and cuts guidance", "description": "Investigation ongoing"}
+    a_pos = {
+        "title": "Company beats earnings and raises guidance",
+        "description": "Strong growth",
+    }
+    a_neg = {
+        "title": "Company misses estimates and cuts guidance",
+        "description": "Investigation ongoing",
+    }
     s_pos = score_article(a_pos)
     s_neg = score_article(a_neg)
     assert s_pos > s_neg

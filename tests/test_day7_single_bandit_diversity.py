@@ -2,8 +2,12 @@ import os
 
 import pytest
 
-from CORE_SUPER_BANDITS.optimized_linucb_institutional import OptimizedInstitutionalLinUCB
-from CORE_SUPER_BANDITS.optimized_neural_bandit_institutional import OptimizedInstitutionalNeuralBandit
+from CORE_SUPER_BANDITS.optimized_linucb_institutional import (
+    OptimizedInstitutionalLinUCB,
+)
+from CORE_SUPER_BANDITS.optimized_neural_bandit_institutional import (
+    OptimizedInstitutionalNeuralBandit,
+)
 from CORE_SUPER_BANDITS.optimized_ucbv_institutional import OptimizedInstitutionalUCBV
 from services.feature_builder import build_enriched_from_aggs
 from services.polygon_client import PolygonClient
@@ -15,7 +19,16 @@ def test_day7_single_bandit_diversity_with_real_polygon_aggs():
         pytest.skip("POLYGON_API_KEY not set; skipping Day 7 diversity test.")
 
     client = PolygonClient()
-    aggs = client.get_aggs("AAPL", 1, "day", "2023-01-03", "2023-01-20", limit=10, adjusted=True, sort="asc")
+    aggs = client.get_aggs(
+        "AAPL",
+        1,
+        "day",
+        "2023-01-03",
+        "2023-01-20",
+        limit=10,
+        adjusted=True,
+        sort="asc",
+    )
     enriched = build_enriched_from_aggs(aggs)
 
     lin = OptimizedInstitutionalLinUCB()

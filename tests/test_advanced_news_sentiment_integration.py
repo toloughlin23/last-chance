@@ -19,7 +19,10 @@ import pytest
 
 UTC = _timezone.utc
 
-from services.advanced_news_sentiment import AdvancedNewsSentimentAnalysis, SentimentResult
+from services.advanced_news_sentiment import (
+    AdvancedNewsSentimentAnalysis,
+    SentimentResult,
+)
 
 
 @pytest.mark.integration
@@ -44,7 +47,9 @@ def test_advanced_sentiment_analysis_with_real_polygon():
     analyzer = AdvancedNewsSentimentAnalysis()
 
     # Test with a single symbol
-    result = analyzer.analyze_symbol_sentiment("AAPL", lookback_hours=24, use_cache=False)
+    result = analyzer.analyze_symbol_sentiment(
+        "AAPL", lookback_hours=24, use_cache=False
+    )
 
     # Verify result structure
     assert isinstance(result, SentimentResult)
@@ -91,7 +96,9 @@ def test_sentiment_prioritization():
 
     # Test prioritization
     symbols = ["AAPL", "MSFT", "GOOGL", "TSLA", "NVDA"]
-    prioritized = analyzer.get_priority_symbols(symbols, lookback_hours=24, min_confidence=0.1)
+    prioritized = analyzer.get_priority_symbols(
+        symbols, lookback_hours=24, min_confidence=0.1
+    )
 
     # Verify prioritization
     assert isinstance(prioritized, list)
@@ -145,7 +152,9 @@ def test_sentiment_caching():
     assert initial_stats["total_entries"] == 0
 
     # Perform analysis with caching
-    result1 = analyzer.analyze_symbol_sentiment("AAPL", lookback_hours=24, use_cache=True)
+    result1 = analyzer.analyze_symbol_sentiment(
+        "AAPL", lookback_hours=24, use_cache=True
+    )
 
     # Check cache stats after analysis
     stats_after = analyzer.get_cache_stats()
@@ -153,7 +162,9 @@ def test_sentiment_caching():
     assert stats_after["active_entries"] == 1
 
     # Perform same analysis again (should use cache)
-    result2 = analyzer.analyze_symbol_sentiment("AAPL", lookback_hours=24, use_cache=True)
+    result2 = analyzer.analyze_symbol_sentiment(
+        "AAPL", lookback_hours=24, use_cache=True
+    )
 
     # Results should be identical (from cache)
     assert result1.symbol == result2.symbol
@@ -178,7 +189,9 @@ def test_advanced_sentiment_patterns():
     assert confidence > 0.0  # Should have some confidence
 
     # Test negative sentiment patterns
-    negative_text = "Company misses earnings targets and cuts guidance due to market challenges"
+    negative_text = (
+        "Company misses earnings targets and cuts guidance due to market challenges"
+    )
     sentiment, confidence = analyzer._analyze_sentiment_advanced(negative_text)
     assert sentiment < 0.0  # Should be negative
     assert confidence > 0.0  # Should have some confidence
@@ -196,8 +209,14 @@ def test_market_impact_calculation():
 
     # Test high impact articles
     high_impact_articles = [
-        {"title": "Apple reports record earnings", "description": "CEO announces major acquisition"},
-        {"title": "SEC investigation launched", "description": "Company faces regulatory scrutiny"},
+        {
+            "title": "Apple reports record earnings",
+            "description": "CEO announces major acquisition",
+        },
+        {
+            "title": "SEC investigation launched",
+            "description": "Company faces regulatory scrutiny",
+        },
     ]
     high_impact = analyzer._calculate_market_impact(high_impact_articles)
     assert high_impact > 0.0

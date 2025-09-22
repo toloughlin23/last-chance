@@ -40,7 +40,9 @@ def test_phase1_learning_cycle():
     learning_loop = Phase1LearningLoop(symbols, learning_rate=0.01)
 
     # Run one learning cycle
-    diversity_metrics = learning_loop.run_learning_cycle(lookback_days=2, execute_trades=False)
+    diversity_metrics = learning_loop.run_learning_cycle(
+        lookback_days=2, execute_trades=False
+    )
 
     # Check metrics are calculated
     assert "overall_variance" in diversity_metrics
@@ -52,7 +54,9 @@ def test_phase1_learning_cycle():
 
     print("✅ Learning cycle test passed")
     print(f"   Overall variance: {diversity_metrics['overall_variance']:.4f}")
-    print(f"   Cross-algorithm variance: {diversity_metrics['cross_algorithm_variance']:.4f}")
+    print(
+        f"   Cross-algorithm variance: {diversity_metrics['cross_algorithm_variance']:.4f}"
+    )
 
 
 def test_phase1_learning_loop_diversity():
@@ -67,7 +71,9 @@ def test_phase1_learning_loop_diversity():
     # Run multiple learning cycles
     for i in range(5):
         print(f"\n🔄 Learning cycle {i + 1}/5")
-        diversity_metrics = learning_loop.run_learning_cycle(lookback_days=3, execute_trades=False)
+        diversity_metrics = learning_loop.run_learning_cycle(
+            lookback_days=3, execute_trades=False
+        )
 
         overall_variance = diversity_metrics.get("overall_variance", 0)
         cross_algorithm_variance = diversity_metrics.get("cross_algorithm_variance", 0)
@@ -77,7 +83,9 @@ def test_phase1_learning_loop_diversity():
 
         # Check if we've achieved target diversity
         if overall_variance > 0.15:
-            print(f"🎯 TARGET ACHIEVED! Overall variance: {overall_variance:.4f} > 0.15")
+            print(
+                f"🎯 TARGET ACHIEVED! Overall variance: {overall_variance:.4f} > 0.15"
+            )
             break
 
     # Final diversity check
@@ -88,15 +96,21 @@ def test_phase1_learning_loop_diversity():
     print("\n📊 FINAL DIVERSITY RESULTS:")
     print(f"   Overall variance: {overall_variance:.4f}")
     print(f"   Cross-algorithm variance: {cross_algorithm_variance:.4f}")
-    print(f"   Coefficient of variation: {final_diversity.get('coefficient_of_variation', 0):.4f}")
+    print(
+        f"   Coefficient of variation: {final_diversity.get('coefficient_of_variation', 0):.4f}"
+    )
 
     # Check Bronze Tier compliance
     if overall_variance > 0.15:
         print("🏆 BRONZE TIER COMPLIANCE: ✅ ACHIEVED")
-        assert overall_variance > 0.15, "Overall variance should be > 0.15 for Bronze Tier compliance"
+        assert (
+            overall_variance > 0.15
+        ), "Overall variance should be > 0.15 for Bronze Tier compliance"
     else:
         print("⚠️ BRONZE TIER COMPLIANCE: ❌ NOT ACHIEVED")
-        print("   This is expected for initial test - real training will improve diversity")
+        print(
+            "   This is expected for initial test - real training will improve diversity"
+        )
 
     print("✅ Learning loop diversity test completed")
 
@@ -126,8 +140,12 @@ def test_phase1_algorithm_learning():
     print(f"UCB-V arms: {initial_ucbv_arms} → {final_ucbv_arms}")
 
     # Check that algorithms have learned something
-    assert final_linucb_arms >= initial_linucb_arms, "LinUCB should have learned new arms"
-    assert final_neural_arms >= initial_neural_arms, "Neural Bandit should have learned new networks"
+    assert (
+        final_linucb_arms >= initial_linucb_arms
+    ), "LinUCB should have learned new arms"
+    assert (
+        final_neural_arms >= initial_neural_arms
+    ), "Neural Bandit should have learned new networks"
     assert final_ucbv_arms >= initial_ucbv_arms, "UCB-V should have learned new arms"
 
     print("✅ Algorithm learning test passed")
@@ -147,12 +165,16 @@ def test_phase1_learning_metrics():
     metrics = learning_loop.metrics
 
     assert metrics.total_iterations > 0, "Total iterations should be > 0"
-    assert metrics.algorithm_performance is not None, "Algorithm performance should be tracked"
+    assert (
+        metrics.algorithm_performance is not None
+    ), "Algorithm performance should be tracked"
     assert metrics.diversity_scores is not None, "Diversity scores should be tracked"
 
     # Check algorithm performance tracking
     for alg_name in ["linucb", "neural", "ucbv"]:
-        assert alg_name in metrics.algorithm_performance, f"{alg_name} performance should be tracked"
+        assert (
+            alg_name in metrics.algorithm_performance
+        ), f"{alg_name} performance should be tracked"
         perf = metrics.algorithm_performance[alg_name]
         assert "total_reward" in perf, f"{alg_name} should track total reward"
         assert "trades" in perf, f"{alg_name} should track trades"

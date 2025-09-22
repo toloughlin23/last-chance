@@ -31,7 +31,9 @@ def test_polygon_client_aggs_real_api():
         pytest.skip("POLYGON_API_KEY not set; skipping PolygonClient integration test.")
 
     client = PolygonClient()
-    data = client.get_aggs("AAPL", 1, "day", "2023-01-03", "2023-01-10", limit=5, adjusted=True, sort="asc")
+    data = client.get_aggs(
+        "AAPL", 1, "day", "2023-01-03", "2023-01-10", limit=5, adjusted=True, sort="asc"
+    )
 
     assert isinstance(data, dict)
     assert data.get("ticker") == "AAPL"

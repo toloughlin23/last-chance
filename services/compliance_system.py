@@ -192,7 +192,10 @@ class UKROIComplianceSystem:
             category="product_governance",
             applicable_regulations=["MiFID II"],
             check_function="_check_product_governance",
-            parameters={"target_market_validation": True, "risk_warning_required": True},
+            parameters={
+                "target_market_validation": True,
+                "risk_warning_required": True,
+            },
         )
 
         rules["mifid_003"] = ComplianceRule(
@@ -283,7 +286,9 @@ class UKROIComplianceSystem:
 
         if not logger.handlers:
             handler = logging.StreamHandler()
-            formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+            formatter = logging.Formatter(
+                "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+            )
             handler.setFormatter(formatter)
             logger.addHandler(handler)
 
@@ -295,7 +300,9 @@ class UKROIComplianceSystem:
             try:
                 with open(self.compliance_db_path, "r") as f:
                     data = json.load(f)
-                    return [ComplianceReport(**report) for report in data.get("reports", [])]
+                    return [
+                        ComplianceReport(**report) for report in data.get("reports", [])
+                    ]
             except Exception as e:
                 self.logger.warning(f"Failed to load compliance history: {e}")
 
@@ -304,13 +311,17 @@ class UKROIComplianceSystem:
     def _save_compliance_history(self):
         """Save compliance history to database"""
         try:
-            data = {"reports": [asdict(report) for report in self.compliance_history[-100:]]}  # Keep last 100 reports
+            data = {
+                "reports": [asdict(report) for report in self.compliance_history[-100:]]
+            }  # Keep last 100 reports
             with open(self.compliance_db_path, "w") as f:
                 json.dump(data, f, indent=2, default=str)
         except Exception as e:
             self.logger.error(f"Failed to save compliance history: {e}")
 
-    def _check_client_money_protection(self, context: Dict[str, Any]) -> ComplianceCheck:
+    def _check_client_money_protection(
+        self, context: Dict[str, Any]
+    ) -> ComplianceCheck:
         """Check client money protection compliance"""
         start_time = time.time()
 
@@ -319,7 +330,9 @@ class UKROIComplianceSystem:
             total_assets = context.get("total_assets", 0.0)
             segregated_ratio = client_money / max(total_assets, 1.0)
 
-            min_ratio = self.compliance_rules["fca_001"].parameters["min_segregation_ratio"]
+            min_ratio = self.compliance_rules["fca_001"].parameters[
+                "min_segregation_ratio"
+            ]
 
             if segregated_ratio >= min_ratio:
                 status = ComplianceStatus.COMPLIANT
@@ -400,7 +413,9 @@ class UKROIComplianceSystem:
             severity_score=severity_score,
         )
 
-    def _check_market_abuse_prevention(self, context: Dict[str, Any]) -> ComplianceCheck:
+    def _check_market_abuse_prevention(
+        self, context: Dict[str, Any]
+    ) -> ComplianceCheck:
         """Check market abuse prevention compliance"""
         start_time = time.time()
 
@@ -409,7 +424,9 @@ class UKROIComplianceSystem:
             total_market_cap = context.get("total_market_cap", 0.0)
             position_ratio = position_size / max(total_market_cap, 1.0)
 
-            max_position = self.compliance_rules["fca_003"].parameters["max_position_size"]
+            max_position = self.compliance_rules["fca_003"].parameters[
+                "max_position_size"
+            ]
 
             if position_ratio <= max_position:
                 status = ComplianceStatus.COMPLIANT
@@ -452,13 +469,19 @@ class UKROIComplianceSystem:
         try:
             transaction_time = context.get("transaction_time", datetime.now(UTC))
             reporting_deadline = transaction_time + timedelta(
-                hours=self.compliance_rules["mifid_001"].parameters["reporting_deadline_hours"]
+                hours=self.compliance_rules["mifid_001"].parameters[
+                    "reporting_deadline_hours"
+                ]
             )
 
-            required_fields = self.compliance_rules["mifid_001"].parameters["required_fields"]
+            required_fields = self.compliance_rules["mifid_001"].parameters[
+                "required_fields"
+            ]
             transaction_data = context.get("transaction_data", {})
 
-            missing_fields = [field for field in required_fields if field not in transaction_data]
+            missing_fields = [
+                field for field in required_fields if field not in transaction_data
+            ]
 
             if not missing_fields and datetime.now(UTC) <= reporting_deadline:
                 status = ComplianceStatus.COMPLIANT
@@ -466,7 +489,9 @@ class UKROIComplianceSystem:
                 severity_score = 0.0
             else:
                 status = ComplianceStatus.NON_COMPLIANT
-                message = f"Transaction reporting non-compliant: missing {missing_fields}"
+                message = (
+                    f"Transaction reporting non-compliant: missing {missing_fields}"
+                )
                 severity_score = 0.9
 
             details = {
@@ -533,7 +558,9 @@ class UKROIComplianceSystem:
             severity_score=severity_score,
         )
 
-    def _check_algorithmic_trading_controls(self, context: Dict[str, Any]) -> ComplianceCheck:
+    def _check_algorithmic_trading_controls(
+        self, context: Dict[str, Any]
+    ) -> ComplianceCheck:
         """Check algorithmic trading controls compliance"""
         start_time = time.time()
 
@@ -541,7 +568,9 @@ class UKROIComplianceSystem:
             order_rate = context.get("order_rate", 0)
             circuit_breaker_triggered = context.get("circuit_breaker_triggered", False)
 
-            max_order_rate = self.compliance_rules["mifid_003"].parameters["max_order_rate"]
+            max_order_rate = self.compliance_rules["mifid_003"].parameters[
+                "max_order_rate"
+            ]
 
             if order_rate <= max_order_rate and not circuit_breaker_triggered:
                 status = ComplianceStatus.COMPLIANT
@@ -584,7 +613,9 @@ class UKROIComplianceSystem:
             data_processing_risk = context.get("data_processing_risk", 0.0)
             dpia_conducted = context.get("dpia_conducted", False)
 
-            high_risk_threshold = self.compliance_rules["gdpr_001"].parameters["high_risk_threshold"]
+            high_risk_threshold = self.compliance_rules["gdpr_001"].parameters[
+                "high_risk_threshold"
+            ]
 
             if data_processing_risk <= high_risk_threshold or dpia_conducted:
                 status = ComplianceStatus.COMPLIANT
@@ -627,7 +658,9 @@ class UKROIComplianceSystem:
             data_retention_days = context.get("data_retention_days", 0)
             purpose_limitation = context.get("purpose_limitation", False)
 
-            max_retention = self.compliance_rules["gdpr_002"].parameters["max_data_retention_days"]
+            max_retention = self.compliance_rules["gdpr_002"].parameters[
+                "max_data_retention_days"
+            ]
 
             if data_retention_days <= max_retention and purpose_limitation:
                 status = ComplianceStatus.COMPLIANT
@@ -679,7 +712,10 @@ class UKROIComplianceSystem:
                 message = "Consent management non-compliant"
                 severity_score = 0.8
 
-            details = {"explicit_consent": explicit_consent, "withdrawal_right": withdrawal_right}
+            details = {
+                "explicit_consent": explicit_consent,
+                "withdrawal_right": withdrawal_right,
+            }
 
         except Exception as e:
             status = ComplianceStatus.ERROR
@@ -708,7 +744,9 @@ class UKROIComplianceSystem:
             total_portfolio = context.get("total_portfolio", 0.0)
             position_ratio = position_size / max(total_portfolio, 1.0)
 
-            max_position = self.compliance_rules["risk_001"].parameters["max_position_size"]
+            max_position = self.compliance_rules["risk_001"].parameters[
+                "max_position_size"
+            ]
 
             if position_ratio <= max_position:
                 status = ComplianceStatus.COMPLIANT
@@ -753,7 +791,9 @@ class UKROIComplianceSystem:
             total_portfolio = context.get("total_portfolio", 0.0)
             liquidity_ratio = liquid_assets / max(total_portfolio, 1.0)
 
-            min_liquidity = self.compliance_rules["risk_002"].parameters["min_liquidity_ratio"]
+            min_liquidity = self.compliance_rules["risk_002"].parameters[
+                "min_liquidity_ratio"
+            ]
 
             if liquidity_ratio >= min_liquidity:
                 status = ComplianceStatus.COMPLIANT
@@ -794,10 +834,14 @@ class UKROIComplianceSystem:
         start_time = time.time()
 
         try:
-            last_stress_test = context.get("last_stress_test", datetime.min.replace(tzinfo=UTC))
+            last_stress_test = context.get(
+                "last_stress_test", datetime.min.replace(tzinfo=UTC)
+            )
             days_since_test = (datetime.now(UTC) - last_stress_test).days
 
-            stress_test_frequency = self.compliance_rules["risk_003"].parameters["stress_test_frequency_days"]
+            stress_test_frequency = self.compliance_rules["risk_003"].parameters[
+                "stress_test_frequency_days"
+            ]
 
             if days_since_test <= stress_test_frequency:
                 status = ComplianceStatus.COMPLIANT
@@ -832,14 +876,20 @@ class UKROIComplianceSystem:
             severity_score=severity_score,
         )
 
-    def run_compliance_check(self, context: Dict[str, Any], rule_ids: Optional[List[str]] = None) -> ComplianceReport:
+    def run_compliance_check(
+        self, context: Dict[str, Any], rule_ids: Optional[List[str]] = None
+    ) -> ComplianceReport:
         """
         ENHANCED: Run comprehensive compliance check
         """
         start_time = time.time()
 
         if rule_ids is None:
-            rule_ids = [rule_id for rule_id, rule in self.compliance_rules.items() if rule.enabled]
+            rule_ids = [
+                rule_id
+                for rule_id, rule in self.compliance_rules.items()
+                if rule.enabled
+            ]
 
         checks = []
 
@@ -873,9 +923,15 @@ class UKROIComplianceSystem:
 
         # Calculate overall status
         total_checks = len(checks)
-        passed_checks = len([c for c in checks if c.status == ComplianceStatus.COMPLIANT])
-        failed_checks = len([c for c in checks if c.status == ComplianceStatus.NON_COMPLIANT])
-        warning_checks = len([c for c in checks if c.status == ComplianceStatus.WARNING])
+        passed_checks = len(
+            [c for c in checks if c.status == ComplianceStatus.COMPLIANT]
+        )
+        failed_checks = len(
+            [c for c in checks if c.status == ComplianceStatus.NON_COMPLIANT]
+        )
+        warning_checks = len(
+            [c for c in checks if c.status == ComplianceStatus.WARNING]
+        )
 
         if failed_checks > 0:
             overall_status = ComplianceStatus.NON_COMPLIANT
@@ -902,9 +958,14 @@ class UKROIComplianceSystem:
             checks=checks,
             summary={
                 "compliance_score": compliance_score,
-                "average_execution_time_ms": sum(c.execution_time_ms for c in checks) / max(len(checks), 1),
-                "critical_violations": len([c for c in checks if c.severity_score >= 0.9]),
-                "regulatory_coverage": len(set(c.rule_id.split("_")[0] for c in checks)),
+                "average_execution_time_ms": sum(c.execution_time_ms for c in checks)
+                / max(len(checks), 1),
+                "critical_violations": len(
+                    [c for c in checks if c.severity_score >= 0.9]
+                ),
+                "regulatory_coverage": len(
+                    set(c.rule_id.split("_")[0] for c in checks)
+                ),
             },
         )
 
@@ -980,7 +1041,12 @@ def main():
         "position_size": 50000.0,
         "total_market_cap": 1000000000.0,
         "transaction_time": datetime.now(UTC),
-        "transaction_data": {"client_id": "CLIENT_001", "instrument": "AAPL", "quantity": 100, "price": 150.0},
+        "transaction_data": {
+            "client_id": "CLIENT_001",
+            "instrument": "AAPL",
+            "quantity": 100,
+            "price": 150.0,
+        },
         "target_market_validation": True,
         "risk_warning_provided": True,
         "order_rate": 500,

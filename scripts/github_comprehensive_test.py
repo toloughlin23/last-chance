@@ -30,7 +30,9 @@ class GitHubComprehensiveTester:
 
         # Test Git remote
         try:
-            result = subprocess.run(["git", "remote", "-v"], capture_output=True, text=True, timeout=10)
+            result = subprocess.run(
+                ["git", "remote", "-v"], capture_output=True, text=True, timeout=10
+            )
 
             if result.returncode == 0 and "github.com" in result.stdout:
                 print("  ✅ Git remote configured correctly")
@@ -44,7 +46,9 @@ class GitHubComprehensiveTester:
 
         # Test Git fetch
         try:
-            result = subprocess.run(["git", "fetch", "origin"], capture_output=True, text=True, timeout=30)
+            result = subprocess.run(
+                ["git", "fetch", "origin"], capture_output=True, text=True, timeout=30
+            )
 
             if result.returncode == 0:
                 print("  ✅ Git fetch successful - GitHub connection working")
@@ -58,7 +62,9 @@ class GitHubComprehensiveTester:
 
         # Test GitHub CLI
         try:
-            result = subprocess.run(["gh", "auth", "status"], capture_output=True, text=True, timeout=10)
+            result = subprocess.run(
+                ["gh", "auth", "status"], capture_output=True, text=True, timeout=10
+            )
 
             if result.returncode == 0 and "Logged in" in result.stdout:
                 print("  ✅ GitHub CLI authenticated")
@@ -83,7 +89,10 @@ class GitHubComprehensiveTester:
         # Test Algorithm Imports
         algorithm_tests = [
             ("CORE_SUPER_BANDITS.optimized_linucb_institutional", "LinUCB Algorithm"),
-            ("CORE_SUPER_BANDITS.optimized_neural_bandit_institutional", "Neural Bandit Algorithm"),
+            (
+                "CORE_SUPER_BANDITS.optimized_neural_bandit_institutional",
+                "Neural Bandit Algorithm",
+            ),
             ("CORE_SUPER_BANDITS.optimized_ucbv_institutional", "UCBV Algorithm"),
         ]
 
@@ -161,7 +170,9 @@ class GitHubComprehensiveTester:
 
         # Test LinUCB
         try:
-            from CORE_SUPER_BANDITS.optimized_linucb_institutional import OptimizedInstitutionalLinUCB
+            from CORE_SUPER_BANDITS.optimized_linucb_institutional import (
+                OptimizedInstitutionalLinUCB,
+            )
 
             bandit = OptimizedInstitutionalLinUCB()
 
@@ -183,7 +194,13 @@ class GitHubComprehensiveTester:
                     )(),
                     "data_quality_score": 0.9,
                     "market_data": type(
-                        "Market", (), {"price_momentum": 0.01, "volatility": 0.02, "volume_ratio": 1.0}
+                        "Market",
+                        (),
+                        {
+                            "price_momentum": 0.01,
+                            "volatility": 0.02,
+                            "volume_ratio": 1.0,
+                        },
                     )(),
                 },
             )()
@@ -204,7 +221,9 @@ class GitHubComprehensiveTester:
 
         # Test Neural Bandit
         try:
-            from CORE_SUPER_BANDITS.optimized_neural_bandit_institutional import OptimizedInstitutionalNeuralBandit
+            from CORE_SUPER_BANDITS.optimized_neural_bandit_institutional import (
+                OptimizedInstitutionalNeuralBandit,
+            )
 
             bandit = OptimizedInstitutionalNeuralBandit()
 
@@ -226,7 +245,13 @@ class GitHubComprehensiveTester:
                     )(),
                     "data_quality_score": 0.9,
                     "market_data": type(
-                        "Market", (), {"price_momentum": 0.01, "volatility": 0.02, "volume_ratio": 1.0}
+                        "Market",
+                        (),
+                        {
+                            "price_momentum": 0.01,
+                            "volatility": 0.02,
+                            "volume_ratio": 1.0,
+                        },
                     )(),
                 },
             )()
@@ -247,7 +272,9 @@ class GitHubComprehensiveTester:
 
         # Test UCBV
         try:
-            from CORE_SUPER_BANDITS.optimized_ucbv_institutional import OptimizedInstitutionalUCBV
+            from CORE_SUPER_BANDITS.optimized_ucbv_institutional import (
+                OptimizedInstitutionalUCBV,
+            )
 
             bandit = OptimizedInstitutionalUCBV()
 
@@ -269,7 +296,13 @@ class GitHubComprehensiveTester:
                     )(),
                     "data_quality_score": 0.9,
                     "market_data": type(
-                        "Market", (), {"price_momentum": 0.01, "volatility": 0.02, "volume_ratio": 1.0}
+                        "Market",
+                        (),
+                        {
+                            "price_momentum": 0.01,
+                            "volatility": 0.02,
+                            "volume_ratio": 1.0,
+                        },
                     )(),
                 },
             )()
@@ -317,7 +350,9 @@ class GitHubComprehensiveTester:
 
         # Test Infrastructure Manager
         try:
-            from services.infrastructure_manager import InstitutionalInfrastructureManager
+            from services.infrastructure_manager import (
+                InstitutionalInfrastructureManager,
+            )
 
             manager = InstitutionalInfrastructureManager()
 
@@ -442,7 +477,12 @@ class GitHubComprehensiveTester:
 
         # Test Git status
         try:
-            result = subprocess.run(["git", "status", "--porcelain"], capture_output=True, text=True, timeout=10)
+            result = subprocess.run(
+                ["git", "status", "--porcelain"],
+                capture_output=True,
+                text=True,
+                timeout=10,
+            )
 
             if result.returncode == 0:
                 print("  ✅ Git status working")
@@ -456,7 +496,12 @@ class GitHubComprehensiveTester:
 
         # Test Git branch
         try:
-            result = subprocess.run(["git", "branch", "--show-current"], capture_output=True, text=True, timeout=10)
+            result = subprocess.run(
+                ["git", "branch", "--show-current"],
+                capture_output=True,
+                text=True,
+                timeout=10,
+            )
 
             if result.returncode == 0 and result.stdout.strip():
                 print(f"  ✅ Current branch: {result.stdout.strip()}")
@@ -470,7 +515,12 @@ class GitHubComprehensiveTester:
 
         # Test Git log
         try:
-            result = subprocess.run(["git", "log", "--oneline", "-5"], capture_output=True, text=True, timeout=10)
+            result = subprocess.run(
+                ["git", "log", "--oneline", "-5"],
+                capture_output=True,
+                text=True,
+                timeout=10,
+            )
 
             if result.returncode == 0 and result.stdout.strip():
                 print("  ✅ Git log working")
@@ -551,7 +601,9 @@ class GitHubComprehensiveTester:
         print(f"{'='*80}")
 
         if total_failed == 0:
-            print("🎉 ALL GITHUB COMPREHENSIVE TESTS PASSED! SYSTEM IS PRODUCTION READY!")
+            print(
+                "🎉 ALL GITHUB COMPREHENSIVE TESTS PASSED! SYSTEM IS PRODUCTION READY!"
+            )
         else:
             print(f"⚠️  {total_failed} TESTS FAILED - REVIEW AND FIX BEFORE PRODUCTION")
 

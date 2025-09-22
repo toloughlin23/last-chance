@@ -23,7 +23,9 @@ def test_github_integration():
 
     # Test Git remote
     try:
-        result = subprocess.run(["git", "remote", "-v"], capture_output=True, text=True, timeout=10)
+        result = subprocess.run(
+            ["git", "remote", "-v"], capture_output=True, text=True, timeout=10
+        )
         if result.returncode == 0 and "github.com" in result.stdout:
             print("  ✅ Git remote configured")
             tests.append(True)
@@ -36,7 +38,9 @@ def test_github_integration():
 
     # Test Git fetch
     try:
-        result = subprocess.run(["git", "fetch", "origin"], capture_output=True, text=True, timeout=30)
+        result = subprocess.run(
+            ["git", "fetch", "origin"], capture_output=True, text=True, timeout=30
+        )
         if result.returncode == 0:
             print("  ✅ Git fetch successful")
             tests.append(True)
@@ -49,7 +53,9 @@ def test_github_integration():
 
     # Test Git status
     try:
-        result = subprocess.run(["git", "status", "--porcelain"], capture_output=True, text=True, timeout=10)
+        result = subprocess.run(
+            ["git", "status", "--porcelain"], capture_output=True, text=True, timeout=10
+        )
         if result.returncode == 0:
             print("  ✅ Git status working")
             tests.append(True)
@@ -62,13 +68,25 @@ def test_github_integration():
 
     # Test Git branch (support detached HEAD in CI)
     try:
-        result = subprocess.run(["git", "branch", "--show-current"], capture_output=True, text=True, timeout=10)
+        result = subprocess.run(
+            ["git", "branch", "--show-current"],
+            capture_output=True,
+            text=True,
+            timeout=10,
+        )
         branch = result.stdout.strip() if result.returncode == 0 else ""
         if not branch:
             # In pull_request runs GitHub checks out a detached HEAD; use CI env vars or commit SHA
-            branch = os.getenv("GITHUB_HEAD_REF") or os.getenv("GITHUB_REF", "").replace("refs/heads/", "")
+            branch = os.getenv("GITHUB_HEAD_REF") or os.getenv(
+                "GITHUB_REF", ""
+            ).replace("refs/heads/", "")
         if not branch:
-            sha = subprocess.run(["git", "rev-parse", "--short", "HEAD"], capture_output=True, text=True, timeout=10)
+            sha = subprocess.run(
+                ["git", "rev-parse", "--short", "HEAD"],
+                capture_output=True,
+                text=True,
+                timeout=10,
+            )
             if sha.returncode == 0 and sha.stdout.strip():
                 print(f"  ✅ Detached HEAD detected @ {sha.stdout.strip()} (CI)\n")
                 tests.append(True)
@@ -94,7 +112,10 @@ def test_core_imports():
 
     modules = [
         ("CORE_SUPER_BANDITS.optimized_linucb_institutional", "LinUCB Algorithm"),
-        ("CORE_SUPER_BANDITS.optimized_neural_bandit_institutional", "Neural Bandit Algorithm"),
+        (
+            "CORE_SUPER_BANDITS.optimized_neural_bandit_institutional",
+            "Neural Bandit Algorithm",
+        ),
         ("CORE_SUPER_BANDITS.optimized_ucbv_institutional", "UCBV Algorithm"),
         ("services.advanced_news_sentiment", "Advanced News Sentiment"),
         ("services.infrastructure_manager", "Infrastructure Manager"),
@@ -134,7 +155,9 @@ def test_algorithm_initialization():
 
     # Test LinUCB
     try:
-        from CORE_SUPER_BANDITS.optimized_linucb_institutional import OptimizedInstitutionalLinUCB
+        from CORE_SUPER_BANDITS.optimized_linucb_institutional import (
+            OptimizedInstitutionalLinUCB,
+        )
 
         OptimizedInstitutionalLinUCB()
         print("  ✅ LinUCB Algorithm - Initialized")
@@ -145,7 +168,9 @@ def test_algorithm_initialization():
 
     # Test Neural Bandit
     try:
-        from CORE_SUPER_BANDITS.optimized_neural_bandit_institutional import OptimizedInstitutionalNeuralBandit
+        from CORE_SUPER_BANDITS.optimized_neural_bandit_institutional import (
+            OptimizedInstitutionalNeuralBandit,
+        )
 
         OptimizedInstitutionalNeuralBandit()
         print("  ✅ Neural Bandit Algorithm - Initialized")
@@ -156,7 +181,9 @@ def test_algorithm_initialization():
 
     # Test UCBV
     try:
-        from CORE_SUPER_BANDITS.optimized_ucbv_institutional import OptimizedInstitutionalUCBV
+        from CORE_SUPER_BANDITS.optimized_ucbv_institutional import (
+            OptimizedInstitutionalUCBV,
+        )
 
         OptimizedInstitutionalUCBV()
         print("  ✅ UCBV Algorithm - Initialized")

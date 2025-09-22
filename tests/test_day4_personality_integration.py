@@ -1,5 +1,9 @@
-from CORE_SUPER_BANDITS.optimized_linucb_institutional import OptimizedInstitutionalLinUCB
-from CORE_SUPER_BANDITS.optimized_neural_bandit_institutional import OptimizedInstitutionalNeuralBandit
+from CORE_SUPER_BANDITS.optimized_linucb_institutional import (
+    OptimizedInstitutionalLinUCB,
+)
+from CORE_SUPER_BANDITS.optimized_neural_bandit_institutional import (
+    OptimizedInstitutionalNeuralBandit,
+)
 from CORE_SUPER_BANDITS.optimized_ucbv_institutional import OptimizedInstitutionalUCBV
 from systems.personality import AuthenticPersonalitySystem, PersonalityProfile
 
@@ -72,7 +76,17 @@ def test_personality_affects_ucbv_confidence():
     def mk(price, pc, hi, lo, vol, vwap):
         return {
             "status": "OK",
-            "results": {"p": price, "s": vol, "t": 0, "c": [1], "o": pc, "h": hi, "l": lo, "v": vol, "vw": vwap},
+            "results": {
+                "p": price,
+                "s": vol,
+                "t": 0,
+                "c": [1],
+                "o": pc,
+                "h": hi,
+                "l": lo,
+                "v": vol,
+                "vw": vwap,
+            },
             "prev_close": pc,
             "high": hi,
             "low": lo,

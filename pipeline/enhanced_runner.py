@@ -18,8 +18,12 @@ from datetime import date, datetime, timedelta
 from datetime import timezone as _timezone
 from typing import Any, Dict, List, Optional, Tuple
 
-from CORE_SUPER_BANDITS.optimized_linucb_institutional import OptimizedInstitutionalLinUCB
-from CORE_SUPER_BANDITS.optimized_neural_bandit_institutional import OptimizedInstitutionalNeuralBandit
+from CORE_SUPER_BANDITS.optimized_linucb_institutional import (
+    OptimizedInstitutionalLinUCB,
+)
+from CORE_SUPER_BANDITS.optimized_neural_bandit_institutional import (
+    OptimizedInstitutionalNeuralBandit,
+)
 from CORE_SUPER_BANDITS.optimized_ucbv_institutional import OptimizedInstitutionalUCBV
 from pipeline.hygiene import Hygiene
 from services.advanced_news_sentiment import AdvancedNewsSentimentAnalysis
@@ -125,13 +129,18 @@ class EnhancedPipelineRunner:
             # ENHANCED: Use data fetching thread pool
             def fetch_single_symbol(symbol: str) -> Tuple[str, Dict[str, Any], str]:
                 try:
-                    aggs = self.polygon_client.get_aggs(symbol, 1, "day", start_date, end_date, limit, adjusted, sort)
+                    aggs = self.polygon_client.get_aggs(
+                        symbol, 1, "day", start_date, end_date, limit, adjusted, sort
+                    )
                     return symbol, aggs, "success"
                 except Exception as e:
                     return symbol, {"results": []}, str(e)
 
             # ENHANCED: Create tasks for parallel execution
-            tasks = [(f"fetch_{symbol}", fetch_single_symbol, (symbol,)) for symbol in attempt_syms]
+            tasks = [
+                (f"fetch_{symbol}", fetch_single_symbol, (symbol,))
+                for symbol in attempt_syms
+            ]
 
             # ENHANCED: Execute with infrastructure manager
             results = self.infra.execute_parallel_tasks(tasks, "data_fetching")
@@ -140,7 +149,10 @@ class EnhancedPipelineRunner:
                 symbol = task_id.replace("fetch_", "")
                 if error is None:
                     aggs_map[symbol] = result
-                    status_map[symbol] = ("success" if attempt == 0 else "retried_success", attempt)
+                    status_map[symbol] = (
+                        "success" if attempt == 0 else "retried_success",
+                        attempt,
+                    )
 
                     # ENHANCED: Cache successful results
                     cache_key = f"polygon_aggs_{symbol}_{start_date}_{end_date}"
@@ -182,7 +194,9 @@ class EnhancedPipelineRunner:
 
         # ENHANCED: Get resource stats before processing
         stats = self.infra.get_resource_stats()
-        print(f"📊 Resources: CPU {stats.cpu_percent:.1f}%, Memory {stats.memory_percent:.1f}%")
+        print(
+            f"📊 Resources: CPU {stats.cpu_percent:.1f}%, Memory {stats.memory_percent:.1f}%"
+        )
 
         # ENHANCED: CSV header with additional metrics
         header = [
@@ -214,24 +228,41 @@ class EnhancedPipelineRunner:
             # ENHANCED: Prioritize symbols by advanced news sentiment
             if prioritize_by_news:
                 print("📰 Analyzing news sentiment for prioritization...")
-                sentiment_results = self.news_analyzer.analyze_multiple_symbols(symbols, lookback_hours=24)
+                sentiment_results = self.news_analyzer.analyze_multiple_symbols(
+                    symbols, lookback_hours=24
+                )
                 ordered_symbols = sorted(
-                    symbols, key=lambda s: getattr(sentiment_results.get(s, None), "sentiment_score", 0), reverse=True
+                    symbols,
+                    key=lambda s: getattr(
+                        sentiment_results.get(s, None), "sentiment_score", 0
+                    ),
+                    reverse=True,
                 )
             else:
                 ordered_symbols = symbols
 
             # ENHANCED: Apply hygiene with infrastructure monitoring
-            safe_symbols = self.hygiene.filter_symbols(ordered_symbols, strategy_profile=strategy_profile)
+            safe_symbols = self.hygiene.filter_symbols(
+                ordered_symbols, strategy_profile=strategy_profile
+            )
             print(f"🧹 Hygiene filtered: {len(symbols)} -> {len(safe_symbols)} symbols")
 
             # ENHANCED: Process in batches with 24-thread architecture
-            for batch in self._chunk(safe_symbols, batch_size) if batch_size else [safe_symbols]:
+            for batch in (
+                self._chunk(safe_symbols, batch_size) if batch_size else [safe_symbols]
+            ):
                 print(f"🔄 Processing batch of {len(batch)} symbols...")
 
                 # ENHANCED: Fetch data with parallel processing
                 aggs_map, status_map = self._fetch_with_retries_enhanced(
-                    batch, start_date, end_date, 10, True, "asc", max_retries, retry_backoff
+                    batch,
+                    start_date,
+                    end_date,
+                    10,
+                    True,
+                    "asc",
+                    max_retries,
+                    retry_backoff,
                 )
 
                 # ENHANCED: Process each symbol with parallel algorithm execution
@@ -248,7 +279,11 @@ class EnhancedPipelineRunner:
 
                     if news_booster_enabled:
                         try:
-                            sentiment_result = self.news_analyzer.analyze_symbol_sentiment(symbol, lookback_hours=24)
+                            sentiment_result = (
+                                self.news_analyzer.analyze_symbol_sentiment(
+                                    symbol, lookback_hours=24
+                                )
+                            )
                             news_sentiment = sentiment_result.sentiment_score
                             news_confidence = sentiment_result.confidence
                             market_impact = sentiment_result.market_impact
@@ -256,33 +291,57 @@ class EnhancedPipelineRunner:
                             print(f"⚠️ News sentiment failed for {symbol}: {e}")
 
                     # ENHANCED: Process with all algorithms in parallel
-                    def process_algorithm(alg_name: str, algorithm, aggs_data: Dict[str, Any]) -> Tuple[str, float]:
+                    def process_algorithm(
+                        alg_name: str, algorithm, aggs_data: Dict[str, Any]
+                    ) -> Tuple[str, float]:
                         try:
                             if aggs_data.get("results"):
                                 enriched = build_enriched_from_aggs(aggs_data)
 
                                 if alg_name == "linucb":
                                     arm = algorithm.select_arm(enriched)
-                                    confidence = algorithm.get_confidence_for_context(arm, enriched)
+                                    confidence = algorithm.get_confidence_for_context(
+                                        arm, enriched
+                                    )
                                 elif alg_name == "neural":
                                     algorithm.add_arm("buy_signal")
-                                    confidence = algorithm.get_confidence("buy_signal", enriched)
+                                    confidence = algorithm.get_confidence(
+                                        "buy_signal", enriched
+                                    )
                                 elif alg_name == "ucbv":
                                     polygon_like = {
                                         "status": "OK",
                                         "results": {
-                                            "p": getattr(enriched.market_data, "price", 100.0),
-                                            "s": int(getattr(enriched.market_data, "volume", 1000000)),
+                                            "p": getattr(
+                                                enriched.market_data, "price", 100.0
+                                            ),
+                                            "s": int(
+                                                getattr(
+                                                    enriched.market_data,
+                                                    "volume",
+                                                    1000000,
+                                                )
+                                            ),
                                             "t": 0,
                                             "c": [1],
                                             "o": 0,
                                             "h": 0,
                                             "l": 0,
-                                            "v": int(getattr(enriched.market_data, "volume", 1000000)),
-                                            "vw": getattr(enriched.market_data, "price", 100.0),
+                                            "v": int(
+                                                getattr(
+                                                    enriched.market_data,
+                                                    "volume",
+                                                    1000000,
+                                                )
+                                            ),
+                                            "vw": getattr(
+                                                enriched.market_data, "price", 100.0
+                                            ),
                                         },
                                     }
-                                    action, confidence = algorithm.select_action(polygon_like)
+                                    action, confidence = algorithm.select_action(
+                                        polygon_like
+                                    )
                                 else:
                                     confidence = 0.5
 
@@ -301,7 +360,11 @@ class EnhancedPipelineRunner:
                         # ENHANCED: Handle different data formats - always make better
                         if isinstance(aggs_data, list) and len(aggs_data) >= 2:
                             # Extract the actual data from the list format
-                            actual_data = aggs_data[1] if isinstance(aggs_data[1], dict) else aggs_data[0]
+                            actual_data = (
+                                aggs_data[1]
+                                if isinstance(aggs_data[1], dict)
+                                else aggs_data[0]
+                            )
                         elif isinstance(aggs_data, dict):
                             # Already in correct format
                             actual_data = aggs_data
@@ -313,12 +376,18 @@ class EnhancedPipelineRunner:
 
                     # ENHANCED: Create algorithm processing tasks with wrapper
                     algo_tasks = [
-                        (f"{alg_name}_{symbol}", process_algorithm_wrapper, ((alg_name, algorithm, aggs),))
+                        (
+                            f"{alg_name}_{symbol}",
+                            process_algorithm_wrapper,
+                            ((alg_name, algorithm, aggs),),
+                        )
                         for alg_name, algorithm in self.algorithms.items()
                     ]
 
                     # ENHANCED: Execute algorithms in parallel
-                    algo_results = self.infra.execute_parallel_tasks(algo_tasks, "algorithm_processing")
+                    algo_results = self.infra.execute_parallel_tasks(
+                        algo_tasks, "algorithm_processing"
+                    )
 
                     # ENHANCED: Collect algorithm results
                     algorithm_confidences = {}
@@ -333,19 +402,25 @@ class EnhancedPipelineRunner:
                     ucbv_conf = algorithm_confidences.get("ucbv", 0.0)
 
                     confidences = [linucb_conf, neural_conf, ucbv_conf]
-                    avg_confidence = sum(confidences) / len(confidences) if confidences else 0.0
+                    avg_confidence = (
+                        sum(confidences) / len(confidences) if confidences else 0.0
+                    )
                     max_confidence = max(confidences) if confidences else 0.0
 
                     # ENHANCED: Calculate confidence variance
                     if len(confidences) > 1:
-                        variance = sum((c - avg_confidence) ** 2 for c in confidences) / len(confidences)
+                        variance = sum(
+                            (c - avg_confidence) ** 2 for c in confidences
+                        ) / len(confidences)
                         confidence_variance = variance**0.5
                     else:
                         confidence_variance = 0.0
 
                     # ENHANCED: Execution logic with news sentiment integration
                     executed = False
-                    if execute and avg_confidence > 0.6:  # Higher threshold for execution
+                    if (
+                        execute and avg_confidence > 0.6
+                    ):  # Higher threshold for execution
                         try:
                             # ENHANCED: News sentiment boost
                             if news_booster_enabled and news_confidence > 0.5:
@@ -366,7 +441,9 @@ class EnhancedPipelineRunner:
                             print(f"⚠️ Execution failed for {symbol}: {e}")
 
                     # ENHANCED: Calculate processing time
-                    processing_time = (time.time() - start_time) * 1000  # Convert to milliseconds
+                    processing_time = (
+                        time.time() - start_time
+                    ) * 1000  # Convert to milliseconds
 
                     # ENHANCED: Write enhanced log entry
                     w.writerow(
@@ -391,11 +468,15 @@ class EnhancedPipelineRunner:
                         ]
                     )
 
-                    print(f"   ✅ {symbol}: {avg_confidence:.3f} avg confidence, {processing_time:.1f}ms")
+                    print(
+                        f"   ✅ {symbol}: {avg_confidence:.3f} avg confidence, {processing_time:.1f}ms"
+                    )
 
         # ENHANCED: Get final resource stats
         final_stats = self.infra.get_resource_stats()
-        print(f"📊 Final resources: CPU {final_stats.cpu_percent:.1f}%, Memory {final_stats.memory_percent:.1f}%")
+        print(
+            f"📊 Final resources: CPU {final_stats.cpu_percent:.1f}%, Memory {final_stats.memory_percent:.1f}%"
+        )
         print(f"💾 Cache hit rate: {final_stats.cache_hit_rate:.1%}")
 
     def run_enhanced_loop(
@@ -437,9 +518,13 @@ class EnhancedPipelineRunner:
                             force_refresh=False,
                         )
                         if active_symbols:
-                            print(f"📚 Active universe loaded: {len(active_symbols)} symbols")
+                            print(
+                                f"📚 Active universe loaded: {len(active_symbols)} symbols"
+                            )
                         else:
-                            print("⚠️ Active universe is empty; falling back to provided symbols")
+                            print(
+                                "⚠️ Active universe is empty; falling back to provided symbols"
+                            )
                             active_symbols = symbols
                     except Exception as e:
                         print(f"⚠️ Universe refresh failed, using provided symbols: {e}")
@@ -512,13 +597,24 @@ def main():
     # Test single run
     print("🚀 Testing enhanced single run...")
     runner.run_enhanced_once(
-        test_symbols, "2023-01-03", "2023-01-10", execute=False, prioritize_by_news=True, news_booster_enabled=True
+        test_symbols,
+        "2023-01-03",
+        "2023-01-10",
+        execute=False,
+        prioritize_by_news=True,
+        news_booster_enabled=True,
     )
 
     # Test loop (short duration)
     print("🔄 Testing enhanced loop (2 iterations)...")
     runner.run_enhanced_loop(
-        test_symbols, 7, 1, execute=False, iterations=2, prioritize_by_news=True, news_booster_enabled=True
+        test_symbols,
+        7,
+        1,
+        execute=False,
+        iterations=2,
+        prioritize_by_news=True,
+        news_booster_enabled=True,
     )
 
     # Shutdown

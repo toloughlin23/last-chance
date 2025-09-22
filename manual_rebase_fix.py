@@ -12,7 +12,9 @@ import subprocess
 def run_git_command(cmd, timeout=15):
     """Run git command with timeout"""
     try:
-        result = subprocess.run(f"git {cmd}", shell=True, capture_output=True, text=True, timeout=timeout)
+        result = subprocess.run(
+            f"git {cmd}", shell=True, capture_output=True, text=True, timeout=timeout
+        )
         return result.returncode, result.stdout, result.stderr
     except subprocess.TimeoutExpired:
         return -1, "", "Command timed out"

@@ -13,8 +13,12 @@ from typing import Any, Dict, List, Optional, Tuple
 import numpy as np
 
 # Import our optimized algorithms
-from CORE_SUPER_BANDITS.optimized_linucb_institutional import OptimizedInstitutionalLinUCB
-from CORE_SUPER_BANDITS.optimized_neural_bandit_institutional import OptimizedInstitutionalNeuralBandit
+from CORE_SUPER_BANDITS.optimized_linucb_institutional import (
+    OptimizedInstitutionalLinUCB,
+)
+from CORE_SUPER_BANDITS.optimized_neural_bandit_institutional import (
+    OptimizedInstitutionalNeuralBandit,
+)
 from CORE_SUPER_BANDITS.optimized_ucbv_institutional import OptimizedInstitutionalUCBV
 from services.alpaca_client import AlpacaClient
 from services.feature_builder import build_enriched_from_aggs
@@ -64,7 +68,9 @@ class Phase1LearningLoop:
 
         # Initialize algorithms with different personalities
         self.linucb = OptimizedInstitutionalLinUCB(
-            alpha=0.8, regularization=1.0, personality=None  # Will be set by personality system
+            alpha=0.8,
+            regularization=1.0,
+            personality=None,  # Will be set by personality system
         )
 
         self.neural = OptimizedInstitutionalNeuralBandit(
@@ -74,7 +80,9 @@ class Phase1LearningLoop:
             personality=None,  # Will be set by personality system
         )
 
-        self.ucbv = OptimizedInstitutionalUCBV(personality=None)  # Will be set by personality system
+        self.ucbv = OptimizedInstitutionalUCBV(
+            personality=None
+        )  # Will be set by personality system
 
         # Market data clients
         self.polygon_client = PolygonClient()
@@ -93,7 +101,9 @@ class Phase1LearningLoop:
         print("✅ Real market data integration ready")
         print("✅ Learning feedback system active")
 
-    def run_learning_cycle(self, lookback_days: int = 5, execute_trades: bool = False) -> Dict[str, Any]:
+    def run_learning_cycle(
+        self, lookback_days: int = 5, execute_trades: bool = False
+    ) -> Dict[str, Any]:
         """
         Run one complete learning cycle with real market data
         """
@@ -122,10 +132,16 @@ class Phase1LearningLoop:
                 algorithm_decisions[symbol] = decisions
 
                 # Store confidences for diversity measurement - use ALL individual values
-                for alg_name, (decision, confidence, all_confidences) in decisions.items():
+                for alg_name, (
+                    decision,
+                    confidence,
+                    all_confidences,
+                ) in decisions.items():
                     if alg_name not in algorithm_confidences:
                         algorithm_confidences[alg_name] = []
-                    algorithm_confidences[alg_name].extend(all_confidences)  # Add all individual values
+                    algorithm_confidences[alg_name].extend(
+                        all_confidences
+                    )  # Add all individual values
 
             # 3. Calculate diversity metrics
             diversity_metrics = self._calculate_diversity_metrics(algorithm_confidences)
@@ -145,7 +161,9 @@ class Phase1LearningLoop:
             self.metrics.total_iterations = self.current_iteration
 
             print(f"\n✅ Learning cycle {self.current_iteration} completed")
-            print(f"📈 Diversity: {float(diversity_metrics.get('overall_variance', 0)):.4f}")
+            print(
+                f"📈 Diversity: {float(diversity_metrics.get('overall_variance', 0)):.4f}"
+            )
             print(f"🎯 Total P&L: ${self.metrics.total_pnl:.2f}")
 
             return diversity_metrics
@@ -191,7 +209,9 @@ class Phase1LearningLoop:
             print(f"❌ Market data fetch failed: {e}")
             return {}
 
-    def _get_algorithm_decisions(self, symbol: str, enriched_data) -> Dict[str, Tuple[str, float, List[float]]]:
+    def _get_algorithm_decisions(
+        self, symbol: str, enriched_data
+    ) -> Dict[str, Tuple[str, float, List[float]]]:
         """Get decisions from all three algorithms with all confidence values for diversity"""
         decisions = {}
 
@@ -204,7 +224,9 @@ class Phase1LearningLoop:
             for _ in range(3):  # 3 calls per algorithm for natural variation
                 # LinUCB decision
                 linucb_arm = self.linucb.select_arm(enriched_data)
-                linucb_conf = self.linucb.get_confidence_for_context(linucb_arm, enriched_data)
+                linucb_conf = self.linucb.get_confidence_for_context(
+                    linucb_arm, enriched_data
+                )
                 linucb_confidences.append(linucb_conf)
 
                 # Neural Bandit decision
@@ -218,13 +240,17 @@ class Phase1LearningLoop:
                         "status": "OK",
                         "results": {
                             "p": getattr(enriched_data.market_data, "price", 100.0),
-                            "s": int(getattr(enriched_data.market_data, "volume", 1000000)),
+                            "s": int(
+                                getattr(enriched_data.market_data, "volume", 1000000)
+                            ),
                             "t": 0,
                             "c": [1],
                             "o": 0,
                             "h": 0,
                             "l": 0,
-                            "v": int(getattr(enriched_data.market_data, "volume", 1000000)),
+                            "v": int(
+                                getattr(enriched_data.market_data, "volume", 1000000)
+                            ),
                             "vw": getattr(enriched_data.market_data, "price", 100.0),
                         },
                     }
@@ -255,7 +281,9 @@ class Phase1LearningLoop:
 
         return decisions
 
-    def _calculate_diversity_metrics(self, algorithm_confidences: Dict[str, List[float]]) -> Dict[str, float]:
+    def _calculate_diversity_metrics(
+        self, algorithm_confidences: Dict[str, List[float]]
+    ) -> Dict[str, float]:
         """Calculate diversity metrics from algorithm confidences"""
         try:
             if not algorithm_confidences:
@@ -266,7 +294,9 @@ class Phase1LearningLoop:
             for confidences in algorithm_confidences.values():
                 all_confidences.extend(confidences)
 
-            overall_variance = float(np.var(all_confidences)) if all_confidences else 0.0
+            overall_variance = (
+                float(np.var(all_confidences)) if all_confidences else 0.0
+            )
 
             # Calculate cross-algorithm variance
             algorithm_means = []
@@ -274,9 +304,13 @@ class Phase1LearningLoop:
                 if confidences:
                     mean_conf = np.mean(confidences)
                     algorithm_means.append(mean_conf)
-                    print(f"   {alg_name}: mean={mean_conf:.3f}, std={np.std(confidences):.3f}")
+                    print(
+                        f"   {alg_name}: mean={mean_conf:.3f}, std={np.std(confidences):.3f}"
+                    )
 
-            cross_algorithm_variance = float(np.var(algorithm_means)) if algorithm_means else 0.0
+            cross_algorithm_variance = (
+                float(np.var(algorithm_means)) if algorithm_means else 0.0
+            )
 
             cov = 0.0
             if all_confidences:
@@ -326,7 +360,9 @@ class Phase1LearningLoop:
 
                         # Update algorithm with trade execution
                         if best_algorithm is not None:
-                            self._update_algorithm_with_trade(best_algorithm, symbol, best_decision, best_confidence)
+                            self._update_algorithm_with_trade(
+                                best_algorithm, symbol, best_decision, best_confidence
+                            )
 
                     except Exception as e:
                         print(f"   ❌ Trade execution failed for {symbol}: {e}")
@@ -346,20 +382,26 @@ class Phase1LearningLoop:
             print(f"⚠️ Error getting market price: {e}")
             return None
 
-    def _update_algorithm_with_trade(self, algorithm_name: str, symbol: str, decision: str, confidence: float):
+    def _update_algorithm_with_trade(
+        self, algorithm_name: str, symbol: str, decision: str, confidence: float
+    ):
         """Update algorithm with trade feedback"""
         try:
             # Use REAL market price movement for P&L calculation - 100% GENUINE
             # Get current market price from Polygon
             current_price = self._get_current_market_price(symbol)
             if current_price is None:
-                print(f"⚠️ Unable to get real market price for {symbol}, skipping update")
+                print(
+                    f"⚠️ Unable to get real market price for {symbol}, skipping update"
+                )
                 return
 
             # Calculate REAL P&L based on actual price movement
             # For paper trading, we track what would have happened with real prices
             position_size = 100  # Standard position size
-            entry_price = current_price * (1 - 0.001 if decision == "buy_signal" else 1 + 0.001)  # Account for spread
+            entry_price = current_price * (
+                1 - 0.001 if decision == "buy_signal" else 1 + 0.001
+            )  # Account for spread
 
             # Wait for real price movement (in production, this comes from actual execution)
             time.sleep(1)  # Brief wait to simulate holding period
@@ -390,7 +432,10 @@ class Phase1LearningLoop:
                     decision,
                     np.zeros(15, dtype=float),
                     real_pnl,
-                    {"order_id": f"real_{symbol}_{int(time.time())}", "holding_time": 300},  # 5 minutes
+                    {
+                        "order_id": f"real_{symbol}_{int(time.time())}",
+                        "holding_time": 300,
+                    },  # 5 minutes
                 )
 
             # Update metrics
@@ -403,7 +448,9 @@ class Phase1LearningLoop:
         except Exception as e:
             print(f"❌ Algorithm update failed: {e}")
 
-    def _update_learning_metrics(self, algorithm_decisions: Dict[str, Dict[str, Tuple]]):
+    def _update_learning_metrics(
+        self, algorithm_decisions: Dict[str, Dict[str, Tuple]]
+    ):
         """Update learning metrics"""
         try:
             for symbol, decisions in algorithm_decisions.items():
@@ -413,12 +460,15 @@ class Phase1LearningLoop:
                         _decision, confidence = payload[0], float(payload[1])
                     except Exception:
                         continue
-                    if self.metrics.algorithm_performance and alg_name in self.metrics.algorithm_performance:
+                    if (
+                        self.metrics.algorithm_performance
+                        and alg_name in self.metrics.algorithm_performance
+                    ):
                         perf = self.metrics.algorithm_performance[alg_name]
                         perf["trades"] += 1
-                        perf["avg_confidence"] = (perf["avg_confidence"] * (perf["trades"] - 1) + confidence) / perf[
-                            "trades"
-                        ]
+                        perf["avg_confidence"] = (
+                            perf["avg_confidence"] * (perf["trades"] - 1) + confidence
+                        ) / perf["trades"]
 
         except Exception as e:
             print(f"❌ Metrics update failed: {e}")
@@ -428,9 +478,13 @@ class Phase1LearningLoop:
         try:
             # Adaptive learning rate based on performance
             if self.metrics.total_pnl > 0:
-                self.learning_rate = min(0.1, self.learning_rate * 1.01)  # Increase learning rate
+                self.learning_rate = min(
+                    0.1, self.learning_rate * 1.01
+                )  # Increase learning rate
             else:
-                self.learning_rate = max(0.001, self.learning_rate * 0.99)  # Decrease learning rate
+                self.learning_rate = max(
+                    0.001, self.learning_rate * 0.99
+                )  # Decrease learning rate
 
             # Update Neural Bandit learning rate
             self.neural.learning_rate = self.learning_rate
@@ -441,7 +495,11 @@ class Phase1LearningLoop:
             print(f"❌ Learning feedback failed: {e}")
 
     def run_learning_loop(
-        self, iterations: int = 10, lookback_days: int = 5, execute_trades: bool = False, interval_seconds: int = 60
+        self,
+        iterations: int = 10,
+        lookback_days: int = 5,
+        execute_trades: bool = False,
+        interval_seconds: int = 60,
     ):
         """Run continuous learning loop"""
         print("\n🚀 STARTING LEARNING LOOP")
@@ -456,12 +514,16 @@ class Phase1LearningLoop:
                 print(f"\n🔄 ITERATION {i + 1}/{iterations}")
 
                 # Run learning cycle
-                diversity_metrics = self.run_learning_cycle(lookback_days, execute_trades)
+                diversity_metrics = self.run_learning_cycle(
+                    lookback_days, execute_trades
+                )
 
                 # Check if we've achieved target diversity
                 overall_variance = diversity_metrics.get("overall_variance", 0)
                 if overall_variance > 0.15:
-                    print(f"🎯 TARGET ACHIEVED! Overall variance: {overall_variance:.4f} > 0.15")
+                    print(
+                        f"🎯 TARGET ACHIEVED! Overall variance: {overall_variance:.4f} > 0.15"
+                    )
                     break
 
                 # Wait before next iteration
@@ -485,11 +547,15 @@ class Phase1LearningLoop:
         print(f"Total iterations: {self.metrics.total_iterations}")
         print(f"Successful trades: {self.metrics.successful_trades}")
         print(f"Total P&L: ${self.metrics.total_pnl:.2f}")
-        print(f"Success rate: {(self.metrics.successful_trades / max(1, self.metrics.total_iterations)) * 100:.1f}%")
+        print(
+            f"Success rate: {(self.metrics.successful_trades / max(1, self.metrics.total_iterations)) * 100:.1f}%"
+        )
 
         print("\nAlgorithm Performance:")
         for alg_name, perf in self.metrics.algorithm_performance.items():
-            print(f"  {alg_name}: {perf['trades']} trades, avg confidence: {perf['avg_confidence']:.3f}")
+            print(
+                f"  {alg_name}: {perf['trades']} trades, avg confidence: {perf['avg_confidence']:.3f}"
+            )
 
         print("\nDiversity Metrics:")
         for metric, value in self.metrics.diversity_scores.items():
@@ -517,7 +583,10 @@ def main():
 
     # Run learning loop
     learning_loop.run_learning_loop(
-        iterations=20, lookback_days=5, execute_trades=False, interval_seconds=30  # Set to True for real trading
+        iterations=20,
+        lookback_days=5,
+        execute_trades=False,
+        interval_seconds=30,  # Set to True for real trading
     )
 
 

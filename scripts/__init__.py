@@ -1,7 +1,1 @@
 # Scripts package initializer
-
-
-
-
-
-

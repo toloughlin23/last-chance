@@ -89,7 +89,12 @@ class UniverseSelector:
                 abs_rets.append(abs(curr - prev) / prev)
         avg_abs_ret = sum(abs_rets) / len(abs_rets) if abs_rets else 0.0
         stability = 1.0 / (1.0 + avg_abs_ret)
-        return {"adv": adv, "atr_pct": atr_pct, "median_close": median_close, "stability": stability}
+        return {
+            "adv": adv,
+            "atr_pct": atr_pct,
+            "median_close": median_close,
+            "stability": stability,
+        }
 
     def _get_spread_medians(
         self,
@@ -108,6 +113,7 @@ class UniverseSelector:
                 if attempt < 2:
                     try:
                         import time
+
                         time.sleep(0.15 * (attempt + 1))
                     except Exception:
                         pass
@@ -158,7 +164,9 @@ class UniverseSelector:
         earnings_buffer_days: int = 3,
         # Sector balancing (optional)
         sector_classifier: Optional[Callable[[str], Optional[str]]] = None,
-        sector_index_weights: Optional[Dict[str, float]] = None,  # e.g., {"Technology": 0.29, ...}
+        sector_index_weights: Optional[
+            Dict[str, float]
+        ] = None,  # e.g., {"Technology": 0.29, ...}
         sector_cap_bonus: float = 0.10,  # +10pp above index weight
         sector_cap_floor: float = 0.05,  # at least 5%
         sector_cap_hard_ceiling: float = 0.35,  # 35% absolute cap
@@ -216,16 +224,21 @@ class UniverseSelector:
         try:
             # Deterministic ordering to avoid alphabetical bias without randomness
             import hashlib
+
             salt = f"{start_date}|{end_date}|spread:{spread_lookback_days}|core:{spread_core_hours_only}"
             order = sorted(
                 band_filtered,
-                key=lambda s: hashlib.sha256((salt + '|' + s).encode('utf-8')).hexdigest(),
+                key=lambda s: hashlib.sha256(
+                    (salt + "|" + s).encode("utf-8")
+                ).hexdigest(),
             )
         except Exception:
             order = band_filtered
         for s in order:
             if spread_filter_enabled:
-                med_dol, med_bps = self._get_spread_medians(s, spread_lookback_days, spread_core_hours_only)
+                med_dol, med_bps = self._get_spread_medians(
+                    s, spread_lookback_days, spread_core_hours_only
+                )
                 med_spreads[s] = (med_dol, med_bps)
                 if (med_dol <= spread_max_dollars) or (med_bps <= spread_max_bps):
                     spread_filtered.append(s)
@@ -240,7 +253,9 @@ class UniverseSelector:
                 med_dol, med_bps = med_spreads.get(s) or self._get_spread_medians(
                     s, spread_lookback_days, spread_core_hours_only
                 )
-                if (med_dol <= spread_max_dollars * 1.5) or (med_bps <= spread_max_bps * 1.7):
+                if (med_dol <= spread_max_dollars * 1.5) or (
+                    med_bps <= spread_max_bps * 1.7
+                ):
                     relaxed.append(s)
             spread_filtered = list(dict.fromkeys(relaxed))
 
@@ -258,7 +273,9 @@ class UniverseSelector:
             adv_score = min(1.0, m["adv"] / max(1.0, max_adv))
             # Spread score: prefer tighter (bps)
             med_dol, med_bps = med_spreads.get(sym, (0.0, 10.0))
-            spread_score = max(0.0, 1.0 - (med_bps / 10.0))  # 0 at 10+ bps, ~1 near 0 bps
+            spread_score = max(
+                0.0, 1.0 - (med_bps / 10.0)
+            )  # 0 at 10+ bps, ~1 near 0 bps
             # Volatility score: prefer mid of band (3%) within 1–5%
             target = 0.03
             half_range = max(1e-9, (max_atr_pct - min_atr_pct) / 2.0)
@@ -277,11 +294,17 @@ class UniverseSelector:
 
         # If no sector constraints, optionally expand and return
         if sector_classifier is None or sector_index_weights is None:
-            if not allow_expand_above_target or target_max_size <= target_size or not ranked:
+            if (
+                not allow_expand_above_target
+                or target_max_size <= target_size
+                or not ranked
+            ):
                 base = ranked[:target_size]
             else:
                 base_k = min(target_size, len(ranked))
-                base_threshold = composite_score(ranked[base_k - 1]) if base_k > 0 else 0.0
+                base_threshold = (
+                    composite_score(ranked[base_k - 1]) if base_k > 0 else 0.0
+                )
                 expanded: List[str] = ranked[:base_k]
                 for sym in ranked[base_k:]:
                     if len(expanded) >= target_max_size:
@@ -294,8 +317,10 @@ class UniverseSelector:
 
             # Robustness backstop: if we still have too few picks, relax modestly and retry once
             if len(base) < target_size:
-                relaxed_adv = max(0.0, adv_min_dollar * 0.6)  # e.g., 30M if default is 50M
-                relaxed_max_atr = max_atr_pct * 1.2            # widen upper ATR band by 20%
+                relaxed_adv = max(
+                    0.0, adv_min_dollar * 0.6
+                )  # e.g., 30M if default is 50M
+                relaxed_max_atr = max_atr_pct * 1.2  # widen upper ATR band by 20%
                 relaxed_spread_dollars = spread_max_dollars * 1.5
                 relaxed_spread_bps = max(spread_max_bps * 1.7, 8.5)
 
@@ -314,12 +339,25 @@ class UniverseSelector:
                     med_dol, med_bps = med_spreads.get(s) or self._get_spread_medians(
                         s, spread_lookback_days, spread_core_hours_only
                     )
-                    if (med_dol <= relaxed_spread_dollars) or (med_bps <= relaxed_spread_bps):
+                    if (med_dol <= relaxed_spread_dollars) or (
+                        med_bps <= relaxed_spread_bps
+                    ):
                         relaxed_kept.append(s)
 
                 if relaxed_kept:
-                    relaxed_ranked = sorted(relaxed_kept, key=composite_score, reverse=True)
-                    base = relaxed_ranked[:min(target_max_size if allow_expand_above_target else target_size, target_size)]
+                    relaxed_ranked = sorted(
+                        relaxed_kept, key=composite_score, reverse=True
+                    )
+                    base = relaxed_ranked[
+                        : min(
+                            (
+                                target_max_size
+                                if allow_expand_above_target
+                                else target_size
+                            ),
+                            target_size,
+                        )
+                    ]
 
             return base
 
@@ -345,17 +383,27 @@ class UniverseSelector:
             if len(picks) >= target_size:
                 break
             sec = sector_classifier(sym) or "Unknown"
-            allowed = sector_caps_target.get(sec, max(1, int(sector_cap_floor * target_size)))
+            allowed = sector_caps_target.get(
+                sec, max(1, int(sector_cap_floor * target_size))
+            )
             if counts.get(sec, 0) < allowed:
                 picks.append(sym)
                 counts[sec] = counts.get(sec, 0) + 1
 
         # Optional expansion to target_max_size for strong contenders
-        if allow_expand_above_target and target_max_size > target_size and len(picks) < target_max_size:
+        if (
+            allow_expand_above_target
+            and target_max_size > target_size
+            and len(picks) < target_max_size
+        ):
             if picks:
                 base_threshold = composite_score(picks[-1])
             else:
-                base_threshold = composite_score(ranked[min(target_size, len(ranked)) - 1]) if ranked else 0.0
+                base_threshold = (
+                    composite_score(ranked[min(target_size, len(ranked)) - 1])
+                    if ranked
+                    else 0.0
+                )
             for sym in ranked:
                 if len(picks) >= target_max_size:
                     break
@@ -364,7 +412,9 @@ class UniverseSelector:
                 if composite_score(sym) < base_threshold * expand_margin:
                     break
                 sec = sector_classifier(sym) or "Unknown"
-                allowed_max = sector_caps_max.get(sec, max(1, int(sector_cap_floor * target_max_size)))
+                allowed_max = sector_caps_max.get(
+                    sec, max(1, int(sector_cap_floor * target_max_size))
+                )
                 if counts.get(sec, 0) < allowed_max:
                     picks.append(sym)
                     counts[sec] = counts.get(sec, 0) + 1

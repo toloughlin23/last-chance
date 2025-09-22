@@ -7,14 +7,23 @@ from utils.env_loader import load_env_from_known_locations
 
 
 class AlpacaClient:
-    def __init__(self, api_key: Optional[str] = None, secret_key: Optional[str] = None, paper: bool = True):
+    def __init__(
+        self,
+        api_key: Optional[str] = None,
+        secret_key: Optional[str] = None,
+        paper: bool = True,
+    ):
         load_env_from_known_locations()
         self.api_key = api_key or os.getenv("ALPACA_API_KEY")
         self.secret_key = secret_key or os.getenv("ALPACA_SECRET_KEY")
         self.paper = paper
         # Lazy-enable network usage only when credentials are present
         self.enabled = bool(self.api_key and self.secret_key)
-        self.base = "https://paper-api.alpaca.markets" if paper else "https://api.alpaca.markets"
+        self.base = (
+            "https://paper-api.alpaca.markets"
+            if paper
+            else "https://api.alpaca.markets"
+        )
         self.session: Optional[requests.Session] = None
         if self.enabled:
             self.session = requests.Session()
@@ -56,7 +65,13 @@ class AlpacaClient:
         self._require_configured()
         if paper_guard and not self.paper:
             raise RuntimeError("Safety: live trading blocked without explicit opt-in")
-        order = {"symbol": symbol, "qty": qty, "side": side, "type": type_, "time_in_force": time_in_force}
+        order = {
+            "symbol": symbol,
+            "qty": qty,
+            "side": side,
+            "type": type_,
+            "time_in_force": time_in_force,
+        }
         resp = self._session().post(f"{self.base}/v2/orders", json=order, timeout=30)
         resp.raise_for_status()
         return resp.json()
@@ -73,7 +88,13 @@ class AlpacaClient:
     ) -> Dict[str, Any]:
         """Submit order with enhanced parameters"""
         self._require_configured()
-        order = {"symbol": symbol, "qty": qty, "side": side, "type": type, "time_in_force": time_in_force}
+        order = {
+            "symbol": symbol,
+            "qty": qty,
+            "side": side,
+            "type": type,
+            "time_in_force": time_in_force,
+        }
 
         if limit_price:
             order["limit_price"] = limit_price
@@ -96,7 +117,9 @@ class AlpacaClient:
         resp.raise_for_status()
         return resp.json()
 
-    def get_orders(self, status: Optional[str] = None, limit: int = 50) -> List[Dict[str, Any]]:
+    def get_orders(
+        self, status: Optional[str] = None, limit: int = 50
+    ) -> List[Dict[str, Any]]:
         """Get orders"""
         self._require_configured()
         params: Dict[str, Any] = {"limit": limit}
@@ -118,7 +141,9 @@ class AlpacaClient:
         """Cancel order"""
         self._require_configured()
         try:
-            resp = self._session().delete(f"{self.base}/v2/orders/{order_id}", timeout=30)
+            resp = self._session().delete(
+                f"{self.base}/v2/orders/{order_id}", timeout=30
+            )
             resp.raise_for_status()
             return True
         except Exception:

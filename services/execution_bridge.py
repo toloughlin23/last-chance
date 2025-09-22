@@ -200,14 +200,20 @@ class UltraInstitutionalExecutionBridge:
 
         if not logger.handlers:
             handler = logging.StreamHandler()
-            formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+            formatter = logging.Formatter(
+                "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+            )
             handler.setFormatter(formatter)
             logger.addHandler(handler)
 
         return logger
 
     def _calculate_position_size(
-        self, symbol: str, confidence: float, market_value: Decimal, portfolio_value: Decimal
+        self,
+        symbol: str,
+        confidence: float,
+        market_value: Decimal,
+        portfolio_value: Decimal,
     ) -> Decimal:
         """
         ENHANCED: Calculate optimal position size based on confidence and risk
@@ -221,7 +227,9 @@ class UltraInstitutionalExecutionBridge:
 
         # Concentration adjustment
         current_concentration = self._get_current_concentration(symbol, portfolio_value)
-        concentration_adjustment = Decimal("1.0") - (current_concentration * Decimal("2.0"))
+        concentration_adjustment = Decimal("1.0") - (
+            current_concentration * Decimal("2.0")
+        )
 
         # Final position size
         position_size = base_size * volatility_adjustment * concentration_adjustment
@@ -246,7 +254,9 @@ class UltraInstitutionalExecutionBridge:
 
         return volatility
 
-    def _get_current_concentration(self, symbol: str, portfolio_value: Decimal) -> Decimal:
+    def _get_current_concentration(
+        self, symbol: str, portfolio_value: Decimal
+    ) -> Decimal:
         """Get current position concentration"""
         if symbol in self.positions:
             position_value = self.positions[symbol].market_value
@@ -300,7 +310,9 @@ class UltraInstitutionalExecutionBridge:
         else:
             risk_level = RiskLevel.LOW
 
-        risk_message = "; ".join(risk_factors) if risk_factors else "Risk within acceptable limits"
+        risk_message = (
+            "; ".join(risk_factors) if risk_factors else "Risk within acceptable limits"
+        )
 
         return risk_level, risk_score, risk_message
 
@@ -318,7 +330,9 @@ class UltraInstitutionalExecutionBridge:
         # Simplified correlation calculation
         return Decimal("0.1")  # 10% default
 
-    def _check_compliance(self, symbol: str, quantity: Decimal, price: Decimal, side: OrderSide) -> Tuple[bool, str]:
+    def _check_compliance(
+        self, symbol: str, quantity: Decimal, price: Decimal, side: OrderSide
+    ) -> Tuple[bool, str]:
         """
         ENHANCED: Check compliance for order execution
         """
@@ -364,7 +378,10 @@ class UltraInstitutionalExecutionBridge:
             if report.overall_status.value == "compliant":
                 return True, "Compliance check passed"
             else:
-                return False, f"Compliance check failed: {report.summary['compliance_score']:.1f}%"
+                return (
+                    False,
+                    f"Compliance check failed: {report.summary['compliance_score']:.1f}%",
+                )
 
         except Exception as e:
             self.logger.error(f"Compliance check failed: {e}")
@@ -493,7 +510,9 @@ class UltraInstitutionalExecutionBridge:
             if custom_quantity:
                 quantity = custom_quantity
             else:
-                position_size = self._calculate_position_size(symbol, confidence, market_price, portfolio_value)
+                position_size = self._calculate_position_size(
+                    symbol, confidence, market_price, portfolio_value
+                )
                 quantity = (portfolio_value * position_size / market_price).quantize(
                     Decimal("0.01"), rounding=ROUND_DOWN
                 )
@@ -537,7 +556,9 @@ class UltraInstitutionalExecutionBridge:
                 )
 
             # Assess risk
-            risk_level, risk_score, risk_message = self._assess_risk(symbol, quantity, market_price, side)
+            risk_level, risk_score, risk_message = self._assess_risk(
+                symbol, quantity, market_price, side
+            )
 
             if risk_level == RiskLevel.CRITICAL:
                 return ExecutionResult(
@@ -547,11 +568,16 @@ class UltraInstitutionalExecutionBridge:
                     execution_time_ms=0.0,
                     risk_score=risk_score,
                     compliance_status="high_risk",
-                    details={"risk_level": risk_level.value, "risk_factors": risk_message},
+                    details={
+                        "risk_level": risk_level.value,
+                        "risk_factors": risk_message,
+                    },
                 )
 
             # Check compliance
-            compliance_ok, compliance_message = self._check_compliance(symbol, quantity, market_price, side)
+            compliance_ok, compliance_message = self._check_compliance(
+                symbol, quantity, market_price, side
+            )
 
             if not compliance_ok:
                 self.execution_metrics["compliance_violations"] += 1
@@ -576,7 +602,9 @@ class UltraInstitutionalExecutionBridge:
                 self.execution_metrics["risk_violations"] += 1
 
             # Log execution
-            self.logger.info(f"Trade executed: {symbol} {side.value} {quantity} @ {market_price}")
+            self.logger.info(
+                f"Trade executed: {symbol} {side.value} {quantity} @ {market_price}"
+            )
 
             return result
 
@@ -701,24 +729,32 @@ def main():
     print(f"   Total Orders: {exec_metrics['total_orders_executed']}")
     print(f"   Successful: {exec_metrics['successful_orders']}")
     print(f"   Failed: {exec_metrics['failed_orders']}")
-    print(f"   Average Execution Time: {exec_metrics['average_execution_time_ms']:.1f}ms")
+    print(
+        f"   Average Execution Time: {exec_metrics['average_execution_time_ms']:.1f}ms"
+    )
 
     # Test risk assessment
     print("\n⚠️ Testing risk assessment...")
-    risk_level, risk_score, risk_message = bridge._assess_risk("AAPL", Decimal("100"), Decimal("150"), OrderSide.BUY)
+    risk_level, risk_score, risk_message = bridge._assess_risk(
+        "AAPL", Decimal("100"), Decimal("150"), OrderSide.BUY
+    )
     print(f"   Risk Level: {risk_level.value}")
     print(f"   Risk Score: {risk_score:.2f}")
     print(f"   Risk Message: {risk_message}")
 
     # Test compliance check
     print("\n🏛️ Testing compliance check...")
-    compliance_ok, compliance_message = bridge._check_compliance("AAPL", Decimal("100"), Decimal("150"), OrderSide.BUY)
+    compliance_ok, compliance_message = bridge._check_compliance(
+        "AAPL", Decimal("100"), Decimal("150"), OrderSide.BUY
+    )
     print(f"   Compliance OK: {compliance_ok}")
     print(f"   Compliance Message: {compliance_message}")
 
     # Test position size calculation
     print("\n📏 Testing position size calculation...")
-    position_size = bridge._calculate_position_size("AAPL", 0.8, Decimal("150"), Decimal("100000"))
+    position_size = bridge._calculate_position_size(
+        "AAPL", 0.8, Decimal("150"), Decimal("100000")
+    )
     print(f"   Position Size: {position_size:.2%}")
 
     # Shutdown

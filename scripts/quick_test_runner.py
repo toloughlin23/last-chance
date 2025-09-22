@@ -18,7 +18,10 @@ def test_imports():
 
     tests = [
         ("CORE_SUPER_BANDITS.optimized_linucb_institutional", "LinUCB Algorithm"),
-        ("CORE_SUPER_BANDITS.optimized_neural_bandit_institutional", "Neural Bandit Algorithm"),
+        (
+            "CORE_SUPER_BANDITS.optimized_neural_bandit_institutional",
+            "Neural Bandit Algorithm",
+        ),
         ("CORE_SUPER_BANDITS.optimized_ucbv_institutional", "UCBV Algorithm"),
         ("services.advanced_news_sentiment", "Advanced News Sentiment"),
         ("services.infrastructure_manager", "Infrastructure Manager"),

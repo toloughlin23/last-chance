@@ -82,7 +82,9 @@ class UKUSTimezoneHandler:
             dt = self.us_market_tz.localize(dt)
         return dt.astimezone(self.uk_tz)
 
-    def to_utc_naive(self, timestamp: Union[datetime, pd.Timestamp, str]) -> pd.Timestamp:
+    def to_utc_naive(
+        self, timestamp: Union[datetime, pd.Timestamp, str]
+    ) -> pd.Timestamp:
         """
         Convert ANY timestamp to UTC timezone-naive for safe comparisons
         This is the KEY function that prevents timezone comparison errors
@@ -155,7 +157,9 @@ class UKUSTimezoneHandler:
         return market_open_uk, market_close_uk
 
     def safe_timestamp_compare(
-        self, ts1: Union[datetime, pd.Timestamp, str], ts2: Union[datetime, pd.Timestamp, str]
+        self,
+        ts1: Union[datetime, pd.Timestamp, str],
+        ts2: Union[datetime, pd.Timestamp, str],
     ) -> int:
         """
         Safely compare two timestamps regardless of timezone

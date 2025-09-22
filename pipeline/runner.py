@@ -6,11 +6,21 @@ from datetime import datetime
 from datetime import timezone as _timezone
 from typing import Any, Dict, List, Tuple
 
-from CORE_SUPER_BANDITS.optimized_linucb_institutional import OptimizedInstitutionalLinUCB
-from CORE_SUPER_BANDITS.optimized_neural_bandit_institutional import OptimizedInstitutionalNeuralBandit
+from CORE_SUPER_BANDITS.optimized_linucb_institutional import (
+    OptimizedInstitutionalLinUCB,
+)
+from CORE_SUPER_BANDITS.optimized_neural_bandit_institutional import (
+    OptimizedInstitutionalNeuralBandit,
+)
 from CORE_SUPER_BANDITS.optimized_ucbv_institutional import OptimizedInstitutionalUCBV
 from pipeline.hygiene import Hygiene
-from pipeline.news_priority import build_priority, build_scores, load_priority_bundle, save_priority, save_priority_bundle
+from pipeline.news_priority import (
+    build_priority,
+    build_scores,
+    load_priority_bundle,
+    save_priority,
+    save_priority_bundle,
+)
 from services.alpaca_client import AlpacaClient
 from services.feature_builder import build_enriched_from_aggs
 from services.polygon_client import PolygonClient
@@ -23,7 +33,9 @@ from utils.universe_selector import UniverseSelector
 UTC = _timezone.utc
 
 
-def run_once_min(symbols: List[str], days: int = 7, log_path: str = "pipeline_min_log.csv") -> None:
+def run_once_min(
+    symbols: List[str], days: int = 7, log_path: str = "pipeline_min_log.csv"
+) -> None:
     """Minimal additive pipeline step that fetches recent daily bars and logs basic features.
 
     - Uses PolygonClient.get_last_n_days strictly (real data only)
@@ -56,7 +68,11 @@ def run_once_min(symbols: List[str], days: int = 7, log_path: str = "pipeline_mi
             if results:
                 first_close = float(results[0].get("c", 0.0))
                 last_close = float(results[-1].get("c", 0.0))
-                pct = ((last_close - first_close) / first_close) if first_close > 0 else 0.0
+                pct = (
+                    ((last_close - first_close) / first_close)
+                    if first_close > 0
+                    else 0.0
+                )
                 # Convert Polygon epoch-ms timestamps to ISO-8601 UTC
                 try:
                     t_start = results[0].get("t")
@@ -72,7 +88,9 @@ def run_once_min(symbols: List[str], days: int = 7, log_path: str = "pipeline_mi
                     t_end = results[-1].get("t")
                     ts_ms_end = int(t_end) if t_end is not None else None
                     end_iso = (
-                        datetime.fromtimestamp(ts_ms_end / 1000.0, tz=UTC).isoformat() if ts_ms_end is not None else ""
+                        datetime.fromtimestamp(ts_ms_end / 1000.0, tz=UTC).isoformat()
+                        if ts_ms_end is not None
+                        else ""
                     )
                 except Exception:
                     end_iso = ""
@@ -128,7 +146,17 @@ def _fetch_with_retries(
         # Parallel fetch for this attempt
         with ThreadPoolExecutor(max_workers=max_workers) as ex:
             futures = {
-                ex.submit(client.get_aggs, sym, 1, "day", start_date, end_date, limit, adjusted, sort): sym
+                ex.submit(
+                    client.get_aggs,
+                    sym,
+                    1,
+                    "day",
+                    start_date,
+                    end_date,
+                    limit,
+                    adjusted,
+                    sort,
+                ): sym
                 for sym in attempt_syms
             }
             for fut in as_completed(futures):
@@ -136,7 +164,10 @@ def _fetch_with_retries(
                 try:
                     aggs = fut.result()
                     aggs_map[sym] = aggs
-                    status_map[sym] = ("success" if attempt == 0 else "retried_success", attempt)
+                    status_map[sym] = (
+                        "success" if attempt == 0 else "retried_success",
+                        attempt,
+                    )
                 except Exception:
                     # queue for next attempt
                     remaining.append(sym)
@@ -212,13 +243,24 @@ def run_once(
 
         # Apply hygiene (halts/earnings/SSR) based on strategy_profile
         hygiene = Hygiene()
-        safe_symbols = hygiene.filter_symbols(ordered_symbols, strategy_profile=strategy_profile)
+        safe_symbols = hygiene.filter_symbols(
+            ordered_symbols, strategy_profile=strategy_profile
+        )
 
         # Process in batches to respect rate limits and keep latency predictable
         for batch in _chunk(safe_symbols, batch_size) if batch_size else [safe_symbols]:
             max_workers = min(8, max(1, len(batch)))
             aggs_map, status_map = _fetch_with_retries(
-                client, batch, start_date, end_date, 10, True, "asc", max_workers, max_retries, retry_backoff
+                client,
+                batch,
+                start_date,
+                end_date,
+                10,
+                True,
+                "asc",
+                max_workers,
+                max_retries,
+                retry_backoff,
             )
 
             for sym in batch:
@@ -249,10 +291,20 @@ def run_once(
 
                 executed = False
                 if execute and alpaca is not None:
-                    side = "buy" if ucv_action in ("buy", "strong_buy", "add_position", "scalp_long") else "sell"
+                    side = (
+                        "buy"
+                        if ucv_action
+                        in ("buy", "strong_buy", "add_position", "scalp_long")
+                        else "sell"
+                    )
                     try:
                         alpaca.place_order(
-                            symbol=sym, qty=1, side=side, type_="market", time_in_force="day", paper_guard=True
+                            symbol=sym,
+                            qty=1,
+                            side=side,
+                            type_="market",
+                            time_in_force="day",
+                            paper_guard=True,
                         )
                         executed = True
                     except Exception:
@@ -345,7 +397,9 @@ def run_loop(
         mo = now_us_local.replace(hour=9, minute=30, second=0, microsecond=0)
         return (now_us_local - mo).total_seconds() / 60.0
 
-    def _compute_booster_scores(sym_list: List[str], prev_day_close_map: Dict[str, float]) -> Dict[str, float]:
+    def _compute_booster_scores(
+        sym_list: List[str], prev_day_close_map: Dict[str, float]
+    ) -> Dict[str, float]:
         scores: Dict[str, float] = {}
         # Compute UTC window for first 5 minutes after open today
         now_us_local = tz.get_us_market_time()
@@ -369,7 +423,11 @@ def run_loop(
                 vol5 = sum(float(r.get("v", 0.0)) for r in rows)
                 open_first = float(rows[0].get("o", 0.0)) if rows else 0.0
                 prev_close = prev_day_close_map.get(sym, 0.0)
-                gap = abs((open_first - prev_close) / prev_close) if prev_close > 0 else 0.0
+                gap = (
+                    abs((open_first - prev_close) / prev_close)
+                    if prev_close > 0
+                    else 0.0
+                )
                 # Simple rel-vol proxy vs previous day first-5-min volume
                 # Fetch previous day's first-5-min if not present
                 if vol5 > 0:
@@ -395,7 +453,9 @@ def run_loop(
                 else:
                     relvol = 0.0
                 news_score = news_scores.get(sym, 0.0)
-                blended = max(0.0, w_news * abs(news_score) + w_relvol * relvol + w_gap * gap)
+                blended = max(
+                    0.0, w_news * abs(news_score) + w_relvol * relvol + w_gap * gap
+                )
                 scores[sym] = blended
             except Exception:
                 continue
@@ -432,13 +492,20 @@ def run_loop(
                         sel_input = filter_symbols_present_on_polygon(sp_syms)
                 selector = UniverseSelector()
                 selected_universe = selector.select_universe(
-                    sel_input, start_d.isoformat(), end_d.isoformat(), target_size=universe_target_size
+                    sel_input,
+                    start_d.isoformat(),
+                    end_d.isoformat(),
+                    target_size=universe_target_size,
                 )
                 # Persist selected universe (optional)
                 save_priority(selected_universe, universe_store_path)
                 # Build news-priority strictly from the selected universe; also persist scores
                 news_scores = build_scores(selected_universe)
-                ranked = sorted(selected_universe, key=lambda s: news_scores.get(s, 0.0), reverse=True)
+                ranked = sorted(
+                    selected_universe,
+                    key=lambda s: news_scores.get(s, 0.0),
+                    reverse=True,
+                )
                 save_priority_bundle(priority_store_path, ranked, news_scores)
                 booster_pass_done_today = False
             except Exception:
@@ -463,13 +530,19 @@ def run_loop(
                 if priority_syms:
                     # If news booster enabled: keep only names with |score| >= threshold from the priority list
                     if news_booster_enabled:
-                        filtered = [s for s in priority_syms if abs(news_scores.get(s, 0.0)) >= news_booster_threshold]
+                        filtered = [
+                            s
+                            for s in priority_syms
+                            if abs(news_scores.get(s, 0.0)) >= news_booster_threshold
+                        ]
                     else:
                         filtered = priority_syms
                     # Dual-pass: run only top-K at open, honoring cooldown
-                    open_batch = [s for s in (filtered if filtered else priority_syms) if _cooldown_ok(s)][
-                        : max(1, priority_top_k_open)
-                    ]
+                    open_batch = [
+                        s
+                        for s in (filtered if filtered else priority_syms)
+                        if _cooldown_ok(s)
+                    ][: max(1, priority_top_k_open)]
                     run_symbols = open_batch
                     use_priority_now = True
             except Exception:
@@ -498,7 +571,9 @@ def run_loop(
             try:
                 elapsed = _elapsed_since_open_min(now_us)
                 if elapsed >= booster_warmup_minutes:
-                    priority_syms, news_scores = load_priority_bundle(priority_store_path)
+                    priority_syms, news_scores = load_priority_bundle(
+                        priority_store_path
+                    )
                     if priority_syms:
                         # Build prev day close map
                         from datetime import date, timedelta
@@ -507,15 +582,26 @@ def run_loop(
                         prev_close_map: Dict[str, float] = {}
                         for s in priority_syms:
                             dbar = (
-                                client.get_aggs(s, 1, "day", prev_d, prev_d, limit=1, adjusted=True, sort="asc").get(
-                                    "results"
-                                )
+                                client.get_aggs(
+                                    s,
+                                    1,
+                                    "day",
+                                    prev_d,
+                                    prev_d,
+                                    limit=1,
+                                    adjusted=True,
+                                    sort="asc",
+                                ).get("results")
                                 or []
                             )
-                            prev_close_map[s] = float(dbar[0].get("c", 0.0)) if dbar else 0.0
+                            prev_close_map[s] = (
+                                float(dbar[0].get("c", 0.0)) if dbar else 0.0
+                            )
                         # Remaining (not on cooldown)
                         remaining = [s for s in priority_syms if _cooldown_ok(s)]
-                        booster_scores = _compute_booster_scores(remaining, prev_close_map)
+                        booster_scores = _compute_booster_scores(
+                            remaining, prev_close_map
+                        )
 
                         # Combine with news for blended ordering
                         def blended(s: str) -> float:

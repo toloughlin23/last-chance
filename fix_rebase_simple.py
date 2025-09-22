@@ -8,7 +8,9 @@ if os.path.exists(".git/rebase-merge"):
 
     # Try to complete the current commit
     try:
-        result = subprocess.run(["git", "commit", "--no-edit"], capture_output=True, text=True, timeout=10)
+        result = subprocess.run(
+            ["git", "commit", "--no-edit"], capture_output=True, text=True, timeout=10
+        )
         print(f"Commit result: {result.returncode}")
         if result.stdout:
             print(f"Output: {result.stdout}")
@@ -19,7 +21,9 @@ if os.path.exists(".git/rebase-merge"):
 
     # Try to continue the rebase
     try:
-        result = subprocess.run(["git", "rebase", "--continue"], capture_output=True, text=True, timeout=10)
+        result = subprocess.run(
+            ["git", "rebase", "--continue"], capture_output=True, text=True, timeout=10
+        )
         print(f"Continue result: {result.returncode}")
         if result.stdout:
             print(f"Output: {result.stdout}")
@@ -30,7 +34,9 @@ if os.path.exists(".git/rebase-merge"):
 
     # Check final status
     try:
-        result = subprocess.run(["git", "status", "--porcelain"], capture_output=True, text=True, timeout=5)
+        result = subprocess.run(
+            ["git", "status", "--porcelain"], capture_output=True, text=True, timeout=5
+        )
         print(f"Final status: {result.returncode}")
         print(f"Status: {result.stdout}")
     except Exception as e:

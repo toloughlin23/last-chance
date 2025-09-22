@@ -48,7 +48,9 @@ def main() -> int:
         return 1
 
     if not symbols:
-        print("⚠️ No symbols returned. Check API access, rate limits, or try again later.")
+        print(
+            "⚠️ No symbols returned. Check API access, rate limits, or try again later."
+        )
         return 2
 
     print(f"✅ Selector picks: {len(symbols)} symbols")
@@ -60,6 +62,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
-
-
-

@@ -170,7 +170,9 @@ class SurgicalContaminationRemover:
         # Process each Python file
         for root, dirs, files in os.walk(root_path):
             # Skip system directories
-            dirs[:] = [d for d in dirs if d not in {"__pycache__", ".git", "node_modules"}]
+            dirs[:] = [
+                d for d in dirs if d not in {"__pycache__", ".git", "node_modules"}
+            ]
 
             for file in files:
                 if file.endswith(".py"):
@@ -180,18 +182,30 @@ class SurgicalContaminationRemover:
                     print(f"\n🔍 SURGICAL ANALYSIS: {relative_path}")
 
                     try:
-                        surgical_result = self.surgically_remove_file_contamination(file_path)
+                        surgical_result = self.surgically_remove_file_contamination(
+                            file_path
+                        )
 
                         if surgical_result["removed"] > 0:
                             removal_report["files_modified"] += 1
-                            removal_report["harmful_contaminations_removed"] += surgical_result["removed"]
-                            removal_report["surgical_details"][relative_path] = surgical_result
-                            print(f"   🔬 REMOVED: {surgical_result['removed']} harmful patterns")
-                            print(f"   ✅ PRESERVED: {surgical_result['preserved']} legitimate patterns")
+                            removal_report[
+                                "harmful_contaminations_removed"
+                            ] += surgical_result["removed"]
+                            removal_report["surgical_details"][
+                                relative_path
+                            ] = surgical_result
+                            print(
+                                f"   🔬 REMOVED: {surgical_result['removed']} harmful patterns"
+                            )
+                            print(
+                                f"   ✅ PRESERVED: {surgical_result['preserved']} legitimate patterns"
+                            )
                         else:
                             print("   ✅ CLEAN: No harmful contamination found")
 
-                        removal_report["preserved_legitimate_patterns"] += surgical_result["preserved"]
+                        removal_report[
+                            "preserved_legitimate_patterns"
+                        ] += surgical_result["preserved"]
                         removal_report["files_processed"] += 1
 
                     except Exception as e:
@@ -222,13 +236,17 @@ class SurgicalContaminationRemover:
 
             # Process each line for surgical removal
             for line_idx, line in enumerate(original_lines):
-                modified_line = self.surgically_process_line(line, file_path, line_idx + 1)
+                modified_line = self.surgically_process_line(
+                    line, file_path, line_idx + 1
+                )
 
                 if modified_line != line:
                     # Check if this is legitimate preservation or harmful removal
                     if self.is_legitimate_pattern(line, file_path):
                         surgical_result["preserved"] += 1
-                        print(f"      ✅ PRESERVED Line {line_idx + 1}: Legitimate pattern")
+                        print(
+                            f"      ✅ PRESERVED Line {line_idx + 1}: Legitimate pattern"
+                        )
                         # Don't modify legitimate patterns
                         continue
                     else:
@@ -247,7 +265,9 @@ class SurgicalContaminationRemover:
             # Add genuine implementations if needed
             if surgical_result["removed"] > 0:
                 modified_content = "\n".join(modified_lines)
-                modified_content = self.add_genuine_implementations_if_needed(modified_content, file_path)
+                modified_content = self.add_genuine_implementations_if_needed(
+                    modified_content, file_path
+                )
 
                 # Save the surgically modified file
                 with open(file_path, "w", encoding="utf-8") as f:
@@ -264,7 +284,9 @@ class SurgicalContaminationRemover:
                 shutil.move(backup_path, file_path)
             raise e
 
-    def surgically_process_line(self, line: str, file_path: str, line_number: int) -> str:
+    def surgically_process_line(
+        self, line: str, file_path: str, line_number: int
+    ) -> str:
         """Process a single line with surgical precision"""
 
         modified_line = line
@@ -274,14 +296,21 @@ class SurgicalContaminationRemover:
             for pattern in pattern_info["patterns"]:
                 if re.search(pattern, line):
                     # Check if this should be preserved due to context
-                    if self.should_preserve_pattern(line, file_path, pattern_info["preserve_context"]):
+                    if self.should_preserve_pattern(
+                        line, file_path, pattern_info["preserve_context"]
+                    ):
                         continue
 
                     # Apply surgical replacement
                     if category in self.surgical_replacements:
-                        for replacement_pattern, replacement in self.surgical_replacements[category].items():
+                        for (
+                            replacement_pattern,
+                            replacement,
+                        ) in self.surgical_replacements[category].items():
                             if re.search(replacement_pattern, line):
-                                modified_line = re.sub(replacement_pattern, replacement, modified_line)
+                                modified_line = re.sub(
+                                    replacement_pattern, replacement, modified_line
+                                )
                                 break
 
         return modified_line
@@ -323,7 +352,9 @@ class SurgicalContaminationRemover:
 
         return False
 
-    def should_preserve_pattern(self, line: str, file_path: str, preserve_contexts: List[str]) -> bool:
+    def should_preserve_pattern(
+        self, line: str, file_path: str, preserve_contexts: List[str]
+    ) -> bool:
         """Check if pattern should be preserved based on context"""
 
         line_lower = line.lower()
@@ -336,16 +367,24 @@ class SurgicalContaminationRemover:
 
         return False
 
-    def add_genuine_implementations_if_needed(self, content: str, file_path: str) -> str:
+    def add_genuine_implementations_if_needed(
+        self, content: str, file_path: str
+    ) -> str:
         """Add genuine implementation methods if they're referenced but missing"""
 
         methods_needed = []
 
         # Check what genuine methods are referenced
-        if "_calculate_personality_adjustment()" in content and "def _calculate_personality_adjustment" not in content:
+        if (
+            "_calculate_personality_adjustment()" in content
+            and "def _calculate_personality_adjustment" not in content
+        ):
             methods_needed.append("personality_adjustment")
 
-        if "_calculate_genuine_confidence()" in content and "def _calculate_genuine_confidence" not in content:
+        if (
+            "_calculate_genuine_confidence()" in content
+            and "def _calculate_genuine_confidence" not in content
+        ):
             methods_needed.append("genuine_confidence")
 
         if (
@@ -356,7 +395,9 @@ class SurgicalContaminationRemover:
 
         # Add needed methods
         if methods_needed:
-            content += "\n\n    # GENUINE IMPLEMENTATIONS ADDED BY SURGICAL REMOVAL SYSTEM\n"
+            content += (
+                "\n\n    # GENUINE IMPLEMENTATIONS ADDED BY SURGICAL REMOVAL SYSTEM\n"
+            )
 
             for method_name in methods_needed:
                 if method_name in self.genuine_implementations:
@@ -378,13 +419,19 @@ class SurgicalContaminationRemover:
         print("📊 SURGICAL SUMMARY:")
         print(f"   Files processed: {removal_report['files_processed']}")
         print(f"   Files modified: {removal_report['files_modified']}")
-        print(f"   Harmful contaminations removed: {removal_report['harmful_contaminations_removed']}")
-        print(f"   Legitimate patterns preserved: {removal_report['preserved_legitimate_patterns']}")
+        print(
+            f"   Harmful contaminations removed: {removal_report['harmful_contaminations_removed']}"
+        )
+        print(
+            f"   Legitimate patterns preserved: {removal_report['preserved_legitimate_patterns']}"
+        )
         print(f"   Failures: {len(removal_report['failures'])}")
         print(f"📄 Detailed report: {report_filename}")
 
         if removal_report["harmful_contaminations_removed"] > 0:
-            print(f"\n✅ SUCCESS: Removed {removal_report['harmful_contaminations_removed']} harmful patterns")
+            print(
+                f"\n✅ SUCCESS: Removed {removal_report['harmful_contaminations_removed']} harmful patterns"
+            )
             print("✅ All script functionality preserved")
             print("✅ Legitimate testing infrastructure untouched")
         else:

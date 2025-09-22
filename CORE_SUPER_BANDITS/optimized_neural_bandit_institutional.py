@@ -47,7 +47,9 @@ class OptimizedInstitutionalNeuralBandit:
 
         print("🧠 INSTITUTIONAL Neural Bandit initialized")
         print(f"✅ Features: {feature_dimension} dimensions")
-        print(f"✅ Architecture: {feature_dimension} → {' → '.join(map(str, hidden_sizes))} → 1")
+        print(
+            f"✅ Architecture: {feature_dimension} → {' → '.join(map(str, hidden_sizes))} → 1"
+        )
         print(f"✅ Learning rate: {learning_rate}")
 
     def add_arm(self, arm_id: str):
@@ -133,19 +135,28 @@ class OptimizedInstitutionalNeuralBandit:
 
         # Neural network uncertainty estimation
         # Higher uncertainty for less explored arms, lower for well-trained networks
-        exploration_factor = math.sqrt(2 * math.log(max(1, self.total_selections)) / selections)
+        exploration_factor = math.sqrt(
+            2 * math.log(max(1, self.total_selections)) / selections
+        )
 
         # Base confidence from prediction strength
-        base_confidence = float(abs(prediction))  # Stronger predictions = higher confidence
+        base_confidence = float(
+            abs(prediction)
+        )  # Stronger predictions = higher confidence
 
         # Uncertainty adjustment (more exploration needed = lower confidence in current estimate)
         # Incorporated directly in later deterministic shaping; no standalone variable needed
 
         # Enhanced genuine confidence calculation with stronger market signal (deterministic)
         vol = float(getattr(enriched_data.market_data, "volatility", 0.02))
-        sentiment_strength = float(abs(enriched_data.sentiment_analysis.overall_sentiment))
+        sentiment_strength = float(
+            abs(enriched_data.sentiment_analysis.overall_sentiment)
+        )
         news_conf = float(enriched_data.sentiment_analysis.confidence_level)
-        mc_norm = min(1.0, 0.45 * news_conf + 0.35 * sentiment_strength + 0.20 * min(1.0, vol * 20))
+        mc_norm = min(
+            1.0,
+            0.45 * news_conf + 0.35 * sentiment_strength + 0.20 * min(1.0, vol * 20),
+        )
         combined = 0.40 + 0.35 * mc_norm + 0.12 * base_confidence
 
         # Deterministic scaling factors (bounded, avoid saturation)
@@ -192,10 +203,20 @@ class OptimizedInstitutionalNeuralBandit:
 
         # Enhanced market features (genuine extraction)
         price_momentum = getattr(
-            enriched_data.market_data, "price_momentum", self._calculate_genuine_value_range(-0.02, 0.02)
+            enriched_data.market_data,
+            "price_momentum",
+            self._calculate_genuine_value_range(-0.02, 0.02),
         )
-        volatility = getattr(enriched_data.market_data, "volatility", self._calculate_genuine_value_range(0.01, 0.05))
-        volume_ratio = getattr(enriched_data.market_data, "volume_ratio", self._calculate_genuine_value_range(0.6, 1.8))
+        volatility = getattr(
+            enriched_data.market_data,
+            "volatility",
+            self._calculate_genuine_value_range(0.01, 0.05),
+        )
+        volume_ratio = getattr(
+            enriched_data.market_data,
+            "volume_ratio",
+            self._calculate_genuine_value_range(0.6, 1.8),
+        )
 
         # Neural-specific feature engineering (15 dimensions)
         features = np.array(
@@ -211,7 +232,8 @@ class OptimizedInstitutionalNeuralBandit:
                 volume_ratio,  # 8: Volume analysis
                 sentiment * news_confidence,  # 9: Sentiment-confidence interaction
                 market_impact * data_quality,  # 10: Impact-quality interaction
-                sentiment_strength * (1.0 - news_confidence),  # 11: Uncertainty indicator
+                sentiment_strength
+                * (1.0 - news_confidence),  # 11: Uncertainty indicator
                 math.log(1 + news_volume),  # 12: Log news volume
                 np.tanh(sentiment * 2),  # 13: Bounded sentiment
                 volatility * volume_ratio,  # 14: Market activity factor
@@ -220,11 +242,15 @@ class OptimizedInstitutionalNeuralBandit:
 
         # Ensure proper dimensionality (use explicit validation for security/compliance)
         if len(features) != self.feature_dimension:
-            raise ValueError(f"Feature mismatch: got {len(features)} features, expected {self.feature_dimension}")
+            raise ValueError(
+                f"Feature mismatch: got {len(features)} features, expected {self.feature_dimension}"
+            )
 
         return features
 
-    def select_arm(self, enriched_data, available_arms: Optional[List[str]] = None) -> str:
+    def select_arm(
+        self, enriched_data, available_arms: Optional[List[str]] = None
+    ) -> str:
         """
         🧠 GENUINE Neural Bandit arm selection
         Select best arm using neural network predictions with exploration
@@ -261,7 +287,11 @@ class OptimizedInstitutionalNeuralBandit:
 
             # Add exploration bonus (UCB-style)
             network = self.networks[arm_id]
-            exploration_bonus = math.sqrt(2 * math.log(max(1, self.total_selections)) / max(1, network["selections"]))
+            exploration_bonus = math.sqrt(
+                2
+                * math.log(max(1, self.total_selections))
+                / max(1, network["selections"])
+            )
 
             score = prediction + 0.1 * exploration_bonus
             confidence = min(0.95, max(0.40, prediction + 0.2 * exploration_bonus))
@@ -308,7 +338,9 @@ class OptimizedInstitutionalNeuralBandit:
                 features = context_or_enriched_data
                 if len(features) != self.feature_dimension:
                     if len(features) < self.feature_dimension:
-                        features = np.pad(features, (0, self.feature_dimension - len(features)))
+                        features = np.pad(
+                            features, (0, self.feature_dimension - len(features))
+                        )
                     else:
                         features = features[: self.feature_dimension]
 
@@ -330,7 +362,9 @@ class OptimizedInstitutionalNeuralBandit:
             # Get last hidden layer activation for proper gradient
             last_hidden = features
             for i in range(len(network["weights"]) - 1):
-                last_hidden = self._relu(last_hidden @ network["weights"][i] + network["biases"][i])
+                last_hidden = self._relu(
+                    last_hidden @ network["weights"][i] + network["biases"][i]
+                )
 
             # Update output layer with proper gradients
             network["weights"][-1] -= effective_lr * error * last_hidden.reshape(-1, 1)
@@ -345,28 +379,40 @@ class OptimizedInstitutionalNeuralBandit:
                 else:
                     input_layer = features
                     for j in range(i):
-                        input_layer = self._relu(input_layer @ network["weights"][j] + network["biases"][j])
+                        input_layer = self._relu(
+                            input_layer @ network["weights"][j] + network["biases"][j]
+                        )
 
-                network["weights"][i] -= effective_lr * hidden_error * input_layer.reshape(-1, 1) * 0.2
+                network["weights"][i] -= (
+                    effective_lr * hidden_error * input_layer.reshape(-1, 1) * 0.2
+                )
                 network["biases"][i] -= effective_lr * hidden_error * 0.2
 
         # Update statistics (GENUINE tracking)
         network["total_reward"] += reward
         average_reward = network["total_reward"] / max(1, network["selections"])
 
-        print(f"🔄 Neural Bandit updated {arm_id}: reward={reward:.4f}, avg={average_reward:.4f}, loss={loss:.6f}")
+        print(
+            f"🔄 Neural Bandit updated {arm_id}: reward={reward:.4f}, avg={average_reward:.4f}, loss={loss:.6f}"
+        )
 
         return True
 
-    def _calculate_genuine_value_range(self, min_value: float, max_value: float) -> float:
+    def _calculate_genuine_value_range(
+        self, min_value: float, max_value: float
+    ) -> float:
         """Deterministic bounded fallback value in [min,max] (no randomness)."""
         phase = (math.sin(time.time() * 0.71) + 1.0) * 0.5
         return min_value + phase * (max_value - min_value)
 
     def get_average_reward(self) -> float:
         """Get average reward across all arms"""
-        total_reward = sum(network["total_reward"] for network in self.networks.values())
-        total_selections = sum(network["selections"] for network in self.networks.values())
+        total_reward = sum(
+            network["total_reward"] for network in self.networks.values()
+        )
+        total_selections = sum(
+            network["selections"] for network in self.networks.values()
+        )
         return total_reward / max(1, total_selections)
 
     def get_confidence_for_context(self, arm_id: str, context_data) -> float:
@@ -396,13 +442,22 @@ class OptimizedInstitutionalNeuralBandit:
             abs(prediction)
 
             # Neural Bandit-specific confidence based on non-linear feature interactions
-            feature_interactions = np.sum(features[:3] * features[3:6]) if len(features) >= 6 else 0.0
-            feature_complexity = np.sum(np.abs(features[6:9])) if len(features) >= 9 else 0.0
-            feature_nonlinearity = np.sum(features[9:12] ** 2) if len(features) >= 12 else 0.0
+            feature_interactions = (
+                np.sum(features[:3] * features[3:6]) if len(features) >= 6 else 0.0
+            )
+            feature_complexity = (
+                np.sum(np.abs(features[6:9])) if len(features) >= 9 else 0.0
+            )
+            feature_nonlinearity = (
+                np.sum(features[9:12] ** 2) if len(features) >= 12 else 0.0
+            )
 
             # Neural Bandit responds to complex patterns and non-linear relationships
             base_confidence = (
-                0.3 + (feature_interactions * 0.5) + (feature_complexity * 0.3) + (feature_nonlinearity * 0.2)
+                0.3
+                + (feature_interactions * 0.5)
+                + (feature_complexity * 0.3)
+                + (feature_nonlinearity * 0.2)
             )
 
             # GENUINE Neural Bandit ALGORITHMIC DIVERSITY: Leverage non-linear pattern recognition characteristics
@@ -415,12 +470,16 @@ class OptimizedInstitutionalNeuralBandit:
                 for j in range(i + 1, len(features)):
                     feature_interactions += abs(features[i] * features[j])
             pattern_complexity = (
-                feature_interactions / (len(features) * (len(features) - 1) / 2) if len(features) > 1 else 0.0
+                feature_interactions / (len(features) * (len(features) - 1) / 2)
+                if len(features) > 1
+                else 0.0
             )
 
             # 2. NEURAL NETWORK UNCERTAINTY: Based on prediction confidence and network state
             prediction_confidence = abs(prediction)
-            network_uncertainty = 1.0 - prediction_confidence  # Higher uncertainty = more exploration needed
+            network_uncertainty = (
+                1.0 - prediction_confidence
+            )  # Higher uncertainty = more exploration needed
 
             # 3. FEATURE DISTRIBUTION COMPLEXITY: How complex the feature distribution is
             # Use a more robust entropy calculation that handles small values better
@@ -428,22 +487,32 @@ class OptimizedInstitutionalNeuralBandit:
             for feature in features:
                 if abs(feature) > 1e-10:  # Only calculate entropy for non-zero features
                     feature_entropy += abs(feature) * np.log(abs(feature) + 1e-10)
-            distribution_complexity = feature_entropy / len(features) if len(features) > 0 else 0.0
+            distribution_complexity = (
+                feature_entropy / len(features) if len(features) > 0 else 0.0
+            )
 
             # 4. NON-LINEAR RELATIONSHIP STRENGTH: How strong non-linear patterns are
             feature_skewness = (
-                np.mean((features - np.mean(features)) ** 3) / (np.std(features) ** 3) if np.std(features) > 0 else 0.0
+                np.mean((features - np.mean(features)) ** 3) / (np.std(features) ** 3)
+                if np.std(features) > 0
+                else 0.0
             )
             feature_kurtosis = (
-                np.mean((features - np.mean(features)) ** 4) / (np.std(features) ** 4) if np.std(features) > 0 else 0.0
+                np.mean((features - np.mean(features)) ** 4) / (np.std(features) ** 4)
+                if np.std(features) > 0
+                else 0.0
             )
             nonlinear_strength = abs(feature_skewness) + abs(feature_kurtosis)
 
             # 5. FEATURE DIMENSIONALITY UTILIZATION: How well the network uses all features
-            feature_utilization = np.sum(np.abs(features)) / len(features)  # Average feature magnitude
+            feature_utilization = np.sum(np.abs(features)) / len(
+                features
+            )  # Average feature magnitude
 
             # 6. NETWORK LEARNING PROGRESS: Based on network state and prediction quality
-            network_learning_progress = min(1.0, prediction_confidence * 2.0)  # How well the network has learned
+            network_learning_progress = min(
+                1.0, prediction_confidence * 2.0
+            )  # How well the network has learned
 
             # GENUINE Neural Bandit CONFIDENCE CALCULATION
             # Base confidence from neural network characteristics
@@ -482,7 +551,9 @@ class OptimizedInstitutionalNeuralBandit:
             network_uncertainty = 1.0 - prediction_confidence
             complexity_factor = min(0.14, pattern_complexity * 0.7)
             context_diversity = (
-                len(set([round(float(f), 3) for f in features])) / len(features) if len(features) > 0 else 0.0
+                len(set([round(float(f), 3) for f in features])) / len(features)
+                if len(features) > 0
+                else 0.0
             )
             context_factor = min(0.10, context_diversity * 0.5)
             uncertainty_factor = min(0.08, network_uncertainty * 0.4)
@@ -491,10 +562,17 @@ class OptimizedInstitutionalNeuralBandit:
             dir_term = 0.0
             if len(features) >= 3:
                 dir_term = 0.06 * math.tanh(
-                    18.0 * (0.6 * float(features[0]) + 0.3 * float(features[1]) + 0.1 * float(features[2]))
+                    18.0
+                    * (
+                        0.6 * float(features[0])
+                        + 0.3 * float(features[1])
+                        + 0.1 * float(features[2])
+                    )
                 )
 
-            confidence += complexity_factor + context_factor - uncertainty_factor + dir_term
+            confidence += (
+                complexity_factor + context_factor - uncertainty_factor + dir_term
+            )
 
             # GENUINE Neural Bandit Variation: Based on research findings
             # Use Bayesian uncertainty estimation and pattern complexity
@@ -502,7 +580,9 @@ class OptimizedInstitutionalNeuralBandit:
             # Additional deterministic sensitivity terms
             feature_quality = np.mean(np.abs(features)) if len(features) > 0 else 0.0
             quality_factor = min(0.12, feature_quality * 0.6)
-            nonlinear_factor = min(0.10, nonlinear_strength * 0.05) if nonlinear_strength > 0 else 0.0
+            nonlinear_factor = (
+                min(0.10, nonlinear_strength * 0.05) if nonlinear_strength > 0 else 0.0
+            )
 
             confidence += quality_factor + nonlinear_factor
 
@@ -510,7 +590,9 @@ class OptimizedInstitutionalNeuralBandit:
             # Add feature-based variation that Neural Bandit naturally responds to
 
             # 1. Feature complexity variation (Neural Bandit's strength)
-            feature_complexity = np.sum(np.abs(features)) / len(features) if len(features) > 0 else 0.0
+            feature_complexity = (
+                np.sum(np.abs(features)) / len(features) if len(features) > 0 else 0.0
+            )
             complexity_variation = min(0.15, feature_complexity * 0.3)
 
             # 2. Feature interaction variation (Neural Bandit's pattern recognition)
@@ -530,17 +612,25 @@ class OptimizedInstitutionalNeuralBandit:
 
             # 4. Feature asymmetry variation (Neural Bandit's skewness sensitivity)
             feature_skewness = (
-                np.mean((features - np.mean(features)) ** 3) / (np.std(features) ** 3) if np.std(features) > 0 else 0.0
+                np.mean((features - np.mean(features)) ** 3) / (np.std(features) ** 3)
+                if np.std(features) > 0
+                else 0.0
             )
             skewness_variation = min(0.08, abs(feature_skewness) * 0.15)
 
             # 5. Feature range variation (Neural Bandit's dynamic range sensitivity)
-            feature_range = np.max(features) - np.min(features) if len(features) > 0 else 0.0
+            feature_range = (
+                np.max(features) - np.min(features) if len(features) > 0 else 0.0
+            )
             range_variation = min(0.06, feature_range * 0.2)
 
             # Apply all variations to create genuine Neural Bandit diversity
             confidence += (
-                complexity_variation + interaction_variation + entropy_variation + skewness_variation + range_variation
+                complexity_variation
+                + interaction_variation
+                + entropy_variation
+                + skewness_variation
+                + range_variation
             )
 
             # Ensure within Neural Bandit's natural range [0.45, 0.95] after deterministic shaping
@@ -576,7 +666,25 @@ class OptimizedInstitutionalNeuralBandit:
             if isinstance(context_data, np.ndarray):
                 features = context_data
             else:
-                features = np.array([0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 0.1, 0.2, 0.3, 0.4, 0.5])
+                features = np.array(
+                    [
+                        0.1,
+                        0.2,
+                        0.3,
+                        0.4,
+                        0.5,
+                        0.6,
+                        0.7,
+                        0.8,
+                        0.9,
+                        1.0,
+                        0.1,
+                        0.2,
+                        0.3,
+                        0.4,
+                        0.5,
+                    ]
+                )
 
             # Generate varied confidence based on features
             feature_variation = np.std(features) * 0.3
@@ -588,7 +696,9 @@ class OptimizedInstitutionalNeuralBandit:
 
             time_variation = (int(time.time() * 1000) % 1000) / 10000.0
 
-            confidence = 0.4 + feature_variation + personality_variation + time_variation
+            confidence = (
+                0.4 + feature_variation + personality_variation + time_variation
+            )
             confidence = max(0.2, min(0.8, confidence))
             print(f"🔍 Neural: FALLBACK confidence={confidence:.3f}")
             return float(confidence)
