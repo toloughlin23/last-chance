@@ -214,9 +214,13 @@ class UniverseSelector:
         spread_filtered: List[str] = []
         med_spreads: Dict[str, Tuple[float, float]] = {}
         try:
-            import random
-            order = list(band_filtered)
-            random.shuffle(order)
+            # Deterministic ordering to avoid alphabetical bias without randomness
+            import hashlib
+            salt = f"{start_date}|{end_date}|spread:{spread_lookback_days}|core:{spread_core_hours_only}"
+            order = sorted(
+                band_filtered,
+                key=lambda s: hashlib.sha1((salt + '|' + s).encode('utf-8')).hexdigest(),
+            )
         except Exception:
             order = band_filtered
         for s in order:
