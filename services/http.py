@@ -2,6 +2,7 @@ import time
 from typing import Any, Dict, Optional
 
 import requests  # type: ignore[import-untyped]
+import certifi  # type: ignore[import-untyped]
 
 
 class HttpError(Exception):
@@ -20,6 +21,8 @@ class HttpClient:
         self.timeout: float = timeout
         self.max_retries: int = max(0, max_retries)
         self.backoff: float = max(0.0, backoff)
+        # Use certifi CA bundle explicitly to avoid OS trust store issues
+        self.verify_path: str = certifi.where()
 
     def get_json(
         self,
@@ -31,7 +34,13 @@ class HttpClient:
         # We make at most max_retries + 1 attempts
         for attempt in range(self.max_retries + 1):
             try:
-                resp = requests.get(url, params=params, headers=headers, timeout=self.timeout)
+                resp = requests.get(
+                    url,
+                    params=params,
+                    headers=headers,
+                    timeout=self.timeout,
+                    verify=self.verify_path,
+                )
                 # Successful
                 if resp.status_code == 200:
                     return resp.json()  # type: ignore[return-value]

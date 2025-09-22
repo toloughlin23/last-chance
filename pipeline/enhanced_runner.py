@@ -66,7 +66,7 @@ class EnhancedPipelineRunner:
         self.dynamic_universe_enabled = True
         self.universe_cache_path = "data/active_universe_120.json"
         self.universe_max_age_days = 1
-        self.universe_analysis_days = 180
+        self.universe_analysis_days = 60
         self.universe_target_size = 120
 
         print("🚀 Enhanced Pipeline Runner initialized")
@@ -438,6 +438,9 @@ class EnhancedPipelineRunner:
                         )
                         if active_symbols:
                             print(f"📚 Active universe loaded: {len(active_symbols)} symbols")
+                        else:
+                            print("⚠️ Active universe is empty; falling back to provided symbols")
+                            active_symbols = symbols
                     except Exception as e:
                         print(f"⚠️ Universe refresh failed, using provided symbols: {e}")
                         active_symbols = symbols

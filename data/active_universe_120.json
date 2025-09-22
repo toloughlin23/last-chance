@@ -1,0 +1,33 @@
+{
+  "analysis_date": "2025-09-22T14:55:08.413060",
+  "analysis_days": 30,
+  "target_size": 20,
+  "start_date": "2025-08-23",
+  "end_date": "2025-09-22",
+  "symbols": [
+    "AAPL",
+    "AMD",
+    "AMZN",
+    "BABA",
+    "BAC",
+    "AIG",
+    "ADM",
+    "AFL",
+    "ACGL",
+    "AEP",
+    "BAX",
+    "B",
+    "AZN",
+    "ALLY",
+    "AER",
+    "ALC"
+  ],
+  "criteria": {
+    "min_price": 10.0,
+    "min_atr_pct": 0.01,
+    "spread_max_dollars": 0.02,
+    "spread_max_bps": 5.0,
+    "spread_lookback_days": 5,
+    "spread_core_hours_only": true
+  }
+}

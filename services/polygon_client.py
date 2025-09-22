@@ -4,7 +4,7 @@ import os
 from datetime import date
 from typing import Any, Dict, Optional
 
-from .http import HttpClient
+from .http import HttpClient, HttpError
 
 
 class PolygonClient:
@@ -54,20 +54,83 @@ class PolygonClient:
         start = end - timedelta(days=days)
         return self.get_aggregates_daily(ticker, start=start, end=end, adjusted=adjusted)
 
+    def get_tickers(
+        self,
+        market: str = "stocks",
+        active: bool = True,
+        limit: int = 1000,
+        sort: Optional[str] = None,
+        order: Optional[str] = None,
+        type: Optional[str] = None,
+        exchange: Optional[str] = None,
+        search: Optional[str] = None,
+        next_url: Optional[str] = None,
+    ) -> Dict[str, Any]:
+        """Fetch active tickers from Polygon v3 reference API.
+        This is a single-call helper (no auto-pagination). Callers can pass next_url to paginate.
+        """
+        if next_url:
+            url = next_url
+            params: Dict[str, Any] = {}
+        else:
+            path = "/v3/reference/tickers"
+            url = f"{self.BASE_URL}{path}"
+            params = {
+                "market": market,
+                "active": str(active).lower(),
+                "limit": limit,
+            }
+            if sort:
+                params["sort"] = sort
+            if order:
+                params["order"] = order
+            if type:
+                params["type"] = type
+            if exchange:
+                params["exchange"] = exchange
+            if search:
+                params["search"] = search
+        return self.http.get_json(url, params=self._auth_params(params))
+
+    def get_ticker_details(self, ticker: str) -> Dict[str, Any]:
+        """Fetch detailed information for a specific ticker including sector data."""
+        path = f"/v3/reference/tickers/{ticker}"
+        url = f"{self.BASE_URL}{path}"
+        return self.http.get_json(url, params=self._auth_params({}))
+
     # Earnings calendar - real integration should use Polygon's official endpoint.
     # Intentionally unimplemented rather than faked; provider checks for availability before use.
     def get_earnings_calendar(self, symbol: str, start: date, end: date) -> Dict[str, Any]:
-        # Benzinga earnings via Polygon partner API
-        # Docs: GET /v1/partners/benzinga/earnings
-        # Query (commonly used): company_tickers, from, to, limit
-        path = "/v1/partners/benzinga/earnings"
+        """Get earnings dates from financials endpoint (available with premium subscription).
+        Uses the vX/reference/financials endpoint which returns filing dates.
+        """
+        path = "/vX/reference/financials"
         url = f"{self.BASE_URL}{path}"
         params = self._auth_params(
             {
-                "company_tickers": symbol,
-                "from": start.isoformat(),
-                "to": end.isoformat(),
-                "limit": 1000,
+                "ticker": symbol,
+                "timeframe": "quarterly",
+                "limit": 20,  # Get enough quarters to cover the date range
             }
         )
-        return self.http.get_json(url, params=params)
+        try:
+            data = self.http.get_json(url, params=params)
+            # Convert financials data to earnings calendar format
+            earnings_dates = []
+            for result in data.get("results", []):
+                filing_date = result.get("filing_date")
+                if filing_date:
+                    # Check if filing date is within our range
+                    try:
+                        filing_dt = date.fromisoformat(filing_date)
+                        if start <= filing_dt <= end:
+                            earnings_dates.append({
+                                "date": filing_date,
+                                "fiscal_period": result.get("fiscal_period"),
+                                "fiscal_year": result.get("fiscal_year"),
+                            })
+                    except Exception:
+                        continue
+            return {"results": earnings_dates}
+        except HttpError:
+            return {"results": []}
