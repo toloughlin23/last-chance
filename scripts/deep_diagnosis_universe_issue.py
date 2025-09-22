@@ -7,16 +7,15 @@ Let's trace through the entire process step by step.
 import os
 import sys
 from datetime import date, timedelta
-
-# Add project root to path
-sys.path.insert(0, os.path.abspath("."))
-
 from dotenv import load_dotenv
 
-load_dotenv()
-
-from services.polygon_client import PolygonClient
-from services.quotes_client import QuotesClient
+try:
+    from services.polygon_client import PolygonClient
+    from services.quotes_client import QuotesClient
+except ImportError:
+    sys.path.insert(0, os.path.abspath("."))
+    from services.polygon_client import PolygonClient
+    from services.quotes_client import QuotesClient
 
 
 def deep_diagnosis():

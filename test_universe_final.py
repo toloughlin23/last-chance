@@ -5,15 +5,13 @@ Final test of the universe provider to see the complete results.
 
 import os
 import sys
-
-# Add project root to path
-sys.path.insert(0, os.path.abspath("."))
-
 from dotenv import load_dotenv
 
-load_dotenv()
-
-from utils.active_universe_provider import ActiveUniverseProvider
+try:
+    from utils.active_universe_provider import ActiveUniverseProvider
+except ImportError:
+    sys.path.insert(0, os.path.abspath("."))
+    from utils.active_universe_provider import ActiveUniverseProvider
 
 
 def test_final_universe():

@@ -5,16 +5,16 @@ Compare different universe providers to show the difference in symbol counts.
 
 import os
 import sys
-
-# Add project root to path
-sys.path.insert(0, os.path.abspath("."))
-
 from dotenv import load_dotenv
 
-load_dotenv()
-
-from utils.active_universe_provider import ActiveUniverseProvider
-from utils.adaptive_universe_provider import AdaptiveUniverseProvider
+# Prefer top-level imports; if running outside project root, patch sys.path lazily
+try:
+    from utils.active_universe_provider import ActiveUniverseProvider
+    from utils.adaptive_universe_provider import AdaptiveUniverseProvider
+except ImportError:
+    sys.path.insert(0, os.path.abspath("."))
+    from utils.active_universe_provider import ActiveUniverseProvider
+    from utils.adaptive_universe_provider import AdaptiveUniverseProvider
 
 
 def compare_providers():

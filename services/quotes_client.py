@@ -136,7 +136,6 @@ class QuotesClient:
         """
         end = datetime.now(UTC)
         medians: List[Tuple[float, float]] = []
-        days_checked = 0
         total_days_back = 0
 
         # Keep going back until we find 'days' trading days

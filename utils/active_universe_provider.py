@@ -12,7 +12,7 @@ import os
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import date, datetime, timedelta
-from typing import List, Optional
+from typing import Dict, List, Optional
 
 from services.polygon_client import PolygonClient
 from utils.universe_selector import UniverseSelector
@@ -516,7 +516,7 @@ class ActiveUniverseProvider:
                     med_dollar > 1.0 or med_bps > 500
                 ):  # 50 bps maximum (reasonable filter)
                     return None
-            except:
+            except Exception:
                 med_dollar, med_bps = 0.05, 2.0  # Default reasonable spreads
 
             # Calculate ATR%
