@@ -219,7 +219,7 @@ class UniverseSelector:
             salt = f"{start_date}|{end_date}|spread:{spread_lookback_days}|core:{spread_core_hours_only}"
             order = sorted(
                 band_filtered,
-                key=lambda s: hashlib.sha1((salt + '|' + s).encode('utf-8')).hexdigest(),
+                key=lambda s: hashlib.sha256((salt + '|' + s).encode('utf-8')).hexdigest(),
             )
         except Exception:
             order = band_filtered
