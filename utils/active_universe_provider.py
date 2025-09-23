@@ -15,12 +15,30 @@ from datetime import date, datetime, timedelta
 from typing import Dict, List, Optional
 
 from services.polygon_client import PolygonClient
+from services.sp500_client import SP500Client
 from utils.universe_selector import UniverseSelector
 
 
 class ActiveUniverseProvider:
     def __init__(self, polygon_client: Optional[PolygonClient] = None) -> None:
         self.polygon_client = polygon_client or PolygonClient()
+        self.sp500_client = SP500Client()
+
+    def _retry_with_backoff(self, func, attempts: int = 3, base_delay: float = 0.5):
+        """Run a callable with simple exponential backoff retries.
+
+        This reduces bias from transient API failures that otherwise favor
+        early-batch (alphabetically earlier) symbols.
+        """
+        delay = base_delay
+        for i in range(max(1, attempts)):
+            try:
+                return func()
+            except Exception:
+                if i == attempts - 1:
+                    raise
+                time.sleep(delay)
+                delay *= 2
 
     def _build_sector_classifier_and_weights(self, candidates: List[str]):
         """Build a sector classifier and sector weights using Polygon ticker details if available.
@@ -311,28 +329,30 @@ class ActiveUniverseProvider:
         3. Return top candidates for selector
         """
         try:
-            print("🔍 Searching entire S&P 500 for candidates...")
-            data = self.polygon_client.get_tickers(
-                market="stocks", active=True, limit=500
-            )
-
-            results = data.get("results", [])
-            if not results:
-                print("⚠️ No tickers found from Polygon, using fallback list")
-                return self._get_fallback_candidates(max_candidates)
-
-            print(f"📊 Found {len(results)} total tickers from Polygon")
-
-            # Extract all ticker symbols
-            all_symbols = [
-                ticker.get("ticker")
-                for ticker in results
-                if isinstance(ticker.get("ticker"), str)
-            ]
-
+            print("🔍 Getting REAL S&P 500 list...")
+            # Use SP500Client to get the ACTUAL S&P 500 symbols
+            try:
+                all_symbols = self.sp500_client.fetch_symbols()
+                print(f"📊 Got {len(all_symbols)} symbols from S&P 500 list")
+                
+                # Verify diversity
+                if all_symbols:
+                    from collections import Counter
+                    first_letters = Counter(s[0].upper() for s in all_symbols if s)
+                    print(f"📊 First letter distribution: A={first_letters.get('A', 0)}, "
+                          f"B={first_letters.get('B', 0)}, C={first_letters.get('C', 0)}, "
+                          f"...Z={first_letters.get('Z', 0)}")
+            except Exception as e:
+                print(f"⚠️ Could not fetch S&P 500 list: {e}")
+                all_symbols = []
+            
             if not all_symbols:
-                print("⚠️ No valid symbols found, using fallback list")
-                return self._get_fallback_candidates(max_candidates)
+                print("⚠️ Using comprehensive fallback list...")
+                all_symbols = self._get_fallback_candidates(500)
+                
+            if not all_symbols:
+                print("⚠️ No valid symbols found")
+                return []
 
             print(f"📈 Ranking {len(all_symbols)} symbols by quality metrics...")
 
@@ -371,6 +391,18 @@ class ActiveUniverseProvider:
 
         quotes_client = QuotesClient()
         ranked_data = []
+
+        # Deterministic, non-alphabetical ordering to avoid front-loading A-tickers
+        try:
+            import hashlib
+
+            salt = f"{start_date.isoformat()}|{end_date.isoformat()}|rank"
+            symbols = sorted(
+                symbols,
+                key=lambda s: hashlib.sha256((salt + "|" + s).encode("utf-8")).hexdigest(),
+            )
+        except Exception:
+            pass
 
         print(f"📊 Analyzing quality metrics for {len(symbols)} symbols...")
 
@@ -475,22 +507,30 @@ class ActiveUniverseProvider:
     ) -> Optional[Dict]:
         """Analyze quality metrics for a single symbol."""
         try:
-            # Get market cap
-            details = self.polygon_client.get_ticker_details(symbol)
-            market_cap = details.get("results", {}).get("market_cap", 0)
+            # Get market cap (best-effort). If unavailable, do NOT exclude yet;
+            # allow downstream metrics (ADV/spreads/ATR) to decide.
+            try:
+                details = self._retry_with_backoff(
+                    lambda: self.polygon_client.get_ticker_details(symbol)
+                )
+                market_cap = details.get("results", {}).get("market_cap")
+            except Exception:
+                market_cap = None
 
-            if market_cap < min_market_cap:
+            if market_cap is not None and market_cap < min_market_cap:
                 return None
 
             # Get price data for ADV calculation
-            price_data = self.polygon_client.get_aggs(
-                symbol,
-                1,
-                "day",
-                start_date.isoformat(),
-                end_date.isoformat(),
-                limit=analysis_days,
-                adjusted=True,
+            price_data = self._retry_with_backoff(
+                lambda: self.polygon_client.get_aggs(
+                    symbol,
+                    1,
+                    "day",
+                    start_date.isoformat(),
+                    end_date.isoformat(),
+                    limit=analysis_days,
+                    adjusted=True,
+                )
             )
 
             results = price_data.get("results", [])
@@ -508,8 +548,8 @@ class ActiveUniverseProvider:
 
             # Calculate spreads
             try:
-                med_dollar, med_bps = quotes_client.median_spread_over_days(
-                    symbol, days=5
+                med_dollar, med_bps = self._retry_with_backoff(
+                    lambda: quotes_client.median_spread_over_days(symbol, days=5)
                 )
                 # Provider: reasonable filter (50 bps), selector does final filtering (5 bps)
                 if (
@@ -589,30 +629,31 @@ class ActiveUniverseProvider:
         # CORRECT DESIGN: Search the ENTIRE S&P 500 daily
         # Provider searches full S&P 500, selector picks best from all sectors
         try:
-            print("🔍 Searching entire S&P 500 for candidates...")
-            data = self.polygon_client.get_tickers(
-                market="stocks",
-                active=True,
-                limit=500,  # Start with 500 to avoid timeout
-            )
-
-            results = data.get("results", [])
-            if not results:
-                print("⚠️ No tickers found from Polygon, using fallback list")
-                return self._get_fallback_candidates(limit)
-
-            print(f"📊 Found {len(results)} total tickers from Polygon")
-
-            # Extract all ticker symbols
-            all_symbols = []
-            for ticker in results:
-                symbol = ticker.get("ticker")
-                if isinstance(symbol, str) and symbol:
-                    all_symbols.append(symbol)
-
+            print("🔍 Getting REAL S&P 500 list for discovery...")
+            # Use SP500Client to get the ACTUAL S&P 500 symbols
+            try:
+                all_symbols = self.sp500_client.fetch_symbols()
+                print(f"📊 Got {len(all_symbols)} symbols from S&P 500 list")
+                
+                # Verify diversity
+                if all_symbols:
+                    from collections import Counter
+                    first_letters = Counter(s[0].upper() for s in all_symbols if s)
+                    # Show a few letter counts
+                    letter_summary = ", ".join([f"{l}={first_letters.get(l, 0)}" 
+                                                for l in "ABCDEFGHIJKLMNOPQRSTUVWXYZ"[:10]])
+                    print(f"📊 Diversity check: {letter_summary}...")
+            except Exception as e:
+                print(f"⚠️ Could not fetch S&P 500 list: {e}")
+                all_symbols = []
+            
             if not all_symbols:
-                print("⚠️ No valid symbols found, using fallback list")
-                return self._get_fallback_candidates(limit)
+                print("⚠️ Using comprehensive fallback list...")
+                all_symbols = self._get_fallback_candidates(limit)
+                
+            if not all_symbols:
+                print("⚠️ No valid symbols found")
+                return []
 
             print(
                 f"📈 Processing {len(all_symbols)} symbols for market cap filtering..."

@@ -1,9 +1,6 @@
 {
-  "analysis_date": "2025-09-23T12:24:11.365438",
-  "analysis_days": 60,
-  "target_size": 120,
-  "start_date": "2025-07-25",
-  "end_date": "2025-09-23",
+  "generated_date": "2025-09-23",
+  "symbol_count": 39,
   "symbols": [
     "AAPL",
     "AMD",
@@ -45,12 +42,13 @@
     "ALHC",
     "ACHC"
   ],
-  "criteria": {
-    "min_price": 10.0,
-    "min_atr_pct": 0.01,
-    "spread_max_dollars": 0.02,
-    "spread_max_bps": 5.0,
-    "spread_lookback_days": 5,
-    "spread_core_hours_only": true
-  }
+  "description": "Real universe list generated from S&P 500 using Polygon data",
+  "metrics_used": [
+    "ADV",
+    "spreads",
+    "ATR%",
+    "stability",
+    "market_cap"
+  ],
+  "data_source": "100% real Polygon API data"
 }
