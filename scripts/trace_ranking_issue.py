@@ -7,14 +7,12 @@ Even with alphabetical input, the ranking should produce diverse output.
 Let's trace why it's not working.
 """
 
-import json
 import sys
-from pathlib import Path
 from collections import Counter
+from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from services.polygon_client import PolygonClient
 from utils.active_universe_provider import ActiveUniverseProvider
 
 

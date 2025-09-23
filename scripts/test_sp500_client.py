@@ -1,7 +1,8 @@
 """Test SP500Client to verify it gets all 500 symbols properly distributed."""
 
-from services.sp500_client import SP500Client
 from collections import Counter
+
+from services.sp500_client import SP500Client
 
 # Get S&P 500 symbols
 client = SP500Client()

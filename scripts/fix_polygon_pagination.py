@@ -8,14 +8,15 @@ We need to paginate through ALL results, not just take the first 500.
 """
 
 import sys
-from pathlib import Path
 from collections import Counter
-from typing import List, Dict, Any
+from pathlib import Path
+from typing import List
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from services.polygon_client import PolygonClient
 import requests
+
+from services.polygon_client import PolygonClient
 
 
 def get_all_tickers_with_pagination() -> List[str]:
@@ -153,7 +154,7 @@ def main():
         print(f"Has next_url: {'next_url' in data}")
         
         if 'next_url' in data:
-            print(f"✅ Pagination is available!")
+            print("✅ Pagination is available!")
             # Try to structure the next URL properly
             next_url = data['next_url']
             if not next_url.startswith('http'):

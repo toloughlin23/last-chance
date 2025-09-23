@@ -3,21 +3,22 @@
 Market Condition Monitor - Automatic Tech Cool-off Detection
 """
 
+import json
 import os
 import sys
 from datetime import date, timedelta
 from typing import Dict, List, Optional, Tuple
-from collections import defaultdict
-import json
 
 # Add project root to path
 sys.path.insert(0, os.path.abspath("."))
 
 # Load environment variables from .env file
 from dotenv import load_dotenv
+
 load_dotenv()
 
 from services.polygon_client import PolygonClient
+
 
 class MarketConditionMonitor:
     """
@@ -394,7 +395,6 @@ class MarketConditionMonitor:
         
         condition = market_condition['condition']
         severity = market_condition['severity']
-        signals = market_condition['signals']
         confidence = market_condition['confidence_score']
         
         # Enhanced recommendation logic with maximum sensitivity
@@ -644,7 +644,7 @@ class MarketConditionMonitor:
         condition = analysis['market_condition']
         recommendations = analysis['recommendations']
         
-        print(f"\n🎯 ENHANCED MARKET CONDITION ANALYSIS")
+        print("\n🎯 ENHANCED MARKET CONDITION ANALYSIS")
         print("=" * 70)
         print(f"Condition: {condition['condition']}")
         print(f"Severity: {condition['severity']}")
@@ -652,7 +652,7 @@ class MarketConditionMonitor:
         
         # Print enhanced signals
         if 'signals' in condition:
-            print(f"\n🚨 DETECTED SIGNALS")
+            print("\n🚨 DETECTED SIGNALS")
             print("=" * 70)
             active_signals = [signal for signal, active in condition['signals'].items() if active]
             if active_signals:
@@ -661,7 +661,7 @@ class MarketConditionMonitor:
             else:
                 print("  ✅ No warning signals detected")
         
-        print(f"\n📊 ENHANCED RECOMMENDATIONS")
+        print("\n📊 ENHANCED RECOMMENDATIONS")
         print("=" * 70)
         print(f"Recommendation: {recommendations['recommendation']}")
         print(f"Tech Cap: {recommendations['tech_cap']:.0%}")
@@ -670,14 +670,14 @@ class MarketConditionMonitor:
         print(f"Risk Level: {recommendations['risk_level']}")
         print(f"Adjustment: {recommendations['adjustment_magnitude']}")
         
-        print(f"\n🏢 DYNAMIC SECTOR WEIGHTS")
+        print("\n🏢 DYNAMIC SECTOR WEIGHTS")
         print("=" * 70)
         for sector, weight in recommendations['sector_weights'].items():
             print(f"  {sector}: {weight:.0%}")
         
         # Print timeframe analysis if available
         if 'timeframe_analysis' in analysis:
-            print(f"\n📈 MULTI-TIMEFRAME ANALYSIS")
+            print("\n📈 MULTI-TIMEFRAME ANALYSIS")
             print("=" * 70)
             for timeframe, data in analysis['timeframe_analysis'].items():
                 tech_perf = data['tech_performance']
@@ -689,7 +689,7 @@ class MarketConditionMonitor:
         # Print analysis summary
         if 'analysis_summary' in analysis:
             summary = analysis['analysis_summary']
-            print(f"\n📊 ANALYSIS SUMMARY")
+            print("\n📊 ANALYSIS SUMMARY")
             print("=" * 70)
             print(f"Timeframes Analyzed: {summary['total_timeframes_analyzed']}")
             print(f"Overall Tech Performance: {summary['overall_tech_performance']:.2%}")
@@ -711,7 +711,7 @@ def main():
     monitor.print_market_analysis(analysis)
     
     # Test dynamic sector weights
-    print(f"\n🔄 TESTING DYNAMIC SECTOR WEIGHTS")
+    print("\n🔄 TESTING DYNAMIC SECTOR WEIGHTS")
     print("=" * 60)
     sector_weights = monitor.get_dynamic_sector_weights()
     print("Dynamic sector weights:")

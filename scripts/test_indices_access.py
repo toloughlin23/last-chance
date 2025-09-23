@@ -1,17 +1,18 @@
 """
 Test if we have access to Polygon Indices API with current subscription
 """
-import os
 import sys
 from pathlib import Path
 
 # Load environment
 from dotenv import load_dotenv
+
 load_dotenv()
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from services.polygon_client import PolygonClient
+
 
 def test_indices_access():
     """Test if we can access Indices API endpoints."""

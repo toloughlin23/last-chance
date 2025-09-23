@@ -12,6 +12,7 @@ from datetime import date, timedelta
 sys.path.insert(0, os.path.abspath("."))
 
 from dotenv import load_dotenv
+
 load_dotenv()
 
 def main():
@@ -19,9 +20,9 @@ def main():
     print("=" * 50)
     
     try:
-        from utils.universe_selector import UniverseSelector
         from services.polygon_client import PolygonClient
         from services.quotes_client import QuotesClient
+        from utils.universe_selector import UniverseSelector
         
         # Initialize
         client = PolygonClient()
@@ -81,7 +82,7 @@ def main():
                 if universe:
                     print(f"✅ SUCCESS: {len(universe)} symbols - {universe[:5]}")
                 else:
-                    print(f"❌ FAILED: Empty universe")
+                    print("❌ FAILED: Empty universe")
                     
             except Exception as e:
                 print(f"❌ FAILED at {size} candidates: {e}")

@@ -10,15 +10,15 @@ Use Polygon API correctly to get S&P 500 stocks by:
 4. Using proper pagination
 """
 
-import os
 import sys
 import time
-from pathlib import Path
 from collections import Counter
-from typing import List, Dict, Set
+from pathlib import Path
+from typing import Dict, List
 
 # Load environment variables from .env file
 from dotenv import load_dotenv
+
 load_dotenv()
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -124,7 +124,7 @@ def discover_sp500_stocks() -> List[str]:
                 if checked % 10 == 0:
                     time.sleep(0.1)
                     
-            except Exception as e:
+            except Exception:
                 # Skip symbols that error
                 pass
         

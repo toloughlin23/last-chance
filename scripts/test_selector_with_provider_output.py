@@ -11,6 +11,7 @@ from datetime import date, timedelta
 sys.path.insert(0, os.path.abspath("."))
 
 from dotenv import load_dotenv
+
 load_dotenv()
 
 def main():
@@ -18,8 +19,8 @@ def main():
     print("=" * 60)
     
     try:
-        from utils.universe_selector import UniverseSelector
         from services.polygon_client import PolygonClient
+        from utils.universe_selector import UniverseSelector
         
         # Use the exact candidates the provider found
         provider_candidates = [

@@ -10,8 +10,8 @@ not just the first 500 alphabetically.
 """
 
 import sys
-from pathlib import Path
 from collections import Counter
+from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 

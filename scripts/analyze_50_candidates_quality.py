@@ -5,13 +5,14 @@ Analyze Quality of 50 Candidates - Check Sector Balance & Growth Criteria
 
 import os
 import sys
-from datetime import date, timedelta
 from collections import defaultdict
+from datetime import date, timedelta
 
 # Add project root to path
 sys.path.insert(0, os.path.abspath("."))
 
 from dotenv import load_dotenv
+
 load_dotenv()
 
 def main():
@@ -106,7 +107,7 @@ def main():
             avg_growth = sum(d['growth_potential'] for d in quality_data) / len(quality_data)
             avg_score = sum(d['quality_score'] for d in quality_data) / len(quality_data)
             
-            print(f"📈 AVERAGE METRICS:")
+            print("📈 AVERAGE METRICS:")
             print(f"   Market Cap: ${avg_market_cap/1e9:.1f}B")
             print(f"   ADV: ${avg_adv/1e6:.1f}M")
             print(f"   Spread: {avg_spread:.1f} bps")
@@ -115,7 +116,7 @@ def main():
             print(f"   Quality Score: {avg_score:.3f}")
             
             # Check Option B criteria
-            print(f"\n🎯 OPTION B (GROWTH-ORIENTED) CRITERIA CHECK:")
+            print("\n🎯 OPTION B (GROWTH-ORIENTED) CRITERIA CHECK:")
             print("=" * 60)
             
             high_volatility_count = sum(1 for d in quality_data if d['atr_pct'] >= 0.03)  # 3%+
@@ -130,21 +131,21 @@ def main():
             
             # Overall assessment
             if high_volatility_count >= len(quality_data) * 0.6 and high_growth_count >= len(quality_data) * 0.4:
-                print(f"\n🎉 EXCELLENT! Candidates match Option B (Growth-Oriented) criteria!")
+                print("\n🎉 EXCELLENT! Candidates match Option B (Growth-Oriented) criteria!")
             elif high_volatility_count >= len(quality_data) * 0.4:
-                print(f"\n✅ GOOD! Candidates mostly match Option B criteria")
+                print("\n✅ GOOD! Candidates mostly match Option B criteria")
             else:
-                print(f"\n⚠️  MIXED! Some candidates match Option B, but could be more aggressive")
+                print("\n⚠️  MIXED! Some candidates match Option B, but could be more aggressive")
         
         # Sector distribution
-        print(f"\n🏢 SECTOR DISTRIBUTION:")
+        print("\n🏢 SECTOR DISTRIBUTION:")
         print("=" * 60)
         for sector, count in sorted(sector_counts.items(), key=lambda x: x[1], reverse=True):
             percentage = count / len(ranked_candidates[:50]) * 100
             print(f"   {sector:20s}: {count:2d} symbols ({percentage:5.1f}%)")
         
         # Letter distribution
-        print(f"\n🔤 LETTER DISTRIBUTION:")
+        print("\n🔤 LETTER DISTRIBUTION:")
         print("=" * 60)
         for letter in sorted(letter_counts.keys()):
             count = letter_counts[letter]

@@ -4,12 +4,12 @@ Test Enhanced Selector ONLY - No Provider Discovery
 Just test the enhanced algorithm with 200 candidates
 """
 
-import json
-import os
 from datetime import date, timedelta
 
 from dotenv import load_dotenv
+
 from utils.universe_selector import UniverseSelector
+
 
 def main():
     load_dotenv()
@@ -66,7 +66,7 @@ def main():
     end_date = date.today()
     start_date = end_date - timedelta(days=60)
     
-    print(f"\n🎯 Applying ENHANCED GROWTH Algorithm:")
+    print("\n🎯 Applying ENHANCED GROWTH Algorithm:")
     print("  ✅ Higher volatility preference")
     print("  ✅ Momentum scoring")
     print("  ✅ Growth potential metrics")
@@ -113,7 +113,7 @@ def main():
             print("❌ No universe generated")
             return
             
-        print(f"\n✅ ENHANCED ALGORITHM SUCCESS!")
+        print("\n✅ ENHANCED ALGORITHM SUCCESS!")
         print(f"📊 Generated universe with {len(universe)} symbols")
         print(f"📈 First 20: {universe[:20]}")
         
@@ -121,11 +121,11 @@ def main():
         tech_count = len([s for s in universe if s in ['AAPL', 'MSFT', 'GOOGL', 'GOOG', 'AMZN', 'NVDA', 'META', 'TSLA', 'NFLX', 'ADBE', 'CRM', 'ORCL', 'INTC', 'AMD', 'QCOM', 'AVGO', 'TXN', 'AMAT', 'LRCX', 'KLAC', 'SNPS', 'CDNS', 'ANSS', 'FTNT', 'PANW', 'CRWD', 'ZS', 'OKTA', 'DDOG', 'NET', 'SNOW', 'PLTR', 'ZM', 'DOCU', 'TEAM', 'WDAY', 'NOW', 'SPLK', 'MDB', 'ESTC']])
         fin_count = len([s for s in universe if s in ['BAC', 'JPM', 'WFC', 'C', 'GS', 'MS', 'BLK', 'AXP', 'COF', 'USB', 'TFC', 'PNC', 'SCHW', 'AIG', 'MET', 'PRU', 'ALL', 'TRV', 'CB', 'AON', 'MMC', 'SPGI', 'MCO', 'FIS', 'FISV', 'GPN', 'V', 'MA', 'PYPL', 'SQ']])
         
-        print(f"\n🔍 SECTOR ANALYSIS:")
+        print("\n🔍 SECTOR ANALYSIS:")
         print(f"  Technology: {tech_count} symbols")
         print(f"  Financials: {fin_count} symbols")
         
-        print(f"\n🎯 ENHANCED ALGORITHM SUCCESS!")
+        print("\n🎯 ENHANCED ALGORITHM SUCCESS!")
         print("✅ Growth-oriented selection complete")
         print("✅ Technology stocks prioritized")
         print("✅ High volatility preferred")

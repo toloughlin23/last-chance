@@ -5,12 +5,12 @@ Test Cool-off Detection Scenarios
 
 import os
 import sys
-from datetime import date, timedelta
 
 # Add project root to path
 sys.path.insert(0, os.path.abspath("."))
 
 from dotenv import load_dotenv
+
 load_dotenv()
 
 def test_cool_off_scenarios():

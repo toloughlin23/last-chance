@@ -16,18 +16,16 @@ WHAT THE SYSTEM SHOULD DO:
 NO SHORTCUTS, 100% GENUINE DATA, NO MOCKS, NO PLACEHOLDERS
 """
 
-import json
 import sys
 from collections import Counter
 from datetime import date, timedelta
 from pathlib import Path
-from typing import Dict, List, Tuple
+from typing import Dict, List
 
 # Add parent directory to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from services.polygon_client import PolygonClient
-from services.quotes_client import QuotesClient
 from utils.active_universe_provider import ActiveUniverseProvider
 from utils.universe_selector import UniverseSelector
 
@@ -245,7 +243,7 @@ def main():
         return
     
     # Step 2: Audit ranking
-    ranked_subset = audit_provider_ranking(raw_symbols[:50])
+    audit_provider_ranking(raw_symbols[:50])
     
     # Step 3: Audit full pipeline
     candidates, selected = audit_full_pipeline()

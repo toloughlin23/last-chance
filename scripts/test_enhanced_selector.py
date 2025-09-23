@@ -9,7 +9,9 @@ import os
 from datetime import date, timedelta
 
 from dotenv import load_dotenv
+
 from utils.universe_selector import UniverseSelector
+
 
 def main():
     load_dotenv()
@@ -79,7 +81,7 @@ def main():
     end_date = date.today()
     start_date = end_date - timedelta(days=60)
     
-    print(f"\n🎯 Applying ENHANCED GROWTH-ORIENTED Algorithm:")
+    print("\n🎯 Applying ENHANCED GROWTH-ORIENTED Algorithm:")
     print("  ✅ Higher volatility preference (6%+ gets max score)")
     print("  ✅ Momentum scoring (price change over 60 days)")
     print("  ✅ Growth potential metrics")
@@ -127,13 +129,13 @@ def main():
             print("❌ No universe generated")
             return
             
-        print(f"\n✅ ENHANCED ALGORITHM SUCCESS!")
+        print("\n✅ ENHANCED ALGORITHM SUCCESS!")
         print(f"📊 Generated universe with {len(universe)} symbols")
         print(f"📈 First 20 symbols: {universe[:20]}")
         print(f"📈 Last 20 symbols: {universe[-20:]}")
         
         # Analyze sector distribution
-        print(f"\n🔍 SECTOR ANALYSIS:")
+        print("\n🔍 SECTOR ANALYSIS:")
         tech_stocks = [s for s in universe if s in ['AAPL', 'MSFT', 'GOOGL', 'GOOG', 'AMZN', 'NVDA', 'META', 'TSLA', 'NFLX', 'ADBE', 'CRM', 'ORCL', 'INTC', 'AMD', 'QCOM', 'AVGO', 'TXN', 'AMAT', 'LRCX', 'KLAC', 'SNPS', 'CDNS', 'ANSS', 'FTNT', 'PANW', 'CRWD', 'ZS', 'OKTA', 'DDOG', 'NET', 'SNOW', 'PLTR', 'ZM', 'DOCU', 'TEAM', 'WDAY', 'NOW', 'SPLK', 'MDB', 'ESTC']]
         fin_stocks = [s for s in universe if s in ['BAC', 'JPM', 'WFC', 'C', 'GS', 'MS', 'BLK', 'AXP', 'COF', 'USB', 'TFC', 'PNC', 'SCHW', 'AIG', 'MET', 'PRU', 'ALL', 'TRV', 'CB', 'AON', 'MMC', 'SPGI', 'MCO', 'FIS', 'FISV', 'GPN', 'V', 'MA', 'PYPL', 'SQ']]
         energy_stocks = [s for s in universe if s in ['XOM', 'CVX', 'COP', 'EOG', 'SLB', 'HAL', 'OXY', 'PXD', 'MPC', 'VLO', 'PSX', 'KMI', 'EPD', 'ENB', 'WMB', 'OKE', 'TRP', 'PAGP', 'PAA', 'K', 'DVN', 'FANG', 'MRO', 'NOV', 'BKR', 'FTI', 'NBR', 'RIG', 'DO', 'HP']]
@@ -171,7 +173,7 @@ def main():
             json.dump(training_data, f, indent=2)
         
         print(f"\n💾 Saved enhanced universe to: {training_file}")
-        print(f"\n🎯 ENHANCED ALGORITHM SUCCESS!")
+        print("\n🎯 ENHANCED ALGORITHM SUCCESS!")
         print("=" * 60)
         print("✅ Growth-oriented selection complete")
         print("✅ Technology stocks prioritized")

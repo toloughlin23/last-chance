@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import os
 from datetime import date
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional
 
 from .http import HttpClient, HttpError
 
@@ -137,7 +137,7 @@ class PolygonClient:
                 
             # Now get the constituents - this would require the paid Indices API
             # For now, we'll document this as the correct approach
-            print(f"Note: Getting index constituents requires Polygon's Indices API subscription")
+            print("Note: Getting index constituents requires Polygon's Indices API subscription")
             return []
             
         except Exception as e:

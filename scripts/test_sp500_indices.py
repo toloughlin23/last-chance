@@ -1,17 +1,18 @@
 """
 Test if we can get S&P 500 constituents directly from Polygon Indices API
 """
-import os
 import sys
 from pathlib import Path
 
 # Load environment
 from dotenv import load_dotenv
+
 load_dotenv()
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from services.polygon_client import PolygonClient
+
 
 def test_sp500_indices():
     """Test different ways to get S&P 500 from Polygon."""

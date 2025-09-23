@@ -11,6 +11,7 @@ from collections import Counter, defaultdict
 sys.path.insert(0, os.path.abspath("."))
 
 from dotenv import load_dotenv
+
 load_dotenv()
 
 def main():
@@ -35,10 +36,10 @@ def main():
     print("\n1️⃣ LETTER DISTRIBUTION")
     print("-" * 30)
     first_letters = Counter(s[0].upper() for s in candidates)
-    total_letters = len([l for l in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' if first_letters.get(l, 0) > 0])
+    total_letters = len([letter for letter in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' if first_letters.get(letter, 0) > 0])
     
     print(f"   Letters represented: {total_letters}/26")
-    print(f"   Distribution:")
+    print("   Distribution:")
     for letter in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ':
         count = first_letters.get(letter, 0)
         if count > 0:
@@ -64,7 +65,7 @@ def main():
         sector_counts[sector] += 1
     
     print(f"   Sectors found: {len(sector_counts)} unique sectors")
-    print(f"   Top sectors:")
+    print("   Top sectors:")
     for sector, count in sorted(sector_counts.items(), key=lambda x: x[1], reverse=True):
         pct = (count / len(candidates)) * 100
         print(f"     {sector}: {count} ({pct:.1f}%)")
@@ -89,17 +90,17 @@ def main():
     tech_percentage = tech_count / len(candidates) * 100
     growth_percentage = high_volatility_count / len(candidates) * 100
     
-    print(f"\n🎯 OPTION B (GROWTH-ORIENTED) ASSESSMENT:")
+    print("\n🎯 OPTION B (GROWTH-ORIENTED) ASSESSMENT:")
     if tech_percentage >= 40 and growth_percentage >= 50:
-        print(f"   🎉 EXCELLENT! Strong growth orientation:")
+        print("   🎉 EXCELLENT! Strong growth orientation:")
         print(f"   ✅ Technology: {tech_percentage:.1f}% (target: ≥40%)")
         print(f"   ✅ Growth stocks: {growth_percentage:.1f}% (target: ≥50%)")
     elif tech_percentage >= 30 and growth_percentage >= 40:
-        print(f"   ✅ GOOD! Good growth orientation:")
+        print("   ✅ GOOD! Good growth orientation:")
         print(f"   ✅ Technology: {tech_percentage:.1f}% (target: ≥40%)")
         print(f"   ✅ Growth stocks: {growth_percentage:.1f}% (target: ≥50%)")
     else:
-        print(f"   ⚠️  MIXED! Could be more growth-oriented:")
+        print("   ⚠️  MIXED! Could be more growth-oriented:")
         print(f"   📊 Technology: {tech_percentage:.1f}% (target: ≥40%)")
         print(f"   📊 Growth stocks: {growth_percentage:.1f}% (target: ≥50%)")
     

@@ -1,21 +1,20 @@
 """
 Analyze the quality of the generated universe symbols
 """
-import os
 import sys
-import json
-from pathlib import Path
 from collections import Counter
-from typing import Dict, List, Any
+from pathlib import Path
 
 # Load environment
 from dotenv import load_dotenv
+
 load_dotenv()
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from services.polygon_client import PolygonClient
 from services.quotes_client import QuotesClient
+
 
 def analyze_universe_quality():
     """Analyze the quality of the current 50 candidates from provider."""
@@ -26,8 +25,9 @@ def analyze_universe_quality():
     print("="*60)
     
     # Get the current 50 candidates from provider instead of old universe file
-    from utils.active_universe_provider import ActiveUniverseProvider
     from datetime import date, timedelta
+
+    from utils.active_universe_provider import ActiveUniverseProvider
     
     provider = ActiveUniverseProvider()
     
@@ -62,10 +62,10 @@ def analyze_universe_quality():
     print("\n1️⃣ LETTER DISTRIBUTION")
     print("-" * 30)
     first_letters = Counter(s[0].upper() for s in symbols)
-    total_letters = len([l for l in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' if first_letters.get(l, 0) > 0])
+    total_letters = len([letter for letter in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' if first_letters.get(letter, 0) > 0])
     
     print(f"   Letters represented: {total_letters}/26")
-    print(f"   Distribution:")
+    print("   Distribution:")
     for letter in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ':
         count = first_letters.get(letter, 0)
         if count > 0:
@@ -136,7 +136,7 @@ def analyze_universe_quality():
     if sectors:
         sector_counts = Counter(sectors.values())
         print(f"   Sectors found: {len(sector_counts)} unique sectors")
-        print(f"   Top sectors:")
+        print("   Top sectors:")
         for sector, count in sector_counts.most_common(10):
             pct = (count / len(sectors)) * 100
             print(f"     {sector}: {count} ({pct:.1f}%)")
@@ -197,7 +197,7 @@ def analyze_universe_quality():
             spread_bps = [d['spread_bps'] for d in valid_spreads]
             print(f"   Spread range: {min(spread_bps):.1f} - {max(spread_bps):.1f} bps")
         
-        print(f"   Sample details:")
+        print("   Sample details:")
         for data in liquidity_data[:5]:
             print(f"     {data['symbol']}: ADV=${data['adv_millions']:.1f}M, Spread={data['spread_bps']}bps")
     
@@ -239,11 +239,11 @@ def analyze_universe_quality():
         
         # Check if matches Option B criteria
         if high_volatility_count >= len(growth_metrics) * 0.6 and high_growth_count >= len(growth_metrics) * 0.4:
-            print(f"   🎉 EXCELLENT! Candidates match Option B (Growth-Oriented) criteria!")
+            print("   🎉 EXCELLENT! Candidates match Option B (Growth-Oriented) criteria!")
         elif high_volatility_count >= len(growth_metrics) * 0.4:
-            print(f"   ✅ GOOD! Candidates mostly match Option B criteria")
+            print("   ✅ GOOD! Candidates mostly match Option B criteria")
         else:
-            print(f"   ⚠️  MIXED! Some candidates match Option B, but could be more aggressive")
+            print("   ⚠️  MIXED! Some candidates match Option B, but could be more aggressive")
     
     # 6. Quality Summary
     print("\n6️⃣ QUALITY SUMMARY")

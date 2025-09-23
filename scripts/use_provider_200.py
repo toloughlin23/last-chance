@@ -9,7 +9,9 @@ import os
 from datetime import date, timedelta
 
 from dotenv import load_dotenv
+
 from utils.universe_selector import UniverseSelector
+
 
 def main():
     load_dotenv()
@@ -47,7 +49,7 @@ def main():
         end_date = date.today()
         start_date = end_date - timedelta(days=60)
         
-        print(f"\n🎯 Applying ENHANCED GROWTH Algorithm:")
+        print("\n🎯 Applying ENHANCED GROWTH Algorithm:")
         print("  ✅ Higher volatility preference")
         print("  ✅ Momentum scoring")
         print("  ✅ Growth potential metrics")
@@ -93,7 +95,7 @@ def main():
             print("❌ No universe generated")
             return
             
-        print(f"\n✅ ENHANCED ALGORITHM SUCCESS!")
+        print("\n✅ ENHANCED ALGORITHM SUCCESS!")
         print(f"📊 Generated universe with {len(universe)} symbols")
         print(f"📈 First 20: {universe[:20]}")
         
@@ -114,7 +116,7 @@ def main():
             json.dump(training_data, f, indent=2)
         
         print(f"\n💾 Saved enhanced universe to: {training_file}")
-        print(f"\n🎯 ENHANCED ALGORITHM SUCCESS!")
+        print("\n🎯 ENHANCED ALGORITHM SUCCESS!")
         print("✅ Growth-oriented selection complete")
         print("✅ Using provider's 200 candidates automatically")
         

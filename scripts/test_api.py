@@ -5,6 +5,7 @@ Test API Key and Direct Calls
 
 import os
 import sys
+
 from dotenv import load_dotenv
 
 # Add project root to path
