@@ -169,3 +169,4 @@ if __name__ == "__main__":
     print("2. How candidates are selected from ranked_data")
     print("3. A hidden alphabetical sort somewhere")
     print("\n100% GENUINE SYSTEM REQUIRES GENUINE DIVERSITY!")
+

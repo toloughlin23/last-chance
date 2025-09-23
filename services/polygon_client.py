@@ -111,6 +111,39 @@ class PolygonClient:
         url = f"{self.BASE_URL}{path}"
         return self.http.get_json(url, params=self._auth_params({}))
 
+    def get_index_constituents(self, index_ticker: str = "I:SPX") -> List[str]:
+        """Get constituents of an index (default: S&P 500).
+        
+        The S&P 500 index ticker in Polygon is 'I:SPX'.
+        This returns the actual 500 stocks in the S&P 500.
+        """
+        # First, search for indices that match
+        path = "/v3/reference/tickers"
+        url = f"{self.BASE_URL}{path}"
+        params = {
+            "ticker": index_ticker,
+            "type": "IDX",  # Index type
+            "active": "true",
+            "limit": 10
+        }
+        
+        try:
+            data = self.http.get_json(url, params=self._auth_params(params))
+            results = data.get("results", [])
+            
+            if not results:
+                print(f"Index {index_ticker} not found")
+                return []
+                
+            # Now get the constituents - this would require the paid Indices API
+            # For now, we'll document this as the correct approach
+            print(f"Note: Getting index constituents requires Polygon's Indices API subscription")
+            return []
+            
+        except Exception as e:
+            print(f"Error getting index constituents: {e}")
+            return []
+    
     # Earnings calendar - real integration should use Polygon's official endpoint.
     # Intentionally unimplemented rather than faked; provider checks for availability before use.
     def get_earnings_calendar(

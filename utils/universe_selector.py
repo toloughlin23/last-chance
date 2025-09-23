@@ -32,18 +32,29 @@ class UniverseSelector:
         start_date: str,
         end_date: str,
     ) -> List[Dict[str, Any]]:
-        data = self.client.get_aggs(
-            symbol,
-            1,
-            "day",
-            start_date,
-            end_date,
-            limit=150,
-            adjusted=True,
-            sort="asc",
-        )
-        results = data.get("results")
-        return results if isinstance(results, list) else []
+        # Enhanced retry logic for daily aggregates
+        for attempt in range(3):
+            try:
+                data = self.client.get_aggs(
+                    symbol,
+                    1,
+                    "day",
+                    start_date,
+                    end_date,
+                    limit=150,
+                    adjusted=True,
+                    sort="asc",
+                )
+                results = data.get("results")
+                return results if isinstance(results, list) else []
+            except Exception as e:
+                if attempt < 2:  # Retry twice
+                    print(f"⚠️ Retrying {symbol} aggregates (attempt {attempt + 1}/3): {e}")
+                    import time
+                    time.sleep(0.5 * (attempt + 1))  # Progressive delay
+                else:
+                    print(f"❌ Failed to fetch {symbol} aggregates after 3 attempts: {e}")
+                    return []  # Return empty list instead of crashing
 
     def _compute_metrics(self, rows: List[Dict[str, Any]]) -> Dict[str, float]:
         if not rows:
@@ -152,11 +163,11 @@ class UniverseSelector:
         # Filters
         min_price: float = 10.0,
         min_atr_pct: float = 0.01,
-        max_atr_pct: float = 0.05,
+        max_atr_pct: float = 0.08,  # Allow higher volatility for growth stocks
         adv_min_dollar: float = 50_000_000.0,
         spread_filter_enabled: bool = True,
         spread_max_dollars: float = 0.02,
-        spread_max_bps: float = 5.0,
+        spread_max_bps: float = 8.0,  # More lenient for growth stocks
         spread_lookback_days: int = 5,
         spread_core_hours_only: bool = True,
         # Optional exclusion: earnings within +/- 3 days of end_date
@@ -170,11 +181,17 @@ class UniverseSelector:
         sector_cap_bonus: float = 0.10,  # +10pp above index weight
         sector_cap_floor: float = 0.05,  # at least 5%
         sector_cap_hard_ceiling: float = 0.35,  # 35% absolute cap
-        # Ranking weights (composite)
-        weight_adv: float = 0.4,
-        weight_spread: float = 0.3,
-        weight_volatility: float = 0.2,
-        weight_stability: float = 0.1,
+        # ENHANCED RANKING WEIGHTS - MAXIMUM GROWTH POTENTIAL
+        weight_adv: float = 0.20,           # Volume important but not everything
+        weight_spread: float = 0.10,        # Spreads less critical for growth
+        weight_volatility: float = 0.25,    # High volatility = more opportunities
+        weight_stability: float = 0.05,     # Stability not priority for growth
+        weight_momentum: float = 0.15,      # NEW: Price momentum and trends
+        weight_growth: float = 0.10,        # NEW: Growth metrics and ratios
+        weight_breakout: float = 0.05,      # NEW: Volatility breakout potential
+        weight_sector_rotation: float = 0.10, # NEW: Favor hot sectors
+        # AUTOMATIC COOL-OFF DETECTION
+        enable_cool_off_detection: bool = True,  # Enable automatic tech cool-off detection
     ) -> List[str]:
         from datetime import datetime as _dt
 
@@ -269,26 +286,145 @@ class UniverseSelector:
 
         def composite_score(sym: str) -> float:
             m = metrics_by_symbol[sym]
-            # ADV score (0..1)
+            
+            # 1. ADV SCORE - Volume is important for liquidity
             adv_score = min(1.0, m["adv"] / max(1.0, max_adv))
-            # Spread score: prefer tighter (bps)
+            
+            # 2. SPREAD SCORE - More lenient for growth stocks
             med_dol, med_bps = med_spreads.get(sym, (0.0, 10.0))
-            spread_score = max(
-                0.0, 1.0 - (med_bps / 10.0)
-            )  # 0 at 10+ bps, ~1 near 0 bps
-            # Volatility score: prefer mid of band (3%) within 1–5%
-            target = 0.03
-            half_range = max(1e-9, (max_atr_pct - min_atr_pct) / 2.0)
-            vol_score = max(0.0, 1.0 - (abs(m["atr_pct"] - target) / half_range))
-            vol_score = min(1.0, vol_score)
-            # Stability (0..1)
+            if med_bps <= 3.0:      spread_score = 1.0
+            elif med_bps <= 5.0:    spread_score = 0.9
+            elif med_bps <= 8.0:    spread_score = 0.8
+            elif med_bps <= 12.0:   spread_score = 0.6
+            elif med_bps <= 20.0:   spread_score = 0.4
+            else:                   spread_score = 0.2
+            
+            # 3. VOLATILITY SCORE - PREFER HIGH VOLATILITY for growth trading
+            atr_pct = m["atr_pct"]
+            if atr_pct >= 0.06:     vol_score = 1.0    # 6%+ = MAXIMUM opportunity
+            elif atr_pct >= 0.05:   vol_score = 0.95   # 5-6% = Excellent
+            elif atr_pct >= 0.04:   vol_score = 0.9    # 4-5% = Very good
+            elif atr_pct >= 0.03:   vol_score = 0.7    # 3-4% = Good
+            elif atr_pct >= 0.02:   vol_score = 0.5    # 2-3% = Medium
+            else:                   vol_score = 0.2    # Below 2% = Too stable
+            
+            # 4. STABILITY SCORE - Minimize importance for growth
             stab_score = max(0.0, min(1.0, m.get("stability", 0.0)))
-            return (
-                weight_adv * adv_score
-                + weight_spread * spread_score
-                + weight_volatility * vol_score
-                + weight_stability * stab_score
+            
+            # 5. MOMENTUM SCORE - NEW: Price momentum and trend strength
+            # Calculate momentum from recent price action
+            momentum_score = 0.5  # Default neutral
+            try:
+                # Use price data to calculate momentum if available
+                if "median_close" in m and "price_change_pct" in m:
+                    price_change = m.get("price_change_pct", 0)
+                    if price_change > 0.05:      momentum_score = 1.0    # 5%+ gain
+                    elif price_change > 0.02:    momentum_score = 0.8    # 2-5% gain
+                    elif price_change > 0:       momentum_score = 0.6    # Positive
+                    elif price_change > -0.02:   momentum_score = 0.4    # Small loss
+                    else:                        momentum_score = 0.2    # Big loss
+            except Exception:
+                momentum_score = 0.5
+            
+            # 6. GROWTH SCORE - NEW: Growth potential indicators
+            growth_score = 0.5  # Default neutral
+            try:
+                # Favor higher volatility stocks as growth indicators
+                if atr_pct >= 0.05:     growth_score = 1.0    # High volatility = growth
+                elif atr_pct >= 0.04:   growth_score = 0.8
+                elif atr_pct >= 0.03:   growth_score = 0.6
+                else:                   growth_score = 0.3
+            except Exception:
+                growth_score = 0.5
+            
+            # 7. BREAKOUT SCORE - NEW: Volatility breakout potential
+            breakout_score = 0.5  # Default neutral
+            try:
+                # High volatility + high volume = breakout potential
+                if atr_pct >= 0.05 and adv_score >= 0.7:    breakout_score = 1.0
+                elif atr_pct >= 0.04 and adv_score >= 0.5:  breakout_score = 0.8
+                elif atr_pct >= 0.03 and adv_score >= 0.3:  breakout_score = 0.6
+                else:                                         breakout_score = 0.3
+            except Exception:
+                breakout_score = 0.5
+            
+            # 8. SECTOR ROTATION SCORE - NEW: Favor currently hot sectors with automatic cool-off detection
+            sector_rotation_score = 0.5  # Default neutral
+            try:
+                # Get dynamic sector weights based on market conditions
+                if enable_cool_off_detection:
+                    try:
+                        from utils.market_condition_monitor import MarketConditionMonitor
+                        monitor = MarketConditionMonitor()
+                        dynamic_weights = monitor.get_dynamic_sector_weights()
+                        
+                        # Convert weights to hot sector scores (normalize to 0-1)
+                        max_weight = max(dynamic_weights.values())
+                        hot_sectors = {sector: weight / max_weight for sector, weight in dynamic_weights.items()}
+                        
+                        print(f"🔄 Using dynamic sector weights: Tech={dynamic_weights.get('Technology', 0.88):.0%}")
+                        
+                    except Exception as e:
+                        print(f"⚠️ Cool-off detection failed, using static weights: {e}")
+                        # Fallback to static hot sectors
+                        hot_sectors = {
+                            'Technology': 1.0,           # AI, Cloud, Software
+                            'Communication Services': 0.9, # Social media, streaming
+                            'Consumer Discretionary': 0.8, # E-commerce, luxury
+                            'Healthcare': 0.7,           # Biotech, pharma
+                            'Energy': 0.6,               # Clean energy, oil
+                            'Financials': 0.4,           # Traditional banking
+                            'Utilities': 0.2,            # Defensive, low growth
+                            'Consumer Staples': 0.3,     # Defensive, low growth
+                            'Real Estate': 0.3,          # Interest rate sensitive
+                            'Materials': 0.5,            # Industrial materials
+                            'Industrials': 0.6           # Manufacturing, infrastructure
+                        }
+                else:
+                    # Static hot sectors for growth trading (2024 focus)
+                    hot_sectors = {
+                        'Technology': 1.0,           # AI, Cloud, Software
+                        'Communication Services': 0.9, # Social media, streaming
+                        'Consumer Discretionary': 0.8, # E-commerce, luxury
+                        'Healthcare': 0.7,           # Biotech, pharma
+                        'Energy': 0.6,               # Clean energy, oil
+                        'Financials': 0.4,           # Traditional banking
+                        'Utilities': 0.2,            # Defensive, low growth
+                        'Consumer Staples': 0.3,     # Defensive, low growth
+                        'Real Estate': 0.3,          # Interest rate sensitive
+                        'Materials': 0.5,            # Industrial materials
+                        'Industrials': 0.6           # Manufacturing, infrastructure
+                    }
+                
+                # Get sector from symbol (simplified mapping)
+                symbol_upper = sym.upper()
+                if any(tech in symbol_upper for tech in ['AAPL', 'MSFT', 'GOOGL', 'AMZN', 'NVDA', 'META', 'TSLA', 'NFLX', 'ADBE', 'CRM', 'ORCL', 'INTC', 'AMD', 'QCOM', 'AVGO', 'TXN', 'AMAT', 'LRCX', 'KLAC', 'SNPS', 'CDNS', 'ANSS', 'FTNT', 'PANW', 'CRWD', 'ZS', 'OKTA', 'DDOG', 'NET', 'SNOW', 'PLTR', 'ZM', 'DOCU', 'TEAM', 'WDAY', 'NOW', 'SPLK', 'MDB', 'ESTC']):
+                    sector_rotation_score = hot_sectors.get('Technology', 0.5)
+                elif any(fin in symbol_upper for fin in ['BAC', 'JPM', 'WFC', 'C', 'GS', 'MS', 'BLK', 'AXP', 'COF', 'USB', 'TFC', 'PNC', 'SCHW', 'AIG', 'MET', 'PRU', 'ALL', 'TRV', 'CB', 'AON', 'MMC', 'SPGI', 'MCO', 'FIS', 'FISV', 'GPN', 'V', 'MA', 'PYPL', 'SQ', 'ADYEY', 'VZ', 'T', 'CMCSA', 'DIS', 'NFLX', 'GOOGL', 'META', 'TWTR', 'SNAP', 'PINS', 'ROKU', 'SPOT', 'ZM', 'DOCU', 'TEAM', 'WDAY', 'NOW', 'SPLK', 'MDB', 'ESTC']):
+                    sector_rotation_score = hot_sectors.get('Financials', 0.5)
+                elif any(energy in symbol_upper for energy in ['XOM', 'CVX', 'COP', 'EOG', 'SLB', 'HAL', 'OXY', 'PXD', 'MPC', 'VLO', 'PSX', 'KMI', 'EPD', 'ENB', 'WMB', 'OKE', 'TRP', 'PAGP', 'PAA', 'K', 'DVN', 'FANG', 'MRO', 'NOV', 'BKR', 'FTI', 'NBR', 'RIG', 'DO', 'HP', 'LBRT', 'WHD', 'CHX', 'LPI', 'PE', 'SM', 'REGI', 'CLR', 'CXO', 'PXD', 'FANG', 'MRO', 'NOV', 'BKR', 'FTI', 'NBR', 'RIG', 'DO', 'HP', 'LBRT', 'WHD', 'CHX', 'LPI', 'PE', 'SM', 'REGI', 'CLR', 'CXO']):
+                    sector_rotation_score = hot_sectors.get('Energy', 0.5)
+                elif any(health in symbol_upper for health in ['JNJ', 'PFE', 'UNH', 'ABBV', 'MRK', 'TMO', 'ABT', 'DHR', 'BMY', 'AMGN', 'GILD', 'BIIB', 'REGN', 'VRTX', 'ILMN', 'MRNA', 'BNTX', 'ZTS', 'SYK', 'ISRG', 'EW', 'BSX', 'MDT', 'JNJ', 'PFE', 'UNH', 'ABBV', 'MRK', 'TMO', 'ABT', 'DHR', 'BMY', 'AMGN', 'GILD', 'BIIB', 'REGN', 'VRTX', 'ILMN', 'MRNA', 'BNTX', 'ZTS', 'SYK', 'ISRG', 'EW', 'BSX', 'MDT']):
+                    sector_rotation_score = hot_sectors.get('Healthcare', 0.5)
+                else:
+                    # Default to medium score for unknown sectors
+                    sector_rotation_score = 0.5
+            except Exception:
+                sector_rotation_score = 0.5
+            
+            # ENHANCED COMPOSITE SCORE - ALL FACTORS WEIGHTED
+            total_score = (
+                weight_adv * adv_score +
+                weight_spread * spread_score +
+                weight_volatility * vol_score +
+                weight_stability * stab_score +
+                weight_momentum * momentum_score +
+                weight_growth * growth_score +
+                weight_breakout * breakout_score +
+                weight_sector_rotation * sector_rotation_score
             )
+            
+            return total_score
 
         ranked = sorted(spread_filtered, key=composite_score, reverse=True)
 

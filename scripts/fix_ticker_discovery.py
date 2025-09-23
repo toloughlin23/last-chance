@@ -210,3 +210,4 @@ if __name__ == "__main__":
     print("2. Filter by exchange and combine results")
     print("3. Use a curated list of S&P 500 symbols")
     print("\n100% GENUINE - NO SHORTCUTS - ALWAYS MAKE BETTER")
+

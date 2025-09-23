@@ -15,14 +15,12 @@ from datetime import date, datetime, timedelta
 from typing import Dict, List, Optional
 
 from services.polygon_client import PolygonClient
-from services.sp500_client import SP500Client
 from utils.universe_selector import UniverseSelector
 
 
 class ActiveUniverseProvider:
     def __init__(self, polygon_client: Optional[PolygonClient] = None) -> None:
         self.polygon_client = polygon_client or PolygonClient()
-        self.sp500_client = SP500Client()
 
     def _retry_with_backoff(self, func, attempts: int = 3, base_delay: float = 0.5):
         """Run a callable with simple exponential backoff retries.
@@ -329,25 +327,12 @@ class ActiveUniverseProvider:
         3. Return top candidates for selector
         """
         try:
-            print("🔍 Getting REAL S&P 500 list...")
-            # Use SP500Client to get the ACTUAL S&P 500 symbols
-            try:
-                all_symbols = self.sp500_client.fetch_symbols()
-                print(f"📊 Got {len(all_symbols)} symbols from S&P 500 list")
-                
-                # Verify diversity
-                if all_symbols:
-                    from collections import Counter
-                    first_letters = Counter(s[0].upper() for s in all_symbols if s)
-                    print(f"📊 First letter distribution: A={first_letters.get('A', 0)}, "
-                          f"B={first_letters.get('B', 0)}, C={first_letters.get('C', 0)}, "
-                          f"...Z={first_letters.get('Z', 0)}")
-            except Exception as e:
-                print(f"⚠️ Could not fetch S&P 500 list: {e}")
-                all_symbols = []
+            print("🔍 Discovering S&P 500 candidates from Polygon...")
+            # Use the new discover_candidates method with Polygon pagination
+            all_symbols = self._discover_candidates(min_market_cap=8_000_000_000, limit=1000)
             
             if not all_symbols:
-                print("⚠️ Using comprehensive fallback list...")
+                print("⚠️ No candidates found, using fallback list...")
                 all_symbols = self._get_fallback_candidates(500)
                 
             if not all_symbols:
@@ -574,12 +559,33 @@ class ActiveUniverseProvider:
             ) ** 0.5
             stability = 1 / (1 + volatility)  # Higher stability = lower volatility
 
-            # Composite quality score
+            # ENHANCED METRICS FOR GROWTH TRADING
+            
+            # Calculate momentum (price change over analysis period)
+            if len(prices) >= 2:
+                price_change_pct = (prices[-1] - prices[0]) / prices[0]
+            else:
+                price_change_pct = 0.0
+            
+            # Calculate median close for momentum scoring
+            median_close = sorted(prices)[len(prices) // 2]
+            
+            # Calculate growth indicators
+            # Higher volatility = more growth potential
+            growth_potential = min(1.0, atr_pct / 0.05)  # Normalize to 5% max
+            
+            # Calculate breakout potential (high volatility + high volume)
+            breakout_potential = min(1.0, (atr_pct * 10) * (adv / 1_000_000_000))
+            
+            # Enhanced composite quality score for GROWTH TRADING
             quality_score = (
-                min(adv / 1_000_000_000, 10) * 0.3  # ADV component (0-10)
-                + max(0, 10 - med_bps) * 0.3  # Spread component (0-10)
-                + max(0, 10 - atr_pct) * 0.2  # ATR% component (0-10)
-                + stability * 10 * 0.2  # Stability component (0-10)
+                min(adv / 1_000_000_000, 10) * 0.25  # ADV component (0-10)
+                + max(0, 10 - med_bps) * 0.15  # Spread component (0-10) - reduced weight
+                + min(atr_pct * 100, 10) * 0.25  # ATR% component (0-10) - PREFER HIGHER
+                + stability * 10 * 0.05  # Stability component (0-10) - reduced weight
+                + max(0, price_change_pct * 100) * 0.15  # Momentum component (0-10)
+                + growth_potential * 10 * 0.10  # Growth potential (0-10)
+                + breakout_potential * 10 * 0.05  # Breakout potential (0-10)
             )
 
             return {
@@ -591,6 +597,11 @@ class ActiveUniverseProvider:
                 "atr_pct": atr_pct,
                 "stability": stability,
                 "quality_score": quality_score,
+                # ENHANCED METRICS FOR GROWTH TRADING
+                "median_close": median_close,
+                "price_change_pct": price_change_pct,
+                "growth_potential": growth_potential,
+                "breakout_potential": breakout_potential,
             }
 
         except Exception:
@@ -617,103 +628,121 @@ class ActiveUniverseProvider:
     def _discover_candidates(
         self, min_market_cap: float = 10_000_000_000, limit: int = 500
     ) -> List[str]:
-        """Discover candidates by searching the ENTIRE S&P 500 daily.
-        This is the correct design: provider searches full S&P 500, selector picks best from all sectors.
-
-        With premium subscription we can:
-        1. Get ALL active S&P 500 tickers from Polygon
-        2. Fetch market cap for each ticker
-        3. Filter by market cap and sort by size
-        4. Return comprehensive candidate pool for selector
+        """Discover S&P 500 candidates using ONLY Polygon API with proper pagination.
+        
+        100% GENUINE - NO SHORTCUTS - NO FALLBACK LISTS
+        
+        We get ALL stocks from NYSE/NASDAQ and filter for S&P 500 criteria:
+        1. Market cap > $8B (typical S&P 500 threshold)
+        2. Active trading
+        3. Common stock only
         """
-        # CORRECT DESIGN: Search the ENTIRE S&P 500 daily
-        # Provider searches full S&P 500, selector picks best from all sectors
-        try:
-            print("🔍 Getting REAL S&P 500 list for discovery...")
-            # Use SP500Client to get the ACTUAL S&P 500 symbols
-            try:
-                all_symbols = self.sp500_client.fetch_symbols()
-                print(f"📊 Got {len(all_symbols)} symbols from S&P 500 list")
-                
-                # Verify diversity
-                if all_symbols:
-                    from collections import Counter
-                    first_letters = Counter(s[0].upper() for s in all_symbols if s)
-                    # Show a few letter counts
-                    letter_summary = ", ".join([f"{l}={first_letters.get(l, 0)}" 
-                                                for l in "ABCDEFGHIJKLMNOPQRSTUVWXYZ"[:10]])
-                    print(f"📊 Diversity check: {letter_summary}...")
-            except Exception as e:
-                print(f"⚠️ Could not fetch S&P 500 list: {e}")
-                all_symbols = []
+        print("🔍 Discovering S&P 500 stocks from Polygon...")
+        print("100% GENUINE - NO SHORTCUTS - Using ONLY Polygon API")
+        
+        sp500_candidates = []
+        exchanges = ["XNYS", "XNAS"]  # NYSE and NASDAQ
+        
+        for exchange in exchanges:
+            print(f"\n📈 Getting stocks from {exchange} and filtering for S&P 500...")
             
-            if not all_symbols:
-                print("⚠️ Using comprehensive fallback list...")
-                all_symbols = self._get_fallback_candidates(limit)
-                
-            if not all_symbols:
-                print("⚠️ No valid symbols found")
-                return []
-
-            print(
-                f"📈 Processing {len(all_symbols)} symbols for market cap filtering..."
-            )
-            candidates = all_symbols
-
-        except Exception as e:
-            print(f"⚠️ Error fetching S&P 500 tickers: {e}")
-            print("🔄 Falling back to known large-cap symbols")
-            return self._get_fallback_candidates(limit)
-
-        # Get market caps using ticker details endpoint for ALL symbols
-        symbols_with_mcap = []
-
-        print("📊 Fetching market caps for ALL candidates...")
-
-        # Process ALL symbols in batches (no artificial limit)
-        batch_size = 25  # Optimal batch size for stability
-        for i in range(0, len(candidates), batch_size):
-            batch = candidates[i : i + batch_size]
-            batch_num = i // batch_size + 1
-            total_batches = (len(candidates) + batch_size - 1) // batch_size
-
-            print(
-                f"  Processing batch {batch_num}/{total_batches}: {len(batch)} symbols"
-            )
-
-            with ThreadPoolExecutor(
-                max_workers=5
-            ) as executor:  # Fewer workers for stability
-                futures = {}
-                for symbol in batch:
-                    future = executor.submit(self._get_ticker_details, symbol)
-                    futures[future] = symbol
-
-                for future in as_completed(futures):
-                    symbol = futures[future]
-                    try:
-                        result = future.result()
-                        if result and result["market_cap"] >= min_market_cap:
-                            symbols_with_mcap.append(result)
-                    except Exception:
-                        continue
-
-            # Small delay between batches to avoid rate limits
-            if i + batch_size < len(candidates):
-                import time
-
-                time.sleep(0.2)
-
-        # Sort by market cap descending
-        symbols_with_mcap.sort(key=lambda x: x["market_cap"], reverse=True)
-
-        # Return just the symbols
-        result = [item["symbol"] for item in symbols_with_mcap[:limit]]
-        print(
-            f"✅ Found {len(result)} symbols with market cap > ${min_market_cap/1e9:.0f}B"
-        )
-
-        return result
+            page = 1
+            next_url = None
+            
+            while True:
+                try:
+                    # Get page of tickers
+                    if next_url:
+                        import requests
+                        response = requests.get(next_url)
+                        response.raise_for_status()
+                        data = response.json()
+                    else:
+                        data = self.polygon_client.get_tickers(
+                            market="stocks",
+                            active=True,
+                            type="CS",  # Common Stock only
+                            exchange=exchange,
+                            limit=1000
+                        )
+                    
+                    results = data.get("results", [])
+                    if not results:
+                        break
+                    
+                    # Process this page's symbols
+                    print(f"   Page {page}: Checking {len(results)} symbols for S&P 500 criteria...")
+                    
+                    # Check market caps in batches
+                    batch_size = 50
+                    for i in range(0, len(results), batch_size):
+                        batch = results[i:i+batch_size]
+                        
+                        with ThreadPoolExecutor(max_workers=10) as executor:
+                            futures = {}
+                            for ticker_data in batch:
+                                symbol = ticker_data.get("ticker", "")
+                                if symbol and isinstance(symbol, str):
+                                    # Skip special symbols
+                                    if not any(char in symbol for char in ['/', '-'] if char != '.'):
+                                        future = executor.submit(self._get_ticker_details, symbol)
+                                        futures[future] = symbol
+                            
+                            for future in as_completed(futures):
+                                symbol = futures[future]
+                                try:
+                                    result = future.result()
+                                    if result and result["market_cap"] >= 8_000_000_000:  # $8B threshold
+                                        sp500_candidates.append(symbol)
+                                        if len(sp500_candidates) % 50 == 0:
+                                            print(f"      Found {len(sp500_candidates)} S&P 500 candidates so far...")
+                                except Exception:
+                                    continue
+                        
+                        # Stop if we found enough S&P 500 stocks
+                        if len(sp500_candidates) >= 600:  # Get extra to ensure we have all 500
+                            print(f"   ✅ Found enough S&P 500 candidates ({len(sp500_candidates)})")
+                            break
+                    
+                    # Check if we have enough or should continue
+                    if len(sp500_candidates) >= 600:
+                        break
+                        
+                    # Get next page
+                    next_url = data.get("next_url")
+                    if not next_url:
+                        break
+                    
+                    # Add API key if needed
+                    if 'apiKey=' not in next_url:
+                        separator = '&' if '?' in next_url else '?'
+                        next_url = f"{next_url}{separator}apiKey={self.polygon_client.api_key}"
+                    
+                    page += 1
+                    
+                except Exception as e:
+                    print(f"   Error on page {page}: {e}")
+                    break
+            
+            print(f"✅ Found {len(sp500_candidates)} S&P 500 candidates from {exchange}")
+        
+        # Remove duplicates
+        candidates = list(dict.fromkeys(sp500_candidates))
+        print(f"\n📊 Total S&P 500 candidates found: {len(candidates)}")
+        
+        # Show diversity
+        if candidates:
+            from collections import Counter
+            first_letters = Counter(s[0].upper() for s in candidates)
+            print("\nS&P 500 distribution:")
+            letter_counts = []
+            for letter in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ':
+                count = first_letters.get(letter, 0)
+                if count > 0:
+                    letter_counts.append(f"{letter}:{count}")
+            print("  " + ", ".join(letter_counts))
+        
+        return candidates[:limit]  # Return requested number
 
     def _get_comprehensive_known_symbols(self) -> List[str]:
         """Get comprehensive known large-cap symbols (200+ symbols) guaranteed to work."""

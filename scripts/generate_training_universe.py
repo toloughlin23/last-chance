@@ -65,10 +65,10 @@ def main():
     # Verify with training module
     print("\n🔍 Step 2: Verifying with training module...")
     try:
-        from training.training_config import TrainingConfig
+        from training.training_config import TrainingPresets
 
         # Check if our symbols work with training config
-        config = TrainingConfig.curated_120_training()
+        config = TrainingPresets.curated_120_training()
         print("✅ Training config loaded successfully")
         print(f"📊 Training symbols: {len(config.get('symbols', []))}")
 

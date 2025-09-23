@@ -1,0 +1,25 @@
+{
+  "timestamp": "2025-09-23",
+  "market_condition": {
+    "condition": "TECH_VOLATILITY",
+    "severity": "LOW",
+    "tech_cool_off": false,
+    "momentum_reversal": false,
+    "volatility_spike": true,
+    "tech_vs_defensive": 0.07622369031084254,
+    "tech_momentum": 0.049881319369183656,
+    "tech_volatility": 0.028226069679341527
+  },
+  "recommendations": {
+    "recommendation": "SLIGHT_TECH_REDUCTION",
+    "sector_weights": {
+      "Technology": 0.75,
+      "Healthcare": 0.1,
+      "Financials": 0.08,
+      "Communication Services": 0.05,
+      "Consumer Discretionary": 0.02
+    },
+    "tech_cap": 0.75,
+    "diversification_level": "MEDIUM"
+  }
+}

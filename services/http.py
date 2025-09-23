@@ -18,13 +18,26 @@ class HttpClient:
     """
 
     def __init__(
-        self, timeout: float = 30.0, max_retries: int = 3, backoff: float = 0.5
+        self, timeout: float = 30.0, max_retries: int = 5, backoff: float = 0.5
     ) -> None:
         self.timeout: float = timeout
         self.max_retries: int = max(0, max_retries)
         self.backoff: float = max(0.0, backoff)
         # Use certifi CA bundle explicitly to avoid OS trust store issues
         self.verify_path: str = certifi.where()
+        
+        # Create session with connection pooling for better reliability
+        self.session = requests.Session()
+        self.session.mount('http://', requests.adapters.HTTPAdapter(
+            pool_connections=10,
+            pool_maxsize=20,
+            max_retries=0  # We handle retries manually
+        ))
+        self.session.mount('https://', requests.adapters.HTTPAdapter(
+            pool_connections=10,
+            pool_maxsize=20,
+            max_retries=0  # We handle retries manually
+        ))
 
     def get_json(
         self,
@@ -36,7 +49,8 @@ class HttpClient:
         # We make at most max_retries + 1 attempts
         for attempt in range(self.max_retries + 1):
             try:
-                resp = requests.get(
+                # Use session for connection pooling
+                resp = self.session.get(
                     url,
                     params=params,
                     headers=headers,
@@ -61,8 +75,14 @@ class HttpClient:
                 last_exc = exc
                 if attempt >= self.max_retries:
                     break
+                
+                # Enhanced error handling for specific network issues
+                error_msg = str(exc).lower()
+                if any(keyword in error_msg for keyword in ['ssl', 'certificate', 'connection', 'timeout', 'network']):
+                    print(f"⚠️ Network error (attempt {attempt + 1}/{self.max_retries + 1}): {exc}")
+                
                 # Exponential backoff with jitter
-                sleep_seconds = self.backoff * (2**attempt)
+                sleep_seconds = self.backoff * (2**attempt) + (0.1 * attempt)  # Add jitter
                 time.sleep(sleep_seconds)
 
         raise HttpError(str(last_exc) if last_exc else "HTTP request failed")
