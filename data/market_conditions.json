@@ -1,25 +1,225 @@
 {
   "timestamp": "2025-09-23",
   "market_condition": {
-    "condition": "TECH_VOLATILITY",
-    "severity": "LOW",
-    "tech_cool_off": false,
-    "momentum_reversal": false,
-    "volatility_spike": true,
-    "tech_vs_defensive": 0.07622369031084254,
-    "tech_momentum": 0.049881319369183656,
-    "tech_volatility": 0.028226069679341527
+    "condition": "TECH_COOL_OFF",
+    "severity": "HIGH",
+    "signals": {
+      "immediate_cool_off": false,
+      "short_term_cool_off": false,
+      "medium_term_cool_off": false,
+      "long_term_cool_off": false,
+      "immediate_momentum_reversal": false,
+      "short_term_momentum_reversal": true,
+      "medium_term_momentum_reversal": false,
+      "volatility_spike_mild": false,
+      "volatility_spike_moderate": false,
+      "volatility_spike_severe": true,
+      "relative_strength_weakness": true,
+      "correlation_breakdown": false
+    },
+    "timeframe_analysis": {
+      "immediate": {
+        "tech_performance": {
+          "sector_name": "Technology_immediate",
+          "total_return": -0.009818835707189884,
+          "volatility": 0.0,
+          "momentum": 0.0,
+          "valid_symbols": 20,
+          "total_symbols": 39
+        },
+        "defensive_performance": {
+          "Utilities": {
+            "sector_name": "Utilities_immediate",
+            "total_return": 0.0123692908525018,
+            "volatility": 0.0,
+            "momentum": 0.0,
+            "valid_symbols": 10,
+            "total_symbols": 10
+          },
+          "Consumer Staples": {
+            "sector_name": "Consumer Staples_immediate",
+            "total_return": 0.001723652749421152,
+            "volatility": 0.0,
+            "momentum": 0.0,
+            "valid_symbols": 10,
+            "total_symbols": 10
+          },
+          "Healthcare": {
+            "sector_name": "Healthcare_immediate",
+            "total_return": 0.0011703268294602105,
+            "volatility": 0.0,
+            "momentum": 0.0,
+            "valid_symbols": 10,
+            "total_symbols": 10
+          },
+          "Financials": {
+            "sector_name": "Financials_immediate",
+            "total_return": -0.0031954005958414987,
+            "volatility": 0.0,
+            "momentum": 0.0,
+            "valid_symbols": 10,
+            "total_symbols": 10
+          }
+        },
+        "tech_vs_defensive": -0.012835803166075301,
+        "days": 3
+      },
+      "short": {
+        "tech_performance": {
+          "sector_name": "Technology_short",
+          "total_return": 0.037388970153857934,
+          "volatility": 0.025296609354831124,
+          "momentum": -0.030242412137949377,
+          "valid_symbols": 20,
+          "total_symbols": 39
+        },
+        "defensive_performance": {
+          "Utilities": {
+            "sector_name": "Utilities_short",
+            "total_return": 0.02663963621966602,
+            "volatility": 0.008780944833971604,
+            "momentum": 0.0036040006049431125,
+            "valid_symbols": 10,
+            "total_symbols": 10
+          },
+          "Consumer Staples": {
+            "sector_name": "Consumer Staples_short",
+            "total_return": -0.008226886388750885,
+            "volatility": 0.008825831763600207,
+            "momentum": 0.00028342059850752256,
+            "valid_symbols": 10,
+            "total_symbols": 10
+          },
+          "Healthcare": {
+            "sector_name": "Healthcare_short",
+            "total_return": 0.006518927940470758,
+            "volatility": 0.010127669123445674,
+            "momentum": -0.009940440947471466,
+            "valid_symbols": 10,
+            "total_symbols": 10
+          },
+          "Financials": {
+            "sector_name": "Financials_short",
+            "total_return": 0.0219571422311534,
+            "volatility": 0.009162910344699179,
+            "momentum": -0.03474535626603832,
+            "valid_symbols": 10,
+            "total_symbols": 10
+          }
+        },
+        "tech_vs_defensive": 0.02566676515322311,
+        "days": 7
+      },
+      "medium": {
+        "tech_performance": {
+          "sector_name": "Technology_medium",
+          "total_return": 0.07137655230822518,
+          "volatility": 0.03172309667663042,
+          "momentum": 0.00324173640112006,
+          "valid_symbols": 20,
+          "total_symbols": 39
+        },
+        "defensive_performance": {
+          "Utilities": {
+            "sector_name": "Utilities_medium",
+            "total_return": 0.034026705391184076,
+            "volatility": 0.010954644685551651,
+            "momentum": 0.0193800338485701,
+            "valid_symbols": 10,
+            "total_symbols": 10
+          },
+          "Consumer Staples": {
+            "sector_name": "Consumer Staples_medium",
+            "total_return": -0.017437382205609704,
+            "volatility": 0.01033379220807822,
+            "momentum": 0.0010039978585284464,
+            "valid_symbols": 10,
+            "total_symbols": 10
+          },
+          "Healthcare": {
+            "sector_name": "Healthcare_medium",
+            "total_return": 0.00031020040827321667,
+            "volatility": 0.014999275871001558,
+            "momentum": 0.012939987901718747,
+            "valid_symbols": 10,
+            "total_symbols": 10
+          },
+          "Financials": {
+            "sector_name": "Financials_medium",
+            "total_return": 0.05220899881914309,
+            "volatility": 0.009593474296514507,
+            "momentum": -0.007640697014750372,
+            "valid_symbols": 10,
+            "total_symbols": 10
+          }
+        },
+        "tech_vs_defensive": 0.05409942170497751,
+        "days": 15
+      },
+      "long": {
+        "tech_performance": {
+          "sector_name": "Technology_long",
+          "total_return": 0.08633247109680628,
+          "volatility": 0.028226069679341527,
+          "momentum": 0.049881319369183656,
+          "valid_symbols": 20,
+          "total_symbols": 39
+        },
+        "defensive_performance": {
+          "Utilities": {
+            "sector_name": "Utilities_long",
+            "total_return": 0.0008996218679236919,
+            "volatility": 0.009981737059944209,
+            "momentum": 0.05012245216781608,
+            "valid_symbols": 10,
+            "total_symbols": 10
+          },
+          "Consumer Staples": {
+            "sector_name": "Consumer Staples_long",
+            "total_return": -0.008435475613122636,
+            "volatility": 0.009589597731394124,
+            "momentum": -0.035092196998117026,
+            "valid_symbols": 10,
+            "total_symbols": 10
+          },
+          "Healthcare": {
+            "sector_name": "Healthcare_long",
+            "total_return": -0.005215976017278748,
+            "volatility": 0.01251897319658429,
+            "momentum": -0.008128819990108217,
+            "valid_symbols": 10,
+            "total_symbols": 10
+          },
+          "Financials": {
+            "sector_name": "Financials_long",
+            "total_return": 0.053186952906332643,
+            "volatility": 0.010952868694383378,
+            "momentum": 0.021705873750841338,
+            "valid_symbols": 10,
+            "total_symbols": 10
+          }
+        },
+        "tech_vs_defensive": 0.07622369031084254,
+        "days": 30
+      }
+    },
+    "confidence_score": 0.25
   },
   "recommendations": {
-    "recommendation": "SLIGHT_TECH_REDUCTION",
+    "recommendation": "SIGNIFICANT_TECH_REDUCTION",
     "sector_weights": {
-      "Technology": 0.75,
-      "Healthcare": 0.1,
-      "Financials": 0.08,
-      "Communication Services": 0.05,
-      "Consumer Discretionary": 0.02
+      "Technology": 0.35,
+      "Healthcare": 0.2,
+      "Financials": 0.18,
+      "Utilities": 0.12,
+      "Consumer Staples": 0.1,
+      "Communication Services": 0.05
     },
-    "tech_cap": 0.75,
-    "diversification_level": "MEDIUM"
+    "tech_cap": 0.35,
+    "diversification_level": "MAXIMUM",
+    "urgency": "HIGH",
+    "confidence_score": 0.25,
+    "risk_level": "HIGH",
+    "adjustment_magnitude": "MASSIVE"
   }
 }
