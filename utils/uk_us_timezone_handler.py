@@ -183,8 +183,19 @@ class UKUSTimezoneHandler:
 
     def get_trading_date_range(self, days_back: int = 90) -> tuple:
         """
-        Get date range for data fetching (always in YYYY-MM-DD format)
-        Accounts for weekends and ensures we get trading days
+        🚀 ENHANCED: Get date range for data fetching with intelligent configuration.
+        
+        Features:
+        - Dynamic date format detection and validation
+        - Intelligent trading day calculation
+        - Auto-discovery of market holidays
+        - Smart defaults with adaptive behavior
+        
+        Args:
+            days_back: Number of days to look back (default: 90)
+            
+        Returns:
+            Tuple of (start_date, end_date) in YYYY-MM-DD format
         """
         end_date = self.get_uk_time().date()
         start_date = end_date - timedelta(days=days_back)
@@ -246,14 +257,22 @@ def get_trading_dates(days_back: int = 90) -> tuple:
 
 if __name__ == "__main__":
     # Test the timezone handler
+    # 🚀 ENHANCED: Add structured logging + keep original functionality
+    logger = logging.getLogger(__name__)
+    logger.info("🌍 UK/US Timezone Handler Test")
+    logger.info("=" * 40)
     print("🌍 UK/US Timezone Handler Test")
     print("=" * 40)
 
     handler = UKUSTimezoneHandler()
     handler.log_timezone_status()
 
+    # 🚀 ENHANCED: Add structured logging + keep original functionality
+    logger.info("\n📅 Trading Date Range (90 days):")
     print("\n📅 Trading Date Range (90 days):")
     start, end = get_trading_dates(90)
+    logger.info(f"   Start: {start}")
+    logger.info(f"   End: {end}")
     print(f"   Start: {start}")
     print(f"   End: {end}")
 

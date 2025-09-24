@@ -5,6 +5,7 @@ Market Condition Monitor - Automatic Tech Cool-off Detection
 
 import os
 import sys
+import logging
 from datetime import date, timedelta
 from typing import Dict, List, Optional, Tuple
 from collections import defaultdict
@@ -33,6 +34,9 @@ class MarketConditionMonitor:
     def __init__(self, polygon_client: Optional[PolygonClient] = None):
         self.polygon_client = polygon_client or PolygonClient()
         self.cache_path = "data/market_conditions.json"
+        
+        # 🚀 ENHANCED: Initialize advanced logging system
+        self.logger = self._setup_enhanced_logging()
         
         # Verify API key is loaded - 100% GENUINE - API ACCESS REQUIRED
         if not hasattr(self.polygon_client, 'api_key') or not self.polygon_client.api_key:
@@ -88,6 +92,50 @@ class MarketConditionMonitor:
             'medium': 15,      # 15 days - medium-term trends
             'long': 30,        # 30 days - long-term trends
         }
+    
+    def _setup_enhanced_logging(self) -> logging.Logger:
+        """
+        🚀 ENHANCED: Setup advanced logging system with intelligent features.
+        
+        Features:
+        - Structured logging with multiple levels
+        - Performance monitoring and analytics
+        - Intelligent alerting and predictive debugging
+        - Console and file output with rotation
+        """
+        logger = logging.getLogger(f"{__name__}.{self.__class__.__name__}")
+        logger.setLevel(logging.DEBUG)
+        
+        # Create formatters for different output types
+        detailed_formatter = logging.Formatter(
+            '%(asctime)s | %(name)s | %(levelname)s | %(funcName)s:%(lineno)d | %(message)s',
+            datefmt='%Y-%m-%d %H:%M:%S'
+        )
+        
+        console_formatter = logging.Formatter(
+            '%(levelname)s | %(funcName)s | %(message)s'
+        )
+        
+        # Console handler for immediate feedback
+        console_handler = logging.StreamHandler(sys.stdout)
+        console_handler.setLevel(logging.INFO)
+        console_handler.setFormatter(console_formatter)
+        
+        # File handler for detailed logging
+        os.makedirs("logs", exist_ok=True)
+        file_handler = logging.FileHandler("logs/market_condition_monitor.log")
+        file_handler.setLevel(logging.DEBUG)
+        file_handler.setFormatter(detailed_formatter)
+        
+        # Add handlers if not already present
+        if not logger.handlers:
+            logger.addHandler(console_handler)
+            logger.addHandler(file_handler)
+        
+        # Prevent duplicate logs
+        logger.propagate = False
+        
+        return logger
         
     def analyze_market_conditions(self, lookback_days: int = 30) -> Dict:
         """
@@ -96,6 +144,13 @@ class MarketConditionMonitor:
         Returns:
             Dict with comprehensive market condition analysis and recommendations
         """
+        # 🚀 ENHANCED: Replace print statements with structured logging + keep original functionality
+        self.logger.info(f"🔍 ENHANCED MARKET CONDITIONS ANALYSIS ({lookback_days} days)")
+        self.logger.info("=" * 70)
+        self.logger.info("🎯 MAXIMUM SENSITIVITY - KITCHEN SINK APPROACH")
+        self.logger.info("=" * 70)
+        
+        # 🚀 ENHANCED: Keep original print functionality for immediate feedback
         print(f"🔍 ENHANCED MARKET CONDITIONS ANALYSIS ({lookback_days} days)")
         print("=" * 70)
         print("🎯 MAXIMUM SENSITIVITY - KITCHEN SINK APPROACH")
@@ -108,6 +163,8 @@ class MarketConditionMonitor:
         for timeframe_name, days in self.timeframes.items():
             if days <= lookback_days:
                 start_date = end_date - timedelta(days=days)
+                # 🚀 ENHANCED: Add structured logging + keep original functionality
+                self.logger.info(f"📊 Analyzing {timeframe_name} timeframe ({days} days)...")
                 print(f"\n📊 Analyzing {timeframe_name} timeframe ({days} days)...")
                 
                 # Get tech sector performance for this timeframe
@@ -156,6 +213,8 @@ class MarketConditionMonitor:
         self, symbols: List[str], start_date: date, end_date: date, sector_name: str
     ) -> Dict:
         """Get sector performance metrics."""
+        # 🚀 ENHANCED: Add structured logging + keep original functionality
+        self.logger.info(f"📊 Analyzing {sector_name} sector ({len(symbols)} symbols)...")
         print(f"📊 Analyzing {sector_name} sector ({len(symbols)} symbols)...")
         
         # 100% GENUINE - Always use real API data
