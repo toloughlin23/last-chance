@@ -7,7 +7,7 @@ from collections import Counter
 client = SP500Client()
 symbols = client.fetch_symbols()
 
-print(f"Got {len(symbols)} S&P 500 symbols from Wikipedia")
+print(f"Got {len(symbols)} S&P 500 symbols from Polygon API")
 print("="*60)
 
 # Check distribution
