@@ -57,8 +57,11 @@ def main():
                 # Get quality metrics for this symbol
                 metrics = provider._analyze_symbol_quality(
                     symbol=symbol,
+                    min_market_cap=1e9,  # 1B minimum market cap
+                    analysis_days=30,
                     start_date=start_date,
-                    end_date=end_date
+                    end_date=end_date,
+                    quotes_client=provider.quotes_client
                 )
                 
                 if metrics:
