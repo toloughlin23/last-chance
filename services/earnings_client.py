@@ -1,13 +1,15 @@
 import os
-from typing import Dict, List, Optional
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from typing import Dict, List, Optional
 
 from services.http import HttpClient
 from utils.env_loader import load_env_from_known_locations
 
 
 class EarningsClient:
-    def __init__(self, api_key: Optional[str] = None, http: Optional[HttpClient] = None):
+    def __init__(
+        self, api_key: Optional[str] = None, http: Optional[HttpClient] = None
+    ):
         load_env_from_known_locations()
         self.api_key = api_key or os.getenv("POLYGON_API_KEY")
         if not self.api_key:
@@ -30,7 +32,9 @@ class EarningsClient:
         results = data.get("results") or data.get("earnings") or []
         return bool(results)
 
-    def tickers_with_earnings_on(self, symbols: List[str], date_iso: str, max_workers: int = 8) -> Dict[str, bool]:
+    def tickers_with_earnings_on(
+        self, symbols: List[str], date_iso: str, max_workers: int = 8
+    ) -> Dict[str, bool]:
         if not symbols:
             return {}
         out: Dict[str, bool] = {}
@@ -43,4 +47,3 @@ class EarningsClient:
                 except Exception:
                     out[sym] = False
         return out
-

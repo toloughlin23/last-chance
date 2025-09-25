@@ -5,7 +5,7 @@ from dataclasses import dataclass
 class PersonalityProfile:
     risk_tolerance: float  # 0.0 (low) .. 1.0 (high)
     decision_speed: float  # 0.0 (slow) .. 1.0 (fast)
-    aggression: float      # 0.0 (low) .. 1.0 (high)
+    aggression: float  # 0.0 (low) .. 1.0 (high)
 
 
 class AuthenticPersonalitySystem:
@@ -26,4 +26,3 @@ class AuthenticPersonalitySystem:
 
     def exploration_bias(self) -> float:
         return max(-0.15, min(0.25, self._exploration_bias))
-

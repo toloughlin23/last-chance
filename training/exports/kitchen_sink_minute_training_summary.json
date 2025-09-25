@@ -1,0 +1,12 @@
+{
+  "training_summary": {
+    "config_name": "rapid_test",
+    "total_trades": 15,
+    "overall_variance": 0.003209477269582981,
+    "diversity_achieved": false,
+    "training_duration": "199.09 seconds",
+    "data_granularity": "minute",
+    "zero_lookforward_bias": true,
+    "export_timestamp": "2025-09-24T19:25:44.078595"
+  }
+}

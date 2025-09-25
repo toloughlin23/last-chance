@@ -1,8 +1,11 @@
-import numpy as np
-from systems.personality import AuthenticPersonalitySystem, PersonalityProfile
-from CORE_SUPER_BANDITS.optimized_linucb_institutional import OptimizedInstitutionalLinUCB
-from CORE_SUPER_BANDITS.optimized_neural_bandit_institutional import OptimizedInstitutionalNeuralBandit
+from CORE_SUPER_BANDITS.optimized_linucb_institutional import (
+    OptimizedInstitutionalLinUCB,
+)
+from CORE_SUPER_BANDITS.optimized_neural_bandit_institutional import (
+    OptimizedInstitutionalNeuralBandit,
+)
 from CORE_SUPER_BANDITS.optimized_ucbv_institutional import OptimizedInstitutionalUCBV
+from systems.personality import AuthenticPersonalitySystem, PersonalityProfile
 
 
 class _Sent:
@@ -18,6 +21,9 @@ class _Mkt:
         self.price_momentum = pm
         self.volatility = vol
         self.volume_ratio = vr
+        self.price = 100.0
+        self.high = 105.0
+        self.low = 95.0
 
 
 class _Data:
@@ -52,12 +58,12 @@ def test_personality_affects_neural_confidence():
     d = _Data(0.3, 0.8, 12, 0.02, 0.03, 1.1)
 
     n1 = OptimizedInstitutionalNeuralBandit(personality=base)
-    n1.add_arm('buy_signal')
-    c1 = n1.get_confidence('buy_signal', d)
+    n1.add_arm("buy_signal")
+    c1 = n1.get_confidence("buy_signal", d)
 
     n2 = OptimizedInstitutionalNeuralBandit(personality=high)
-    n2.add_arm('buy_signal')
-    c2 = n2.get_confidence('buy_signal', d)
+    n2.add_arm("buy_signal")
+    c2 = n2.get_confidence("buy_signal", d)
 
     assert c1 != c2
     assert 0.40 <= c1 <= 0.95 and 0.40 <= c2 <= 0.95
@@ -69,9 +75,22 @@ def test_personality_affects_ucbv_confidence():
 
     def mk(price, pc, hi, lo, vol, vwap):
         return {
-            'status': 'OK',
-            'results': {'p': price, 's': vol, 't': 0, 'c': [1], 'o': pc, 'h': hi, 'l': lo, 'v': vol, 'vw': vwap},
-            'prev_close': pc, 'high': hi, 'low': lo, 'vwap': vwap,
+            "status": "OK",
+            "results": {
+                "p": price,
+                "s": vol,
+                "t": 0,
+                "c": [1],
+                "o": pc,
+                "h": hi,
+                "l": lo,
+                "v": vol,
+                "vw": vwap,
+            },
+            "prev_close": pc,
+            "high": hi,
+            "low": lo,
+            "vwap": vwap,
         }
 
     data = mk(100.0, 100.0, 101.0, 99.0, 20000, 100.0)
@@ -84,4 +103,3 @@ def test_personality_affects_ucbv_confidence():
 
     assert c1 != c2
     assert 0.40 <= c1 <= 0.85 and 0.40 <= c2 <= 0.85
-

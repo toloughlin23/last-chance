@@ -1,0 +1,4 @@
+# file: C:\Users\tolou\last chance\services\http.py
+# hypothesis_version: 6.138.15
+
+[0.0, 0.5, 30.0, 200, 429, 500, 502, 503, 504, 'HTTP request failed']

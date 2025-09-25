@@ -1,0 +1,4 @@
+# file: C:\Users\tolou\last chance\pipeline\runner.py
+# hypothesis_version: 6.138.15
+
+[0.0, 0.2, 0.3, 0.5, 60.0, 100.0, 1000.0, 120, 1000000, '+00:00', '2023-01-03', '2023-01-10', 'AAPL', 'OK', 'Z', '__main__', 'a', 'add_position', 'asc', 'buy', 'buy_signal', 'c', 'closed', 'day', 'days', 'end_iso', 'executed', 'failed', 'fetch_status', 'first_close', 'h', 'l', 'last_close', 'lin_arm', 'lin_conf', 'market', 'market_session', 'mean_reversion', 'minute', 'neu_conf', 'news_conf', 'num_results', 'o', 'open', 'p', 'pct_change', 'pipeline_log.csv', 'pipeline_min_log.csv', 'price', 'results', 'retried_success', 'retries', 'retry_pending', 's', 'scalp_long', 'sell', 'sentiment', 'start_iso', 'status', 'strong_buy', 'success', 'symbol', 't', 'ts_uk', 'ts_us', 'ts_utc', 'ucv_action', 'ucv_conf', 'unknown', 'v', 'volatility', 'volume', 'volume_ratio', 'vw']

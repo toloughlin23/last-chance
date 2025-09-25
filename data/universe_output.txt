@@ -1,0 +1,45 @@
+Active Trading Universe - 39 symbols
+==================================================
+Analysis period: 60 days
+Generated: 2025-09-22
+==================================================
+
+  1. AAPL
+  2. AMD
+  3. AL
+  4. ADM
+  5. ACGL
+  6. AIG
+  7. AA
+  8. AMAT
+  9. AAL
+ 10. ALLY
+ 11. ALKS
+ 12. AMRZ
+ 13. AES
+ 14. ABT
+ 15. ACN
+ 16. AFL
+ 17. ABNB
+ 18. ABBV
+ 19. ALC
+ 20. AKAM
+ 21. ADBE
+ 22. AEP
+ 23. ADI
+ 24. AER
+ 25. ADMA
+ 26. ACI
+ 27. AMH
+ 28. AMT
+ 29. AHR
+ 30. ALSN
+ 31. AEE
+ 32. AMKR
+ 33. ADC
+ 34. ALL
+ 35. ACM
+ 36. AME
+ 37. AI
+ 38. ACHC
+ 39. ALHC

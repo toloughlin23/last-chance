@@ -1,5 +1,5 @@
-import os
 import json
+import os
 from datetime import datetime
 from typing import List
 
@@ -29,4 +29,3 @@ class SP500Cache:
         payload = {"date": datetime.utcnow().date().isoformat(), "symbols": symbols}
         with open(self.path, "w") as f:
             json.dump(payload, f)
-

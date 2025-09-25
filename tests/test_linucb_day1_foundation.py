@@ -1,5 +1,6 @@
-import numpy as np
-from CORE_SUPER_BANDITS.optimized_linucb_institutional import OptimizedInstitutionalLinUCB
+from CORE_SUPER_BANDITS.optimized_linucb_institutional import (
+    OptimizedInstitutionalLinUCB,
+)
 
 
 class _Sentiment:
@@ -15,6 +16,9 @@ class _Market:
         self.price_momentum = pm
         self.volatility = vol
         self.volume_ratio = vr
+        self.price = 100.0
+        self.high = 105.0
+        self.low = 95.0
 
 
 class _Enriched:
@@ -49,4 +53,3 @@ def test_linucb_day1_variation_over_inputs():
     c2 = bandit.get_confidence_for_context(a2, d2)
 
     assert abs(c2 - c1) >= 0.05
-

@@ -1,4 +1,5 @@
 import os
+
 import pytest
 
 from services.alpaca_client import AlpacaClient
@@ -13,4 +14,3 @@ def test_alpaca_account_paper_mode():
     acct = client.get_account()
     assert isinstance(acct, dict)
     assert "id" in acct and "status" in acct
-

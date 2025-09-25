@@ -1,13 +1,18 @@
 from typing import List
 
-from services.snapshot_client import SnapshotClient
 from services.earnings_client import EarningsClient
+from services.snapshot_client import SnapshotClient
 from services.ssr_client import SSRClient
-from uk_us_timezone_handler import get_uk_us_handler
+from utils.uk_us_timezone_handler import get_uk_us_handler
 
 
 class Hygiene:
-    def __init__(self, snapshot: SnapshotClient | None = None, earnings: EarningsClient | None = None, ssr: SSRClient | None = None):
+    def __init__(
+        self,
+        snapshot: SnapshotClient | None = None,
+        earnings: EarningsClient | None = None,
+        ssr: SSRClient | None = None,
+    ):
         self.snapshot = snapshot or SnapshotClient()
         self.earnings = earnings or EarningsClient()
         self.ssr = ssr or SSRClient()
@@ -25,11 +30,11 @@ class Hygiene:
             return []
         # Auto defaults
         if earnings_exclude is None:
-            earnings_exclude = (strategy_profile != "momentum")
+            earnings_exclude = strategy_profile != "momentum"
         if halts_exclude is None:
             halts_exclude = True
         if ssr_exclude is None:
-            ssr_exclude = (strategy_profile != "long_only")
+            ssr_exclude = strategy_profile != "long_only"
 
         filtered = list(symbols)
 
@@ -51,7 +56,9 @@ class Hygiene:
         # SSR (current day −10% from prior close)
         if ssr_exclude and filtered:
             now_us = self.tz.get_us_market_time()
-            ssr_map = self.ssr.ssr_active_today(filtered, now_us.replace(hour=9, minute=30, second=0, microsecond=0))
+            ssr_map = self.ssr.ssr_active_today(
+                filtered, now_us.replace(hour=9, minute=30, second=0, microsecond=0)
+            )
             filtered = [s for s in filtered if not ssr_map.get(s, False)]
 
         return filtered

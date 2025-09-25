@@ -1,0 +1,62 @@
+{
+  "generated_date": "2025-09-24",
+  "generated_timestamp": "2025-09-24T15:37:51.620960",
+  "symbol_count": 13,
+  "symbols": [
+    "AAPL",
+    "RKT",
+    "CDE",
+    "AAL",
+    "NCLH",
+    "HAL",
+    "STM",
+    "NU",
+    "CCL",
+    "SLB",
+    "HPE",
+    "BAC",
+    "DAY"
+  ],
+  "description": "\ud83d\ude80 ROCKET-ENHANCED universe list generated from S&P 500 using advanced Polygon API analysis",
+  "enhanced_features": [
+    "Advanced retry logic",
+    "Intelligent filtering",
+    "Market cap validation",
+    "Sector analysis",
+    "Quality scoring",
+    "Performance monitoring"
+  ],
+  "metrics_used": [
+    "ADV",
+    "spreads",
+    "ATR%",
+    "stability",
+    "market_cap",
+    "sector_balance",
+    "quality_score"
+  ],
+  "data_source": "100% genuine Polygon API data - NO SHORTCUTS",
+  "quality_metrics": {
+    "overall_score": 7.772527472527472,
+    "symbol_count": 13,
+    "sector_diversity": 73.6263736263736,
+    "sector_distribution": {
+      "Technology": 4,
+      "Financials": 2,
+      "Materials": 1,
+      "Consumer Discretionary": 2,
+      "Energy": 2,
+      "Financial Technology": 1,
+      "Unknown": 1
+    },
+    "min_market_cap": 5.0,
+    "max_market_cap": 3000.0,
+    "quality_grade": "A",
+    "quality_bonus": 1.0,
+    "size_factor": 1.3,
+    "quality_factor": 4.0,
+    "sector_factor": 1.4725274725274722
+  },
+  "generation_time_seconds": 404.56257486343384,
+  "enhancement_level": "ROCKET-ENHANCED"
+}

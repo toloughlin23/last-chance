@@ -1,0 +1,11 @@
+{
+  "total_trades": 199862,
+  "overall_variance": 0.0,
+  "diversity_achieved": false,
+  "data_granularity": "minute",
+  "zero_lookforward_bias": true,
+  "kitchen_sink_features": "kitchen_sink",
+  "walk_forward_validation": true,
+  "bias_detection": true,
+  "export_timestamp": "2025-09-25T11:52:49.299928"
+}

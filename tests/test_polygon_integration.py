@@ -1,7 +1,8 @@
 import os
 import time
+
 import pytest
-import requests
+import requests  # type: ignore[import-untyped]
 
 from utils.env_loader import load_env_from_known_locations
 
@@ -13,7 +14,9 @@ def test_polygon_aggs_historical_data_real_api():
 
     api_key = os.getenv("POLYGON_API_KEY")
     if not api_key:
-        pytest.skip("POLYGON_API_KEY not set; set it in polygon/.env or .env and retry.")
+        pytest.skip(
+            "POLYGON_API_KEY not set; set it in polygon/.env or .env and retry."
+        )
 
     # Use a narrow historical window to minimize rate limit/usage
     url = (
@@ -22,7 +25,9 @@ def test_polygon_aggs_historical_data_real_api():
     )
 
     response = requests.get(url, timeout=30)
-    assert response.status_code == 200, f"Unexpected status: {response.status_code} {response.text}"
+    assert (
+        response.status_code == 200
+    ), f"Unexpected status: {response.status_code} {response.text}"
 
     data = response.json()
     assert isinstance(data, dict)

@@ -1,0 +1,30 @@
+{
+  "analysis_date": "2025-09-24T15:37:51.614468",
+  "analysis_days": 60,
+  "target_size": 150,
+  "start_date": "2025-07-26",
+  "end_date": "2025-09-24",
+  "symbols": [
+    "AAPL",
+    "RKT",
+    "CDE",
+    "AAL",
+    "NCLH",
+    "HAL",
+    "STM",
+    "NU",
+    "CCL",
+    "SLB",
+    "HPE",
+    "BAC",
+    "DAY"
+  ],
+  "criteria": {
+    "min_price": 10.0,
+    "min_atr_pct": 0.01,
+    "spread_max_dollars": 0.02,
+    "spread_max_bps": 5.0,
+    "spread_lookback_days": 5,
+    "spread_core_hours_only": true
+  }
+}

@@ -1,0 +1,26 @@
+2025-09-25 12:49:12,381 | INFO | training_system | ULTRA-ADVANCED CONTAMINATION PREVENTION SYSTEM | Context: operation=enhanced_logging
+2025-09-25 12:49:12,381 | INFO | training_system | ================================================================================ | Context: operation=enhanced_logging
+2025-09-25 12:49:12,381 | INFO | training_system | Scanning for: NO SHORTCUTS, NO MOCK DATA, NO FAKE SYSTEMS, NO PLACEHOLDERS | Context: operation=enhanced_logging
+2025-09-25 12:49:12,381 | INFO | training_system | Features: Multi-threading, Semantic Analysis, Context Awareness, Performance Optimization | Context: operation=enhanced_logging
+2025-09-25 12:49:12,384 | INFO | training_system | ================================================================================ | Context: operation=enhanced_logging
+2025-09-25 12:49:12,387 | INFO | training_system | [CHART] Found 343 files to scan using 32 threads | Context: operation=enhanced_logging
+2025-09-25 12:49:13,580 | INFO | training_system | 📈 Progress: 10/343 (2.9%) - Clean: 10, Contaminated: 0 | Context: operation=enhanced_logging
+2025-09-25 12:49:13,614 | INFO | training_system | 📈 Progress: 20/343 (5.8%) - Clean: 18, Contaminated: 2 | Context: operation=enhanced_logging
+2025-09-25 12:49:13,654 | INFO | training_system | 📈 Progress: 30/343 (8.7%) - Clean: 28, Contaminated: 2 | Context: operation=enhanced_logging
+2025-09-25 12:49:13,841 | INFO | training_system | 📈 Progress: 40/343 (11.7%) - Clean: 37, Contaminated: 3 | Context: operation=enhanced_logging
+2025-09-25 12:49:14,021 | INFO | training_system | 📈 Progress: 50/343 (14.6%) - Clean: 46, Contaminated: 4 | Context: operation=enhanced_logging
+2025-09-25 12:49:14,279 | INFO | training_system | 📈 Progress: 60/343 (17.5%) - Clean: 56, Contaminated: 4 | Context: operation=enhanced_logging
+2025-09-25 12:49:14,441 | INFO | training_system | 📈 Progress: 70/343 (20.4%) - Clean: 66, Contaminated: 4 | Context: operation=enhanced_logging
+2025-09-25 12:49:14,555 | INFO | training_system | 📈 Progress: 80/343 (23.3%) - Clean: 76, Contaminated: 4 | Context: operation=enhanced_logging
+2025-09-25 12:49:14,685 | INFO | training_system | 📈 Progress: 90/343 (26.2%) - Clean: 86, Contaminated: 4 | Context: operation=enhanced_logging
+2025-09-25 12:49:15,170 | INFO | training_system | 📈 Progress: 100/343 (29.2%) - Clean: 96, Contaminated: 4 | Context: operation=enhanced_logging
+2025-09-25 12:49:15,805 | INFO | training_system | 📈 Progress: 110/343 (32.1%) - Clean: 105, Contaminated: 5 | Context: operation=enhanced_logging
+2025-09-25 12:49:15,837 | INFO | training_system | 📈 Progress: 120/343 (35.0%) - Clean: 114, Contaminated: 6 | Context: operation=enhanced_logging
+2025-09-25 12:49:15,871 | INFO | training_system | 📈 Progress: 130/343 (37.9%) - Clean: 124, Contaminated: 6 | Context: operation=enhanced_logging
+2025-09-25 12:49:16,012 | INFO | training_system | 📈 Progress: 140/343 (40.8%) - Clean: 134, Contaminated: 6 | Context: operation=enhanced_logging
+2025-09-25 12:49:16,246 | INFO | training_system | 📈 Progress: 150/343 (43.7%) - Clean: 144, Contaminated: 6 | Context: operation=enhanced_logging
+2025-09-25 12:49:16,982 | INFO | training_system | 📈 Progress: 160/343 (46.6%) - Clean: 154, Contaminated: 6 | Context: operation=enhanced_logging
+2025-09-25 12:49:17,391 | INFO | training_system | 📈 Progress: 170/343 (49.6%) - Clean: 164, Contaminated: 6 | Context: operation=enhanced_logging
+2025-09-25 12:49:17,649 | INFO | training_system | 📈 Progress: 180/343 (52.5%) - Clean: 174, Contaminated: 6 | Context: operation=enhanced_logging
+2025-09-25 12:49:17,953 | INFO | training_system | 📈 Progress: 190/343 (55.4%) - Clean: 183, Contaminated: 7 | Context: operation=enhanced_logging
+2025-09-25 12:49:18,108 | INFO | training_system | 📈 Progress: 200/343 (58.3%) - Clean: 192, Contaminated: 8 | Context: operation=enhanced_logging

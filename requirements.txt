@@ -6,3 +6,11 @@ pandas
 pytz
 beautifulsoup4
 lxml
+# redis - removed, using in-memory caching
+psutil
+hypothesis
+pytest-cov
+mypy
+ruff
+types-requests
+types-pytz

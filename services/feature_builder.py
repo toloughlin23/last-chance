@@ -1,6 +1,6 @@
-from dataclasses import dataclass
-from typing import List, Dict, Any
 import math
+from dataclasses import dataclass
+from typing import Any, Dict, List
 
 
 @dataclass
@@ -18,6 +18,8 @@ class MarketData:
     volume_ratio: float
     price: float = 0.0
     volume: float = 0.0
+    high: float = 0.0
+    low: float = 0.0
 
 
 @dataclass
@@ -57,9 +59,17 @@ def build_enriched_from_aggs(aggs: Dict[str, Any]) -> EnrichedData:
     first = results[0]
     last = results[-1]
 
-    # Close prices
-    c_first = float(first.get("c", first.get("o", 0.0)))
-    c_last = float(last.get("c", last.get("o", 0.0)))
+    # Close prices - handle both list and single value formats
+    c_first_raw = first.get("c", first.get("o", 0.0))
+    c_last_raw = last.get("c", last.get("o", 0.0))
+
+    # Extract first element if it's a list, otherwise use as-is
+    c_first = float(
+        c_first_raw[0] if isinstance(c_first_raw, list) and c_first_raw else c_first_raw
+    )
+    c_last = float(
+        c_last_raw[0] if isinstance(c_last_raw, list) and c_last_raw else c_last_raw
+    )
 
     # Price momentum (relative change)
     price_momentum = _safe_div(c_last - c_first, c_first, 0.0)
@@ -69,11 +79,15 @@ def build_enriched_from_aggs(aggs: Dict[str, Any]) -> EnrichedData:
     volumes = []
     for bar in results:
         h = float(bar.get("h", 0.0))
-        l = float(bar.get("l", 0.0))
-        p = float(bar.get("c", bar.get("o", 0.0)))
+        low_val = float(bar.get("l", 0.0))
+
+        # Handle price extraction for both list and single value formats
+        p_raw = bar.get("c", bar.get("o", 0.0))
+        p = float(p_raw[0] if isinstance(p_raw, list) and p_raw else p_raw)
+
         v = float(bar.get("v", 0.0))
         if p > 0:
-            ranges.append(_safe_div(h - l, p, 0.0))
+            ranges.append(_safe_div(h - low_val, p, 0.0))
         volumes.append(v)
 
     avg_range = sum(ranges) / len(ranges) if ranges else 0.0
@@ -102,8 +116,41 @@ def build_enriched_from_aggs(aggs: Dict[str, Any]) -> EnrichedData:
     dq = max(0.5, min(1.0, 0.5 + 0.02 * len(results) + (0.1 if key_ok else 0.0)))
 
     # Price/volume from last bar for completeness
-    last_price = float(last.get("c", last.get("o", 0.0)))
+    # Handle last price extraction for both list and single value formats
+    last_price_raw = last.get("c", last.get("o", 0.0))
+    last_price = float(
+        last_price_raw[0]
+        if isinstance(last_price_raw, list) and last_price_raw
+        else last_price_raw
+    )
     last_volume = float(last.get("v", 0.0))
+
+    # Extract OHLC data from last bar
+    last_open_raw = last.get("o", last_price)
+    last_high_raw = last.get("h", last_price)
+    last_low_raw = last.get("l", last_price)
+    last_close_raw = last.get("c", last_price)
+
+    float(
+        last_open_raw[0]
+        if isinstance(last_open_raw, list) and last_open_raw
+        else last_open_raw
+    )
+    last_high = float(
+        last_high_raw[0]
+        if isinstance(last_high_raw, list) and last_high_raw
+        else last_high_raw
+    )
+    last_low = float(
+        last_low_raw[0]
+        if isinstance(last_low_raw, list) and last_low_raw
+        else last_low_raw
+    )
+    float(
+        last_close_raw[0]
+        if isinstance(last_close_raw, list) and last_close_raw
+        else last_close_raw
+    )
 
     return EnrichedData(
         sentiment_analysis=SentimentData(
@@ -118,7 +165,8 @@ def build_enriched_from_aggs(aggs: Dict[str, Any]) -> EnrichedData:
             volume_ratio=volume_ratio,
             price=last_price,
             volume=last_volume,
+            high=last_high,
+            low=last_low,
         ),
         data_quality_score=dq,
     )
-
