@@ -8,22 +8,22 @@ from dotenv import load_dotenv
 
 
 def test_earnings_endpoint(api_key, endpoint_name, url, params):
-    print(f"\nTesting {endpoint_name}:")
-    print(f"URL: {url}")
+    training_logger.info(f"\nTesting {endpoint_name}:", operation="enhanced_logging")
+    training_logger.info(f"URL: {url}", operation="enhanced_logging")
     try:
         resp = requests.get(url, params=params)
-        print(f"Status: {resp.status_code}")
+        training_logger.info(f"Status: {resp.status_code}", operation="enhanced_logging")
         if resp.status_code == 200:
             data = resp.json()
-            print(f"Response keys: {list(data.keys())}")
+            training_logger.info(f"Response keys: {list(data.keys(, operation="enhanced_logging"))}")
             if "results" in data:
-                print(f"Results count: {len(data['results'])}")
+                training_logger.info(f"Results count: {len(data['results'], operation="enhanced_logging")}")
                 if data["results"]:
-                    print(f"First result: {json.dumps(data['results'][0], indent=2)}")
+                    training_logger.info(f"First result: {json.dumps(data['results'][0], indent=2, operation="enhanced_logging")}")
         else:
-            print(f"Error: {resp.text[:200]}")
+            training_logger.error(f"Error: {resp.text[:200]}", operation="enhanced_logging")
     except Exception as e:
-        print(f"Exception: {e}")
+        training_logger.info(f"Exception: {e}", operation="enhanced_logging")
 
 
 def main():
@@ -33,11 +33,11 @@ def main():
     api_key = os.getenv("POLYGON_API_KEY")
 
     if not api_key:
-        print("No API key found!")
+        training_logger.info("No API key found!", operation="enhanced_logging")
         return
 
-    print("Testing Polygon Earnings Endpoints")
-    print("=" * 50)
+    training_logger.info("Testing Polygon Earnings Endpoints", operation="enhanced_logging")
+    training_logger.info("=" * 50, operation="enhanced_logging")
 
     # Test different possible earnings endpoints
     symbol = "AAPL"
@@ -94,7 +94,7 @@ def main():
     )
 
     # 5. Check if earnings is in ticker details
-    print("\nChecking ticker details for earnings info:")
+    training_logger.info("\nChecking ticker details for earnings info:", operation="enhanced_logging")
     url = f"https://api.polygon.io/v3/reference/tickers/{symbol}"
     params = {"apiKey": api_key}
     resp = requests.get(url, params=params)
@@ -106,11 +106,11 @@ def main():
             k for k in results.keys() if "earning" in k.lower() or "report" in k.lower()
         ]
         if earnings_fields:
-            print(f"Found earnings fields: {earnings_fields}")
+            training_logger.info(f"Found earnings fields: {earnings_fields}", operation="enhanced_logging")
             for field in earnings_fields:
-                print(f"  {field}: {results[field]}")
+                training_logger.info(f"  {field}: {results[field]}", operation="enhanced_logging")
         else:
-            print("No earnings fields found in ticker details")
+            training_logger.info("No earnings fields found in ticker details", operation="enhanced_logging")
 
 
 if __name__ == "__main__":

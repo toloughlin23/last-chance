@@ -12,6 +12,9 @@ from typing import Any, Dict, List
 
 from dotenv import load_dotenv
 
+# 🚀 ENHANCED: Import enhanced logging system
+from .enhanced_logging_system import polygon_logger, log_performance_metrics, log_error_with_context
+
 from services.polygon_client import PolygonClient
 from services.quotes_client import QuotesClient
 from utils.universe_selector import UniverseSelector
@@ -71,21 +74,26 @@ class PolygonDrivenSymbolPool:
                     cached_data.get("analysis_date", "2020-01-01")
                 )
                 if (datetime.now() - cache_date).days < 7:
-                    print("📂 Using cached polygon-driven symbol pool...")
+                    polygon_logger.info("Using cached polygon-driven symbol pool", 
+                                       cache_used=True, operation="symbol_pool_creation")
                     return cached_data.get("symbols", [])
             except Exception as e:
-                print(f"⚠️ Failed to read polygon-driven cache: {e}")
+                polygon_logger.warning(f"Failed to read polygon-driven cache: {e}", 
+                                     error_type=type(e).__name__, cache_failed=True, operation="symbol_pool_creation")
 
-        print(f"🔍 Analyzing symbols with {analysis_days} days of REAL Polygon data...")
+        polygon_logger.info(f"Analyzing symbols with {analysis_days} days of REAL Polygon data", 
+                          analysis_days=analysis_days, data_source="polygon_api", operation="symbol_pool_creation")
 
         # Get candidate symbols from Polygon
         candidates = self._get_polygon_candidates()
 
         if not candidates:
-            print("❌ No candidate symbols available from Polygon")
+            polygon_logger.error("No candidate symbols available from Polygon", 
+                               candidates_count=0, fallback_triggered=True, operation="symbol_pool_creation")
             return []
 
-        print(f"📊 Analyzing {len(candidates)} candidate symbols from Polygon...")
+        polygon_logger.info(f"Analyzing {len(candidates)} candidate symbols from Polygon", 
+                          candidates_count=len(candidates), operation="symbol_pool_creation")
 
         # Calculate date range
         end_date = datetime.now().date()
@@ -106,9 +114,8 @@ class PolygonDrivenSymbolPool:
             spread_core_hours_only=True,
         )
 
-        print(
-            f"✅ Selected {len(optimized_symbols)} optimized symbols from REAL Polygon data!"
-        )
+        polygon_logger.info(f"Selected {len(optimized_symbols)} optimized symbols from REAL Polygon data", 
+                          optimized_symbols_count=len(optimized_symbols), data_source="polygon_api", operation="symbol_pool_creation")
 
         # Save results to cache
         self._save_polygon_pool(optimized_symbols, analysis_days, cache_file)
@@ -118,7 +125,8 @@ class PolygonDrivenSymbolPool:
     def _get_polygon_candidates(self) -> List[str]:
         """Get candidate symbols from Polygon API"""
         try:
-            print("📡 Fetching symbols from Polygon API...")
+            polygon_logger.info("Fetching symbols from Polygon API", 
+                              operation="polygon_symbols_fetch")
 
             # Use existing client capability; if not available, fall back safely
             if hasattr(self.polygon_client, "get_tickers"):
@@ -126,7 +134,8 @@ class PolygonDrivenSymbolPool:
                     market="stocks", active=True, limit=1000
                 )
                 if not tickers_data or not tickers_data.get("results"):
-                    print("⚠️ No tickers from Polygon, using fallback...")
+                    polygon_logger.warning("No tickers from Polygon, using fallback", 
+                                         fallback_triggered=True, operation="polygon_symbols_fetch")
                     return self._get_fallback_symbols()
                 candidates = []
                 for ticker in tickers_data["results"]:
@@ -134,17 +143,19 @@ class PolygonDrivenSymbolPool:
                     market_cap = ticker.get("market_cap", 0)
                     if symbol and market_cap and market_cap > 8_000_000_000:
                         candidates.append(symbol)
-                print(f"📈 Found {len(candidates)} large-cap candidates from Polygon")
+                polygon_logger.info(f"Found {len(candidates)} large-cap candidates from Polygon", 
+                                  candidates_count=len(candidates), operation="polygon_symbols_fetch")
                 return candidates
             else:
-                print(
-                    "⚠️ PolygonClient.get_tickers not available; using fallback candidates"
-                )
+                polygon_logger.warning("PolygonClient.get_tickers not available; using fallback candidates", 
+                                     fallback_triggered=True, operation="polygon_symbols_fetch")
                 return self._get_fallback_symbols()
 
         except Exception as e:
-            print(f"⚠️ Polygon API error: {e}")
-            print("🔄 Using fallback high-volume symbols...")
+            polygon_logger.error(f"Polygon API error: {e}", 
+                               error_type=type(e).__name__, operation="polygon_symbols_fetch")
+            polygon_logger.info("Using fallback high-volume symbols", 
+                              fallback_triggered=True, operation="polygon_symbols_fetch")
             return self._get_fallback_symbols()
 
     def _get_fallback_symbols(self) -> List[str]:
@@ -362,7 +373,8 @@ class PolygonDrivenSymbolPool:
         with open(filepath, "w") as f:
             json.dump(pool_data, f, indent=2)
 
-        print(f"💾 Polygon-driven pool saved to {filepath}")
+        polygon_logger.info(f"Polygon-driven pool saved to {filepath}", 
+                          filepath=filepath, operation="cache_save")
 
     def validate_pool_performance(self, lookback_days: int = 30) -> Dict[str, Any]:
         """
@@ -374,9 +386,8 @@ class PolygonDrivenSymbolPool:
         Returns:
             Performance validation metrics
         """
-        print(
-            f"🔍 Validating polygon-driven pool performance over {lookback_days} days..."
-        )
+        polygon_logger.info(f"Validating polygon-driven pool performance over {lookback_days} days", 
+                          lookback_days=lookback_days, operation="pool_validation")
 
         # Get current optimized pool
         current_pool = self.get_polygon_driven_pool(analysis_days=180, target_size=120)
@@ -417,12 +428,14 @@ class PolygonDrivenSymbolPool:
             ),
         }
 
-        print("✅ Validation complete:")
-        print("   - Data source: Polygon API")
-        print(f"   - Pool stability: {validation_metrics['pool_stability']}")
-        print(
-            f"   - Overlap: {len(overlap)}/{len(current_pool)} symbols ({validation_metrics['overlap_percentage']:.1f}%)"
-        )
+        polygon_logger.info("Validation complete", operation="pool_validation", status="complete")
+        polygon_logger.info("Data source: Polygon API", 
+                          data_source="polygon_api", operation="pool_validation")
+        polygon_logger.info(f"Pool stability: {validation_metrics['pool_stability']}", 
+                          pool_stability=validation_metrics['pool_stability'], operation="pool_validation")
+        polygon_logger.info(f"Overlap: {len(overlap)}/{len(current_pool)} symbols ({validation_metrics['overlap_percentage']:.1f}%)", 
+                          overlap_count=len(overlap), total_symbols=len(current_pool), 
+                          overlap_percentage=validation_metrics['overlap_percentage'], operation="pool_validation")
 
         return validation_metrics
 
@@ -446,8 +459,8 @@ def get_polygon_driven_symbols(
 
 # Example usage
 if __name__ == "__main__":
-    print("🎯 POLYGON-DRIVEN SYMBOL POOL - 100% GENUINE DATA")
-    print("=" * 60)
+    polygon_logger.info("🎯 POLYGON-DRIVEN SYMBOL POOL - 100% GENUINE DATA", operation="main_execution")
+    polygon_logger.info("=" * 60, operation="main_execution")
 
     # Create polygon-driven pool
     pool = PolygonDrivenSymbolPool()
@@ -455,10 +468,13 @@ if __name__ == "__main__":
     # Get optimized symbols using REAL Polygon data
     symbols = pool.get_polygon_driven_pool(analysis_days=180, target_size=120)
 
-    print(f"\n✅ Polygon-driven pool created with {len(symbols)} symbols!")
-    print(f"🎯 Top 10 symbols: {symbols[:10]}")
+    polygon_logger.info(f"Polygon-driven pool created with {len(symbols)} symbols", 
+                      symbols_count=len(symbols), operation="main_execution", status="success")
+    polygon_logger.info(f"Top 10 symbols: {symbols[:10]}", 
+                      top_symbols=symbols[:10], operation="main_execution")
 
     # Validate performance
     validation = pool.validate_pool_performance(lookback_days=30)
 
-    print("\n🚀 Ready for day trading with REAL Polygon data!")
+    polygon_logger.info("🚀 Ready for day trading with REAL Polygon data!", 
+                      operation="main_execution", status="production_ready")

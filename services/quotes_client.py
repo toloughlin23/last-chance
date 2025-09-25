@@ -100,9 +100,7 @@ class QuotesClient:
             if quotes and format_found is None:
                 # Log what fields we actually see for debugging
                 sample_fields = list(quotes[0].keys()) if quotes else []
-                print(
-                    f"⚠️ QuotesClient: No recognized bid/ask fields. Found fields: {sample_fields[:10]}"
-                )
+                training_logger.warning(f"⚠️ QuotesClient: No recognized bid/ask fields. Found fields: {sample_fields[:10]}", operation="enhanced_logging")
 
             # Return sentinel values that indicate missing data but won't break filtering
             # These are high enough to fail filters but not absurdly high
@@ -158,7 +156,9 @@ class QuotesClient:
                 )  # Start at 14:00 UTC to ensure market is open
                 end_utc = day_start.replace(hour=21, minute=0)  # End at 21:00 UTC
 
-            quotes = self.fetch_quotes_window(ticker, start_utc, end_utc, limit=20000)
+            # 🚀 ENHANCED: Optimized quote limit for better performance
+            # Reduced from 20000 to 1000 for faster processing and reduced memory usage
+            quotes = self.fetch_quotes_window(ticker, start_utc, end_utc, limit=1000)
 
             # Only use days with valid quotes
             if quotes:

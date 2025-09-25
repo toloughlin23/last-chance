@@ -32,7 +32,7 @@ jobs:
     
     - name: Run contamination scanner
       run: |
-        python enhanced_contamination_scanner.py
+        python scripts/contamination_prevention_system.py
         echo "Contamination scan completed"
     
     - name: Run code formatting check

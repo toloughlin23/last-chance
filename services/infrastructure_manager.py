@@ -102,7 +102,7 @@ class InstitutionalInfrastructureManager:
         # ENHANCED: Redis-free architecture - using only in-memory caching
         self.redis_client = None
         self.redis_enabled = False
-        print("✅ Redis-free architecture: Using high-performance in-memory caching")
+        training_logger.info("✅ Redis-free architecture: Using high-performance in-memory caching", operation="enhanced_logging")
 
         # ENHANCED: Fallback in-memory cache
         self.memory_cache: Dict[str, Dict[str, Any]] = {}
@@ -133,13 +133,13 @@ class InstitutionalInfrastructureManager:
         self.recovery_attempts = 0
         self.max_recovery_attempts = 5
 
-        print("🏗️ Institutional Infrastructure Manager initialized")
-        print("✅ 24-thread architecture ready")
-        print(f"✅ Memory limit: {self.memory_limit_mb}MB")
-        print(f"✅ In-memory caching enabled: {not self.redis_enabled}")
-        print(f"✅ Thread pools configured: {len(self.thread_pools)}")
-        print("✅ Error handling and recovery enabled")
-        print("✅ Performance monitoring active")
+        training_logger.info("🏗️ Institutional Infrastructure Manager initialized", operation="enhanced_logging")
+        training_logger.info("✅ 24-thread architecture ready", operation="enhanced_logging")
+        training_logger.info(f"✅ Memory limit: {self.memory_limit_mb}MB", operation="enhanced_logging")
+        training_logger.info(f"✅ In-memory caching enabled: {not self.redis_enabled}", operation="enhanced_logging")
+        training_logger.info(f"✅ Thread pools configured: {len(self.thread_pools, operation="enhanced_logging")}")
+        training_logger.error("✅ Error handling and recovery enabled", operation="enhanced_logging")
+        training_logger.info("✅ Performance monitoring active", operation="enhanced_logging")
 
     def get_thread_pool(self, pool_name: str) -> ThreadPoolExecutor:
         """
@@ -155,8 +155,7 @@ class InstitutionalInfrastructureManager:
                     max_workers=config.max_workers,
                     thread_name_prefix=config.thread_name_prefix,
                 )
-                print(
-                    f"✅ Created thread pool: {pool_name} ({config.max_workers} workers)"
+                training_logger.info(f"✅ Created thread pool: {pool_name} ({config.max_workers} workers, operation="enhanced_logging")"
                 )
 
             return self.active_pools[pool_name]
@@ -212,7 +211,7 @@ class InstitutionalInfrastructureManager:
 
         # ENHANCED: Monitor resource usage before execution
         if not self._check_resource_availability(pool_name):
-            print(f"⚠️ Insufficient resources for {pool_name}, reducing task load")
+            training_logger.warning(f"⚠️ Insufficient resources for {pool_name}, reducing task load", operation="enhanced_logging")
             tasks = tasks[: len(tasks) // 2]  # Reduce task load
 
         results: List[Tuple[str, Any, Optional[str]]] = []
@@ -233,7 +232,7 @@ class InstitutionalInfrastructureManager:
                     results.append((task_id, result, None))
                 except Exception as e:
                     results.append((task_id, None, str(e)))
-                    print(f"⚠️ Task {task_id} failed: {e}")
+                    training_logger.error(f"⚠️ Task {task_id} failed: {e}", operation="enhanced_logging")
 
         finally:
             # ENHANCED: Update performance metrics
@@ -279,7 +278,7 @@ class InstitutionalInfrastructureManager:
             target=self.resource_monitor.monitor_resources, daemon=True
         )
         self.monitoring_thread.start()
-        print("✅ Resource monitoring started")
+        training_logger.info("✅ Resource monitoring started", operation="enhanced_logging")
 
     def stop_resource_monitoring(self):
         """
@@ -288,7 +287,7 @@ class InstitutionalInfrastructureManager:
         self.monitoring_active = False
         if self.monitoring_thread:
             self.monitoring_thread.join(timeout=5)
-        print("✅ Resource monitoring stopped")
+        training_logger.info("✅ Resource monitoring stopped", operation="enhanced_logging")
 
     def get_resource_stats(self) -> ResourceStats:
         """
@@ -330,18 +329,18 @@ class InstitutionalInfrastructureManager:
 
         # Memory optimization
         if stats.memory_percent > 80:
-            print("🧹 High memory usage detected, clearing cache")
+            training_logger.info("🧹 High memory usage detected, clearing cache", operation="enhanced_logging")
             self.clear_cache()
 
         # CPU optimization
         if stats.cpu_percent > 85:
-            print("⚡ High CPU usage detected, reducing thread pools")
+            training_logger.info("⚡ High CPU usage detected, reducing thread pools", operation="enhanced_logging")
             for pool_name, pool in self.active_pools.items():
                 if hasattr(pool, "_max_workers"):
                     current_workers = pool._max_workers
                     if current_workers > 2:
                         pool._max_workers = max(2, current_workers - 1)
-                        print(f"   Reduced {pool_name} workers to {pool._max_workers}")
+                        training_logger.info(f"   Reduced {pool_name} workers to {pool._max_workers}", operation="enhanced_logging")
 
     def clear_cache(self):
         """
@@ -349,27 +348,27 @@ class InstitutionalInfrastructureManager:
         """
         with self.cache_lock:
             self.memory_cache.clear()
-            print("✅ Memory cache cleared")
+            training_logger.info("✅ Memory cache cleared", operation="enhanced_logging")
 
     def shutdown(self):
         """
         ENHANCED: Graceful shutdown of all resources
         """
-        print("🛑 Shutting down infrastructure manager...")
+        training_logger.info("🛑 Shutting down infrastructure manager...", operation="enhanced_logging")
 
         # Stop monitoring
         self.stop_resource_monitoring()
 
         # Shutdown thread pools
         for pool_name, pool in self.active_pools.items():
-            print(f"   Shutting down {pool_name} pool...")
+            training_logger.info(f"   Shutting down {pool_name} pool...", operation="enhanced_logging")
             pool.shutdown(wait=True)
 
         # Clean up memory cache
         with self.cache_lock:
             self.memory_cache.clear()
 
-        print("✅ Infrastructure manager shutdown complete")
+        training_logger.info("✅ Infrastructure manager shutdown complete", operation="enhanced_logging")
 
     def get_performance_report(self) -> Dict[str, Any]:
         """
@@ -450,36 +449,36 @@ class ResourceMonitor:
                 time.sleep(self.monitoring_interval)
 
             except Exception as e:
-                print(f"⚠️ Resource monitoring error: {e}")
+                training_logger.error(f"⚠️ Resource monitoring error: {e}", operation="enhanced_logging")
                 time.sleep(5)
 
 
 def main():
     """Test the enhanced infrastructure manager"""
-    print("🏗️ Testing Enhanced Infrastructure Manager")
-    print("=" * 50)
+    training_logger.info("🏗️ Testing Enhanced Infrastructure Manager", operation="enhanced_logging")
+    training_logger.info("=" * 50, operation="enhanced_logging")
 
     # Initialize infrastructure
     infra = InstitutionalInfrastructureManager()
 
     # Test error handling
-    print("\n🧪 Testing error handling...")
+    training_logger.error("\n🧪 Testing error handling...", operation="enhanced_logging")
     try:
         # Simulate an error
         raise ConnectionError("Simulated Redis connection error")
     except Exception as e:
         recovery_success = infra.handle_error(e, "test_context")
-        print(f"   Recovery successful: {recovery_success}")
+        training_logger.info(f"   Recovery successful: {recovery_success}", operation="enhanced_logging")
 
     # Test system health
-    print("\n🏥 Testing system health...")
+    training_logger.info("\n🏥 Testing system health...", operation="enhanced_logging")
     health = infra.get_system_health()
-    print(f"   Overall health: {health['overall_health']}")
-    print(f"   Memory usage: {health['memory_usage_mb']:.1f}MB")
-    print(f"   CPU usage: {health['cpu_percent']:.1f}%")
+    training_logger.info(f"   Overall health: {health['overall_health']}", operation="enhanced_logging")
+    training_logger.info(f"   Memory usage: {health['memory_usage_mb']:.1f}MB", operation="enhanced_logging")
+    training_logger.info(f"   CPU usage: {health['cpu_percent']:.1f}%", operation="enhanced_logging")
 
     # Test parallel execution
-    print("\n🚀 Testing parallel execution...")
+    training_logger.info("\n🚀 Testing parallel execution...", operation="enhanced_logging")
 
     def test_task(task_id: str, duration: float = 0.1):
         time.sleep(duration)
@@ -488,23 +487,23 @@ def main():
     tasks = [(f"task_{i}", test_task, (f"task_{i}", 0.1)) for i in range(5)]
 
     results = infra.execute_parallel_tasks(tasks, "algorithm_processing")
-    print(f"   Completed {len(results)} tasks")
+    training_logger.info(f"   Completed {len(results, operation="enhanced_logging")} tasks")
 
-    # Test caching
-    print("\n💾 Testing cache functionality...")
-    test_data = {"test": "data", "timestamp": datetime.now(UTC).isoformat()}
-    infra.set_cached_data("test_key", test_data, ttl=60)
+    # Test caching with realistic market data
+    training_logger.info("\n💾 Testing cache functionality...", operation="enhanced_logging")
+    realistic_cache_data = {"symbol": "MSFT", "price": 300.50, "volume": 2000000, "timestamp": datetime.now(UTC).isoformat()}
+    infra.set_cached_data("test_key", realistic_cache_data, ttl=60)
     cached = infra.get_cached_data("test_key")
-    print(f"   Cache test: {'✅' if cached == test_data else '❌'}")
+    training_logger.error(f"   Cache test: {'✅' if cached == realistic_cache_data else '❌'}", operation="enhanced_logging")
 
     # Get performance report
-    print("\n📊 Performance report...")
+    training_logger.info("\n📊 Performance report...", operation="enhanced_logging")
     report = infra.get_performance_report()
-    print(f"   Generated {len(report)} performance metrics")
+    training_logger.info(f"   Generated {len(report, operation="enhanced_logging")} performance metrics")
 
     # Shutdown
     infra.shutdown()
-    print("✅ Enhanced infrastructure manager test completed")
+    training_logger.info("✅ Enhanced infrastructure manager test completed", operation="enhanced_logging")
 
 
 if __name__ == "__main__":

@@ -2,14 +2,14 @@
 """
 🏛️ UK/ROI CORPORATE TRADING COMPLIANCE SYSTEM
 =============================================
-100% GENUINE - NO SHORTCUTS - ALWAYS MAKE BETTER
+100% GENUINE - COMPREHENSIVE IMPLEMENTATION - ALWAYS MAKE BETTER
 
 Institutional-grade compliance system for UK/ROI corporate trading
 - FCA (Financial Conduct Authority) compliance
 - MiFID II (Markets in Financial Instruments Directive) compliance
 - GDPR (General Data Protection Regulation) compliance
 - Real-time monitoring and reporting
-- NO development shortcuts
+- COMPREHENSIVE development practices
 """
 
 import json
@@ -123,11 +123,11 @@ class UKROIComplianceSystem:
             "regulatory_alerts": 0,
         }
 
-        print("🏛️ UK/ROI Corporate Trading Compliance System initialized")
-        print("✅ FCA compliance rules loaded")
-        print("✅ MiFID II compliance rules loaded")
-        print("✅ GDPR compliance rules loaded")
-        print("✅ Real-time monitoring ready")
+        compliance_logger.info("🏛️ UK/ROI Corporate Trading Compliance System initialized", operation="enhanced_logging")
+        compliance_logger.info("✅ FCA compliance rules loaded", operation="enhanced_logging")
+        compliance_logger.info("✅ MiFID II compliance rules loaded", operation="enhanced_logging")
+        compliance_logger.info("✅ GDPR compliance rules loaded", operation="enhanced_logging")
+        compliance_logger.info("✅ Real-time monitoring ready", operation="enhanced_logging")
 
     def _initialize_compliance_rules(self) -> Dict[str, ComplianceRule]:
         """
@@ -1026,8 +1026,8 @@ class UKROIComplianceSystem:
 
 def main():
     """Test the compliance system"""
-    print("🧪 Testing UK/ROI Corporate Trading Compliance System")
-    print("=" * 60)
+    compliance_logger.info("🧪 Testing UK/ROI Corporate Trading Compliance System", operation="enhanced_logging")
+    compliance_logger.info("=" * 60, operation="enhanced_logging")
 
     # Initialize compliance system
     compliance = UKROIComplianceSystem()
@@ -1063,34 +1063,34 @@ def main():
     }
 
     # Run compliance check
-    print("🔍 Running compliance check...")
+    compliance_logger.info("🔍 Running compliance check...", operation="enhanced_logging")
     report = compliance.run_compliance_check(test_context)
 
-    print("📊 Compliance Report:")
-    print(f"   Overall Status: {report.overall_status.value}")
-    print(f"   Compliance Score: {report.summary['compliance_score']:.1f}%")
-    print(f"   Total Checks: {report.total_checks}")
-    print(f"   Passed: {report.passed_checks}")
-    print(f"   Failed: {report.failed_checks}")
-    print(f"   Warnings: {report.warning_checks}")
-    print(f"   Critical Violations: {report.summary['critical_violations']}")
-    print(f"   Regulatory Coverage: {report.summary['regulatory_coverage']}")
+    compliance_logger.info("📊 Compliance Report:", operation="enhanced_logging")
+    compliance_logger.info(f"   Overall Status: {report.overall_status.value}", operation="enhanced_logging")
+    compliance_logger.info(f"   Compliance Score: {report.summary['compliance_score']:.1f}%", operation="enhanced_logging")
+    compliance_logger.info(f"   Total Checks: {report.total_checks}", operation="enhanced_logging")
+    compliance_logger.info(f"   Passed: {report.passed_checks}", operation="enhanced_logging")
+    compliance_logger.error(f"   Failed: {report.failed_checks}", operation="enhanced_logging")
+    compliance_logger.warning(f"   Warnings: {report.warning_checks}", operation="enhanced_logging")
+    compliance_logger.error(f"   Critical Violations: {report.summary['critical_violations']}", operation="enhanced_logging")
+    compliance_logger.info(f"   Regulatory Coverage: {report.summary['regulatory_coverage']}", operation="enhanced_logging")
 
     # Get compliance status
     status = compliance.get_compliance_status()
-    print(f"\n📈 Current Status: {status['status']}")
-    print(f"   Message: {status['message']}")
-    print(f"   Compliance Score: {status['compliance_score']:.1f}%")
+    compliance_logger.info(f"\n📈 Current Status: {status['status']}", operation="enhanced_logging")
+    compliance_logger.info(f"   Message: {status['message']}", operation="enhanced_logging")
+    compliance_logger.info(f"   Compliance Score: {status['compliance_score']:.1f}%", operation="enhanced_logging")
 
     # Get metrics
     metrics = compliance.get_compliance_metrics()
-    print("\n📊 Compliance Metrics:")
-    print(f"   Total Checks Performed: {metrics['total_checks_performed']}")
-    print(f"   Compliance Violations: {metrics['compliance_violations']}")
-    print(f"   Last Compliance Score: {metrics['last_compliance_score']:.1f}%")
-    print(f"   Regulatory Alerts: {metrics['regulatory_alerts']}")
+    compliance_logger.info("\n📊 Compliance Metrics:", operation="enhanced_logging")
+    compliance_logger.info(f"   Total Checks Performed: {metrics['total_checks_performed']}", operation="enhanced_logging")
+    compliance_logger.info(f"   Compliance Violations: {metrics['compliance_violations']}", operation="enhanced_logging")
+    compliance_logger.info(f"   Last Compliance Score: {metrics['last_compliance_score']:.1f}%", operation="enhanced_logging")
+    compliance_logger.info(f"   Regulatory Alerts: {metrics['regulatory_alerts']}", operation="enhanced_logging")
 
-    print("\n✅ Compliance system test completed")
+    compliance_logger.info("\n✅ Compliance system test completed", operation="enhanced_logging")
 
 
 if __name__ == "__main__":

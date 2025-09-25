@@ -29,10 +29,10 @@ from services.polygon_client import PolygonClient
 def discover_sp500_stocks() -> List[str]:
     """Discover S&P 500 stocks using Polygon API properly."""
     
-    print("DISCOVERING S&P 500 STOCKS WITH POLYGON")
-    print("="*80)
-    print("100% GENUINE - NO SHORTCUTS - ALWAYS MAKE BETTER")
-    print("="*80)
+    polygon_logger.info("DISCOVERING S&P 500 STOCKS WITH POLYGON", operation="enhanced_logging")
+    polygon_logger.info("="*80, operation="enhanced_logging")
+    polygon_logger.info("100% GENUINE - NO SHORTCUTS - ALWAYS MAKE BETTER", operation="enhanced_logging")
+    polygon_logger.info("="*80, operation="enhanced_logging")
     
     client = PolygonClient()
     
@@ -46,7 +46,7 @@ def discover_sp500_stocks() -> List[str]:
     exchanges = ["XNYS", "XNAS"]  # NYSE and NASDAQ
     
     for exchange in exchanges:
-        print(f"\n📈 Getting stocks from {exchange}...")
+        polygon_logger.info(f"\n📈 Getting stocks from {exchange}...", operation="enhanced_logging")
         
         try:
             # Get stocks from this exchange
@@ -60,7 +60,7 @@ def discover_sp500_stocks() -> List[str]:
             )
             
             results = data.get("results", [])
-            print(f"✅ Got {len(results)} active common stocks from {exchange}")
+            polygon_logger.info(f"✅ Got {len(results, operation="enhanced_logging")} active common stocks from {exchange}")
             
             # Extract symbols
             symbols = []
@@ -71,28 +71,28 @@ def discover_sp500_stocks() -> List[str]:
                     if not any(char in symbol for char in ['/', '.', '-'] if char != '.'):
                         symbols.append(symbol)
             
-            print(f"📊 Extracted {len(symbols)} valid symbols")
+            polygon_logger.info(f"📊 Extracted {len(symbols, operation="enhanced_logging")} valid symbols")
             
             # Show diversity
             if symbols:
                 first_letters = Counter(s[0].upper() for s in symbols[:100])
-                print(f"   First letter sample: {dict(list(first_letters.items())[:10])}")
-                print(f"   First 10: {symbols[:10]}")
-                print(f"   Last 10: {symbols[-10:]}")
+                polygon_logger.info(f"   First letter sample: {dict(list(first_letters.items(, operation="enhanced_logging"))[:10])}")
+                polygon_logger.info(f"   First 10: {symbols[:10]}", operation="enhanced_logging")
+                polygon_logger.info(f"   Last 10: {symbols[-10:]}", operation="enhanced_logging")
             
             all_candidates.extend(symbols)
             
         except Exception as e:
-            print(f"❌ Error getting {exchange} stocks: {e}")
+            polygon_logger.error(f"❌ Error getting {exchange} stocks: {e}", operation="enhanced_logging")
     
-    print(f"\n📊 Total candidates from US exchanges: {len(all_candidates)}")
+    polygon_logger.info(f"\n📊 Total candidates from US exchanges: {len(all_candidates, operation="enhanced_logging")}")
     
     # Remove duplicates
     unique_candidates = list(dict.fromkeys(all_candidates))
-    print(f"📊 Unique candidates: {len(unique_candidates)}")
+    polygon_logger.info(f"📊 Unique candidates: {len(unique_candidates, operation="enhanced_logging")}")
     
     # Now filter by market cap
-    print("\n🔍 Filtering by market cap (S&P 500 typically > $8B)...")
+    polygon_logger.info("\n🔍 Filtering by market cap (S&P 500 typically > $8B, operation="enhanced_logging")...")
     
     sp500_stocks = []
     checked = 0
@@ -101,7 +101,7 @@ def discover_sp500_stocks() -> List[str]:
     batch_size = 50
     for i in range(0, min(len(unique_candidates), 500), batch_size):
         batch = unique_candidates[i:i+batch_size]
-        print(f"\n📊 Checking batch {i//batch_size + 1}: {len(batch)} symbols")
+        polygon_logger.info(f"\n📊 Checking batch {i//batch_size + 1}: {len(batch, operation="enhanced_logging")} symbols")
         
         for symbol in batch:
             try:
@@ -116,7 +116,7 @@ def discover_sp500_stocks() -> List[str]:
                         name = result.get("name", "Unknown")
                         sp500_stocks.append(symbol)
                         if len(sp500_stocks) <= 10:
-                            print(f"   ✅ {symbol}: ${market_cap/1e9:.1f}B - {name}")
+                            polygon_logger.info(f"   ✅ {symbol}: ${market_cap/1e9:.1f}B - {name}", operation="enhanced_logging")
                     
                 checked += 1
                 
@@ -131,8 +131,8 @@ def discover_sp500_stocks() -> List[str]:
         # Show progress
         if sp500_stocks:
             letters = Counter(s[0].upper() for s in sp500_stocks)
-            print(f"   Found {len(sp500_stocks)} S&P 500 stocks so far")
-            print(f"   Letter distribution: {dict(list(letters.items())[:10])}")
+            polygon_logger.info(f"   Found {len(sp500_stocks, operation="enhanced_logging")} S&P 500 stocks so far")
+            polygon_logger.info(f"   Letter distribution: {dict(list(letters.items(, operation="enhanced_logging"))[:10])}")
     
     return sp500_stocks
 
@@ -140,8 +140,8 @@ def discover_sp500_stocks() -> List[str]:
 def verify_known_sp500_stocks(known_stocks: List[str]) -> Dict[str, float]:
     """Verify a list of known S&P 500 stocks and get their market caps."""
     
-    print("\n\nVERIFYING KNOWN S&P 500 STOCKS")
-    print("="*80)
+    polygon_logger.info("\n\nVERIFYING KNOWN S&P 500 STOCKS", operation="enhanced_logging")
+    polygon_logger.info("="*80, operation="enhanced_logging")
     
     client = PolygonClient()
     verified = {}
@@ -156,11 +156,11 @@ def verify_known_sp500_stocks(known_stocks: List[str]) -> Dict[str, float]:
                 market_cap = details["results"].get("market_cap", 0)
                 if market_cap > 0:
                     verified[symbol] = market_cap
-                    print(f"✅ {symbol}: ${market_cap/1e9:.1f}B")
+                    polygon_logger.info(f"✅ {symbol}: ${market_cap/1e9:.1f}B", operation="enhanced_logging")
                 else:
-                    print(f"❌ {symbol}: No market cap data")
+                    polygon_logger.error(f"❌ {symbol}: No market cap data", operation="enhanced_logging")
         except Exception as e:
-            print(f"❌ {symbol}: Error - {e}")
+            polygon_logger.error(f"❌ {symbol}: Error - {e}", operation="enhanced_logging")
     
     return verified
 
@@ -171,24 +171,24 @@ def main():
     # First, discover stocks from US exchanges
     sp500_stocks = discover_sp500_stocks()
     
-    print("\n\n📊 RESULTS")
-    print("="*80)
-    print(f"Found {len(sp500_stocks)} stocks meeting S&P 500 criteria")
+    polygon_logger.info("\n\n📊 RESULTS", operation="enhanced_logging")
+    polygon_logger.info("="*80, operation="enhanced_logging")
+    polygon_logger.info(f"Found {len(sp500_stocks, operation="enhanced_logging")} stocks meeting S&P 500 criteria")
     
     if sp500_stocks:
         # Analyze distribution
         first_letters = Counter(s[0].upper() for s in sp500_stocks)
         
-        print("\nFirst letter distribution:")
+        polygon_logger.info("\nFirst letter distribution:", operation="enhanced_logging")
         for letter in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ':
             count = first_letters.get(letter, 0)
             if count > 0:
                 pct = 100.0 * count / len(sp500_stocks)
                 bar = '█' * int(pct / 2)
-                print(f"{letter}: {count:3d} ({pct:5.1f}%) {bar}")
+                polygon_logger.info(f"{letter}: {count:3d} ({pct:5.1f}%, operation="enhanced_logging") {bar}")
         
-        print(f"\nFirst 20 S&P 500 stocks: {sp500_stocks[:20]}")
-        print(f"Last 20 S&P 500 stocks: {sp500_stocks[-20:]}")
+        polygon_logger.info(f"\nFirst 20 S&P 500 stocks: {sp500_stocks[:20]}", operation="enhanced_logging")
+        polygon_logger.info(f"Last 20 S&P 500 stocks: {sp500_stocks[-20:]}", operation="enhanced_logging")
     
     # Also verify some known S&P 500 stocks
     known_sp500 = [
@@ -197,20 +197,20 @@ def main():
         "CVX", "MRK", "ABBV", "PFE", "KO"
     ]
     
-    print("\n\nVerifying known S&P 500 stocks...")
+    polygon_logger.info("\n\nVerifying known S&P 500 stocks...", operation="enhanced_logging")
     verified = verify_known_sp500_stocks(known_sp500)
     
-    print(f"\nVerified {len(verified)} out of {len(known_sp500)} known S&P 500 stocks")
+    polygon_logger.info(f"\nVerified {len(verified, operation="enhanced_logging")} out of {len(known_sp500)} known S&P 500 stocks")
 
 
 if __name__ == "__main__":
     main()
     
-    print("\n\nCONCLUSION:")
-    print("="*80)
-    print("Polygon has EVERYTHING we need!")
-    print("1. Filter by US exchanges (NYSE, NASDAQ)")
-    print("2. Filter by type='CS' for common stocks")
-    print("3. Get ticker details for market cap")
-    print("4. Filter by market cap > $8B")
-    print("\n100% GENUINE - POLYGON HAS ALL THE DATA WE NEED!")
+    polygon_logger.info("\n\nCONCLUSION:", operation="enhanced_logging")
+    polygon_logger.info("="*80, operation="enhanced_logging")
+    polygon_logger.info("Polygon has EVERYTHING we need!", operation="enhanced_logging")
+    polygon_logger.info("1. Filter by US exchanges (NYSE, NASDAQ, operation="enhanced_logging")")
+    polygon_logger.info("2. Filter by type='CS' for common stocks", operation="enhanced_logging")
+    polygon_logger.info("3. Get ticker details for market cap", operation="enhanced_logging")
+    polygon_logger.info("4. Filter by market cap > $8B", operation="enhanced_logging")
+    polygon_logger.info("\n100% GENUINE - POLYGON HAS ALL THE DATA WE NEED!", operation="enhanced_logging")

@@ -25,18 +25,18 @@ def main() -> int:
 
     api_key = os.getenv("POLYGON_API_KEY")
     if not api_key:
-        print("❌ POLYGON_API_KEY not found in environment/.env")
+        universe_logger.error("❌ POLYGON_API_KEY not found in environment/.env", operation="enhanced_logging")
         return 1
 
     try:
         from utils.active_universe_provider import ActiveUniverseProvider
     except Exception as e:
-        print(f"❌ Failed to import provider: {e}")
+        universe_logger.error(f"❌ Failed to import provider: {e}", operation="enhanced_logging")
         return 1
 
     try:
         provider = ActiveUniverseProvider()
-        print("🚀 Running provider → selector (live)...")
+        universe_logger.info("🚀 Running provider → selector (live, operation="enhanced_logging")...")
         symbols: List[str] = provider.get_active_universe(
             target_size=120,
             analysis_days=60,
@@ -44,19 +44,17 @@ def main() -> int:
             batch_size=10,
         )
     except Exception as e:
-        print(f"❌ Universe generation failed: {e}")
+        universe_logger.error(f"❌ Universe generation failed: {e}", operation="enhanced_logging")
         return 1
 
     if not symbols:
-        print(
-            "⚠️ No symbols returned. Check API access, rate limits, or try again later."
-        )
+        universe_logger.warning("⚠️ No symbols returned. Check API access, rate limits, or try again later.", operation="enhanced_logging")
         return 2
 
-    print(f"✅ Selector picks: {len(symbols)} symbols")
+    universe_logger.info(f"✅ Selector picks: {len(symbols, operation="enhanced_logging")} symbols")
     head = symbols[:20]
-    print(f"Top 20: {head}")
-    print("💾 Cached result should be at data/active_universe_120.json")
+    universe_logger.info(f"Top 20: {head}", operation="enhanced_logging")
+    universe_logger.info("💾 Cached result should be at data/active_universe_120.json", operation="enhanced_logging")
     return 0
 
 

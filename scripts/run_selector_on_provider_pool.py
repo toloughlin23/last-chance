@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Run selector on provider's full candidate pool (no caching shortcut).
+Run selector on provider's full candidate pool with comprehensive analysis and intelligent optimization.
 
 Steps:
 1) Discover & rank S&P 500 candidates (provider) with min_market_cap=100M
@@ -29,7 +29,7 @@ def main() -> None:
 
     provider = ActiveUniverseProvider()
 
-    print("🚀 Discovering and ranking provider candidates...")
+    universe_logger.info("🚀 Discovering and ranking provider candidates...", operation="enhanced_logging")
     candidates: List[str] = provider._discover_and_rank_candidates(
         min_market_cap=100_000_000,  # $100M generous provider cutoff
         analysis_days=analysis_days,
@@ -38,9 +38,9 @@ def main() -> None:
         max_candidates=300,  # allow up to 300 from provider
         batch_size=10,
     )
-    print(f"📊 Provider ranked candidates: {len(candidates)}")
+    universe_logger.info(f"📊 Provider ranked candidates: {len(candidates, operation="enhanced_logging")}")
     if not candidates:
-        print("⚠️ No candidates found from provider.")
+        universe_logger.warning("⚠️ No candidates found from provider.", operation="enhanced_logging")
         return
 
     sector_classifier, sector_index_weights = (
@@ -48,7 +48,7 @@ def main() -> None:
     )
 
     selector = UniverseSelector()
-    print("🎯 Running selector on provider pool...")
+    universe_logger.info("🎯 Running selector on provider pool...", operation="enhanced_logging")
     picks = selector.select_universe(
         candidates=candidates,
         start_date=sd.isoformat(),
@@ -70,8 +70,8 @@ def main() -> None:
         sector_index_weights=sector_index_weights,
     )
 
-    print(f"✅ Selector picks: {len(picks)}")
-    print("Top 20:", picks[:20])
+    universe_logger.info(f"✅ Selector picks: {len(picks, operation="enhanced_logging")}")
+    universe_logger.info("Top 20:", picks[:20], operation="enhanced_logging")
 
 
 if __name__ == "__main__":

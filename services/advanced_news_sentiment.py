@@ -25,6 +25,7 @@ from typing import Any, Dict, List, Tuple
 
 from services.http import HttpClient
 from utils.env_loader import load_env_from_known_locations
+from utils.enhanced_logging_system import training_logger
 
 
 @dataclass
@@ -75,58 +76,99 @@ class AdvancedNewsSentimentAnalysis:
         # ENHANCED: Initialize all news sources with proper fallback
         self._initialize_news_sources()
 
-        print(f"✅ News sources configured: {len(self.sources)} sources")
+        # 🚀 ENHANCED: Calculate comprehensive news source count with intelligent formatting
+        source_count = len(self.sources)
+        training_logger.info(f"✅ News sources configured: {source_count} sources", operation="enhanced_logging")
         if self.sources:
             source_names = [source.name for source in self.sources]
-            print(f"   Sources: {source_names}")
+            training_logger.info(f"   Sources: {source_names}", operation="enhanced_logging")
         else:
-            print("   ⚠️ No news sources configured - check API keys")
+            training_logger.warning("   ⚠️ No news sources configured - check API keys", operation="enhanced_logging")
 
     def _initialize_news_sources(self):
-        """Initialize all available news sources with enhanced validation"""
-        # Initialize Polygon news source
+        """🚀 ENHANCED: Initialize all available news sources with intelligent validation"""
+        # 🚀 PREMIUM: Initialize Polygon news source (PAID - SUPERIOR QUALITY)
         polygon_key = os.getenv("POLYGON_API_KEY")
         if polygon_key:
             polygon_source = NewsSource(
                 name="Polygon",
                 api_key_env="POLYGON_API_KEY",
                 base_url="https://api.polygon.io/v2/reference/news",
-                weight=0.4,
-                reliability_score=0.9,
+                weight=0.9,  # 🚀 PREMIUM: Even higher weight - superior quality
+                reliability_score=0.95,  # 🚀 PREMIUM: Higher reliability for paid service
             )
             self.sources.append(polygon_source)
             self.news_sources.append(polygon_source)
+            training_logger.info("🚀 PREMIUM: Polygon news source configured (PAID - SUPERIOR QUALITY)", operation="enhanced_logging")
 
-        # Initialize AlphaVantage news source
+        # Initialize AlphaVantage news source (FREE - SUPPLEMENTARY)
         alpha_key = os.getenv("ALPHA_VANTAGE_API_KEY")
         if alpha_key:
             alpha_source = NewsSource(
                 name="AlphaVantage",
                 api_key_env="ALPHA_VANTAGE_API_KEY",
                 base_url="https://www.alphavantage.co/query",
-                weight=0.3,
-                reliability_score=0.8,
+                weight=0.1,  # 🚀 PREMIUM: Much lower weight - quantity ≠ quality
+                reliability_score=0.6,  # 🚀 PREMIUM: Lower reliability - opinion-heavy
             )
             self.sources.append(alpha_source)
             self.news_sources.append(alpha_source)
+            training_logger.info("✅ AlphaVantage news source configured (FREE - SUPPLEMENTARY - OPINION-HEAVY)", operation="enhanced_logging")
 
-        # Initialize NewsAPI source
+        # 🚀 ENHANCED: Initialize NewsAPI source with intelligent validation
         news_key = os.getenv("NEWS_API_KEY")
         if news_key:
-            news_source = NewsSource(
-                name="NewsAPI",
-                api_key_env="NEWS_API_KEY",
-                base_url="https://newsapi.org/v2/everything",
-                weight=0.3,
-                reliability_score=0.85,
-            )
-            self.sources.append(news_source)
-            self.news_sources.append(news_source)
+            # 🚀 ENHANCED: Check if this is actually a NewsAPI key (not Polygon/Alpaca)
+            polygon_key = os.getenv("POLYGON_API_KEY")
+            alpaca_key = os.getenv("ALPACA_API_KEY")
+            
+            if (polygon_key and news_key == polygon_key) or (alpaca_key and news_key == alpaca_key):
+                training_logger.warning("⚠️ NEWS_API_KEY is the same as POLYGON/ALPACA key - NewsAPI will be disabled", operation="enhanced_logging")
+                training_logger.info("💡 To enable NewsAPI: Get a free key from https://newsapi.org and update NEWS_API_KEY in .env", operation="enhanced_logging")
+            else:
+                # Test the NewsAPI key to make sure it's valid
+                if self._validate_newsapi_key(news_key):
+                    news_source = NewsSource(
+                        name="NewsAPI",
+                        api_key_env="NEWS_API_KEY",
+                        base_url="https://newsapi.org/v2/everything",
+                        weight=0.3,
+                        reliability_score=0.85,
+                    )
+                    self.sources.append(news_source)
+                    self.news_sources.append(news_source)
+                    training_logger.info("✅ NewsAPI source configured and validated", operation="enhanced_logging")
+                else:
+                    training_logger.warning("⚠️ NewsAPI key validation failed - NewsAPI will be disabled", operation="enhanced_logging")
+        else:
+            training_logger.info("ℹ️ NEWS_API_KEY not configured - NewsAPI will be disabled", operation="enhanced_logging")
 
         # ENHANCED: Validate that we have at least one working source
         if not self.sources:
-            print("⚠️  No news API keys found - using fallback sources")
-            # Add fallback sources for testing
+            training_logger.warning("⚠️  No news API keys found - using fallback sources", operation="enhanced_logging")
+            # Add fallback sources for production resilience
+
+    def _validate_newsapi_key(self, api_key: str) -> bool:
+        """🚀 ENHANCED: Validate NewsAPI key by testing it"""
+        try:
+            # Test with a simple request to avoid rate limits
+            url = "https://newsapi.org/v2/sources"
+            params = {"apiKey": api_key}
+            
+            response = self.http.get_json(url, params=params)
+            
+            # Check if we got a valid response
+            if isinstance(response, dict):
+                if response.get("status") == "ok":
+                    return True
+                elif response.get("code") == "apiKeyInvalid":
+                    return False
+                    
+            return False
+            
+        except Exception as e:
+            training_logger.warning(f"⚠️ NewsAPI key validation failed: {e}", operation="enhanced_logging")
+            return False
             fallback_source = NewsSource(
                 name="Fallback",
                 api_key_env="",
@@ -141,8 +183,10 @@ class AdvancedNewsSentimentAnalysis:
         if not hasattr(self, "news_sources") or not self.news_sources:
             self.news_sources = self.sources.copy()
 
-        print(f"✅ News sources configured: {len(self.sources)} sources")
-        print(f"   Sources: {[s.name for s in self.sources]}")
+        # 🚀 ENHANCED: Calculate comprehensive news source count with intelligent formatting
+        source_count = len(self.sources)
+        training_logger.info(f"✅ News sources configured: {source_count} sources", operation="enhanced_logging")
+        training_logger.info(f"   Sources: {[s.name for s in self.sources]}", operation="enhanced_logging")
 
         # Advanced NLP sentiment patterns - ENHANCED for better matching
         self.sentiment_patterns = {
@@ -215,18 +259,18 @@ class AdvancedNewsSentimentAnalysis:
             "low_confidence_penalty": 0.2,
         }
 
-        print("🎯 Advanced News Sentiment Analysis initialized")
-        print("✅ Multi-source integration ready")
-        print("✅ Genuine NLP processing active")
-        print("✅ Market impact assessment enabled")
-        print("✅ Real-time processing capabilities active")
-        print("✅ Advanced confidence scoring system ready")
-        print("✅ Market condition awareness enabled")
+        training_logger.info("🎯 Advanced News Sentiment Analysis initialized", operation="enhanced_logging")
+        training_logger.info("✅ Multi-source integration ready", operation="enhanced_logging")
+        training_logger.info("✅ Genuine NLP processing active", operation="enhanced_logging")
+        training_logger.info("✅ Market impact assessment enabled", operation="enhanced_logging")
+        training_logger.info("✅ Real-time processing capabilities active", operation="enhanced_logging")
+        training_logger.info("✅ Advanced confidence scoring system ready", operation="enhanced_logging")
+        training_logger.info("✅ Market condition awareness enabled", operation="enhanced_logging")
 
     def _fetch_polygon_news(
         self, symbol: str, lookback_hours: int = 24
     ) -> List[Dict[str, Any]]:
-        """Fetch news from Polygon API"""
+        """🚀 PREMIUM: Fetch news from Polygon API (PAID - SUPERIOR QUALITY)"""
         api_key = os.getenv("POLYGON_API_KEY")
         if not api_key:
             return []
@@ -240,16 +284,18 @@ class AdvancedNewsSentimentAnalysis:
         params = {
             "ticker": symbol,
             "published_utc.gte": since,
-            "limit": 50,
+            "limit": 100,  # 🚀 PREMIUM: Increased limit since you paid for it
             "order": "desc",
             "apiKey": api_key,
         }
 
         try:
             response = self.http.get_json(url, params=params)
-            return response.get("results", [])
+            results = response.get("results", [])
+            training_logger.info(f"🚀 PREMIUM: Polygon fetched {len(results)} articles for {symbol} (PAID SERVICE)", operation="enhanced_logging")
+            return results
         except Exception as e:
-            print(f"⚠️ Polygon news fetch failed for {symbol}: {e}")
+            training_logger.error(f"⚠️ Polygon news fetch failed for {symbol}: {e}", operation="enhanced_logging")
             return []
 
     def _fetch_alphavantage_news(
@@ -272,15 +318,16 @@ class AdvancedNewsSentimentAnalysis:
             response = self.http.get_json(url, params=params)
             return response.get("feed", [])
         except Exception as e:
-            print(f"⚠️ Alpha Vantage news fetch failed for {symbol}: {e}")
+            training_logger.error(f"⚠️ Alpha Vantage news fetch failed for {symbol}: {e}", operation="enhanced_logging")
             return []
 
     def _fetch_newsapi_news(
         self, symbol: str, lookback_hours: int = 24
     ) -> List[Dict[str, Any]]:
-        """Fetch news from NewsAPI"""
+        """🚀 ENHANCED: Fetch news from NewsAPI with intelligent error handling"""
         api_key = os.getenv("NEWS_API_KEY")
         if not api_key:
+            training_logger.warning("⚠️ NewsAPI key not configured - skipping NewsAPI source", operation="enhanced_logging")
             return []
 
         since = (datetime.now(UTC) - timedelta(hours=lookback_hours)).isoformat()
@@ -295,9 +342,31 @@ class AdvancedNewsSentimentAnalysis:
 
         try:
             response = self.http.get_json(url, params=params)
+            
+            # 🚀 ENHANCED: Check for API key errors specifically
+            if isinstance(response, dict) and response.get("status") == "error":
+                error_code = response.get("code", "unknown")
+                if error_code == "apiKeyInvalid":
+                    training_logger.warning(f"⚠️ NewsAPI key invalid for {symbol} - please update NEWS_API_KEY in .env file", operation="enhanced_logging")
+                    return []
+                elif error_code == "rateLimited":
+                    training_logger.warning(f"⚠️ NewsAPI rate limited for {symbol} - will retry later", operation="enhanced_logging")
+                    return []
+                else:
+                    training_logger.warning(f"⚠️ NewsAPI error for {symbol}: {response.get('message', 'Unknown error')}", operation="enhanced_logging")
+                    return []
+            
             return response.get("articles", [])
+            
         except Exception as e:
-            print(f"⚠️ NewsAPI fetch failed for {symbol}: {e}")
+            # 🚀 ENHANCED: More specific error handling
+            error_msg = str(e)
+            if "401" in error_msg or "Unauthorized" in error_msg:
+                training_logger.warning(f"⚠️ NewsAPI authentication failed for {symbol} - API key may be invalid", operation="enhanced_logging")
+            elif "429" in error_msg or "rate limit" in error_msg.lower():
+                training_logger.warning(f"⚠️ NewsAPI rate limited for {symbol} - will retry later", operation="enhanced_logging")
+            else:
+                training_logger.warning(f"⚠️ NewsAPI fetch failed for {symbol}: {e}", operation="enhanced_logging")
             return []
 
     def _analyze_sentiment_advanced(self, text: str) -> Tuple[float, float]:
@@ -582,28 +651,33 @@ class AdvancedNewsSentimentAnalysis:
             if cache_key in self.processing_cache:
                 cached_result, timestamp = self.processing_cache[cache_key]
                 if (datetime.now(UTC) - timestamp).total_seconds() < self.cache_ttl:
-                    print(f"🎯 Using cached sentiment for {symbol}")
+                    training_logger.info(f"🎯 Using cached sentiment for {symbol}", operation="enhanced_logging")
                     return cached_result
                 else:
                     # Remove expired cache entry
                     del self.processing_cache[cache_key]
 
-        print(f"🎯 Analyzing sentiment for {symbol} using {len(self.sources)} sources")
+        # 🚀 ENHANCED: Calculate comprehensive source count for sentiment analysis
+        source_count = len(self.sources)
+        training_logger.info(f"🎯 Analyzing sentiment for {symbol} using {source_count} sources", operation="enhanced_logging")
 
-        # ENHANCED: Fetch from all sources in parallel with improved error handling
+        # 🚀 ENHANCED: Fetch from configured sources only (no hardcoded sources)
         source_results = []
 
-        with ThreadPoolExecutor(max_workers=3) as executor:
+        # 🚀 PREMIUM: Only use configured sources - no hardcoded NewsAPI calls
+        configured_sources = []
+        for source in self.sources:
+            if source.name == "Polygon":
+                configured_sources.append((self._fetch_polygon_news, "Polygon"))
+            elif source.name == "AlphaVantage":
+                configured_sources.append((self._fetch_alphavantage_news, "AlphaVantage"))
+            elif source.name == "NewsAPI":
+                configured_sources.append((self._fetch_newsapi_news, "NewsAPI"))
+
+        with ThreadPoolExecutor(max_workers=len(configured_sources)) as executor:
             futures = {
-                executor.submit(
-                    self._fetch_polygon_news, symbol, lookback_hours
-                ): "Polygon",
-                executor.submit(
-                    self._fetch_alphavantage_news, symbol, lookback_hours
-                ): "AlphaVantage",
-                executor.submit(
-                    self._fetch_newsapi_news, symbol, lookback_hours
-                ): "NewsAPI",
+                executor.submit(fetch_func, symbol, lookback_hours): source_name
+                for fetch_func, source_name in configured_sources
             }
 
             for future in as_completed(futures):
@@ -611,9 +685,11 @@ class AdvancedNewsSentimentAnalysis:
                 try:
                     articles = future.result()
                     source_results.append((source_name, articles))
-                    print(f"   ✅ {source_name}: {len(articles)} articles")
+                    # 🚀 ENHANCED: Calculate comprehensive article count with intelligent formatting
+                    article_count = len(articles)
+                    training_logger.info(f"   ✅ {source_name}: {article_count} articles", operation="enhanced_logging")
                 except Exception as e:
-                    print(f"   ⚠️ {source_name}: Failed - {e}")
+                    training_logger.error(f"   ⚠️ {source_name}: Failed - {e}", operation="enhanced_logging")
                     source_results.append((source_name, []))
 
         # ENHANCED: Aggregate results with improved error handling
@@ -626,12 +702,8 @@ class AdvancedNewsSentimentAnalysis:
                 datetime.now(UTC),
             )
 
-        print(
-            f"   📊 Final: {result.sentiment_score:.3f} sentiment, {result.confidence:.3f} confidence"
-        )
-        print(
-            f"   📈 Impact: {result.market_impact:.3f}, Sources: {result.source_count}"
-        )
+        training_logger.info(f"   📊 Final: {result.sentiment_score:.3f} sentiment, {result.confidence:.3f} confidence", operation="enhanced_logging")
+        training_logger.info(f"   📈 Impact: {result.market_impact:.3f}, Sources: {result.source_count}", operation="enhanced_logging")
 
         return result
 
@@ -641,7 +713,9 @@ class AdvancedNewsSentimentAnalysis:
         """
         Analyze sentiment for multiple symbols in parallel
         """
-        print(f"🎯 Analyzing sentiment for {len(symbols)} symbols")
+        # 🚀 ENHANCED: Calculate comprehensive symbol count for sentiment analysis
+        symbol_count = len(symbols)
+        training_logger.info(f"🎯 Analyzing sentiment for {symbol_count} symbols", operation="enhanced_logging")
 
         results = {}
 
@@ -659,7 +733,7 @@ class AdvancedNewsSentimentAnalysis:
                     result = future.result()
                     results[symbol] = result
                 except Exception as e:
-                    print(f"   ❌ {symbol}: Analysis failed - {e}")
+                    training_logger.error(f"   ❌ {symbol}: Analysis failed - {e}", operation="enhanced_logging")
                     results[symbol] = SentimentResult(
                         symbol=symbol,
                         sentiment_score=0.0,
@@ -724,7 +798,7 @@ class AdvancedNewsSentimentAnalysis:
         with open(filepath, "w", encoding="utf-8") as f:
             json.dump(serializable_results, f, indent=2)
 
-        print(f"💾 Sentiment analysis saved to {filepath}")
+        training_logger.info(f"💾 Sentiment analysis saved to {filepath}", operation="enhanced_logging")
 
     def get_real_time_sentiment_summary(
         self, symbols: List[str], lookback_hours: int = 1
@@ -760,7 +834,7 @@ class AdvancedNewsSentimentAnalysis:
     def clear_cache(self):
         """ENHANCED: Clear processing cache for fresh analysis"""
         self.processing_cache.clear()
-        print("🧹 Sentiment analysis cache cleared")
+        training_logger.info("🧹 Sentiment analysis cache cleared", operation="enhanced_logging")
 
     def get_cache_stats(self) -> Dict[str, Any]:
         """ENHANCED: Get cache statistics for monitoring"""
@@ -789,22 +863,21 @@ def main():
     # Test with sample symbols
     test_symbols = ["AAPL", "MSFT", "GOOGL", "TSLA", "NVDA"]
 
-    print("\n🧪 Testing Advanced News Sentiment Analysis")
-    print("=" * 50)
+    training_logger.info("\n🧪 Testing Advanced News Sentiment Analysis", operation="enhanced_logging")
+    training_logger.info("=" * 50, operation="enhanced_logging")
 
     results = analyzer.analyze_multiple_symbols(test_symbols, lookback_hours=24)
 
-    print("\n📊 RESULTS SUMMARY:")
-    print("-" * 30)
+    training_logger.info("\n📊 RESULTS SUMMARY:", operation="enhanced_logging")
+    training_logger.info("-" * 30, operation="enhanced_logging")
     for symbol, result in results.items():
-        print(
-            f"{symbol}: {result.sentiment_score:+.3f} sentiment "
-            f"({result.confidence:.3f} confidence, {result.article_count} articles)"
-        )
+        # 🚀 ENHANCED: Display comprehensive sentiment results with intelligent formatting
+        training_logger.info(f"{symbol}: {result.sentiment_score:+.3f} sentiment "
+            f"({result.confidence:.3f} confidence, {result.article_count} articles)", operation="enhanced_logging")
 
     # Test prioritization
     prioritized = analyzer.get_priority_symbols(test_symbols, min_confidence=0.2)
-    print(f"\n🎯 Prioritized symbols: {prioritized}")
+    training_logger.info(f"\n🎯 Prioritized symbols: {prioritized}", operation="enhanced_logging")
 
 
 if __name__ == "__main__":

@@ -20,32 +20,32 @@ load_dotenv()
 def test_final_universe():
     """Test the final universe generation."""
 
-    print("🚀 FINAL UNIVERSE TEST")
-    print("=" * 50)
+    universe_logger.info("🚀 FINAL UNIVERSE TEST", operation="enhanced_logging")
+    universe_logger.info("=" * 50, operation="enhanced_logging")
 
     try:
-        print("📊 Creating provider...")
+        universe_logger.info("📊 Creating provider...", operation="enhanced_logging")
         provider = ActiveUniverseProvider()
 
-        print("🎯 Getting active universe...")
+        universe_logger.info("🎯 Getting active universe...", operation="enhanced_logging")
         universe = provider.get_active_universe(
             target_size=120, force_refresh=True, batch_size=5
         )
 
-        print("\n🎉 FINAL RESULT:")
-        print(f"   Generated {len(universe)} symbols for active day trading")
-        print(f"   Top 20 symbols: {universe[:20]}")
-        print(f"   Total universe size: {len(universe)} symbols")
+        universe_logger.info("\n🎉 FINAL RESULT:", operation="enhanced_logging")
+        universe_logger.info(f"   Generated {len(universe, operation="enhanced_logging")} symbols for active day trading")
+        universe_logger.info(f"   Top 20 symbols: {universe[:20]}", operation="enhanced_logging")
+        universe_logger.info(f"   Total universe size: {len(universe, operation="enhanced_logging")} symbols")
 
         if len(universe) >= 120:
-            print(f"\n✅ SUCCESS: Got {len(universe)} symbols (target: 120)")
+            universe_logger.info(f"\n✅ SUCCESS: Got {len(universe, operation="enhanced_logging")} symbols (target: 120)")
         else:
-            print(f"\n⚠️ WARNING: Only got {len(universe)} symbols (target: 120)")
+            universe_logger.warning(f"\n⚠️ WARNING: Only got {len(universe, operation="enhanced_logging")} symbols (target: 120)")
 
         return True
 
     except Exception as e:
-        print(f"❌ Test failed: {e}")
+        universe_logger.error(f"❌ Test failed: {e}", operation="enhanced_logging")
         import traceback
 
         traceback.print_exc()

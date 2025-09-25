@@ -11,8 +11,8 @@ from services.polygon_client import PolygonClient
 def main():
     load_dotenv()
 
-    print("Testing Current Earnings Implementation")
-    print("=" * 50)
+    training_logger.info("Testing Current Earnings Implementation", operation="enhanced_logging")
+    training_logger.info("=" * 50, operation="enhanced_logging")
 
     client = PolygonClient()
 
@@ -22,25 +22,24 @@ def main():
     start_date = end_date - timedelta(days=90)  # Last 3 months
 
     for symbol in symbols:
-        print(f"\n{symbol}:")
+        training_logger.info(f"\n{symbol}:", operation="enhanced_logging")
         try:
             data = client.get_earnings_calendar(symbol, start_date, end_date)
 
             if data.get("results"):
-                print(f"  ✅ Found {len(data['results'])} earnings dates")
+                training_logger.info(f"  ✅ Found {len(data['results'], operation="enhanced_logging")} earnings dates")
                 for earning in data["results"][:3]:  # Show first 3
-                    print(
-                        f"     - {earning.get('date')} ({earning.get('fiscal_period')} {earning.get('fiscal_year')})"
+                    training_logger.info(f"     - {earning.get('date', operation="enhanced_logging")} ({earning.get('fiscal_period')} {earning.get('fiscal_year')})"
                     )
             else:
-                print("  ❌ No earnings data found")
+                training_logger.error("  ❌ No earnings data found", operation="enhanced_logging")
 
         except Exception as e:
-            print(f"  ❌ Error: {e}")
+            training_logger.error(f"  ❌ Error: {e}", operation="enhanced_logging")
 
     # Test the full integration
-    print("\n\nTesting Full Universe Selection with Earnings:")
-    print("-" * 50)
+    training_logger.info("\n\nTesting Full Universe Selection with Earnings:", operation="enhanced_logging")
+    training_logger.info("-" * 50, operation="enhanced_logging")
 
     from utils.active_universe_provider import ActiveUniverseProvider
 
@@ -55,10 +54,10 @@ def main():
             force_refresh=True,
             batch_size=5,
         )
-        print("✅ Universe selection completed successfully")
-        print(f"   Selected {len(test)} symbols: {test}")
+        training_logger.info("✅ Universe selection completed successfully", operation="enhanced_logging")
+        training_logger.info(f"   Selected {len(test, operation="enhanced_logging")} symbols: {test}")
     except Exception as e:
-        print(f"❌ Error in universe selection: {e}")
+        training_logger.error(f"❌ Error in universe selection: {e}", operation="enhanced_logging")
 
 
 if __name__ == "__main__":

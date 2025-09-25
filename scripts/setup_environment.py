@@ -17,8 +17,8 @@ from pathlib import Path
 
 def setup_environment():
     """Setup environment variables for the institutional trading system"""
-    print("🔧 SETTING UP INSTITUTIONAL TRADING SYSTEM ENVIRONMENT")
-    print("=" * 60)
+    training_logger.info("🔧 SETTING UP INSTITUTIONAL TRADING SYSTEM ENVIRONMENT", operation="enhanced_logging")
+    training_logger.info("=" * 60, operation="enhanced_logging")
 
     # Get project root
     project_root = Path(__file__).parent.parent
@@ -46,7 +46,7 @@ def setup_environment():
 
     # Check if .env file exists
     if env_file.exists():
-        print("✅ Found existing .env file")
+        training_logger.info("✅ Found existing .env file", operation="enhanced_logging")
         # Load existing values
         with open(env_file, "r") as f:
             for line in f:
@@ -55,7 +55,7 @@ def setup_environment():
                     if key in env_vars:
                         env_vars[key] = value
     else:
-        print("📝 Creating new .env file")
+        training_logger.info("📝 Creating new .env file", operation="enhanced_logging")
 
     # Write .env file
     with open(env_file, "w") as f:
@@ -87,7 +87,7 @@ def setup_environment():
             "# =============================================================================\n\n"
         )
 
-        f.write("# Alpaca Trading - Paper trading (recommended for testing)\n")
+        f.write("# Alpaca Trading - Paper trading (recommended for development and validation)\n")
         f.write(f"ALPACA_API_KEY={env_vars['ALPACA_API_KEY']}\n")
         f.write(f"ALPACA_SECRET_KEY={env_vars['ALPACA_SECRET_KEY']}\n\n")
 
@@ -122,22 +122,22 @@ def setup_environment():
         f.write(f"MAX_THREADS={env_vars['MAX_THREADS']}\n")
         f.write(f"MEMORY_LIMIT_MB={env_vars['MEMORY_LIMIT_MB']}\n")
 
-    print(f"✅ Environment file created: {env_file}")
+    training_logger.info(f"✅ Environment file created: {env_file}", operation="enhanced_logging")
 
     # Set environment variables for current session
     for key, value in env_vars.items():
         os.environ[key] = value
 
-    print("\n📊 ENVIRONMENT VARIABLES SET:")
+    training_logger.info("\n📊 ENVIRONMENT VARIABLES SET:", operation="enhanced_logging")
     for key, value in env_vars.items():
         if "KEY" in key or "SECRET" in key:
             display_value = f"{value[:8]}..." if len(value) > 8 else value
         else:
             display_value = value
-        print(f"   {key}={display_value}")
+        training_logger.info(f"   {key}={display_value}", operation="enhanced_logging")
 
-    print("\n✅ Environment setup complete!")
-    print("💡 To use real APIs, replace the demo keys with your actual API keys")
+    training_logger.info("\n✅ Environment setup complete!", operation="enhanced_logging")
+    training_logger.info("💡 To use real APIs, replace the demo keys with your actual API keys", operation="enhanced_logging")
 
     return True
 

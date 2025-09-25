@@ -13,54 +13,54 @@ from pathlib import Path
 
 def diagnose_python_environment():
     """Diagnose Python environment and dependencies"""
-    print("🔍 DEEP DIAGNOSIS: PYTHON ENVIRONMENT")
-    print("=" * 60)
+    training_logger.info("🔍 DEEP DIAGNOSIS: PYTHON ENVIRONMENT", operation="enhanced_logging")
+    training_logger.info("=" * 60, operation="enhanced_logging")
 
     # Python version
-    print(f"Python Version: {sys.version}")
-    print(f"Python Executable: {sys.executable}")
-    print(f"Python Path: {sys.path[:3]}...")
+    training_logger.info(f"Python Version: {sys.version}", operation="enhanced_logging")
+    training_logger.info(f"Python Executable: {sys.executable}", operation="enhanced_logging")
+    training_logger.info(f"Python Path: {sys.path[:3]}...", operation="enhanced_logging")
 
     # Check if we're in virtual environment
     venv = os.environ.get("VIRTUAL_ENV")
     if venv:
-        print(f"✅ Virtual Environment: {venv}")
+        training_logger.info(f"✅ Virtual Environment: {venv}", operation="enhanced_logging")
     else:
-        print("⚠️  No Virtual Environment detected")
+        training_logger.warning("⚠️  No Virtual Environment detected", operation="enhanced_logging")
 
     # Check pip
     try:
         import pip
 
-        print(f"✅ pip version: {pip.__version__}")
+        training_logger.info(f"✅ pip version: {pip.__version__}", operation="enhanced_logging")
     except ImportError:
-        print("❌ pip not available")
+        training_logger.error("❌ pip not available", operation="enhanced_logging")
 
     # Check pytest
     try:
         import pytest
 
-        print(f"✅ pytest version: {pytest.__version__}")
+        training_logger.info(f"✅ pytest version: {pytest.__version__}", operation="enhanced_logging")
     except ImportError:
-        print("❌ pytest not installed")
+        training_logger.error("❌ pytest not installed", operation="enhanced_logging")
 
     # Check other critical dependencies
     critical_deps = ["numpy", "pandas", "requests", "dotenv"]
 
-    print("\n📦 CRITICAL DEPENDENCIES:")
+    training_logger.error("\n📦 CRITICAL DEPENDENCIES:", operation="enhanced_logging")
     for dep in critical_deps:
         try:
             module = importlib.import_module(dep)
             version = getattr(module, "__version__", "unknown")
-            print(f"  ✅ {dep}: {version}")
+            training_logger.info(f"  ✅ {dep}: {version}", operation="enhanced_logging")
         except ImportError:
-            print(f"  ❌ {dep}: NOT INSTALLED")
+            training_logger.error(f"  ❌ {dep}: NOT INSTALLED", operation="enhanced_logging")
 
 
 def diagnose_project_structure():
     """Diagnose project structure and imports"""
-    print("\n🔍 DEEP DIAGNOSIS: PROJECT STRUCTURE")
-    print("=" * 60)
+    training_logger.info("\n🔍 DEEP DIAGNOSIS: PROJECT STRUCTURE", operation="enhanced_logging")
+    training_logger.info("=" * 60, operation="enhanced_logging")
 
     project_root = Path(__file__).parent.parent
 
@@ -74,14 +74,14 @@ def diagnose_project_structure():
         "scripts",
     ]
 
-    print("📁 DIRECTORY STRUCTURE:")
+    training_logger.info("📁 DIRECTORY STRUCTURE:", operation="enhanced_logging")
     for dir_name in critical_dirs:
         dir_path = project_root / dir_name
         if dir_path.exists():
             files = list(dir_path.glob("*.py"))
-            print(f"  ✅ {dir_name}/ ({len(files)} Python files)")
+            training_logger.info(f"  ✅ {dir_name}/ ({len(files, operation="enhanced_logging")} Python files)")
         else:
-            print(f"  ❌ {dir_name}/ - MISSING")
+            training_logger.error(f"  ❌ {dir_name}/ - MISSING", operation="enhanced_logging")
 
     # Check critical files
     critical_files = [
@@ -92,20 +92,20 @@ def diagnose_project_structure():
         "tests/test_pipeline_loop_smoke.py",
     ]
 
-    print("\n📄 CRITICAL FILES:")
+    training_logger.error("\n📄 CRITICAL FILES:", operation="enhanced_logging")
     for file_path in critical_files:
         full_path = project_root / file_path
         if full_path.exists():
             size = full_path.stat().st_size
-            print(f"  ✅ {file_path} ({size} bytes)")
+            training_logger.info(f"  ✅ {file_path} ({size} bytes, operation="enhanced_logging")")
         else:
-            print(f"  ❌ {file_path} - MISSING")
+            training_logger.error(f"  ❌ {file_path} - MISSING", operation="enhanced_logging")
 
 
 def diagnose_import_issues():
     """Diagnose import issues systematically"""
-    print("\n🔍 DEEP DIAGNOSIS: IMPORT ISSUES")
-    print("=" * 60)
+    training_logger.info("\n🔍 DEEP DIAGNOSIS: IMPORT ISSUES", operation="enhanced_logging")
+    training_logger.info("=" * 60, operation="enhanced_logging")
 
     # Add project root to path
     project_root = Path(__file__).parent.parent
@@ -121,21 +121,21 @@ def diagnose_import_issues():
         ("utils.universe_selector", "Universe Selector"),
     ]
 
-    print("🧪 IMPORT TESTS:")
+    training_logger.info("🧪 IMPORT TESTS:", operation="enhanced_logging")
     for module_name, description in import_tests:
         try:
             module = importlib.import_module(module_name)
-            print(f"  ✅ {description}: {module.__name__}")
+            training_logger.info(f"  ✅ {description}: {module.__name__}", operation="enhanced_logging")
         except ImportError as e:
-            print(f"  ❌ {description}: {e}")
+            training_logger.error(f"  ❌ {description}: {e}", operation="enhanced_logging")
         except Exception as e:
-            print(f"  ⚠️  {description}: {e}")
+            training_logger.warning(f"  ⚠️  {description}: {e}", operation="enhanced_logging")
 
 
 def diagnose_pytest_issues():
     """Diagnose pytest specific issues"""
-    print("\n🔍 DEEP DIAGNOSIS: PYTEST ISSUES")
-    print("=" * 60)
+    training_logger.info("\n🔍 DEEP DIAGNOSIS: PYTEST ISSUES", operation="enhanced_logging")
+    training_logger.info("=" * 60, operation="enhanced_logging")
 
     try:
         # Try to run pytest with version
@@ -147,49 +147,49 @@ def diagnose_pytest_issues():
         )
 
         if result.returncode == 0:
-            print(f"✅ pytest working: {result.stdout.strip()}")
+            training_logger.info(f"✅ pytest working: {result.stdout.strip(, operation="enhanced_logging")}")
         else:
-            print(f"❌ pytest error: {result.stderr}")
+            training_logger.error(f"❌ pytest error: {result.stderr}", operation="enhanced_logging")
 
     except subprocess.TimeoutExpired:
-        print("❌ pytest timeout - possible hanging process")
+        training_logger.error("❌ pytest timeout - possible hanging process", operation="enhanced_logging")
     except FileNotFoundError:
-        print("❌ pytest not found in PATH")
+        training_logger.error("❌ pytest not found in PATH", operation="enhanced_logging")
     except Exception as e:
-        print(f"❌ pytest error: {e}")
+        training_logger.error(f"❌ pytest error: {e}", operation="enhanced_logging")
 
     # Check pytest configuration
     project_root = Path(__file__).parent.parent
     pytest_ini = project_root / "pytest.ini"
     if pytest_ini.exists():
-        print(f"✅ pytest.ini found: {pytest_ini}")
-        print(f"Content: {pytest_ini.read_text()[:200]}...")
+        training_logger.info(f"✅ pytest.ini found: {pytest_ini}", operation="enhanced_logging")
+        training_logger.info(f"Content: {pytest_ini.read_text(, operation="enhanced_logging")[:200]}...")
     else:
-        print("⚠️  pytest.ini not found")
+        training_logger.warning("⚠️  pytest.ini not found", operation="enhanced_logging")
 
 
 def diagnose_shell_issues():
     """Diagnose shell and terminal issues"""
-    print("\n🔍 DEEP DIAGNOSIS: SHELL ISSUES")
-    print("=" * 60)
+    training_logger.info("\n🔍 DEEP DIAGNOSIS: SHELL ISSUES", operation="enhanced_logging")
+    training_logger.info("=" * 60, operation="enhanced_logging")
 
     # Check environment variables
     shell_vars = ["SHELL", "TERM", "PAGER", "LESS"]
     for var in shell_vars:
         value = os.environ.get(var, "Not set")
-        print(f"  {var}: {value}")
+        training_logger.info(f"  {var}: {value}", operation="enhanced_logging")
 
     # Check if we're in a pager
     if os.environ.get("PAGER") or os.environ.get("LESS"):
-        print("⚠️  Pager environment detected - may cause terminal issues")
+        training_logger.warning("⚠️  Pager environment detected - may cause terminal issues", operation="enhanced_logging")
 
 
 def main():
     """Run comprehensive diagnosis"""
-    print("🚀 INSTITUTIONAL AI TRADING SYSTEM - DEEP DIAGNOSIS")
-    print("=" * 80)
-    print("100% GENUINE - NO SHORTCUTS - ALWAYS MAKE BETTER")
-    print("=" * 80)
+    training_logger.info("🚀 INSTITUTIONAL AI TRADING SYSTEM - DEEP DIAGNOSIS", operation="enhanced_logging")
+    training_logger.info("=" * 80, operation="enhanced_logging")
+    training_logger.info("100% GENUINE - NO SHORTCUTS - ALWAYS MAKE BETTER", operation="enhanced_logging")
+    training_logger.info("=" * 80, operation="enhanced_logging")
 
     try:
         diagnose_python_environment()
@@ -198,12 +198,12 @@ def main():
         diagnose_pytest_issues()
         diagnose_shell_issues()
 
-        print("\n" + "=" * 80)
-        print("🎯 DIAGNOSIS COMPLETE")
-        print("=" * 80)
+        training_logger.info("\n" + "=" * 80, operation="enhanced_logging")
+        training_logger.info("🎯 DIAGNOSIS COMPLETE", operation="enhanced_logging")
+        training_logger.info("=" * 80, operation="enhanced_logging")
 
     except Exception as e:
-        print(f"\n💥 DIAGNOSIS FAILED: {e}")
+        training_logger.error(f"\n💥 DIAGNOSIS FAILED: {e}", operation="enhanced_logging")
         import traceback
 
         traceback.print_exc()

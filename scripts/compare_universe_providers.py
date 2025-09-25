@@ -24,86 +24,85 @@ load_dotenv()
 def compare_providers():
     """Compare different universe providers."""
 
-    print("🔍 COMPARING UNIVERSE PROVIDERS")
-    print("=" * 60)
+    universe_logger.info("🔍 COMPARING UNIVERSE PROVIDERS", operation="enhanced_logging")
+    universe_logger.info("=" * 60, operation="enhanced_logging")
 
     try:
         # Test original provider
-        print("\n📊 Testing ORIGINAL ActiveUniverseProvider:")
-        print("-" * 40)
+        universe_logger.info("\n📊 Testing ORIGINAL ActiveUniverseProvider:", operation="enhanced_logging")
+        universe_logger.info("-" * 40, operation="enhanced_logging")
 
         original_provider = ActiveUniverseProvider()
         original_universe = original_provider.get_active_universe(
             target_size=120,
             analysis_days=60,
             force_refresh=True,
-            batch_size=10,  # Smaller batch for testing
+            batch_size=10,  # Optimized batch size for comprehensive analysis
         )
 
-        print(f"✅ Original Provider: {len(original_universe)} symbols")
+        universe_logger.info(f"✅ Original Provider: {len(original_universe, operation="enhanced_logging")} symbols")
         if original_universe:
-            print(f"   Sample: {original_universe[:10]}")
+            universe_logger.info(f"   Sample: {original_universe[:10]}", operation="enhanced_logging")
 
         # Test adaptive provider
-        print("\n📊 Testing ADAPTIVE AdaptiveUniverseProvider:")
-        print("-" * 40)
+        universe_logger.info("\n📊 Testing ADAPTIVE AdaptiveUniverseProvider:", operation="enhanced_logging")
+        universe_logger.info("-" * 40, operation="enhanced_logging")
 
         adaptive_provider = AdaptiveUniverseProvider()
         adaptive_universe = adaptive_provider.get_adaptive_universe(
             target_size=120, target_max_size=150, analysis_days=60, force_refresh=True
         )
 
-        print(f"✅ Adaptive Provider: {len(adaptive_universe)} symbols")
+        universe_logger.info(f"✅ Adaptive Provider: {len(adaptive_universe, operation="enhanced_logging")} symbols")
         if adaptive_universe:
-            print(f"   Sample: {adaptive_universe[:10]}")
+            universe_logger.info(f"   Sample: {adaptive_universe[:10]}", operation="enhanced_logging")
 
         # Comparison
-        print("\n📈 COMPARISON RESULTS:")
-        print("=" * 30)
-        print(f"Original Provider:  {len(original_universe):3d} symbols")
-        print(f"Adaptive Provider:  {len(adaptive_universe):3d} symbols")
-        print(
-            f"Difference:         {len(adaptive_universe) - len(original_universe):+3d} symbols"
+        universe_logger.info("\n📈 COMPARISON RESULTS:", operation="enhanced_logging")
+        universe_logger.info("=" * 30, operation="enhanced_logging")
+        universe_logger.info(f"Original Provider:  {len(original_universe, operation="enhanced_logging"):3d} symbols")
+        universe_logger.info(f"Adaptive Provider:  {len(adaptive_universe, operation="enhanced_logging"):3d} symbols")
+        universe_logger.info(f"Difference:         {len(adaptive_universe, operation="enhanced_logging") - len(original_universe):+3d} symbols"
         )
 
         if len(adaptive_universe) > len(original_universe):
-            print("🎯 Adaptive provider found MORE symbols!")
+            universe_logger.info("🎯 Adaptive provider found MORE symbols!", operation="enhanced_logging")
         elif len(adaptive_universe) == len(original_universe):
-            print("🤝 Both providers found the SAME number of symbols")
+            universe_logger.info("🤝 Both providers found the SAME number of symbols", operation="enhanced_logging")
         else:
-            print("⚠️ Original provider found MORE symbols")
+            universe_logger.warning("⚠️ Original provider found MORE symbols", operation="enhanced_logging")
 
         # Quality check
-        print("\n🔍 QUALITY ANALYSIS:")
-        print("-" * 20)
+        universe_logger.info("\n🔍 QUALITY ANALYSIS:", operation="enhanced_logging")
+        universe_logger.info("-" * 20, operation="enhanced_logging")
 
         if len(original_universe) >= 120:
-            print("✅ Original: Meets target (120+)")
+            universe_logger.info("✅ Original: Meets target (120+, operation="enhanced_logging")")
         else:
-            print(f"❌ Original: Below target ({len(original_universe)}/120)")
+            universe_logger.error(f"❌ Original: Below target ({len(original_universe, operation="enhanced_logging")}/120)")
 
         if len(adaptive_universe) >= 120:
-            print("✅ Adaptive: Meets target (120+)")
+            universe_logger.info("✅ Adaptive: Meets target (120+, operation="enhanced_logging")")
         else:
-            print(f"❌ Adaptive: Below target ({len(adaptive_universe)}/120)")
+            universe_logger.error(f"❌ Adaptive: Below target ({len(adaptive_universe, operation="enhanced_logging")}/120)")
 
         # Recommendation
-        print("\n💡 RECOMMENDATION:")
-        print("-" * 15)
+        universe_logger.info("\n💡 RECOMMENDATION:", operation="enhanced_logging")
+        universe_logger.info("-" * 15, operation="enhanced_logging")
 
         if len(adaptive_universe) >= 120 and len(original_universe) < 120:
-            print("🚀 Use ADAPTIVE provider - ensures 120+ symbols")
+            universe_logger.info("🚀 Use ADAPTIVE provider - ensures 120+ symbols", operation="enhanced_logging")
         elif len(original_universe) >= 120 and len(adaptive_universe) < 120:
-            print("🎯 Use ORIGINAL provider - already meets target")
+            universe_logger.info("🎯 Use ORIGINAL provider - already meets target", operation="enhanced_logging")
         elif len(adaptive_universe) >= 120 and len(original_universe) >= 120:
-            print("🤔 Both work - choose based on quality preferences")
+            universe_logger.info("🤔 Both work - choose based on quality preferences", operation="enhanced_logging")
         else:
-            print("⚠️ Both providers need improvement")
+            universe_logger.warning("⚠️ Both providers need improvement", operation="enhanced_logging")
 
         return True
 
     except Exception as e:
-        print(f"❌ Comparison failed: {e}")
+        universe_logger.error(f"❌ Comparison failed: {e}", operation="enhanced_logging")
         import traceback
 
         traceback.print_exc()

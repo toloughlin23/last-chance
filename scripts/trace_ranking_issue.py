@@ -21,10 +21,10 @@ from utils.active_universe_provider import ActiveUniverseProvider
 def trace_ranking_process():
     """Trace exactly what happens in the ranking process."""
     
-    print("TRACING RANKING PROCESS")
-    print("="*80)
-    print("100% GENUINE - NO SHORTCUTS - ALWAYS MAKE BETTER")
-    print("="*80)
+    training_logger.info("TRACING RANKING PROCESS", operation="enhanced_logging")
+    training_logger.info("="*80, operation="enhanced_logging")
+    training_logger.info("100% GENUINE - NO SHORTCUTS - ALWAYS MAKE BETTER", operation="enhanced_logging")
+    training_logger.info("="*80, operation="enhanced_logging")
     
     # Get some test symbols - mix of A's and others
     test_symbols = [
@@ -40,8 +40,8 @@ def trace_ranking_process():
         "WMT", "HD", "PG", "KO", "DIS"
     ]
     
-    print(f"\nTest symbols: {test_symbols}")
-    print(f"First letters: {Counter(s[0] for s in test_symbols)}")
+    training_logger.info(f"\nTest symbols: {test_symbols}", operation="enhanced_logging")
+    training_logger.info(f"First letters: {Counter(s[0] for s in test_symbols, operation="enhanced_logging")}")
     
     # Create provider
     provider = ActiveUniverseProvider()
@@ -51,7 +51,7 @@ def trace_ranking_process():
     end_date = date.today()
     start_date = end_date - timedelta(days=60)
     
-    print(f"\nCalling _rank_symbols_by_quality with {len(test_symbols)} symbols...")
+    training_logger.info(f"\nCalling _rank_symbols_by_quality with {len(test_symbols, operation="enhanced_logging")} symbols...")
     
     try:
         # First, let's see what happens with our diverse test set
@@ -65,30 +65,30 @@ def trace_ranking_process():
             batch_size=5
         )
         
-        print(f"\nRanked output: {len(ranked)} symbols")
-        print(f"Ranked symbols: {ranked}")
+        training_logger.info(f"\nRanked output: {len(ranked, operation="enhanced_logging")} symbols")
+        training_logger.info(f"Ranked symbols: {ranked}", operation="enhanced_logging")
         
         # Check first letters
         first_letters = Counter(s[0] for s in ranked)
-        print(f"First letters in ranked output: {dict(first_letters)}")
+        training_logger.info(f"First letters in ranked output: {dict(first_letters, operation="enhanced_logging")}")
         
         # The issue is clear if only A's come out even with diverse input
         
     except Exception as e:
-        print(f"Error in ranking: {e}")
+        training_logger.error(f"Error in ranking: {e}", operation="enhanced_logging")
         import traceback
         traceback.print_exc()
     
     # Now let's check what the actual Top 10 print statement shows
-    print("\n\nChecking the 'Top 10' output...")
-    print("If this shows all A's even with diverse input, the issue is in the ranking logic")
+    training_logger.info("\n\nChecking the 'Top 10' output...", operation="enhanced_logging")
+    training_logger.info("If this shows all A's even with diverse input, the issue is in the ranking logic", operation="enhanced_logging")
 
 
 def check_ranking_algorithm():
     """Check if the ranking algorithm has an inherent bias."""
     
-    print("\n\nCHECKING RANKING ALGORITHM")
-    print("="*80)
+    training_logger.info("\n\nCHECKING RANKING ALGORITHM", operation="enhanced_logging")
+    training_logger.info("="*80, operation="enhanced_logging")
     
     # Read the provider code
     provider_file = Path("utils/active_universe_provider.py")
@@ -103,34 +103,34 @@ def check_ranking_algorithm():
     matches = re.findall(pattern, content)
     
     if matches:
-        print("\nFound top_candidates assignment:")
+        training_logger.info("\nFound top_candidates assignment:", operation="enhanced_logging")
         for match in matches:
-            print(f"  {match}")
+            training_logger.info(f"  {match}", operation="enhanced_logging")
     
     # Look for where Top 10 is printed
     pattern = r'.*Top 10:.*'
     matches = re.findall(pattern, content)
     
     if matches:
-        print("\nFound 'Top 10' print statement:")
+        training_logger.info("\nFound 'Top 10' print statement:", operation="enhanced_logging")
         for match in matches:
-            print(f"  {match.strip()}")
+            training_logger.info(f"  {match.strip(, operation="enhanced_logging")}")
     
     # Check if there's a sort by symbol name anywhere
     pattern = r'sorted.*key=.*symbol.*'
     matches = re.findall(pattern, content, re.IGNORECASE)
     
     if matches:
-        print("\n⚠️ Found sorting by symbol name:")
+        training_logger.warning("\n⚠️ Found sorting by symbol name:", operation="enhanced_logging")
         for match in matches:
-            print(f"  {match.strip()}")
+            training_logger.info(f"  {match.strip(, operation="enhanced_logging")}")
 
 
 def test_with_known_good_symbols():
     """Test with symbols we KNOW should rank well."""
     
-    print("\n\nTESTING WITH KNOWN HIGH-QUALITY SYMBOLS")
-    print("="*80)
+    training_logger.info("\n\nTESTING WITH KNOWN HIGH-QUALITY SYMBOLS", operation="enhanced_logging")
+    training_logger.info("="*80, operation="enhanced_logging")
     
     # These are known high-quality S&P 500 stocks
     high_quality = [
@@ -146,7 +146,7 @@ def test_with_known_good_symbols():
         "WMT"    # Retail giant
     ]
     
-    print(f"Testing with known high-quality symbols: {high_quality}")
+    training_logger.info(f"Testing with known high-quality symbols: {high_quality}", operation="enhanced_logging")
     
     # If the ranking works correctly, these should all pass quality filters
     # and maintain diversity in the output
@@ -162,11 +162,12 @@ if __name__ == "__main__":
     # Test with known good symbols
     test_with_known_good_symbols()
     
-    print("\n\nCONCLUSION:")
-    print("="*80)
-    print("If diverse input produces only A's in output, the issue is in:")
-    print("1. The ranking algorithm itself")
-    print("2. How candidates are selected from ranked_data")
-    print("3. A hidden alphabetical sort somewhere")
-    print("\n100% GENUINE SYSTEM REQUIRES GENUINE DIVERSITY!")
+    training_logger.info("\n\nCONCLUSION:", operation="enhanced_logging")
+    training_logger.info("="*80, operation="enhanced_logging")
+    training_logger.info("If diverse input produces only A's in output, the issue is in:", operation="enhanced_logging")
+    training_logger.info("1. The ranking algorithm itself", operation="enhanced_logging")
+    training_logger.info("2. How candidates are selected from ranked_data", operation="enhanced_logging")
+    training_logger.info("3. A hidden alphabetical sort somewhere", operation="enhanced_logging")
+    training_logger.info("\n100% GENUINE SYSTEM REQUIRES GENUINE DIVERSITY!", operation="enhanced_logging")
+
 

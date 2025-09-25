@@ -15,10 +15,10 @@ from dotenv import load_dotenv
 load_dotenv()
 
 def main():
-    print("🔍 ANALYZING 50 CANDIDATES QUALITY")
-    print("=" * 60)
-    print("🎯 Checking if candidates match Option B: Growth-Oriented (Aggressive)")
-    print("=" * 60)
+    training_logger.info("🔍 ANALYZING 50 CANDIDATES QUALITY", operation="enhanced_logging")
+    training_logger.info("=" * 60, operation="enhanced_logging")
+    training_logger.info("🎯 Checking if candidates match Option B: Growth-Oriented (Aggressive, operation="enhanced_logging")")
+    training_logger.info("=" * 60, operation="enhanced_logging")
     
     try:
         from utils.active_universe_provider import ActiveUniverseProvider
@@ -26,7 +26,7 @@ def main():
         provider = ActiveUniverseProvider()
         
         # Get the exact 50 candidates the provider found
-        print("📊 Getting 50 top-ranked candidates from provider...")
+        training_logger.info("📊 Getting 50 top-ranked candidates from provider...", operation="enhanced_logging")
         
         end_date = date.today()
         start_date = end_date - timedelta(days=60)
@@ -41,12 +41,12 @@ def main():
             batch_size=10
         )
         
-        print(f"✅ Found {len(ranked_candidates)} ranked candidates")
-        print(f"📈 Top 10: {ranked_candidates[:10]}")
+        training_logger.info(f"✅ Found {len(ranked_candidates, operation="enhanced_logging")} ranked candidates")
+        training_logger.info(f"📈 Top 10: {ranked_candidates[:10]}", operation="enhanced_logging")
         
         # Analyze each candidate's quality metrics
-        print("\n🔍 ANALYZING QUALITY METRICS FOR EACH CANDIDATE")
-        print("=" * 60)
+        training_logger.info("\n🔍 ANALYZING QUALITY METRICS FOR EACH CANDIDATE", operation="enhanced_logging")
+        training_logger.info("=" * 60, operation="enhanced_logging")
         
         quality_data = []
         sector_counts = defaultdict(int)
@@ -86,19 +86,19 @@ def main():
                     sector = get_sector(symbol)
                     sector_counts[sector] += 1
                     
-                    print(f"{i+1:2d}. {symbol:6s} | Market Cap: ${metrics.get('market_cap', 0)/1e9:6.1f}B | "
+                    training_logger.info(f"{i+1:2d}. {symbol:6s} | Market Cap: ${metrics.get('market_cap', 0, operation="enhanced_logging")/1e9:6.1f}B | "
                           f"ADV: ${metrics.get('adv', 0)/1e6:6.1f}M | Spread: {metrics.get('spread_bps', 0):5.1f}bps | "
                           f"ATR%: {metrics.get('atr_pct', 0)*100:5.1f}% | Growth: {metrics.get('growth_potential', 0):4.2f} | "
                           f"Score: {metrics.get('quality_score', 0):5.2f}")
                 else:
-                    print(f"{i+1:2d}. {symbol:6s} | ❌ No metrics available")
+                    training_logger.error(f"{i+1:2d}. {symbol:6s} | ❌ No metrics available", operation="enhanced_logging")
                     
             except Exception as e:
-                print(f"{i+1:2d}. {symbol:6s} | ❌ Error: {e}")
+                training_logger.error(f"{i+1:2d}. {symbol:6s} | ❌ Error: {e}", operation="enhanced_logging")
         
         # Analyze the results
-        print("\n📊 QUALITY ANALYSIS RESULTS")
-        print("=" * 60)
+        training_logger.info("\n📊 QUALITY ANALYSIS RESULTS", operation="enhanced_logging")
+        training_logger.info("=" * 60, operation="enhanced_logging")
         
         if quality_data:
             # Calculate averages
@@ -109,61 +109,61 @@ def main():
             avg_growth = sum(d['growth_potential'] for d in quality_data) / len(quality_data)
             avg_score = sum(d['quality_score'] for d in quality_data) / len(quality_data)
             
-            print(f"📈 AVERAGE METRICS:")
-            print(f"   Market Cap: ${avg_market_cap/1e9:.1f}B")
-            print(f"   ADV: ${avg_adv/1e6:.1f}M")
-            print(f"   Spread: {avg_spread:.1f} bps")
-            print(f"   ATR%: {avg_atr*100:.1f}%")
-            print(f"   Growth Potential: {avg_growth:.3f}")
-            print(f"   Quality Score: {avg_score:.3f}")
+            training_logger.info(f"📈 AVERAGE METRICS:", operation="enhanced_logging")
+            training_logger.info(f"   Market Cap: ${avg_market_cap/1e9:.1f}B", operation="enhanced_logging")
+            training_logger.info(f"   ADV: ${avg_adv/1e6:.1f}M", operation="enhanced_logging")
+            training_logger.info(f"   Spread: {avg_spread:.1f} bps", operation="enhanced_logging")
+            training_logger.info(f"   ATR%: {avg_atr*100:.1f}%", operation="enhanced_logging")
+            training_logger.info(f"   Growth Potential: {avg_growth:.3f}", operation="enhanced_logging")
+            training_logger.info(f"   Quality Score: {avg_score:.3f}", operation="enhanced_logging")
             
             # Check Option B criteria
-            print(f"\n🎯 OPTION B (GROWTH-ORIENTED) CRITERIA CHECK:")
-            print("=" * 60)
+            training_logger.info(f"\n🎯 OPTION B (GROWTH-ORIENTED, operation="enhanced_logging") CRITERIA CHECK:")
+            training_logger.info("=" * 60, operation="enhanced_logging")
             
             high_volatility_count = sum(1 for d in quality_data if d['atr_pct'] >= 0.03)  # 3%+
             high_growth_count = sum(1 for d in quality_data if d['growth_potential'] >= 0.7)
             good_adv_count = sum(1 for d in quality_data if d['adv'] >= 50_000_000)  # $50M+
             reasonable_spread_count = sum(1 for d in quality_data if d['spread_bps'] <= 20.0)  # 20bps or less
             
-            print(f"✅ High Volatility (ATR% ≥ 3%): {high_volatility_count}/{len(quality_data)} ({high_volatility_count/len(quality_data)*100:.1f}%)")
-            print(f"✅ High Growth Potential (≥0.7): {high_growth_count}/{len(quality_data)} ({high_growth_count/len(quality_data)*100:.1f}%)")
-            print(f"✅ Good Liquidity (ADV ≥ $50M): {good_adv_count}/{len(quality_data)} ({good_adv_count/len(quality_data)*100:.1f}%)")
-            print(f"✅ Reasonable Spreads (≤20bps): {reasonable_spread_count}/{len(quality_data)} ({reasonable_spread_count/len(quality_data)*100:.1f}%)")
+            training_logger.info(f"✅ High Volatility (ATR% ≥ 3%, operation="enhanced_logging"): {high_volatility_count}/{len(quality_data)} ({high_volatility_count/len(quality_data)*100:.1f}%)")
+            training_logger.info(f"✅ High Growth Potential (≥0.7, operation="enhanced_logging"): {high_growth_count}/{len(quality_data)} ({high_growth_count/len(quality_data)*100:.1f}%)")
+            training_logger.info(f"✅ Good Liquidity (ADV ≥ $50M, operation="enhanced_logging"): {good_adv_count}/{len(quality_data)} ({good_adv_count/len(quality_data)*100:.1f}%)")
+            training_logger.info(f"✅ Reasonable Spreads (≤20bps, operation="enhanced_logging"): {reasonable_spread_count}/{len(quality_data)} ({reasonable_spread_count/len(quality_data)*100:.1f}%)")
             
             # Overall assessment
             if high_volatility_count >= len(quality_data) * 0.6 and high_growth_count >= len(quality_data) * 0.4:
-                print(f"\n🎉 EXCELLENT! Candidates match Option B (Growth-Oriented) criteria!")
+                training_logger.info(f"\n🎉 EXCELLENT! Candidates match Option B (Growth-Oriented, operation="enhanced_logging") criteria!")
             elif high_volatility_count >= len(quality_data) * 0.4:
-                print(f"\n✅ GOOD! Candidates mostly match Option B criteria")
+                training_logger.info(f"\n✅ GOOD! Candidates mostly match Option B criteria", operation="enhanced_logging")
             else:
-                print(f"\n⚠️  MIXED! Some candidates match Option B, but could be more aggressive")
+                training_logger.warning(f"\n⚠️  MIXED! Some candidates match Option B, but could be more aggressive", operation="enhanced_logging")
         
         # Sector distribution
-        print(f"\n🏢 SECTOR DISTRIBUTION:")
-        print("=" * 60)
+        training_logger.info(f"\n🏢 SECTOR DISTRIBUTION:", operation="enhanced_logging")
+        training_logger.info("=" * 60, operation="enhanced_logging")
         for sector, count in sorted(sector_counts.items(), key=lambda x: x[1], reverse=True):
             percentage = count / len(ranked_candidates[:50]) * 100
-            print(f"   {sector:20s}: {count:2d} symbols ({percentage:5.1f}%)")
+            training_logger.info(f"   {sector:20s}: {count:2d} symbols ({percentage:5.1f}%, operation="enhanced_logging")")
         
         # Letter distribution
-        print(f"\n🔤 LETTER DISTRIBUTION:")
-        print("=" * 60)
+        training_logger.info(f"\n🔤 LETTER DISTRIBUTION:", operation="enhanced_logging")
+        training_logger.info("=" * 60, operation="enhanced_logging")
         for letter in sorted(letter_counts.keys()):
             count = letter_counts[letter]
             percentage = count / len(ranked_candidates[:50]) * 100
-            print(f"   {letter}: {count:2d} symbols ({percentage:5.1f}%)")
+            training_logger.info(f"   {letter}: {count:2d} symbols ({percentage:5.1f}%, operation="enhanced_logging")")
         
         # Check for A-bias
         a_count = letter_counts.get('A', 0)
         a_percentage = a_count / len(ranked_candidates[:50]) * 100
         if a_percentage > 30:
-            print(f"\n⚠️  A-BIAS DETECTED: {a_percentage:.1f}% start with 'A'")
+            training_logger.warning(f"\n⚠️  A-BIAS DETECTED: {a_percentage:.1f}% start with 'A'", operation="enhanced_logging")
         else:
-            print(f"\n✅ NO A-BIAS: Only {a_percentage:.1f}% start with 'A'")
+            training_logger.info(f"\n✅ NO A-BIAS: Only {a_percentage:.1f}% start with 'A'", operation="enhanced_logging")
             
     except Exception as e:
-        print(f"❌ Error: {e}")
+        training_logger.error(f"❌ Error: {e}", operation="enhanced_logging")
         import traceback
         traceback.print_exc()
 

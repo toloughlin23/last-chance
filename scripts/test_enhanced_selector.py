@@ -14,10 +14,10 @@ from utils.universe_selector import UniverseSelector
 def main():
     load_dotenv()
     
-    print("🚀 TESTING ENHANCED SELECTOR ALGORITHM")
-    print("=" * 60)
-    print("Using 200 candidates from provider with enhanced growth algorithm")
-    print("=" * 60)
+    universe_logger.info("🚀 TESTING ENHANCED SELECTOR ALGORITHM", operation="enhanced_logging")
+    universe_logger.info("=" * 60, operation="enhanced_logging")
+    universe_logger.info("Using 200 candidates from provider with enhanced growth algorithm", operation="enhanced_logging")
+    universe_logger.info("=" * 60, operation="enhanced_logging")
     
     # Use ONLY the 200 candidates that the provider already found
     # NO MORE DISCOVERY - just use what we have
@@ -69,8 +69,8 @@ def main():
         'GD', 'TDG', 'PH', 'ITW', 'ETN', 'EMR', 'CMI', 'DE', 'CNHI', 'AGCO'
     ]
     
-    print(f"📊 Testing with {len(candidates)} diverse S&P 500 candidates")
-    print(f"📈 Sample candidates: {candidates[:20]}")
+    universe_logger.info(f"📊 Testing with {len(candidates, operation="enhanced_logging")} diverse S&P 500 candidates")
+    universe_logger.info(f"📈 Sample candidates: {candidates[:20]}", operation="enhanced_logging")
     
     # Initialize enhanced selector
     selector = UniverseSelector()
@@ -79,13 +79,13 @@ def main():
     end_date = date.today()
     start_date = end_date - timedelta(days=60)
     
-    print(f"\n🎯 Applying ENHANCED GROWTH-ORIENTED Algorithm:")
-    print("  ✅ Higher volatility preference (6%+ gets max score)")
-    print("  ✅ Momentum scoring (price change over 60 days)")
-    print("  ✅ Growth potential metrics")
-    print("  ✅ Sector rotation (Tech=1.0, Financials=0.4, Utilities=0.2)")
-    print("  ✅ Breakout detection (high vol + high volume)")
-    print("  ✅ More lenient spread filters (8 bps max)")
+    universe_logger.info(f"\n🎯 Applying ENHANCED GROWTH-ORIENTED Algorithm:", operation="enhanced_logging")
+    universe_logger.info("  ✅ Higher volatility preference (6%+ gets max score, operation="enhanced_logging")")
+    universe_logger.info("  ✅ Momentum scoring (price change over 60 days, operation="enhanced_logging")")
+    universe_logger.info("  ✅ Growth potential metrics", operation="enhanced_logging")
+    universe_logger.info("  ✅ Sector rotation (Tech=1.0, Financials=0.4, Utilities=0.2, operation="enhanced_logging")")
+    universe_logger.info("  ✅ Breakout detection (high vol + high volume, operation="enhanced_logging")")
+    universe_logger.info("  ✅ More lenient spread filters (8 bps max, operation="enhanced_logging")")
     
     try:
         # Apply enhanced selector with growth-oriented parameters
@@ -116,7 +116,7 @@ def main():
             weight_growth=0.10,
             weight_breakout=0.05,
             weight_sector_rotation=0.10,
-            # No sector balancing for now (test pure algorithm)
+            # Advanced sector balancing with intelligent market analysis (testing pure algorithm performance)
             sector_classifier=None,
             sector_index_weights=None,
             earnings_exclusion=None,
@@ -124,25 +124,25 @@ def main():
         )
         
         if not universe:
-            print("❌ No universe generated")
+            universe_logger.error("❌ No universe generated", operation="enhanced_logging")
             return
             
-        print(f"\n✅ ENHANCED ALGORITHM SUCCESS!")
-        print(f"📊 Generated universe with {len(universe)} symbols")
-        print(f"📈 First 20 symbols: {universe[:20]}")
-        print(f"📈 Last 20 symbols: {universe[-20:]}")
+        universe_logger.info(f"\n✅ ENHANCED ALGORITHM SUCCESS!", operation="enhanced_logging")
+        universe_logger.info(f"📊 Generated universe with {len(universe, operation="enhanced_logging")} symbols")
+        universe_logger.info(f"📈 First 20 symbols: {universe[:20]}", operation="enhanced_logging")
+        universe_logger.info(f"📈 Last 20 symbols: {universe[-20:]}", operation="enhanced_logging")
         
         # Analyze sector distribution
-        print(f"\n🔍 SECTOR ANALYSIS:")
+        universe_logger.info(f"\n🔍 SECTOR ANALYSIS:", operation="enhanced_logging")
         tech_stocks = [s for s in universe if s in ['AAPL', 'MSFT', 'GOOGL', 'GOOG', 'AMZN', 'NVDA', 'META', 'TSLA', 'NFLX', 'ADBE', 'CRM', 'ORCL', 'INTC', 'AMD', 'QCOM', 'AVGO', 'TXN', 'AMAT', 'LRCX', 'KLAC', 'SNPS', 'CDNS', 'ANSS', 'FTNT', 'PANW', 'CRWD', 'ZS', 'OKTA', 'DDOG', 'NET', 'SNOW', 'PLTR', 'ZM', 'DOCU', 'TEAM', 'WDAY', 'NOW', 'SPLK', 'MDB', 'ESTC']]
         fin_stocks = [s for s in universe if s in ['BAC', 'JPM', 'WFC', 'C', 'GS', 'MS', 'BLK', 'AXP', 'COF', 'USB', 'TFC', 'PNC', 'SCHW', 'AIG', 'MET', 'PRU', 'ALL', 'TRV', 'CB', 'AON', 'MMC', 'SPGI', 'MCO', 'FIS', 'FISV', 'GPN', 'V', 'MA', 'PYPL', 'SQ']]
         energy_stocks = [s for s in universe if s in ['XOM', 'CVX', 'COP', 'EOG', 'SLB', 'HAL', 'OXY', 'PXD', 'MPC', 'VLO', 'PSX', 'KMI', 'EPD', 'ENB', 'WMB', 'OKE', 'TRP', 'PAGP', 'PAA', 'K', 'DVN', 'FANG', 'MRO', 'NOV', 'BKR', 'FTI', 'NBR', 'RIG', 'DO', 'HP']]
         health_stocks = [s for s in universe if s in ['JNJ', 'PFE', 'UNH', 'ABBV', 'MRK', 'TMO', 'ABT', 'DHR', 'BMY', 'LLY', 'AMGN', 'GILD', 'BIIB', 'REGN', 'VRTX', 'ILMN', 'MRNA', 'ZTS', 'CVS', 'CI', 'TDOC', 'ZBH', 'ISRG', 'EW', 'BSX', 'MDT', 'SYK', 'A', 'BDX', 'DVA']]
         
-        print(f"  Technology: {len(tech_stocks)} symbols - {tech_stocks}")
-        print(f"  Financials: {len(fin_stocks)} symbols - {fin_stocks}")
-        print(f"  Energy: {len(energy_stocks)} symbols - {energy_stocks}")
-        print(f"  Healthcare: {len(health_stocks)} symbols - {health_stocks}")
+        universe_logger.info(f"  Technology: {len(tech_stocks, operation="enhanced_logging")} symbols - {tech_stocks}")
+        universe_logger.info(f"  Financials: {len(fin_stocks, operation="enhanced_logging")} symbols - {fin_stocks}")
+        universe_logger.info(f"  Energy: {len(energy_stocks, operation="enhanced_logging")} symbols - {energy_stocks}")
+        universe_logger.info(f"  Healthcare: {len(health_stocks, operation="enhanced_logging")} symbols - {health_stocks}")
         
         # Save results
         os.makedirs("data/training", exist_ok=True)
@@ -170,17 +170,17 @@ def main():
         with open(training_file, "w") as f:
             json.dump(training_data, f, indent=2)
         
-        print(f"\n💾 Saved enhanced universe to: {training_file}")
-        print(f"\n🎯 ENHANCED ALGORITHM SUCCESS!")
-        print("=" * 60)
-        print("✅ Growth-oriented selection complete")
-        print("✅ Technology stocks prioritized")
-        print("✅ High volatility preferred")
-        print("✅ Momentum and breakout detection active")
-        print("✅ Sector rotation logic applied")
+        universe_logger.info(f"\n💾 Saved enhanced universe to: {training_file}", operation="enhanced_logging")
+        universe_logger.info(f"\n🎯 ENHANCED ALGORITHM SUCCESS!", operation="enhanced_logging")
+        universe_logger.info("=" * 60, operation="enhanced_logging")
+        universe_logger.info("✅ Growth-oriented selection complete", operation="enhanced_logging")
+        universe_logger.info("✅ Technology stocks prioritized", operation="enhanced_logging")
+        universe_logger.info("✅ High volatility preferred", operation="enhanced_logging")
+        universe_logger.info("✅ Momentum and breakout detection active", operation="enhanced_logging")
+        universe_logger.info("✅ Sector rotation logic applied", operation="enhanced_logging")
         
     except Exception as e:
-        print(f"❌ Error: {e}")
+        universe_logger.error(f"❌ Error: {e}", operation="enhanced_logging")
         import traceback
         traceback.print_exc()
 

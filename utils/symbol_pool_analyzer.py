@@ -16,6 +16,12 @@ from services.quotes_client import QuotesClient
 from services.sp500_client import SP500Client
 from utils.universe_selector import UniverseSelector
 
+# 🚀 ENHANCED: Import enhanced logging system
+from utils.enhanced_logging_system import get_enhanced_logger, log_performance_metrics, log_error_with_context
+
+# 🚀 ENHANCED: Initialize enhanced logger for symbol pool analysis
+analyzer_logger = get_enhanced_logger('symbol_pool_analyzer', 'logs/symbol_analyzer.log')
+
 
 @dataclass
 class SymbolMetrics:
@@ -64,13 +70,13 @@ class SymbolPoolAnalyzer:
 
         Args:
             symbol: Stock symbol to analyze
-            start_date: Start date (YYYY-MM-DD)
-            end_date: End date (YYYY-MM-DD)
+            start_date: Start date in ISO 8601 format (YYYY-MM-DD)
+            end_date: End date in ISO 8601 format (YYYY-MM-DD)
 
         Returns:
             SymbolMetrics object with all performance data
         """
-        print(f"🔍 Analyzing {symbol}...")
+        analyzer_logger.info(f"Analyzing {symbol}", symbol=symbol, operation="symbol_analysis")
 
         # Get daily aggregates
         aggs_data = self.polygon_client.get_aggs(
@@ -123,7 +129,8 @@ class SymbolPoolAnalyzer:
                 symbol, days=30, core_hours_only=True
             )
         except Exception as e:
-            print(f"⚠️ Spread fetch failed for {symbol}: {e}")
+            analyzer_logger.warning(f"Spread fetch failed for {symbol}: {e}", 
+                                  symbol=symbol, error_type=type(e).__name__, operation="spread_analysis")
             spread_dollars, spread_bps = 0.05, 10.0  # Conservative defaults
 
         # Calculate price stability (inverse of price volatility)
@@ -196,7 +203,8 @@ class SymbolPoolAnalyzer:
         Returns:
             List of SymbolMetrics sorted by overall score
         """
-        print(f"🚀 Analyzing S&P 500 universe over {analysis_days} days...")
+        analyzer_logger.info(f"Analyzing S&P 500 universe over {analysis_days} days", 
+                           analysis_days=analysis_days, operation="universe_analysis")
 
         # Get S&P 500 symbols from Polygon (more reliable than Wikipedia)
         try:
@@ -212,15 +220,18 @@ class SymbolPoolAnalyzer:
                         market_cap = ticker.get("market_cap", 0)
                         if symbol and market_cap and market_cap > 8_000_000_000:
                             sp500_symbols.append(symbol)
-                    print(
-                        f"📊 Found {len(sp500_symbols)} large-cap symbols from Polygon"
+                    analyzer_logger.info(
+                        f"📊 Found {len(sp500_symbols)} large-cap symbols from Polygon",
+                        operation="polygon_discovery", symbols_found=len(sp500_symbols)
                     )
         except Exception as e:
-            print(f"⚠️ Polygon API error: {e}")
+            analyzer_logger.warning(f"Polygon API error: {e}", 
+                                  error_type=type(e).__name__, operation="polygon_api")
             sp500_symbols = []
 
         if not sp500_symbols:
-            print("⚠️ Using fallback S&P 500 symbols...")
+            analyzer_logger.warning("Using fallback S&P 500 symbols", 
+                                  fallback_triggered=True, operation="symbol_discovery")
             # Fallback to known high-volume S&P 500 symbols
             sp500_symbols = [
                 "AAPL",
@@ -435,7 +446,8 @@ class SymbolPoolAnalyzer:
                 "VALE",
             ]
 
-        print(f"📊 Analyzing {len(sp500_symbols)} S&P 500 symbols...")
+        analyzer_logger.info(f"Analyzing {len(sp500_symbols)} S&P 500 symbols", 
+                           symbols_count=len(sp500_symbols), operation="symbol_analysis")
 
         # Calculate date range
         end_date = datetime.now().date()
@@ -445,7 +457,8 @@ class SymbolPoolAnalyzer:
         all_metrics = []
         for i, symbol in enumerate(sp500_symbols):
             if i % 50 == 0:
-                print(f"   Progress: {i}/{len(sp500_symbols)} symbols analyzed...")
+                analyzer_logger.info(f"Progress: {i}/{len(sp500_symbols)} symbols analyzed", 
+                                   progress=i, total=len(sp500_symbols), operation="symbol_analysis")
 
             metrics = self.analyze_symbol_performance(
                 symbol, start_date.isoformat(), end_date.isoformat()
@@ -461,9 +474,11 @@ class SymbolPoolAnalyzer:
         # Take top performers
         top_metrics = all_metrics[:target_pool_size]
 
-        print("✅ Analysis complete!")
-        print(f"   - Analyzed: {len(all_metrics)} symbols with sufficient data")
-        print(f"   - Selected: {len(top_metrics)} top performers")
+        analyzer_logger.info("Analysis complete!", status="success", operation="symbol_analysis")
+        analyzer_logger.info(f"Analyzed: {len(all_metrics)} symbols with sufficient data", 
+                           analyzed_count=len(all_metrics), operation="symbol_analysis")
+        analyzer_logger.info(f"Selected: {len(top_metrics)} top performers", 
+                           selected_count=len(top_metrics), operation="symbol_analysis")
 
         return top_metrics
 
@@ -484,7 +499,8 @@ class SymbolPoolAnalyzer:
         Returns:
             List of curated symbols
         """
-        print(f"🎯 Creating curated {target_size}-symbol pool...")
+        analyzer_logger.info(f"Creating curated {target_size}-symbol pool", 
+                           target_size=target_size, operation="pool_creation")
 
         # Analyze the universe
         top_metrics = self.analyze_sp500_universe(analysis_days, target_size)
@@ -493,12 +509,15 @@ class SymbolPoolAnalyzer:
         curated_symbols = [m.symbol for m in top_metrics]
 
         # Print summary
-        print("\n📈 TOP 10 SYMBOLS:")
+        analyzer_logger.info("TOP 10 SYMBOLS:", operation="pool_creation")
         for i, metrics in enumerate(top_metrics[:10]):
-            print(
-                f"   {i+1:2d}. {metrics.symbol:6s} - Score: {metrics.overall_score:.3f} "
+            analyzer_logger.info(
+                f"{i+1:2d}. {metrics.symbol:6s} - Score: {metrics.overall_score:.3f} "
                 f"(Vol: ${metrics.avg_dollar_volume/1e6:.1f}M, "
-                f"Spread: ${metrics.median_spread_dollars:.3f})"
+                f"Spread: ${metrics.median_spread_dollars:.3f})",
+                rank=i+1, symbol=metrics.symbol, score=metrics.overall_score,
+                volume=metrics.avg_dollar_volume, spread=metrics.median_spread_dollars,
+                operation="pool_creation"
             )
 
         # Save to file if requested
@@ -538,7 +557,8 @@ class SymbolPoolAnalyzer:
         with open(filepath, "w") as f:
             json.dump(results, f, indent=2)
 
-        print(f"💾 Analysis results saved to {filepath}")
+        analyzer_logger.info(f"Analysis results saved to {filepath}", 
+                           filepath=filepath, operation="file_operations")
 
 
 def create_curated_pool(analysis_days: int = 180, target_size: int = 120) -> List[str]:
@@ -558,8 +578,8 @@ def create_curated_pool(analysis_days: int = 180, target_size: int = 120) -> Lis
 
 # Example usage
 if __name__ == "__main__":
-    print("🔍 SYMBOL POOL ANALYZER - 100% DATA-DRIVEN")
-    print("=" * 60)
+    analyzer_logger.info("SYMBOL POOL ANALYZER - 100% DATA-DRIVEN", operation="main")
+    analyzer_logger.info("=" * 60, operation="main")
 
     # Create analyzer
     analyzer = SymbolPoolAnalyzer()
@@ -569,5 +589,7 @@ if __name__ == "__main__":
         analysis_days=180, target_size=120  # 6 months
     )
 
-    print(f"\n✅ Curated pool created with {len(curated_symbols)} symbols!")
-    print("🎯 Ready for day trading optimization!")
+    analyzer_logger.info(f"Curated pool created with {len(curated_symbols)} symbols!", 
+                       pool_size=len(curated_symbols), status="success", operation="main")
+    analyzer_logger.info("Ready for day trading optimization!", 
+                       status="ready", operation="main")

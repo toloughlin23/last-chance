@@ -226,13 +226,13 @@ class CuratedSymbolPool:
                     cached_data.get("analysis_date", "2020-01-01")
                 )
                 if (datetime.now() - cache_date).days < 7:
-                    print("📂 Using cached symbol analysis...")
+                    training_logger.info("📂 Using cached symbol analysis...", operation="enhanced_logging")
                     return [s["symbol"] for s in cached_data.get("symbols", [])]
             except Exception as e:
-                print(f"⚠️ Failed to read cached symbol analysis: {e}")
+                training_logger.info(f"⚠️ Failed to read cached symbol analysis: {e}", operation="enhanced_logging")
 
         # Generate fresh analysis
-        print("🔍 Generating fresh symbol analysis...")
+        training_logger.info("🔍 Generating fresh symbol analysis...", operation="enhanced_logging")
         return create_curated_pool(analysis_days=180, target_size=120)
 
     def validate_pool_performance(self, lookback_days: int = 30) -> Dict[str, Any]:
@@ -248,7 +248,7 @@ class CuratedSymbolPool:
         end_date = datetime.now().date()
         start_date = end_date - timedelta(days=lookback_days)
 
-        print(f"🔍 Validating curated pool performance over {lookback_days} days...")
+        training_logger.info(f"🔍 Validating curated pool performance over {lookback_days} days...", operation="enhanced_logging")
 
         # Get current top performers from the curated pool
         top_performers = self.universe_selector.select_universe(
@@ -279,11 +279,11 @@ class CuratedSymbolPool:
             "lookback_days": lookback_days,
         }
 
-        print("✅ Validation complete:")
-        print(f"   - Curated pool: {len(self.CURATED_SYMBOLS)} symbols")
-        print(f"   - Current top performers: {len(top_performers)} symbols")
-        print(
-            f"   - Overlap: {len(overlap)} symbols ({performance_metrics['overlap_percentage']:.1f}%)"
+        training_logger.info("✅ Validation complete:", operation="enhanced_logging")
+        training_logger.info(f"   - Curated pool: {len(self.CURATED_SYMBOLS)} symbols", operation="enhanced_logging")
+        training_logger.info(f"   - Current top performers: {len(top_performers)} symbols", operation="enhanced_logging")
+        training_logger.info(
+            f"   - Overlap: {len(overlap, operation="enhanced_logging")} symbols ({performance_metrics['overlap_percentage']:.1f}%)"
         )
 
         return performance_metrics
@@ -487,7 +487,7 @@ class CuratedSymbolPool:
         with open(filepath, "w") as f:
             json.dump(pool_data, f, indent=2)
 
-        print(f"💾 Curated symbol pool saved to {filepath}")
+        training_logger.info(f"💾 Curated symbol pool saved to {filepath}", operation="enhanced_logging")
 
     def load_pool_from_file(
         self, filepath: str = "data/curated_symbol_pool.json"
@@ -503,7 +503,7 @@ class CuratedSymbolPool:
         """
         try:
             if not os.path.exists(filepath):
-                print(f"⚠️ Pool file not found: {filepath}")
+                training_logger.info(f"⚠️ Pool file not found: {filepath}", operation="enhanced_logging")
                 return False
 
             with open(filepath, "r") as f:
@@ -512,14 +512,14 @@ class CuratedSymbolPool:
             # Update the curated symbols
             self.CURATED_SYMBOLS = pool_data.get("symbols", self.CURATED_SYMBOLS)
 
-            print(f"📂 Curated symbol pool loaded from {filepath}")
-            print(f"   - Symbols: {len(self.CURATED_SYMBOLS)}")
-            print(f"   - Created: {pool_data.get('created_date', 'Unknown')}")
+            training_logger.info(f"📂 Curated symbol pool loaded from {filepath}", operation="enhanced_logging")
+            training_logger.info(f"   - Symbols: {len(self.CURATED_SYMBOLS)}", operation="enhanced_logging")
+            training_logger.info(f"   - Created: {pool_data.get('created_date', 'Unknown')}", operation="enhanced_logging")
 
             return True
 
         except Exception as e:
-            print(f"❌ Error loading pool from {filepath}: {e}")
+            training_logger.info(f"❌ Error loading pool from {filepath}: {e}", operation="enhanced_logging")
             return False
 
 
@@ -536,26 +536,26 @@ def get_curated_symbols() -> List[str]:
 
 # Example usage and validation
 if __name__ == "__main__":
-    print("🎯 CURATED SYMBOL POOL - 120 BEST DAY TRADING SYMBOLS")
-    print("=" * 60)
+    training_logger.info("🎯 CURATED SYMBOL POOL - 120 BEST DAY TRADING SYMBOLS", operation="enhanced_logging")
+    training_logger.info("=" * 60, operation="enhanced_logging")
 
     pool = CuratedSymbolPool()
 
     # Get the curated symbols
     symbols = pool.get_curated_pool()
-    print(f"📊 Total symbols: {len(symbols)}")
+    training_logger.info(f"📊 Total symbols: {len(symbols)}", operation="enhanced_logging")
 
     # Show sector breakdown
     sectors = pool.get_sector_breakdown()
-    print("\n📈 Sector breakdown:")
+    training_logger.info("\n📈 Sector breakdown:", operation="enhanced_logging")
     for sector, syms in sectors.items():
-        print(f"   {sector}: {len(syms)} symbols")
+        training_logger.info(f"   {sector}: {len(syms)} symbols", operation="enhanced_logging")
 
     # Validate performance
-    print("\n🔍 Validating pool performance...")
+    training_logger.info("\n🔍 Validating pool performance...", operation="enhanced_logging")
     metrics = pool.validate_pool_performance(lookback_days=30)
 
     # Save to file
     pool.save_pool_to_file()
 
-    print("\n✅ Curated symbol pool ready for day trading!")
+    training_logger.info("\n✅ Curated symbol pool ready for day trading!", operation="enhanced_logging")

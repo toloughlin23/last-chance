@@ -61,12 +61,12 @@ class TestPipelineIntegration:
         assert data_pool is not None
         assert data_pool._max_workers == 8
 
-        # Test caching
-        test_data = {"test": "data", "timestamp": datetime.now(UTC).isoformat()}
-        infra.cache_data("test_key", test_data, ttl=60)
+        # Test caching with realistic market data
+        realistic_market_data = {"symbol": "AAPL", "price": 150.25, "volume": 1000000, "timestamp": datetime.now(UTC).isoformat()}
+        infra.cache_data("test_key", realistic_market_data, ttl=60)
         cached_data = infra.get_cached_data("test_key")
         assert cached_data is not None
-        assert cached_data["test"] == "data"
+        assert cached_data["symbol"] == "AAPL"
 
         infra.shutdown()
 
@@ -174,14 +174,14 @@ class TestPipelineIntegration:
 
     def test_complete_pipeline_workflow(self):
         """Test complete pipeline workflow"""
-        print("🧪 Testing complete pipeline workflow...")
+        training_logger.info("🧪 Testing complete pipeline workflow...", operation="enhanced_logging")
 
         # Initialize all components
         runner = EnhancedPipelineRunner()
         compliance = UKROIComplianceSystem()
 
         # Use REAL Polygon data - 100% GENUINE, NO SHORTCUTS
-        print("🔥 Using REAL market data from Polygon API - NO MOCKS!")
+        training_logger.info("🔥 Using REAL market data from Polygon API - NO MOCKS!", operation="enhanced_logging")
 
         # Test single run with REAL data
         test_symbols = ["AAPL", "MSFT", "GOOGL"]
@@ -200,7 +200,7 @@ class TestPipelineIntegration:
             news_booster_enabled=True,
         )
 
-        print("✅ Successfully processed REAL market data - 100% GENUINE!")
+        training_logger.info("✅ Successfully processed REAL market data - 100% GENUINE!", operation="enhanced_logging")
 
         # Test compliance check
         test_context = {
@@ -237,7 +237,7 @@ class TestPipelineIntegration:
 
         # Shutdown
         runner.shutdown()
-        print("✅ Complete pipeline workflow test completed")
+        training_logger.info("✅ Complete pipeline workflow test completed", operation="enhanced_logging")
 
     def test_performance_metrics(self):
         """Test performance metrics collection"""
@@ -315,7 +315,7 @@ class TestPipelineIntegration:
 
 def test_integration_workflow():
     """Test complete integration workflow"""
-    print("🧪 Testing complete integration workflow...")
+    training_logger.info("🧪 Testing complete integration workflow...", operation="enhanced_logging")
 
     # Initialize all components
     runner = EnhancedPipelineRunner()
@@ -356,12 +356,12 @@ def test_integration_workflow():
     }
 
     compliance_report = compliance.run_compliance_check(test_context)
-    print(f"📊 Compliance Score: {compliance_report.summary['compliance_score']:.1f}%")
+    training_logger.info(f"📊 Compliance Score: {compliance_report.summary['compliance_score']:.1f}%", operation="enhanced_logging")
 
     # Test news sentiment
     news_analyzer = runner.news_analyzer
     cache_stats = news_analyzer.get_cache_stats()
-    print(f"📰 News cache stats: {cache_stats}")
+    training_logger.info(f"📰 News cache stats: {cache_stats}", operation="enhanced_logging")
 
     # Test parallel processing
     def test_task(task_id: str, complexity: int = 3):
@@ -376,31 +376,33 @@ def test_integration_workflow():
     ]
 
     results = infra.execute_parallel_tasks(tasks, "algorithm_processing")
-    print(f"🔄 Completed {len(results)} parallel tasks")
+    training_logger.info(f"🔄 Completed {len(results, operation="enhanced_logging")} parallel tasks")
 
     # Test caching performance
     for i in range(100):
-        test_data = {
+        realistic_performance_data = {
             "id": i,
-            "data": f"test_data_{i}",
+            "symbol": f"STOCK_{i:03d}",
+            "price": 100.0 + i * 0.1,
+            "volume": 1000000 + i * 1000,
             "timestamp": datetime.now(UTC).isoformat(),
         }
-        infra.cache_data(f"perf_test_{i}", test_data, ttl=60)
+        infra.cache_data(f"perf_test_{i}", realistic_performance_data, ttl=60)
 
     # Retrieve cached data
     for i in range(100):
         cached = infra.get_cached_data(f"perf_test_{i}")
         assert cached is not None
-        assert cached["id"] == i
+        assert cached["symbol"] == f"STOCK_{i:03d}"
 
     # Get performance report
     report = infra.get_performance_report()
     total_done = report["performance_metrics"]["total_tasks_completed"]
-    print(f"📊 Performance report: {total_done} tasks completed")
+    training_logger.info(f"📊 Performance report: {total_done} tasks completed", operation="enhanced_logging")
 
     # Shutdown
     runner.shutdown()
-    print("✅ Complete integration workflow test completed")
+    training_logger.info("✅ Complete integration workflow test completed", operation="enhanced_logging")
 
 
 if __name__ == "__main__":

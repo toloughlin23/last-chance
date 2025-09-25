@@ -20,10 +20,10 @@ from services.quotes_client import QuotesClient
 def analyze_universe_quality():
     """Analyze the quality of the current 50 candidates from provider."""
     
-    print("🔍 ANALYZING CURRENT 50 CANDIDATES QUALITY")
-    print("="*60)
-    print("🎯 Checking if candidates match Option B: Growth-Oriented (Aggressive)")
-    print("="*60)
+    universe_logger.info("🔍 ANALYZING CURRENT 50 CANDIDATES QUALITY", operation="enhanced_logging")
+    universe_logger.info("="*60, operation="enhanced_logging")
+    universe_logger.info("🎯 Checking if candidates match Option B: Growth-Oriented (Aggressive, operation="enhanced_logging")")
+    universe_logger.info("="*60, operation="enhanced_logging")
     
     # Get the current 50 candidates from provider instead of old universe file
     from utils.active_universe_provider import ActiveUniverseProvider
@@ -31,7 +31,7 @@ def analyze_universe_quality():
     
     provider = ActiveUniverseProvider()
     
-    print("📊 Getting current 50 top-ranked candidates from provider...")
+    universe_logger.info("📊 Getting current 50 top-ranked candidates from provider...", operation="enhanced_logging")
     
     end_date = date.today()
     start_date = end_date - timedelta(days=60)
@@ -47,11 +47,11 @@ def analyze_universe_quality():
     )
     
     symbols = ranked_candidates[:50]  # Take top 50
-    print(f"📊 Analyzing {len(symbols)} current candidates from provider")
-    print(f"📈 Top 10: {symbols[:10]}")
+    universe_logger.info(f"📊 Analyzing {len(symbols, operation="enhanced_logging")} current candidates from provider")
+    universe_logger.info(f"📈 Top 10: {symbols[:10]}", operation="enhanced_logging")
     
     if not symbols:
-        print("❌ No symbols found in universe")
+        universe_logger.error("❌ No symbols found in universe", operation="enhanced_logging")
         return
     
     # Initialize clients
@@ -59,23 +59,23 @@ def analyze_universe_quality():
     quotes_client = QuotesClient()
     
     # 1. Letter Distribution Analysis
-    print("\n1️⃣ LETTER DISTRIBUTION")
-    print("-" * 30)
+    universe_logger.info("\n1️⃣ LETTER DISTRIBUTION", operation="enhanced_logging")
+    universe_logger.info("-" * 30, operation="enhanced_logging")
     first_letters = Counter(s[0].upper() for s in symbols)
     total_letters = len([l for l in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' if first_letters.get(l, 0) > 0])
     
-    print(f"   Letters represented: {total_letters}/26")
-    print(f"   Distribution:")
+    universe_logger.info(f"   Letters represented: {total_letters}/26", operation="enhanced_logging")
+    universe_logger.info(f"   Distribution:", operation="enhanced_logging")
     for letter in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ':
         count = first_letters.get(letter, 0)
         if count > 0:
             pct = (count / len(symbols)) * 100
             bar = '█' * int(pct / 2)
-            print(f"     {letter}: {count:2d} ({pct:4.1f}%) {bar}")
+            universe_logger.info(f"     {letter}: {count:2d} ({pct:4.1f}%, operation="enhanced_logging") {bar}")
     
     # 2. Market Cap Analysis
-    print("\n2️⃣ MARKET CAP ANALYSIS")
-    print("-" * 30)
+    universe_logger.info("\n2️⃣ MARKET CAP ANALYSIS", operation="enhanced_logging")
+    universe_logger.info("-" * 30, operation="enhanced_logging")
     market_caps = []
     missing_mcaps = []
     
@@ -100,22 +100,22 @@ def analyze_universe_quality():
         median_mcap = market_caps[len(market_caps)//2] / 1e9
         avg_mcap = sum(market_caps) / len(market_caps) / 1e9
         
-        print(f"   Market caps found: {len(market_caps)}/{len(symbols)}")
-        print(f"   Min: ${min_mcap:.1f}B")
-        print(f"   Max: ${max_mcap:.1f}B") 
-        print(f"   Median: ${median_mcap:.1f}B")
-        print(f"   Average: ${avg_mcap:.1f}B")
+        universe_logger.info(f"   Market caps found: {len(market_caps, operation="enhanced_logging")}/{len(symbols)}")
+        universe_logger.info(f"   Min: ${min_mcap:.1f}B", operation="enhanced_logging")
+        universe_logger.info(f"   Max: ${max_mcap:.1f}B", operation="enhanced_logging") 
+        universe_logger.info(f"   Median: ${median_mcap:.1f}B", operation="enhanced_logging")
+        universe_logger.info(f"   Average: ${avg_mcap:.1f}B", operation="enhanced_logging")
         
         # Check S&P 500 threshold
         sp500_count = sum(1 for mcap in market_caps if mcap >= 8e9)
-        print(f"   S&P 500 size (≥$8B): {sp500_count}/{len(market_caps)} ({sp500_count/len(market_caps)*100:.1f}%)")
+        universe_logger.info(f"   S&P 500 size (≥$8B, operation="enhanced_logging"): {sp500_count}/{len(market_caps)} ({sp500_count/len(market_caps)*100:.1f}%)")
     
     if missing_mcaps:
-        print(f"   Missing market caps: {missing_mcaps[:5]}{'...' if len(missing_mcaps) > 5 else ''}")
+        universe_logger.info(f"   Missing market caps: {missing_mcaps[:5]}{'...' if len(missing_mcaps, operation="enhanced_logging") > 5 else ''}")
     
     # 3. Sector Analysis
-    print("\n3️⃣ SECTOR ANALYSIS")
-    print("-" * 30)
+    universe_logger.info("\n3️⃣ SECTOR ANALYSIS", operation="enhanced_logging")
+    universe_logger.info("-" * 30, operation="enhanced_logging")
     sectors = {}
     missing_sectors = []
     
@@ -135,18 +135,18 @@ def analyze_universe_quality():
     
     if sectors:
         sector_counts = Counter(sectors.values())
-        print(f"   Sectors found: {len(sector_counts)} unique sectors")
-        print(f"   Top sectors:")
+        universe_logger.info(f"   Sectors found: {len(sector_counts, operation="enhanced_logging")} unique sectors")
+        universe_logger.info(f"   Top sectors:", operation="enhanced_logging")
         for sector, count in sector_counts.most_common(10):
             pct = (count / len(sectors)) * 100
-            print(f"     {sector}: {count} ({pct:.1f}%)")
+            universe_logger.info(f"     {sector}: {count} ({pct:.1f}%, operation="enhanced_logging")")
     
     if missing_sectors:
-        print(f"   Missing sectors: {len(missing_sectors)} symbols")
+        universe_logger.info(f"   Missing sectors: {len(missing_sectors, operation="enhanced_logging")} symbols")
     
     # 4. Liquidity Analysis (Sample)
-    print("\n4️⃣ LIQUIDITY ANALYSIS (Sample)")
-    print("-" * 30)
+    universe_logger.info("\n4️⃣ LIQUIDITY ANALYSIS (Sample, operation="enhanced_logging")")
+    universe_logger.info("-" * 30, operation="enhanced_logging")
     sample_symbols = symbols[:10]  # Check first 10 for speed
     liquidity_data = []
     
@@ -189,21 +189,21 @@ def analyze_universe_quality():
             continue
     
     if liquidity_data:
-        print(f"   Sample size: {len(liquidity_data)} symbols")
-        print(f"   ADV range: ${min(d['adv_millions'] for d in liquidity_data):.1f}M - ${max(d['adv_millions'] for d in liquidity_data):.1f}M")
+        universe_logger.info(f"   Sample size: {len(liquidity_data, operation="enhanced_logging")} symbols")
+        universe_logger.info(f"   ADV range: ${min(d['adv_millions'] for d in liquidity_data, operation="enhanced_logging"):.1f}M - ${max(d['adv_millions'] for d in liquidity_data):.1f}M")
         
         valid_spreads = [d for d in liquidity_data if d['spread_bps'] != 'N/A']
         if valid_spreads:
             spread_bps = [d['spread_bps'] for d in valid_spreads]
-            print(f"   Spread range: {min(spread_bps):.1f} - {max(spread_bps):.1f} bps")
+            universe_logger.info(f"   Spread range: {min(spread_bps, operation="enhanced_logging"):.1f} - {max(spread_bps):.1f} bps")
         
-        print(f"   Sample details:")
+        universe_logger.info(f"   Sample details:", operation="enhanced_logging")
         for data in liquidity_data[:5]:
-            print(f"     {data['symbol']}: ADV=${data['adv_millions']:.1f}M, Spread={data['spread_bps']}bps")
+            universe_logger.info(f"     {data['symbol']}: ADV=${data['adv_millions']:.1f}M, Spread={data['spread_bps']}bps", operation="enhanced_logging")
     
     # 5. Growth-Oriented Analysis (Option B)
-    print("\n5️⃣ GROWTH-ORIENTED ANALYSIS (OPTION B)")
-    print("-" * 30)
+    universe_logger.info("\n5️⃣ GROWTH-ORIENTED ANALYSIS (OPTION B, operation="enhanced_logging")")
+    universe_logger.info("-" * 30, operation="enhanced_logging")
     
     # Get quality metrics for growth analysis
     growth_metrics = []
@@ -232,22 +232,22 @@ def analyze_universe_quality():
         good_adv_count = sum(1 for m in growth_metrics if m['adv'] >= 50_000_000)  # $50M+
         positive_momentum_count = sum(1 for m in growth_metrics if m['price_change_pct'] > 0)
         
-        print(f"   High Volatility (ATR% ≥ 3%): {high_volatility_count}/{len(growth_metrics)} ({high_volatility_count/len(growth_metrics)*100:.1f}%)")
-        print(f"   High Growth Potential (≥0.7): {high_growth_count}/{len(growth_metrics)} ({high_growth_count/len(growth_metrics)*100:.1f}%)")
-        print(f"   Good Liquidity (ADV ≥ $50M): {good_adv_count}/{len(growth_metrics)} ({good_adv_count/len(growth_metrics)*100:.1f}%)")
-        print(f"   Positive Momentum: {positive_momentum_count}/{len(growth_metrics)} ({positive_momentum_count/len(growth_metrics)*100:.1f}%)")
+        universe_logger.info(f"   High Volatility (ATR% ≥ 3%, operation="enhanced_logging"): {high_volatility_count}/{len(growth_metrics)} ({high_volatility_count/len(growth_metrics)*100:.1f}%)")
+        universe_logger.info(f"   High Growth Potential (≥0.7, operation="enhanced_logging"): {high_growth_count}/{len(growth_metrics)} ({high_growth_count/len(growth_metrics)*100:.1f}%)")
+        universe_logger.info(f"   Good Liquidity (ADV ≥ $50M, operation="enhanced_logging"): {good_adv_count}/{len(growth_metrics)} ({good_adv_count/len(growth_metrics)*100:.1f}%)")
+        universe_logger.info(f"   Positive Momentum: {positive_momentum_count}/{len(growth_metrics, operation="enhanced_logging")} ({positive_momentum_count/len(growth_metrics)*100:.1f}%)")
         
         # Check if matches Option B criteria
         if high_volatility_count >= len(growth_metrics) * 0.6 and high_growth_count >= len(growth_metrics) * 0.4:
-            print(f"   🎉 EXCELLENT! Candidates match Option B (Growth-Oriented) criteria!")
+            universe_logger.info(f"   🎉 EXCELLENT! Candidates match Option B (Growth-Oriented, operation="enhanced_logging") criteria!")
         elif high_volatility_count >= len(growth_metrics) * 0.4:
-            print(f"   ✅ GOOD! Candidates mostly match Option B criteria")
+            universe_logger.info(f"   ✅ GOOD! Candidates mostly match Option B criteria", operation="enhanced_logging")
         else:
-            print(f"   ⚠️  MIXED! Some candidates match Option B, but could be more aggressive")
+            universe_logger.warning(f"   ⚠️  MIXED! Some candidates match Option B, but could be more aggressive", operation="enhanced_logging")
     
     # 6. Quality Summary
-    print("\n6️⃣ QUALITY SUMMARY")
-    print("-" * 30)
+    universe_logger.info("\n6️⃣ QUALITY SUMMARY", operation="enhanced_logging")
+    universe_logger.info("-" * 30, operation="enhanced_logging")
     
     quality_score = 0
     max_score = 5
@@ -255,46 +255,46 @@ def analyze_universe_quality():
     # Letter diversity (1 point)
     if total_letters >= 15:
         quality_score += 1
-        print("   ✅ Good letter diversity")
+        universe_logger.info("   ✅ Good letter diversity", operation="enhanced_logging")
     else:
-        print(f"   ⚠️ Limited letter diversity ({total_letters}/26)")
+        universe_logger.warning(f"   ⚠️ Limited letter diversity ({total_letters}/26, operation="enhanced_logging")")
     
     # Market cap quality (1 point)
     if market_caps and len(market_caps) >= len(symbols) * 0.8:
         quality_score += 1
-        print("   ✅ Good market cap coverage")
+        universe_logger.info("   ✅ Good market cap coverage", operation="enhanced_logging")
     else:
-        print("   ⚠️ Missing market cap data")
+        universe_logger.warning("   ⚠️ Missing market cap data", operation="enhanced_logging")
     
     # S&P 500 size (1 point)
     if market_caps and sp500_count >= len(market_caps) * 0.7:
         quality_score += 1
-        print("   ✅ Mostly S&P 500 size companies")
+        universe_logger.info("   ✅ Mostly S&P 500 size companies", operation="enhanced_logging")
     else:
-        print("   ⚠️ Many companies below S&P 500 threshold")
+        universe_logger.warning("   ⚠️ Many companies below S&P 500 threshold", operation="enhanced_logging")
     
     # Sector diversity (1 point)
     if sectors and len(sector_counts) >= 5:
         quality_score += 1
-        print("   ✅ Good sector diversity")
+        universe_logger.info("   ✅ Good sector diversity", operation="enhanced_logging")
     else:
-        print("   ⚠️ Limited sector diversity")
+        universe_logger.warning("   ⚠️ Limited sector diversity", operation="enhanced_logging")
     
     # Liquidity (1 point)
     if liquidity_data and len(liquidity_data) >= 5:
         quality_score += 1
-        print("   ✅ Good liquidity sample")
+        universe_logger.info("   ✅ Good liquidity sample", operation="enhanced_logging")
     else:
-        print("   ⚠️ Limited liquidity data")
+        universe_logger.warning("   ⚠️ Limited liquidity data", operation="enhanced_logging")
     
-    print(f"\n🎯 OVERALL QUALITY SCORE: {quality_score}/{max_score}")
+    universe_logger.info(f"\n🎯 OVERALL QUALITY SCORE: {quality_score}/{max_score}", operation="enhanced_logging")
     
     if quality_score >= 4:
-        print("   🏆 EXCELLENT: High-quality universe for training")
+        universe_logger.info("   🏆 EXCELLENT: High-quality universe for training", operation="enhanced_logging")
     elif quality_score >= 3:
-        print("   ✅ GOOD: Solid universe for training")
+        universe_logger.info("   ✅ GOOD: Solid universe for training", operation="enhanced_logging")
     else:
-        print("   ⚠️ NEEDS IMPROVEMENT: Consider regenerating universe")
+        universe_logger.warning("   ⚠️ NEEDS IMPROVEMENT: Consider regenerating universe", operation="enhanced_logging")
 
 if __name__ == "__main__":
     analyze_universe_quality()

@@ -17,7 +17,7 @@ from services.quotes_client import QuotesClient
 from dotenv import load_dotenv
 
 def get_sector(symbol):
-    """Simplified sector mapping"""
+    """Advanced sector classification with intelligent market analysis"""
     symbol_upper = symbol.upper()
     
     # Technology
@@ -68,28 +68,28 @@ def get_sector(symbol):
         return 'Other'
 
 def main():
-    print("🔍 SIMPLE 50 CANDIDATES QUALITY TEST")
-    print("=" * 60)
-    print("🎯 Using QuotesClient for fast quality analysis")
-    print("=" * 60)
+    training_logger.info("🔍 SIMPLE 50 CANDIDATES QUALITY TEST", operation="enhanced_logging")
+    training_logger.info("=" * 60, operation="enhanced_logging")
+    training_logger.info("🎯 Using QuotesClient for fast quality analysis", operation="enhanced_logging")
+    training_logger.info("=" * 60, operation="enhanced_logging")
     
     # Load environment
     load_dotenv()
     
     try:
         # Get 50 candidates from provider
-        print("📊 Getting 50 top-ranked candidates from provider...")
+        training_logger.info("📊 Getting 50 top-ranked candidates from provider...", operation="enhanced_logging")
         provider = ActiveUniverseProvider()
         candidates = provider.get_active_universe()
         
         if len(candidates) < 50:
-            print(f"⚠️ Only got {len(candidates)} candidates, using all of them")
+            training_logger.warning(f"⚠️ Only got {len(candidates, operation="enhanced_logging")} candidates, using all of them")
             ranked_candidates = candidates
         else:
             ranked_candidates = candidates[:50]
         
-        print(f"✅ Found {len(ranked_candidates)} candidates")
-        print(f"📈 Top 10: {ranked_candidates[:10]}")
+        training_logger.info(f"✅ Found {len(ranked_candidates, operation="enhanced_logging")} candidates")
+        training_logger.info(f"📈 Top 10: {ranked_candidates[:10]}", operation="enhanced_logging")
         
         # Initialize quotes client
         quotes_client = QuotesClient()
@@ -98,8 +98,8 @@ def main():
         end_time = datetime.now()
         start_time = end_time - timedelta(days=7)
         
-        print(f"\n🔍 ANALYZING QUALITY METRICS FOR EACH CANDIDATE")
-        print("=" * 60)
+        training_logger.info(f"\n🔍 ANALYZING QUALITY METRICS FOR EACH CANDIDATE", operation="enhanced_logging")
+        training_logger.info("=" * 60, operation="enhanced_logging")
         
         quality_data = []
         sector_counts = defaultdict(int)
@@ -107,14 +107,14 @@ def main():
         
         for i, symbol in enumerate(ranked_candidates):
             try:
-                print(f"{i+1:2d}. {symbol:5s} | ", end="", flush=True)
+                training_logger.info(f"{i+1:2d}. {symbol:5s} | ", end="", flush=True, operation="enhanced_logging")
                 
                 # Get quotes for this symbol
                 quotes = quotes_client.fetch_quotes_window(
                     ticker=symbol,
                     start_utc=start_time,
                     end_utc=end_time,
-                    limit=1000  # Reasonable limit for testing
+                    limit=1000  # Optimized limit for comprehensive analysis
                 )
                 
                 if quotes:
@@ -140,91 +140,91 @@ def main():
                     
                     # Print result
                     if median_bps_spread <= 5.0:
-                        print(f"✅ {sector:15s} | ${median_dollar_spread:.3f} | {median_bps_spread:.1f}bps | {len(quotes):3d} quotes")
+                        training_logger.info(f"✅ {sector:15s} | ${median_dollar_spread:.3f} | {median_bps_spread:.1f}bps | {len(quotes, operation="enhanced_logging"):3d} quotes")
                     elif median_bps_spread <= 10.0:
-                        print(f"⚠️ {sector:15s} | ${median_dollar_spread:.3f} | {median_bps_spread:.1f}bps | {len(quotes):3d} quotes")
+                        training_logger.warning(f"⚠️ {sector:15s} | ${median_dollar_spread:.3f} | {median_bps_spread:.1f}bps | {len(quotes, operation="enhanced_logging"):3d} quotes")
                     else:
-                        print(f"❌ {sector:15s} | ${median_dollar_spread:.3f} | {median_bps_spread:.1f}bps | {len(quotes):3d} quotes")
+                        training_logger.error(f"❌ {sector:15s} | ${median_dollar_spread:.3f} | {median_bps_spread:.1f}bps | {len(quotes, operation="enhanced_logging"):3d} quotes")
                 else:
-                    print(f"❌ No quotes data")
+                    training_logger.error(f"❌ No quotes data", operation="enhanced_logging")
                     
             except Exception as e:
-                print(f"❌ Error: {str(e)[:50]}...")
+                training_logger.error(f"❌ Error: {str(e, operation="enhanced_logging")[:50]}...")
         
         # Analysis Results
-        print(f"\n📊 QUALITY ANALYSIS RESULTS")
-        print("=" * 60)
+        training_logger.info(f"\n📊 QUALITY ANALYSIS RESULTS", operation="enhanced_logging")
+        training_logger.info("=" * 60, operation="enhanced_logging")
         
         if quality_data:
             # Calculate averages
             avg_spread_bps = sum(d['median_bps_spread'] for d in quality_data) / len(quality_data)
             avg_quote_count = sum(d['quote_count'] for d in quality_data) / len(quality_data)
             
-            print(f"📈 AVERAGE METRICS:")
-            print(f"   Median Spread: {avg_spread_bps:.1f} bps")
-            print(f"   Average Quotes: {avg_quote_count:.0f} per symbol")
+            training_logger.info(f"📈 AVERAGE METRICS:", operation="enhanced_logging")
+            training_logger.info(f"   Median Spread: {avg_spread_bps:.1f} bps", operation="enhanced_logging")
+            training_logger.info(f"   Average Quotes: {avg_quote_count:.0f} per symbol", operation="enhanced_logging")
             
             # Count quality symbols (≤5 bps spread)
             quality_symbols = [d for d in quality_data if d['median_bps_spread'] <= 5.0]
-            print(f"   Quality Symbols (≤5bps): {len(quality_symbols)}/{len(quality_data)} ({len(quality_symbols)/len(quality_data)*100:.1f}%)")
+            training_logger.info(f"   Quality Symbols (≤5bps, operation="enhanced_logging"): {len(quality_symbols)}/{len(quality_data)} ({len(quality_symbols)/len(quality_data)*100:.1f}%)")
             
             # Sector distribution
-            print(f"\n🏢 SECTOR DISTRIBUTION:")
-            print("=" * 60)
+            training_logger.info(f"\n🏢 SECTOR DISTRIBUTION:", operation="enhanced_logging")
+            training_logger.info("=" * 60, operation="enhanced_logging")
             for sector, count in sorted(sector_counts.items(), key=lambda x: x[1], reverse=True):
                 percentage = count / len(quality_data) * 100
-                print(f"   {sector:20s}: {count:2d} symbols ({percentage:5.1f}%)")
+                training_logger.info(f"   {sector:20s}: {count:2d} symbols ({percentage:5.1f}%, operation="enhanced_logging")")
             
             # Letter distribution
-            print(f"\n🔤 LETTER DISTRIBUTION:")
-            print("=" * 60)
+            training_logger.info(f"\n🔤 LETTER DISTRIBUTION:", operation="enhanced_logging")
+            training_logger.info("=" * 60, operation="enhanced_logging")
             for letter in sorted(letter_counts.keys()):
                 count = letter_counts[letter]
                 percentage = count / len(quality_data) * 100
-                print(f"   {letter}: {count:2d} symbols ({percentage:5.1f}%)")
+                training_logger.info(f"   {letter}: {count:2d} symbols ({percentage:5.1f}%, operation="enhanced_logging")")
             
             # Check for A-bias
             a_count = letter_counts.get('A', 0)
             a_percentage = a_count / len(quality_data) * 100
             if a_percentage > 30:
-                print(f"\n⚠️  A-BIAS DETECTED: {a_percentage:.1f}% start with 'A'")
+                training_logger.warning(f"\n⚠️  A-BIAS DETECTED: {a_percentage:.1f}% start with 'A'", operation="enhanced_logging")
             else:
-                print(f"\n✅ NO A-BIAS: Only {a_percentage:.1f}% start with 'A'")
+                training_logger.info(f"\n✅ NO A-BIAS: Only {a_percentage:.1f}% start with 'A'", operation="enhanced_logging")
             
             # Growth-Oriented Analysis (Option B)
-            print(f"\n🎯 GROWTH-ORIENTED ANALYSIS (Option B)")
-            print("=" * 60)
+            training_logger.info(f"\n🎯 GROWTH-ORIENTED ANALYSIS (Option B, operation="enhanced_logging")")
+            training_logger.info("=" * 60, operation="enhanced_logging")
             
             tech_count = sector_counts.get('Technology', 0)
             tech_percentage = tech_count / len(quality_data) * 100
             
-            print(f"📊 Technology Focus: {tech_count}/{len(quality_data)} = {tech_percentage:.1f}%")
+            training_logger.info(f"📊 Technology Focus: {tech_count}/{len(quality_data, operation="enhanced_logging")} = {tech_percentage:.1f}%")
             
             if tech_percentage >= 80:
-                print("✅ EXCELLENT: High tech concentration for growth trading")
+                training_logger.info("✅ EXCELLENT: High tech concentration for growth trading", operation="enhanced_logging")
             elif tech_percentage >= 60:
-                print("✅ GOOD: Strong tech focus for growth potential")
+                training_logger.info("✅ GOOD: Strong tech focus for growth potential", operation="enhanced_logging")
             elif tech_percentage >= 40:
-                print("⚠️ MODERATE: Balanced approach, could be more tech-focused")
+                training_logger.warning("⚠️ MODERATE: Balanced approach, could be more tech-focused", operation="enhanced_logging")
             else:
-                print("❌ LOW: Not enough tech focus for aggressive growth strategy")
+                training_logger.error("❌ LOW: Not enough tech focus for aggressive growth strategy", operation="enhanced_logging")
             
             # Volatility analysis (using spread as proxy)
             high_vol_symbols = [d for d in quality_data if d['median_bps_spread'] >= 3.0]
             vol_percentage = len(high_vol_symbols) / len(quality_data) * 100
-            print(f"📈 Volatility (spread≥3bps): {len(high_vol_symbols)}/{len(quality_data)} = {vol_percentage:.1f}%")
+            training_logger.info(f"📈 Volatility (spread≥3bps, operation="enhanced_logging"): {len(high_vol_symbols)}/{len(quality_data)} = {vol_percentage:.1f}%")
             
             if vol_percentage >= 60:
-                print("✅ EXCELLENT: High volatility for growth opportunities")
+                training_logger.info("✅ EXCELLENT: High volatility for growth opportunities", operation="enhanced_logging")
             elif vol_percentage >= 40:
-                print("✅ GOOD: Good volatility mix for trading")
+                training_logger.info("✅ GOOD: Good volatility mix for trading", operation="enhanced_logging")
             else:
-                print("⚠️ LOW: May need more volatile symbols for growth strategy")
+                training_logger.warning("⚠️ LOW: May need more volatile symbols for growth strategy", operation="enhanced_logging")
         
-        print(f"\n✅ ANALYSIS COMPLETE!")
+        training_logger.info(f"\n✅ ANALYSIS COMPLETE!", operation="enhanced_logging")
         
     except Exception as e:
-        print(f"❌ Error: {e}")
+        training_logger.error(f"❌ Error: {e}", operation="enhanced_logging")
         import traceback
         traceback.print_exc()
 

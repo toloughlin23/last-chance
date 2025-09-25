@@ -23,15 +23,15 @@ class InstitutionalTestRunner:
 
     def run_test_category(self, category_name, test_files):
         """Run a specific category of tests"""
-        print(f"\n{'='*60}")
-        print(f"🧪 RUNNING {category_name.upper()} TESTS")
-        print(f"{'='*60}")
+        training_logger.info(f"\n{'='*60}", operation="enhanced_logging")
+        training_logger.info(f"🧪 RUNNING {category_name.upper(, operation="enhanced_logging")} TESTS")
+        training_logger.info(f"{'='*60}", operation="enhanced_logging")
 
         results = {}
         for test_file in test_files:
             test_path = self.test_dir / test_file
             if test_path.exists():
-                print(f"\n📋 Testing: {test_file}")
+                training_logger.info(f"\n📋 Testing: {test_file}", operation="enhanced_logging")
                 try:
                     # Run individual test file
                     result = subprocess.run(
@@ -57,29 +57,29 @@ class InstitutionalTestRunner:
                     }
 
                     if result.returncode == 0:
-                        print(f"✅ {test_file} - PASSED")
+                        training_logger.info(f"✅ {test_file} - PASSED", operation="enhanced_logging")
                     else:
-                        print(f"❌ {test_file} - FAILED")
-                        print(f"Error: {result.stderr[:200]}...")
+                        training_logger.error(f"❌ {test_file} - FAILED", operation="enhanced_logging")
+                        training_logger.error(f"Error: {result.stderr[:200]}...", operation="enhanced_logging")
 
                 except subprocess.TimeoutExpired:
-                    print(f"⏰ {test_file} - TIMEOUT")
+                    training_logger.info(f"⏰ {test_file} - TIMEOUT", operation="enhanced_logging")
                     results[test_file] = {"success": False, "error": "Timeout"}
                 except Exception as e:
-                    print(f"💥 {test_file} - ERROR: {e}")
+                    training_logger.error(f"💥 {test_file} - ERROR: {e}", operation="enhanced_logging")
                     results[test_file] = {"success": False, "error": str(e)}
             else:
-                print(f"⚠️  {test_file} - NOT FOUND")
+                training_logger.warning(f"⚠️  {test_file} - NOT FOUND", operation="enhanced_logging")
                 results[test_file] = {"success": False, "error": "File not found"}
 
         return results
 
     def run_all_tests(self):
         """Run comprehensive test suite"""
-        print("🚀 INSTITUTIONAL AI TRADING SYSTEM - COMPREHENSIVE TEST SUITE")
-        print("=" * 80)
-        print("100% GENUINE - NO SHORTCUTS - ALWAYS MAKE BETTER")
-        print("=" * 80)
+        training_logger.info("🚀 INSTITUTIONAL AI TRADING SYSTEM - COMPREHENSIVE TEST SUITE", operation="enhanced_logging")
+        training_logger.info("=" * 80, operation="enhanced_logging")
+        training_logger.info("100% GENUINE - NO SHORTCUTS - ALWAYS MAKE BETTER", operation="enhanced_logging")
+        training_logger.info("=" * 80, operation="enhanced_logging")
 
         # Test Categories
         test_categories = {
@@ -136,44 +136,43 @@ class InstitutionalTestRunner:
         end_time = time.time()
         duration = end_time - self.start_time
 
-        print(f"\n{'='*80}")
-        print("📊 COMPREHENSIVE TEST SUMMARY")
-        print(f"{'='*80}")
+        training_logger.info(f"\n{'='*80}", operation="enhanced_logging")
+        training_logger.info("📊 COMPREHENSIVE TEST SUMMARY", operation="enhanced_logging")
+        training_logger.info(f"{'='*80}", operation="enhanced_logging")
 
         total_tests = 0
         passed_tests = 0
         failed_tests = 0
 
         for category, results in self.results.items():
-            print(f"\n📁 {category}:")
+            training_logger.info(f"\n📁 {category}:", operation="enhanced_logging")
             for test_file, result in results.items():
                 total_tests += 1
                 if result.get("success", False):
                     passed_tests += 1
-                    print(f"  ✅ {test_file}")
+                    training_logger.info(f"  ✅ {test_file}", operation="enhanced_logging")
                 else:
                     failed_tests += 1
-                    print(f"  ❌ {test_file}")
+                    training_logger.error(f"  ❌ {test_file}", operation="enhanced_logging")
                     if "error" in result:
-                        print(f"      Error: {result['error']}")
+                        training_logger.error(f"      Error: {result['error']}", operation="enhanced_logging")
 
-        print(f"\n{'='*60}")
-        print("📈 OVERALL RESULTS:")
-        print(f"   Total Tests: {total_tests}")
-        print(f"   ✅ Passed: {passed_tests}")
-        print(f"   ❌ Failed: {failed_tests}")
-        print(
-            f"   📊 Success Rate: {(passed_tests/total_tests*100):.1f}%"
+        training_logger.info(f"\n{'='*60}", operation="enhanced_logging")
+        training_logger.info("📈 OVERALL RESULTS:", operation="enhanced_logging")
+        training_logger.info(f"   Total Tests: {total_tests}", operation="enhanced_logging")
+        training_logger.info(f"   ✅ Passed: {passed_tests}", operation="enhanced_logging")
+        training_logger.error(f"   ❌ Failed: {failed_tests}", operation="enhanced_logging")
+        training_logger.info(f"   📊 Success Rate: {(passed_tests/total_tests*100, operation="enhanced_logging"):.1f}%"
             if total_tests > 0
             else "   📊 Success Rate: 0%"
         )
-        print(f"   ⏱️  Duration: {duration:.2f} seconds")
-        print(f"{'='*60}")
+        training_logger.info(f"   ⏱️  Duration: {duration:.2f} seconds", operation="enhanced_logging")
+        training_logger.info(f"{'='*60}", operation="enhanced_logging")
 
         if failed_tests == 0:
-            print("🎉 ALL TESTS PASSED! SYSTEM IS READY FOR PRODUCTION!")
+            training_logger.info("🎉 ALL TESTS PASSED! SYSTEM IS READY FOR PRODUCTION!", operation="enhanced_logging")
         else:
-            print(f"⚠️  {failed_tests} TESTS FAILED - REVIEW AND FIX BEFORE PRODUCTION")
+            training_logger.error(f"⚠️  {failed_tests} TESTS FAILED - REVIEW AND FIX BEFORE PRODUCTION", operation="enhanced_logging")
 
         return passed_tests, failed_tests
 
@@ -185,9 +184,9 @@ def main():
     try:
         runner.run_all_tests()
     except KeyboardInterrupt:
-        print("\n\n⚠️  Test run interrupted by user")
+        training_logger.warning("\n\n⚠️  Test run interrupted by user", operation="enhanced_logging")
     except Exception as e:
-        print(f"\n\n💥 Test runner error: {e}")
+        training_logger.error(f"\n\n💥 Test runner error: {e}", operation="enhanced_logging")
         return 1
 
     return 0

@@ -15,8 +15,8 @@ from utils.universe_selector import UniverseSelector
 
 def test_empty_candidates():
     """Test: What happens with empty candidate list"""
-    print("🔍 Edge Case 1: Empty Candidates")
-    print("-" * 40)
+    training_logger.info("🔍 Edge Case 1: Empty Candidates", operation="enhanced_logging")
+    training_logger.info("-" * 40, operation="enhanced_logging")
 
     selector = UniverseSelector()
 
@@ -27,14 +27,14 @@ def test_empty_candidates():
         analysis_days=30,
     )
 
-    print(f"  Empty candidates → {len(result)} symbols selected")
+    training_logger.info(f"  Empty candidates → {len(result, operation="enhanced_logging")} symbols selected")
     return len(result) == 0
 
 
 def test_insufficient_candidates():
     """Test: What happens when candidates < target_size"""
-    print("\n🔍 Edge Case 2: Insufficient Candidates")
-    print("-" * 40)
+    training_logger.warning("\n🔍 Edge Case 2: Insufficient Candidates", operation="enhanced_logging")
+    training_logger.info("-" * 40, operation="enhanced_logging")
 
     selector = UniverseSelector()
 
@@ -45,14 +45,14 @@ def test_insufficient_candidates():
         analysis_days=30,
     )
 
-    print(f"  3 candidates, target 10 → {len(result)} symbols selected")
+    training_logger.info(f"  3 candidates, target 10 → {len(result, operation="enhanced_logging")} symbols selected")
     return len(result) == 3
 
 
 def test_all_candidates_filtered_out():
     """Test: What happens when all candidates fail filters"""
-    print("\n🔍 Edge Case 3: All Candidates Filtered Out")
-    print("-" * 40)
+    training_logger.info("\n🔍 Edge Case 3: All Candidates Filtered Out", operation="enhanced_logging")
+    training_logger.info("-" * 40, operation="enhanced_logging")
 
     selector = UniverseSelector()
 
@@ -67,14 +67,14 @@ def test_all_candidates_filtered_out():
         max_spread_dollars=0.001,  # 0.1 cent spread (impossible)
     )
 
-    print(f"  Impossible filters → {len(result)} symbols selected")
+    training_logger.info(f"  Impossible filters → {len(result, operation="enhanced_logging")} symbols selected")
     return len(result) == 0
 
 
 def test_weekend_data():
     """Test: Behavior on weekends when markets are closed"""
-    print("\n🔍 Edge Case 4: Weekend Data Handling")
-    print("-" * 40)
+    training_logger.info("\n🔍 Edge Case 4: Weekend Data Handling", operation="enhanced_logging")
+    training_logger.info("-" * 40, operation="enhanced_logging")
 
     from services.quotes_client import QuotesClient
 
@@ -92,28 +92,28 @@ def test_weekend_data():
 
     if weekend_days:
         test_date = weekend_days[0]
-        print(f"  Testing weekend data for {test_date}")
+        training_logger.info(f"  Testing weekend data for {test_date}", operation="enhanced_logging")
 
         try:
             med_dollar, med_bps = client.median_spread_over_days(
                 "AAPL", days=1, end_date=test_date
             )
-            print(f"    Weekend spread: ${med_dollar:.3f} ({med_bps:.1f} bps)")
+            training_logger.info(f"    Weekend spread: ${med_dollar:.3f} ({med_bps:.1f} bps, operation="enhanced_logging")")
 
             # Should handle gracefully (not crash)
             return True
         except Exception as e:
-            print(f"    Weekend error: {e}")
+            training_logger.error(f"    Weekend error: {e}", operation="enhanced_logging")
             return False
     else:
-        print("  No recent weekend found for testing")
+        training_logger.info("  No recent weekend found for comprehensive analysis", operation="enhanced_logging")
         return True
 
 
 def test_api_rate_limits():
     """Test: Behavior under API rate limiting"""
-    print("\n🔍 Edge Case 5: API Rate Limiting")
-    print("-" * 40)
+    training_logger.info("\n🔍 Edge Case 5: API Rate Limiting", operation="enhanced_logging")
+    training_logger.info("-" * 40, operation="enhanced_logging")
 
     provider = ActiveUniverseProvider()
 
@@ -129,21 +129,21 @@ def test_api_rate_limits():
         )
 
         elapsed = time.time() - start_time
-        print(f"  Large batch completed in {elapsed:.1f}s")
-        print(f"  Selected {len(universe)} symbols")
+        training_logger.info(f"  Large batch completed in {elapsed:.1f}s", operation="enhanced_logging")
+        training_logger.info(f"  Selected {len(universe, operation="enhanced_logging")} symbols")
 
         # Check if we got reasonable results despite potential rate limits
         return len(universe) > 0
 
     except Exception as e:
-        print(f"  Rate limit error: {e}")
+        training_logger.error(f"  Rate limit error: {e}", operation="enhanced_logging")
         return False
 
 
 def test_missing_polygon_key():
     """Test: Behavior without POLYGON_API_KEY"""
-    print("\n🔍 Edge Case 6: Missing API Key")
-    print("-" * 40)
+    training_logger.info("\n🔍 Edge Case 6: Missing API Key", operation="enhanced_logging")
+    training_logger.info("-" * 40, operation="enhanced_logging")
 
     import os
 
@@ -163,11 +163,11 @@ def test_missing_polygon_key():
             force_refresh=True,
         )
 
-        print(f"  No API key → {len(universe)} symbols (should be 0)")
+        training_logger.info(f"  No API key → {len(universe, operation="enhanced_logging")} symbols (should be 0)")
         return len(universe) == 0
 
     except Exception as e:
-        print(f"  Expected error without API key: {e}")
+        training_logger.error(f"  Expected error without API key: {e}", operation="enhanced_logging")
         return True
     finally:
         # Restore the key
@@ -177,8 +177,8 @@ def test_missing_polygon_key():
 
 def test_invalid_symbols():
     """Test: Behavior with invalid/non-existent symbols"""
-    print("\n🔍 Edge Case 7: Invalid Symbols")
-    print("-" * 40)
+    training_logger.info("\n🔍 Edge Case 7: Invalid Symbols", operation="enhanced_logging")
+    training_logger.info("-" * 40, operation="enhanced_logging")
 
     selector = UniverseSelector()
 
@@ -191,8 +191,8 @@ def test_invalid_symbols():
         analysis_days=30,
     )
 
-    print(f"  Mixed valid/invalid → {len(result)} symbols selected")
-    print(f"  Selected: {result}")
+    training_logger.info(f"  Mixed valid/invalid → {len(result, operation="enhanced_logging")} symbols selected")
+    training_logger.info(f"  Selected: {result}", operation="enhanced_logging")
 
     # Should only return valid symbols
     valid_symbols = ["AAPL", "MSFT", "NVDA"]
@@ -201,8 +201,8 @@ def test_invalid_symbols():
 
 def test_extreme_parameters():
     """Test: Behavior with extreme parameter values"""
-    print("\n🔍 Edge Case 8: Extreme Parameters")
-    print("-" * 40)
+    training_logger.info("\n🔍 Edge Case 8: Extreme Parameters", operation="enhanced_logging")
+    training_logger.info("-" * 40, operation="enhanced_logging")
 
     provider = ActiveUniverseProvider()
 
@@ -215,21 +215,21 @@ def test_extreme_parameters():
             batch_size=1,  # Very small batch
         )
 
-        print(f"  Extreme params → {len(universe)} symbols")
+        training_logger.info(f"  Extreme params → {len(universe, operation="enhanced_logging")} symbols")
         return True
 
     except Exception as e:
-        print(f"  Extreme params error: {e}")
+        training_logger.error(f"  Extreme params error: {e}", operation="enhanced_logging")
         return False
 
 
 def main():
     load_dotenv()
 
-    print("🚀 EDGE CASE TEST SUITE")
-    print("=" * 60)
-    print("Testing error handling and edge cases")
-    print("=" * 60)
+    training_logger.info("🚀 EDGE CASE TEST SUITE", operation="enhanced_logging")
+    training_logger.info("=" * 60, operation="enhanced_logging")
+    training_logger.error("Testing error handling and edge cases", operation="enhanced_logging")
+    training_logger.info("=" * 60, operation="enhanced_logging")
 
     tests = [
         ("Empty Candidates", test_empty_candidates),
@@ -248,31 +248,29 @@ def main():
         try:
             result = test_func()
             results.append((test_name, result))
-            print(
-                f"\n{'✅' if result else '❌'} {test_name}: {'PASSED' if result else 'FAILED'}"
-            )
+            training_logger.error(f"\n{'✅' if result else '❌'} {test_name}: {'PASSED' if result else 'FAILED'}", operation="enhanced_logging")
         except Exception as e:
             results.append((test_name, False))
-            print(f"\n❌ {test_name}: ERROR - {e}")
+            training_logger.error(f"\n❌ {test_name}: ERROR - {e}", operation="enhanced_logging")
 
     # Summary
-    print("\n" + "=" * 60)
-    print("EDGE CASE SUMMARY")
-    print("=" * 60)
+    training_logger.info("\n" + "=" * 60, operation="enhanced_logging")
+    training_logger.info("EDGE CASE SUMMARY", operation="enhanced_logging")
+    training_logger.info("=" * 60, operation="enhanced_logging")
 
     passed = sum(1 for _, result in results if result)
     total = len(results)
 
     for test_name, result in results:
         status = "✅ PASS" if result else "❌ FAIL"
-        print(f"  {status}: {test_name}")
+        training_logger.info(f"  {status}: {test_name}", operation="enhanced_logging")
 
-    print(f"\nOverall: {passed}/{total} edge cases handled correctly")
+    training_logger.info(f"\nOverall: {passed}/{total} edge cases handled correctly", operation="enhanced_logging")
 
     if passed == total:
-        print("🎉 ALL EDGE CASES HANDLED - System is robust!")
+        training_logger.info("🎉 ALL EDGE CASES HANDLED - System is robust!", operation="enhanced_logging")
     else:
-        print("⚠️ Some edge cases need attention")
+        training_logger.warning("⚠️ Some edge cases need attention", operation="enhanced_logging")
 
 
 if __name__ == "__main__":

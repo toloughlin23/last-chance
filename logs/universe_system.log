@@ -1,0 +1,94 @@
+2025-09-24 15:31:07,057 | INFO | universe_system | Building active universe from Polygon data | Context: target_size=150 | operation=active_universe_build
+2025-09-24 15:31:07,057 | INFO | universe_system | Discovering S&P 500 candidates from Polygon | Context: operation=sp500_discovery
+2025-09-24 15:31:07,057 | INFO | universe_system | Discovering S&P 500 stocks from Polygon | Context: operation=sp500_discovery
+2025-09-24 15:31:07,057 | INFO | universe_system | 100% GENUINE - NO SHORTCUTS - Using ONLY Polygon API | Context: data_source=polygon_api | operation=sp500_discovery
+2025-09-24 15:31:07,057 | INFO | universe_system | Getting stocks from XNYS and filtering for S&P 500 | Context: exchange=XNYS | operation=sp500_discovery
+2025-09-24 15:31:07,877 | DEBUG | universe_system | Page 1: Checking 1000 symbols for S&P 500 criteria | Context: page=1 | symbols_count=1000 | operation=sp500_discovery
+2025-09-24 15:31:10,909 | DEBUG | universe_system | Found 50 S&P 500 candidates so far | Context: candidates_count=50 | operation=sp500_discovery
+2025-09-24 15:31:12,916 | DEBUG | universe_system | Found 100 S&P 500 candidates so far | Context: candidates_count=100 | operation=sp500_discovery
+2025-09-24 15:31:14,507 | DEBUG | universe_system | Found 150 S&P 500 candidates so far | Context: candidates_count=150 | operation=sp500_discovery
+2025-09-24 15:31:16,040 | DEBUG | universe_system | Found 200 S&P 500 candidates so far | Context: candidates_count=200 | operation=sp500_discovery
+2025-09-24 15:31:17,905 | DEBUG | universe_system | Found 250 S&P 500 candidates so far | Context: candidates_count=250 | operation=sp500_discovery
+2025-09-24 15:31:19,790 | DEBUG | universe_system | Found 300 S&P 500 candidates so far | Context: candidates_count=300 | operation=sp500_discovery
+2025-09-24 15:31:22,712 | DEBUG | universe_system | Page 2: Checking 741 symbols for S&P 500 criteria | Context: page=2 | symbols_count=741 | operation=sp500_discovery
+2025-09-24 15:31:22,820 | DEBUG | universe_system | Found 350 S&P 500 candidates so far | Context: candidates_count=350 | operation=sp500_discovery
+2025-09-24 15:31:25,171 | DEBUG | universe_system | Found 400 S&P 500 candidates so far | Context: candidates_count=400 | operation=sp500_discovery
+2025-09-24 15:31:26,911 | DEBUG | universe_system | Found 450 S&P 500 candidates so far | Context: candidates_count=450 | operation=sp500_discovery
+2025-09-24 15:31:29,773 | DEBUG | universe_system | Found 500 S&P 500 candidates so far | Context: candidates_count=500 | operation=sp500_discovery
+2025-09-24 15:31:31,326 | DEBUG | universe_system | Found 550 S&P 500 candidates so far | Context: candidates_count=550 | operation=sp500_discovery
+2025-09-24 15:31:32,967 | INFO | universe_system | Found 597 S&P 500 candidates from XNYS | Context: candidates_count=597 | exchange=XNYS | operation=sp500_discovery
+2025-09-24 15:31:32,967 | INFO | universe_system | Getting stocks from XNAS and filtering for S&P 500 | Context: exchange=XNAS | operation=sp500_discovery
+2025-09-24 15:31:33,239 | DEBUG | universe_system | Page 1: Checking 1000 symbols for S&P 500 criteria | Context: page=1 | symbols_count=1000 | operation=sp500_discovery
+2025-09-24 15:31:33,462 | DEBUG | universe_system | Found 600 S&P 500 candidates so far | Context: candidates_count=600 | operation=sp500_discovery
+2025-09-24 15:31:33,792 | INFO | universe_system | Found enough S&P 500 candidates (601) | Context: candidates_count=601 | operation=sp500_discovery
+2025-09-24 15:31:33,792 | INFO | universe_system | Found 601 S&P 500 candidates from XNAS | Context: candidates_count=601 | exchange=XNAS | operation=sp500_discovery
+2025-09-24 15:31:33,793 | INFO | universe_system | Total S&P 500 candidates found: 601 | Context: total_candidates=601 | operation=sp500_discovery
+2025-09-24 15:31:33,794 | INFO | universe_system | S&P 500 distribution analysis | Context: distribution={'A': 64, 'B': 40, 'C': 61, 'D': 30, 'E': 31, 'F': 21, 'G': 22, 'H': 19, 'I': 16, 'J': 10, 'K': 15, 'L': 17, 'M': 32, 'N': 18, 'O': 15, 'P': 34, 'Q': 4, 'R': 26, 'S': 36, 'T': 28, 'U': 16, 'V': 13, 'W': 25, 'X': 4, 'Y': 2, 'Z': 2} | operation=sp500_discovery
+2025-09-24 15:31:33,794 | DEBUG | universe_system | Letter distribution: A:64, B:40, C:61, D:30, E:31, F:21, G:22, H:19, I:16, J:10, K:15, L:17, M:32, N:18, O:15, P:34, Q:4, R:26, S:36, T:28, U:16, V:13, W:25, X:4, Y:2, Z:2 | Context: letter_distribution={'A': 64, 'B': 40, 'C': 61, 'D': 30, 'E': 31, 'F': 21, 'G': 22, 'H': 19, 'I': 16, 'J': 10, 'K': 15, 'L': 17, 'M': 32, 'N': 18, 'O': 15, 'P': 34, 'Q': 4, 'R': 26, 'S': 36, 'T': 28, 'U': 16, 'V': 13, 'W': 25, 'X': 4, 'Y': 2, 'Z': 2} | operation=sp500_discovery
+2025-09-24 15:31:33,796 | INFO | universe_system | Ranking 601 symbols by quality metrics | Context: symbols_count=601 | operation=quality_ranking
+2025-09-24 15:31:33,801 | INFO | universe_system | Analyzing quality metrics for 601 symbols | Context: symbols_count=601 | operation=quality_analysis
+2025-09-24 15:31:33,801 | DEBUG | universe_system | Processing batch 1: 10 symbols | Context: batch_number=1 | batch_size=10 | operation=quality_analysis
+2025-09-24 15:31:36,236 | DEBUG | universe_system | Processing batch 2: 10 symbols | Context: batch_number=2 | batch_size=10 | operation=quality_analysis
+2025-09-24 15:31:38,163 | DEBUG | universe_system | Processing batch 3: 10 symbols | Context: batch_number=3 | batch_size=10 | operation=quality_analysis
+2025-09-24 15:31:40,140 | DEBUG | universe_system | Processing batch 4: 10 symbols | Context: batch_number=4 | batch_size=10 | operation=quality_analysis
+2025-09-24 15:31:41,776 | DEBUG | universe_system | Processing batch 5: 10 symbols | Context: batch_number=5 | batch_size=10 | operation=quality_analysis
+2025-09-24 15:31:43,550 | DEBUG | universe_system | Processing batch 6: 10 symbols | Context: batch_number=6 | batch_size=10 | operation=quality_analysis
+2025-09-24 15:31:45,839 | DEBUG | universe_system | Processing batch 7: 10 symbols | Context: batch_number=7 | batch_size=10 | operation=quality_analysis
+2025-09-24 15:31:47,455 | DEBUG | universe_system | Processing batch 8: 10 symbols | Context: batch_number=8 | batch_size=10 | operation=quality_analysis
+2025-09-24 15:31:49,124 | DEBUG | universe_system | Processing batch 9: 10 symbols | Context: batch_number=9 | batch_size=10 | operation=quality_analysis
+2025-09-24 15:31:50,637 | DEBUG | universe_system | Processing batch 10: 10 symbols | Context: batch_number=10 | batch_size=10 | operation=quality_analysis
+2025-09-24 15:31:52,508 | DEBUG | universe_system | Processing batch 11: 10 symbols | Context: batch_number=11 | batch_size=10 | operation=quality_analysis
+2025-09-24 15:31:54,037 | DEBUG | universe_system | Processing batch 12: 10 symbols | Context: batch_number=12 | batch_size=10 | operation=quality_analysis
+2025-09-24 15:31:55,952 | DEBUG | universe_system | Processing batch 13: 10 symbols | Context: batch_number=13 | batch_size=10 | operation=quality_analysis
+2025-09-24 15:31:57,799 | DEBUG | universe_system | Processing batch 14: 10 symbols | Context: batch_number=14 | batch_size=10 | operation=quality_analysis
+2025-09-24 15:31:59,529 | DEBUG | universe_system | Processing batch 15: 10 symbols | Context: batch_number=15 | batch_size=10 | operation=quality_analysis
+2025-09-24 15:32:00,914 | DEBUG | universe_system | Processing batch 16: 10 symbols | Context: batch_number=16 | batch_size=10 | operation=quality_analysis
+2025-09-24 15:32:03,078 | DEBUG | universe_system | Processing batch 17: 10 symbols | Context: batch_number=17 | batch_size=10 | operation=quality_analysis
+2025-09-24 15:32:05,177 | DEBUG | universe_system | Processing batch 18: 10 symbols | Context: batch_number=18 | batch_size=10 | operation=quality_analysis
+2025-09-24 15:32:06,681 | DEBUG | universe_system | Processing batch 19: 10 symbols | Context: batch_number=19 | batch_size=10 | operation=quality_analysis
+2025-09-24 15:32:09,048 | DEBUG | universe_system | Processing batch 20: 10 symbols | Context: batch_number=20 | batch_size=10 | operation=quality_analysis
+2025-09-24 15:32:10,913 | DEBUG | universe_system | Processing batch 21: 10 symbols | Context: batch_number=21 | batch_size=10 | operation=quality_analysis
+2025-09-24 15:32:12,959 | DEBUG | universe_system | Processing batch 22: 10 symbols | Context: batch_number=22 | batch_size=10 | operation=quality_analysis
+2025-09-24 15:32:14,632 | DEBUG | universe_system | Processing batch 23: 10 symbols | Context: batch_number=23 | batch_size=10 | operation=quality_analysis
+2025-09-24 15:32:16,191 | DEBUG | universe_system | Processing batch 24: 10 symbols | Context: batch_number=24 | batch_size=10 | operation=quality_analysis
+2025-09-24 15:32:18,192 | DEBUG | universe_system | Processing batch 25: 10 symbols | Context: batch_number=25 | batch_size=10 | operation=quality_analysis
+2025-09-24 15:32:19,728 | DEBUG | universe_system | Processing batch 26: 10 symbols | Context: batch_number=26 | batch_size=10 | operation=quality_analysis
+2025-09-24 15:32:22,509 | DEBUG | universe_system | Processing batch 27: 10 symbols | Context: batch_number=27 | batch_size=10 | operation=quality_analysis
+2025-09-24 15:32:23,830 | DEBUG | universe_system | Processing batch 28: 10 symbols | Context: batch_number=28 | batch_size=10 | operation=quality_analysis
+2025-09-24 15:32:25,365 | DEBUG | universe_system | Processing batch 29: 10 symbols | Context: batch_number=29 | batch_size=10 | operation=quality_analysis
+2025-09-24 15:32:26,785 | DEBUG | universe_system | Processing batch 30: 10 symbols | Context: batch_number=30 | batch_size=10 | operation=quality_analysis
+2025-09-24 15:32:28,486 | DEBUG | universe_system | Processing batch 31: 10 symbols | Context: batch_number=31 | batch_size=10 | operation=quality_analysis
+2025-09-24 15:32:30,293 | DEBUG | universe_system | Processing batch 32: 10 symbols | Context: batch_number=32 | batch_size=10 | operation=quality_analysis
+2025-09-24 15:32:32,137 | DEBUG | universe_system | Processing batch 33: 10 symbols | Context: batch_number=33 | batch_size=10 | operation=quality_analysis
+2025-09-24 15:32:33,448 | DEBUG | universe_system | Processing batch 34: 10 symbols | Context: batch_number=34 | batch_size=10 | operation=quality_analysis
+2025-09-24 15:32:34,868 | DEBUG | universe_system | Processing batch 35: 10 symbols | Context: batch_number=35 | batch_size=10 | operation=quality_analysis
+2025-09-24 15:32:36,756 | DEBUG | universe_system | Processing batch 36: 10 symbols | Context: batch_number=36 | batch_size=10 | operation=quality_analysis
+2025-09-24 15:32:38,245 | DEBUG | universe_system | Processing batch 37: 10 symbols | Context: batch_number=37 | batch_size=10 | operation=quality_analysis
+2025-09-24 15:32:39,541 | DEBUG | universe_system | Processing batch 38: 10 symbols | Context: batch_number=38 | batch_size=10 | operation=quality_analysis
+2025-09-24 15:32:41,077 | DEBUG | universe_system | Processing batch 39: 10 symbols | Context: batch_number=39 | batch_size=10 | operation=quality_analysis
+2025-09-24 15:32:42,656 | DEBUG | universe_system | Processing batch 40: 10 symbols | Context: batch_number=40 | batch_size=10 | operation=quality_analysis
+2025-09-24 15:32:44,203 | DEBUG | universe_system | Processing batch 41: 10 symbols | Context: batch_number=41 | batch_size=10 | operation=quality_analysis
+2025-09-24 15:32:46,126 | DEBUG | universe_system | Processing batch 42: 10 symbols | Context: batch_number=42 | batch_size=10 | operation=quality_analysis
+2025-09-24 15:32:47,922 | DEBUG | universe_system | Processing batch 43: 10 symbols | Context: batch_number=43 | batch_size=10 | operation=quality_analysis
+2025-09-24 15:32:49,364 | DEBUG | universe_system | Processing batch 44: 10 symbols | Context: batch_number=44 | batch_size=10 | operation=quality_analysis
+2025-09-24 15:32:51,542 | DEBUG | universe_system | Processing batch 45: 10 symbols | Context: batch_number=45 | batch_size=10 | operation=quality_analysis
+2025-09-24 15:32:53,000 | DEBUG | universe_system | Processing batch 46: 10 symbols | Context: batch_number=46 | batch_size=10 | operation=quality_analysis
+2025-09-24 15:32:54,304 | DEBUG | universe_system | Processing batch 47: 10 symbols | Context: batch_number=47 | batch_size=10 | operation=quality_analysis
+2025-09-24 15:32:55,582 | DEBUG | universe_system | Processing batch 48: 10 symbols | Context: batch_number=48 | batch_size=10 | operation=quality_analysis
+2025-09-24 15:32:57,484 | DEBUG | universe_system | Processing batch 49: 10 symbols | Context: batch_number=49 | batch_size=10 | operation=quality_analysis
+2025-09-24 15:32:59,106 | DEBUG | universe_system | Processing batch 50: 10 symbols | Context: batch_number=50 | batch_size=10 | operation=quality_analysis
+2025-09-24 15:33:00,582 | DEBUG | universe_system | Processing batch 51: 10 symbols | Context: batch_number=51 | batch_size=10 | operation=quality_analysis
+2025-09-24 15:33:02,008 | DEBUG | universe_system | Processing batch 52: 10 symbols | Context: batch_number=52 | batch_size=10 | operation=quality_analysis
+2025-09-24 15:33:03,523 | DEBUG | universe_system | Processing batch 53: 10 symbols | Context: batch_number=53 | batch_size=10 | operation=quality_analysis
+2025-09-24 15:33:05,960 | DEBUG | universe_system | Processing batch 54: 10 symbols | Context: batch_number=54 | batch_size=10 | operation=quality_analysis
+2025-09-24 15:33:07,451 | DEBUG | universe_system | Processing batch 55: 10 symbols | Context: batch_number=55 | batch_size=10 | operation=quality_analysis
+2025-09-24 15:33:08,993 | DEBUG | universe_system | Processing batch 56: 10 symbols | Context: batch_number=56 | batch_size=10 | operation=quality_analysis
+2025-09-24 15:33:10,925 | DEBUG | universe_system | Processing batch 57: 10 symbols | Context: batch_number=57 | batch_size=10 | operation=quality_analysis
+2025-09-24 15:33:12,882 | DEBUG | universe_system | Processing batch 58: 10 symbols | Context: batch_number=58 | batch_size=10 | operation=quality_analysis
+2025-09-24 15:33:14,893 | DEBUG | universe_system | Processing batch 59: 10 symbols | Context: batch_number=59 | batch_size=10 | operation=quality_analysis
+2025-09-24 15:33:16,415 | DEBUG | universe_system | Processing batch 60: 10 symbols | Context: batch_number=60 | batch_size=10 | operation=quality_analysis
+2025-09-24 15:33:18,058 | DEBUG | universe_system | Processing batch 61: 1 symbols | Context: batch_number=61 | batch_size=1 | operation=quality_analysis
+2025-09-24 15:33:19,257 | INFO | universe_system | Ranked and selected top 250 candidates | Context: candidates_count=250 | operation=quality_ranking
+2025-09-24 15:33:19,258 | DEBUG | universe_system | Top 10 candidates: ['CDE', 'BE', 'OKLO', 'IONQ', 'RDDT', 'B', 'CIEN', 'KGC', 'QBTS', 'PSTG'] | Context: top_candidates=['CDE', 'BE', 'OKLO', 'IONQ', 'RDDT', 'B', 'CIEN', 'KGC', 'QBTS', 'PSTG'] | operation=quality_ranking
+2025-09-24 15:33:19,270 | INFO | universe_system | Found 250 top-ranked candidates from S&P 500 | Context: candidates_count=250 | operation=active_universe_build
+2025-09-24 15:33:24,961 | INFO | universe_system | Earnings calendar available | Context: earnings_available=True | operation=active_universe_build

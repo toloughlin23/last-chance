@@ -70,8 +70,8 @@ class SP500Client:
             return sorted(unique_tickers)[:500]
             
         except Exception as e:
-            print(f"⚠️ Polygon indices API failed: {e}")
-            print("🔄 Falling back to comprehensive ticker discovery...")
+            training_logger.error(f"⚠️ Polygon indices API failed: {e}", operation="enhanced_logging")
+            training_logger.info("🔄 Falling back to comprehensive ticker discovery...", operation="enhanced_logging")
             
             # Fallback: Use the same method as ActiveUniverseProvider
             return self._fallback_sp500_discovery()
@@ -110,5 +110,5 @@ class SP500Client:
             return sorted(unique_candidates)[:500]
             
         except Exception as e:
-            print(f"❌ Fallback discovery failed: {e}")
+            training_logger.error(f"❌ Fallback discovery failed: {e}", operation="enhanced_logging")
             return []

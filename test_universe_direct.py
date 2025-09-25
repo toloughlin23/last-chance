@@ -12,33 +12,33 @@ os.environ["PYTHONPATH"] = "."
 
 
 def main():
-    print("🚀 DIRECT UNIVERSE TEST")
-    print("=" * 40)
+    universe_logger.info("🚀 DIRECT UNIVERSE TEST", operation="enhanced_logging")
+    universe_logger.info("=" * 40, operation="enhanced_logging")
 
     try:
         # Load environment
         load_dotenv()
-        print("✅ Environment loaded")
+        universe_logger.info("✅ Environment loaded", operation="enhanced_logging")
 
         # Import modules
         from utils.active_universe_provider import ActiveUniverseProvider
 
-        print("✅ Modules imported")
+        universe_logger.info("✅ Modules imported", operation="enhanced_logging")
 
         # Initialize provider
         provider = ActiveUniverseProvider()
-        print("✅ Provider initialized")
+        universe_logger.info("✅ Provider initialized", operation="enhanced_logging")
 
         # Generate universe
-        print("🔄 Generating universe...")
+        universe_logger.info("🔄 Generating universe...", operation="enhanced_logging")
         universe = provider.get_active_universe(
             target_size=5, force_refresh=True, batch_size=5
         )
 
-        print(f"✅ Generated {len(universe)} symbols: {universe}")
+        universe_logger.info(f"✅ Generated {len(universe, operation="enhanced_logging")} symbols: {universe}")
 
     except Exception as e:
-        print(f"❌ Error: {e}")
+        universe_logger.error(f"❌ Error: {e}", operation="enhanced_logging")
         import traceback
 
         traceback.print_exc()

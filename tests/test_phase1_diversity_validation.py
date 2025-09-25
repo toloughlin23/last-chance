@@ -77,9 +77,9 @@ class Phase1DiversityValidator:
             ),
         }
 
-        print("🎯 Phase 1 Diversity Validator initialized")
-        print("✅ All 3 optimized algorithms loaded with different personalities")
-        print("✅ Real Polygon API integration ready")
+        training_logger.info("🎯 Phase 1 Diversity Validator initialized", operation="phase1_diversity_validation")
+        training_logger.info("✅ All 3 optimized algorithms loaded with different personalities", operation="phase1_diversity_validation")
+        training_logger.info("✅ Real Polygon API integration ready", operation="phase1_diversity_validation")
 
     def fetch_real_market_data(
         self, symbol: str = "AAPL", days: int = 5
@@ -106,7 +106,7 @@ class Phase1DiversityValidator:
             return aggs_data["results"]
 
         except Exception as e:
-            print(f"❌ Failed to fetch real market data: {e}")
+            training_logger.info(f"❌ Failed to fetch real market data: {e}", operation="phase1_diversity_validation")
             raise
 
     def extract_features_from_real_data(
@@ -124,7 +124,7 @@ class Phase1DiversityValidator:
                     features_list.append(features)
 
             except Exception as e:
-                print(f"⚠️ Feature extraction warning: {e}")
+                training_logger.info(f"⚠️ Feature extraction warning: {e}", operation="phase1_diversity_validation")
                 continue
 
         return features_list
@@ -283,8 +283,8 @@ class Phase1DiversityValidator:
         self, features_list: List[np.ndarray], iterations: int = 50
     ) -> Dict[str, Any]:
         """Measure diversity across all 3 algorithms with real data"""
-        print(
-            f"🔍 Measuring diversity across {len(features_list)} real market data points..."
+        training_logger.info(
+            f"🔍 Measuring diversity across {len(features_list, operation="phase1_diversity_validation")} real market data points..."
         )
 
         # Collect confidence scores from all algorithms
@@ -299,35 +299,36 @@ class Phase1DiversityValidator:
             for features in features_list:
                 try:
                     # LinUCB confidence
-                    print(f"🔍 Testing LinUCB with features: {features[:3]}...")
+                    training_logger.info(f"🔍 Testing LinUCB with features: {features[:3]}...", operation="phase1_diversity_validation")
                     linucb_confidence = self.algorithms[
                         "linucb"
                     ].get_confidence_for_context("buy_signal", features)
-                    print(f"   LinUCB result: {linucb_confidence}")
+                    training_logger.info(f"   LinUCB result: {linucb_confidence}", operation="phase1_diversity_validation")
                     all_confidence_scores["linucb"].append(linucb_confidence)
 
                     # Neural Bandit confidence
-                    print(f"🔍 Testing Neural with features: {features[:3]}...")
+                    training_logger.info(f"🔍 Testing Neural with features: {features[:3]}...", operation="phase1_diversity_validation")
                     neural_confidence = self.algorithms[
                         "neural"
                     ].get_confidence_for_context("buy_signal", features)
-                    print(f"   Neural result: {neural_confidence}")
+                    training_logger.info(f"   Neural result: {neural_confidence}", operation="phase1_diversity_validation")
                     all_confidence_scores["neural"].append(neural_confidence)
 
                     # UCB-V confidence
-                    print(f"🔍 Testing UCB-V with features: {features[:3]}...")
+                    training_logger.info(f"🔍 Testing UCB-V with features: {features[:3]}...", operation="phase1_diversity_validation")
                     ucbv = self.algorithms["ucbv"]
                     ucbv_confidence = ucbv.get_confidence_for_context(
                         "buy_signal",
                         features,
                         features,
                     )
-                    print(f"   UCB-V result: {ucbv_confidence}")
+                    training_logger.info(f"   UCB-V result: {ucbv_confidence}", operation="phase1_diversity_validation")
                     all_confidence_scores["ucbv"].append(ucbv_confidence)
 
                 except Exception as e:
-                    print(f"⚠️ Algorithm confidence calculation warning: {e}")
+                    training_logger.info(f"⚠️ Algorithm confidence calculation warning: {e}", operation="phase1_diversity_validation")
                     import traceback
+from utils.enhanced_logging_system import training_logger
 
                     traceback.print_exc()
                     continue
@@ -413,72 +414,72 @@ class Phase1DiversityValidator:
 
         bronze_tier_compliant = any(variance_checks)
 
-        print("\n🎯 BRONZE TIER VALIDATION RESULTS:")
+        training_logger.info("\n🎯 BRONZE TIER VALIDATION RESULTS:", operation="phase1_diversity_validation")
         ov = metrics.get("overall_variance", 0)
         cv = metrics.get("coefficient_of_variation", 0)
         cav = metrics.get("cross_algorithm_variance", 0)
-        print(f"   Overall Variance: {ov:.4f} (>0.15 required)")
-        print(f"   Coefficient of Variation: {cv:.4f} (>0.15 required)")
-        print(f"   Cross-Algorithm Variance: {cav:.4f} (>0.15 required)")
+        training_logger.info(f"   Overall Variance: {ov:.4f} (>0.15 required)", operation="phase1_diversity_validation")
+        training_logger.info(f"   Coefficient of Variation: {cv:.4f} (>0.15 required)", operation="phase1_diversity_validation")
+        training_logger.info(f"   Cross-Algorithm Variance: {cav:.4f} (>0.15 required)", operation="phase1_diversity_validation")
         status = "✅ YES" if bronze_tier_compliant else "❌ NO"
-        print(f"   Bronze Tier Compliant: {status}")
+        training_logger.info(f"   Bronze Tier Compliant: {status}", operation="phase1_diversity_validation")
 
         return bronze_tier_compliant
 
 
 def test_phase1_diversity_validation():
     """Test Phase 1 diversity validation with real market data"""
-    print("\n🎯 PHASE 1 DIVERSITY VALIDATION TEST")
-    print("=" * 50)
+    training_logger.info("\n🎯 PHASE 1 DIVERSITY VALIDATION TEST", operation="phase1_diversity_validation")
+    training_logger.info("=" * 50, operation="phase1_diversity_validation")
 
     # Initialize validator
     validator = Phase1DiversityValidator()
 
     # Fetch real market data
-    print("\n📊 Fetching real market data from Polygon API...")
+    training_logger.info("\n📊 Fetching real market data from Polygon API...", operation="phase1_diversity_validation")
     market_data = validator.fetch_real_market_data(symbol="AAPL", days=5)
     assert len(market_data) > 0, "No real market data received"
-    print(f"✅ Fetched {len(market_data)} real market data points")
+    training_logger.info(f"✅ Fetched {len(market_data)} real market data points", operation="phase1_diversity_validation")
 
     # Extract features from real data
-    print("\n🔧 Extracting 15-dimensional features from real data...")
+    training_logger.info("\n🔧 Extracting 15-dimensional features from real data...", operation="phase1_diversity_validation")
     features_list = validator.extract_features_from_real_data(market_data)
     assert len(features_list) > 0, "No features extracted from real data"
-    print(f"✅ Extracted {len(features_list)} feature vectors")
+    training_logger.info(f"✅ Extracted {len(features_list)} feature vectors", operation="phase1_diversity_validation")
 
     # Measure diversity
-    print("\n📈 Measuring algorithmic diversity...")
+    training_logger.info("\n📈 Measuring algorithmic diversity...", operation="phase1_diversity_validation")
     diversity_results = validator.measure_algorithm_diversity(
         features_list,
         iterations=1,
     )
 
     # Debug: Show individual algorithm confidence scores
-    print("\n🔍 DEBUGGING: Individual Algorithm Confidence Scores")
+    training_logger.info("\n🔍 DEBUGGING: Individual Algorithm Confidence Scores", operation="phase1_diversity_validation")
     for algo_name, scores in diversity_results["confidence_scores"].items():
         if scores:
-            print(f"   {algo_name.upper()}:")
-            print(f"     Mean: {np.mean(scores):.4f}")
-            print(f"     Std:  {np.std(scores):.4f}")
-            print(f"     Min:  {np.min(scores):.4f}")
-            print(f"     Max:  {np.max(scores):.4f}")
-            print(f"     Range: {np.max(scores) - np.min(scores):.4f}")
-            print(f"     Sample scores: {scores[:5]}")
+            training_logger.info(f"   {algo_name.upper()}:", operation="phase1_diversity_validation")
+            training_logger.info(f"     Mean: {np.mean(scores):.4f}", operation="phase1_diversity_validation")
+            training_logger.info(f"     Std:  {np.std(scores):.4f}", operation="phase1_diversity_validation")
+            training_logger.info(f"     Min:  {np.min(scores):.4f}", operation="phase1_diversity_validation")
+            training_logger.info(f"     Max:  {np.max(scores):.4f}", operation="phase1_diversity_validation")
+            training_logger.info(f"     Range: {np.max(scores) - np.min(scores):.4f}", operation="phase1_diversity_validation")
+            training_logger.info(f"     Sample scores: {scores[:5]}", operation="phase1_diversity_validation")
 
     # Validate based on training stage
     pretraining_mode = os.getenv("ALLOW_LOW_DIVERSITY") == "1"
     if pretraining_mode:
         # Pre-training: diversity may be low by design. Validate sanity and bounds.
-        print(
+        training_logger.info(
             "\n🏁 Pre-training mode: Skipping Bronze Tier variance thresholds; validating bounds and outputs only."
-        )
+        , operation="phase1_diversity_validation")
         conf_scores = diversity_results["confidence_scores"]
         assert len(conf_scores["linucb"]) > 0, "LinUCB no confidence scores"
         assert len(conf_scores["neural"]) > 0, "Neural no confidence scores"
         assert len(conf_scores["ucbv"]) > 0, "UCB-V no confidence scores"
     else:
         # Post-training: enforce Bronze Tier thresholds strictly
-        print("\n🏆 Validating Bronze Tier compliance...")
+        training_logger.info("\n🏆 Validating Bronze Tier compliance...", operation="phase1_diversity_validation")
         bronze_tier_compliant = validator.validate_bronze_tier_compliance(
             diversity_results
         )
@@ -494,22 +495,22 @@ def test_phase1_diversity_validation():
             metrics.get("overall_variance", 0) > 0.15
         ), "Overall variance insufficient"
 
-    print("\n✅ PHASE 1 DIVERSITY VALIDATION PASSED")
-    print("✅ Bronze Tier compliance achieved")
-    print("✅ All 3 algorithms show genuine diversity")
-    print("✅ Real market data integration confirmed")
+    training_logger.info("\n✅ PHASE 1 DIVERSITY VALIDATION PASSED", operation="phase1_diversity_validation")
+    training_logger.info("✅ Bronze Tier compliance achieved", operation="phase1_diversity_validation")
+    training_logger.info("✅ All 3 algorithms show genuine diversity", operation="phase1_diversity_validation")
+    training_logger.info("✅ Real market data integration confirmed", operation="phase1_diversity_validation")
 
 
 def test_phase1_algorithm_individual_performance():
     """Test individual algorithm performance with real data"""
-    print("\n🧪 INDIVIDUAL ALGORITHM PERFORMANCE TEST")
-    print("=" * 50)
+    training_logger.info("\n🧪 INDIVIDUAL ALGORITHM PERFORMANCE TEST", operation="phase1_diversity_validation")
+    training_logger.info("=" * 50, operation="phase1_diversity_validation")
 
     validator = Phase1DiversityValidator()
 
     # Test each algorithm individually
     for algo_name, algorithm in validator.algorithms.items():
-        print(f"\n🔍 Testing {algo_name.upper()} algorithm...")
+        training_logger.info(f"\n🔍 Testing {algo_name.upper()} algorithm...", operation="phase1_diversity_validation")
 
         # Generate DETERMINISTIC test features - NO RANDOM
         # Use algorithm-specific deterministic features
@@ -541,7 +542,7 @@ def test_phase1_algorithm_individual_performance():
                 test_features,
             )
             assert 0.0 <= confidence <= 1.0, f"{algo_name} confidence out of bounds"
-            print(f"   ✅ {algo_name} confidence: {confidence:.4f}")
+            training_logger.info(f"   ✅ {algo_name} confidence: {confidence:.4f}", operation="phase1_diversity_validation")
         except Exception as e:
             pytest.fail(f"{algo_name} confidence calculation failed: {e}")
 
@@ -590,16 +591,16 @@ def test_phase1_algorithm_individual_performance():
             pretraining_mode = os.getenv("ALLOW_LOW_DIVERSITY") == "1"
             if pretraining_mode:
                 # Pre-training: allow low variance but still report it for visibility
-                print(f"   ℹ️ {algo_name} variance (pre-training): {variance:.6f}")
+                training_logger.info(f"   ℹ️ {algo_name} variance (pre-training): {variance:.6f}", operation="phase1_diversity_validation")
             else:
                 assert variance > 0.001, f"{algo_name} shows no confidence variation"
-                print(f"   ✅ {algo_name} variance: {variance:.4f}")
+                training_logger.info(f"   ✅ {algo_name} variance: {variance:.4f}", operation="phase1_diversity_validation")
 
-    print("\n✅ All individual algorithms performing correctly")
+    training_logger.info("\n✅ All individual algorithms performing correctly", operation="phase1_diversity_validation")
 
 
 if __name__ == "__main__":
     # Run the diversity validation
     test_phase1_diversity_validation()
     test_phase1_algorithm_individual_performance()
-    print("\n🎉 PHASE 1 DIVERSITY VALIDATION COMPLETE")
+    training_logger.info("\n🎉 PHASE 1 DIVERSITY VALIDATION COMPLETE", operation="phase1_diversity_validation")

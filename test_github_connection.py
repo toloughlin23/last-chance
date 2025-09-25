@@ -19,49 +19,49 @@ def run_command(cmd, timeout=10):
 
 
 def main():
-    print("=== GitHub Connection & Test Suite ===")
+    training_logger.info("=== GitHub Connection & Test Suite ===", operation="enhanced_logging")
 
     # Test 1: Check git status
-    print("\n1. Checking git status...")
+    training_logger.info("\n1. Checking git status...", operation="enhanced_logging")
     code, out, err = run_command("git status --porcelain")
-    print(f"   Status: {code}")
-    print(f"   Output: {out}")
+    training_logger.info(f"   Status: {code}", operation="enhanced_logging")
+    training_logger.info(f"   Output: {out}", operation="enhanced_logging")
     if err:
-        print(f"   Error: {err}")
+        training_logger.error(f"   Error: {err}", operation="enhanced_logging")
 
     # Test 2: Check GitHub remote
-    print("\n2. Checking GitHub remote...")
+    training_logger.info("\n2. Checking GitHub remote...", operation="enhanced_logging")
     code, out, err = run_command("git remote -v")
-    print(f"   Remote: {code}")
-    print(f"   Output: {out}")
+    training_logger.info(f"   Remote: {code}", operation="enhanced_logging")
+    training_logger.info(f"   Output: {out}", operation="enhanced_logging")
     if err:
-        print(f"   Error: {err}")
+        training_logger.error(f"   Error: {err}", operation="enhanced_logging")
 
     # Test 3: Check current branch
-    print("\n3. Checking current branch...")
+    training_logger.info("\n3. Checking current branch...", operation="enhanced_logging")
     code, out, err = run_command("git branch --show-current")
-    print(f"   Branch: {code}")
-    print(f"   Output: {out}")
+    training_logger.info(f"   Branch: {code}", operation="enhanced_logging")
+    training_logger.info(f"   Output: {out}", operation="enhanced_logging")
     if err:
-        print(f"   Error: {err}")
+        training_logger.error(f"   Error: {err}", operation="enhanced_logging")
 
     # Test 4: Run contamination scan
-    print("\n4. Running contamination scan...")
+    training_logger.info("\n4. Running contamination scan...", operation="enhanced_logging")
     code, out, err = run_command("python scripts/check_no_mocks.py")
-    print(f"   Scan: {code}")
-    print(f"   Output: {out}")
+    training_logger.info(f"   Scan: {code}", operation="enhanced_logging")
+    training_logger.info(f"   Output: {out}", operation="enhanced_logging")
     if err:
-        print(f"   Error: {err}")
+        training_logger.error(f"   Error: {err}", operation="enhanced_logging")
 
     # Test 5: Run pytest with plugins disabled
-    print("\n5. Running pytest suite...")
+    training_logger.info("\n5. Running pytest suite...", operation="enhanced_logging")
     code, out, err = run_command("python -m pytest -q --tb=short")
-    print(f"   Tests: {code}")
-    print(f"   Output: {out}")
+    training_logger.info(f"   Tests: {code}", operation="enhanced_logging")
+    training_logger.info(f"   Output: {out}", operation="enhanced_logging")
     if err:
-        print(f"   Error: {err}")
+        training_logger.error(f"   Error: {err}", operation="enhanced_logging")
 
-    print("\n=== Test Complete ===")
+    training_logger.info("\n=== Test Complete ===", operation="enhanced_logging")
 
 
 if __name__ == "__main__":

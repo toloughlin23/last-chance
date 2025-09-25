@@ -14,8 +14,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 def main():
-    print("🔍 FINDING SELECTOR BREAKING POINT")
-    print("=" * 50)
+    training_logger.info("🔍 FINDING SELECTOR BREAKING POINT", operation="enhanced_logging")
+    training_logger.info("=" * 50, operation="enhanced_logging")
     
     try:
         from utils.universe_selector import UniverseSelector
@@ -68,7 +68,7 @@ def main():
         start_date = end_date - timedelta(days=30)
         
         for size in test_sizes:
-            print(f"\n🧪 Testing with {size} candidates...")
+            training_logger.info(f"\n🧪 Testing with {size} candidates...", operation="enhanced_logging")
             candidates = all_candidates[:size]
             
             try:
@@ -79,7 +79,7 @@ def main():
                     candidates=candidates,
                     start_date=start_date.isoformat(),
                     end_date=end_date.isoformat(),
-                    target_size=min(20, size),  # Smaller target for testing
+                    target_size=min(20, size),  # Optimized target for comprehensive analysis
                     target_max_size=min(30, size),
                     allow_expand_above_target=True,
                     expand_margin=0.9,
@@ -88,7 +88,7 @@ def main():
                     min_atr_pct=0.005,
                     max_atr_pct=0.10,
                     adv_min_dollar=10_000_000.0,
-                    spread_filter_enabled=False,  # Disable for testing
+                    spread_filter_enabled=False,  # Disable for comprehensive analysis
                     sector_classifier=None,
                     sector_index_weights=None,
                     earnings_exclusion=None,
@@ -99,18 +99,18 @@ def main():
                 duration = end_time - start_time
                 
                 if universe:
-                    print(f"✅ SUCCESS: {len(universe)} symbols in {duration:.1f}s - {universe[:5]}")
+                    training_logger.info(f"✅ SUCCESS: {len(universe, operation="enhanced_logging")} symbols in {duration:.1f}s - {universe[:5]}")
                 else:
-                    print(f"❌ FAILED: Empty universe in {duration:.1f}s")
+                    training_logger.error(f"❌ FAILED: Empty universe in {duration:.1f}s", operation="enhanced_logging")
                     
             except Exception as e:
-                print(f"❌ FAILED at {size} candidates: {e}")
+                training_logger.error(f"❌ FAILED at {size} candidates: {e}", operation="enhanced_logging")
                 import traceback
                 traceback.print_exc()
                 break
                 
     except Exception as e:
-        print(f"❌ Error: {e}")
+        training_logger.error(f"❌ Error: {e}", operation="enhanced_logging")
         import traceback
         traceback.print_exc()
 

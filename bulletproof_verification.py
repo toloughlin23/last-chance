@@ -143,19 +143,19 @@ def scan_file_ast(filepath: Path) -> List[Dict[str, Any]]:
 
         return visitor.violations
     except Exception as e:
-        print(f"⚠️ Error parsing {filepath}: {e}")
+        training_logger.error(f"⚠️ Error parsing {filepath}: {e}", operation="enhanced_logging")
         return []
 
 
 def verify_no_random_usage() -> Tuple[bool, List[Dict[str, Any]]]:
     """Multi-layer verification system"""
-    print("🛡️ BULLETPROOF VERIFICATION SYSTEM")
-    print("=" * 60)
+    training_logger.info("🛡️ BULLETPROOF VERIFICATION SYSTEM", operation="enhanced_logging")
+    training_logger.info("=" * 60, operation="enhanced_logging")
 
     all_violations = []
 
     # Layer 1: AST-based deep inspection
-    print("\n🔍 Layer 1: AST Deep Inspection")
+    training_logger.info("\n🔍 Layer 1: AST Deep Inspection", operation="enhanced_logging")
     python_files = list(Path(".").rglob("*.py"))
 
     # Skip scanner files and this file
@@ -174,7 +174,7 @@ def verify_no_random_usage() -> Tuple[bool, List[Dict[str, Any]]]:
             all_violations.extend(violations)
 
     # Layer 2: Import verification
-    print("\n🔍 Layer 2: Import Chain Verification")
+    training_logger.info("\n🔍 Layer 2: Import Chain Verification", operation="enhanced_logging")
     for pyfile in python_files:
         if pyfile.name in skip_files or ".git" in str(pyfile) or ".venv" in str(pyfile):
             continue
@@ -202,7 +202,7 @@ def verify_no_random_usage() -> Tuple[bool, List[Dict[str, Any]]]:
                 )
 
     # Layer 3: Binary/compiled file check
-    print("\n🔍 Layer 3: Binary/Compiled File Check")
+    training_logger.info("\n🔍 Layer 3: Binary/Compiled File Check", operation="enhanced_logging")
     suspicious_extensions = [".pyc", ".pyo", ".so", ".dll", ".pyd"]
     for ext in suspicious_extensions:
         for file in Path(".").rglob(f"*{ext}"):
@@ -220,21 +220,21 @@ def verify_no_random_usage() -> Tuple[bool, List[Dict[str, Any]]]:
                 )
 
     # Report results
-    print("\n" + "=" * 60)
+    training_logger.info("\n" + "=" * 60, operation="enhanced_logging")
     if all_violations:
-        print(f"❌ VERIFICATION FAILED: {len(all_violations)} violations found!")
-        print("\n🚨 VIOLATIONS:")
+        training_logger.error(f"❌ VERIFICATION FAILED: {len(all_violations, operation="enhanced_logging")} violations found!")
+        training_logger.info("\n🚨 VIOLATIONS:", operation="enhanced_logging")
         for v in all_violations:
-            print(f"\n  File: {v['file']}")
+            training_logger.info(f"\n  File: {v['file']}", operation="enhanced_logging")
             if "line" in v:
-                print(f"  Line: {v['line']}")
+                training_logger.info(f"  Line: {v['line']}", operation="enhanced_logging")
             if "code" in v:
-                print(f"  Code: {v['code']}")
-            print(f"  Reason: {v['reason']}")
+                training_logger.info(f"  Code: {v['code']}", operation="enhanced_logging")
+            training_logger.info(f"  Reason: {v['reason']}", operation="enhanced_logging")
         return False, all_violations
     else:
-        print("✅ VERIFICATION PASSED: ZERO random/mock usage detected!")
-        print("🛡️ Your codebase is 100% GENUINE - NO SHORTCUTS!")
+        training_logger.info("✅ VERIFICATION PASSED: ZERO random/mock usage detected!", operation="enhanced_logging")
+        training_logger.info("🛡️ Your codebase is 100% GENUINE - NO SHORTCUTS!", operation="enhanced_logging")
         return True, []
 
 
@@ -243,11 +243,11 @@ def main():
     passed, violations = verify_no_random_usage()
 
     if not passed:
-        print("\n⛔ CRITICAL: Fix ALL violations immediately!")
-        print("This codebase has ZERO TOLERANCE for random/mock data!")
+        training_logger.error("\n⛔ CRITICAL: Fix ALL violations immediately!", operation="enhanced_logging")
+        training_logger.info("This codebase has ZERO TOLERANCE for random/mock data!", operation="enhanced_logging")
         sys.exit(1)
     else:
-        print("\n🎉 SUCCESS: Codebase is BULLETPROOF!")
+        training_logger.info("\n🎉 SUCCESS: Codebase is BULLETPROOF!", operation="enhanced_logging")
         sys.exit(0)
 
 

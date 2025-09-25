@@ -16,7 +16,7 @@ sys.path.insert(0, str(project_root))
 
 def test_core_imports():
     """Test core module imports directly"""
-    print("🧪 TESTING CORE IMPORTS...")
+    training_logger.info("🧪 TESTING CORE IMPORTS...", operation="enhanced_logging")
 
     tests = [
         ("CORE_SUPER_BANDITS.optimized_linucb_institutional", "LinUCB Algorithm"),
@@ -45,10 +45,10 @@ def test_core_imports():
     for module_name, description in tests:
         try:
             __import__(module_name)
-            print(f"  ✅ {description}")
+            training_logger.info(f"  ✅ {description}", operation="enhanced_logging")
             passed += 1
         except Exception as e:
-            print(f"  ❌ {description} - {e}")
+            training_logger.error(f"  ❌ {description} - {e}", operation="enhanced_logging")
             failed += 1
 
     return passed, failed
@@ -56,7 +56,7 @@ def test_core_imports():
 
 def test_algorithm_initialization():
     """Test algorithm initialization"""
-    print("\n🧪 TESTING ALGORITHM INITIALIZATION...")
+    training_logger.info("\n🧪 TESTING ALGORITHM INITIALIZATION...", operation="enhanced_logging")
 
     tests = []
 
@@ -67,10 +67,10 @@ def test_algorithm_initialization():
         )
 
         OptimizedInstitutionalLinUCB()
-        print("  ✅ LinUCB Algorithm - Initialized")
+        training_logger.info("  ✅ LinUCB Algorithm - Initialized", operation="enhanced_logging")
         tests.append(True)
     except Exception as e:
-        print(f"  ❌ LinUCB Algorithm - {e}")
+        training_logger.error(f"  ❌ LinUCB Algorithm - {e}", operation="enhanced_logging")
         tests.append(False)
 
     # Test Neural Bandit
@@ -80,10 +80,10 @@ def test_algorithm_initialization():
         )
 
         OptimizedInstitutionalNeuralBandit()
-        print("  ✅ Neural Bandit Algorithm - Initialized")
+        training_logger.info("  ✅ Neural Bandit Algorithm - Initialized", operation="enhanced_logging")
         tests.append(True)
     except Exception as e:
-        print(f"  ❌ Neural Bandit Algorithm - {e}")
+        training_logger.error(f"  ❌ Neural Bandit Algorithm - {e}", operation="enhanced_logging")
         tests.append(False)
 
     # Test UCBV
@@ -93,10 +93,10 @@ def test_algorithm_initialization():
         )
 
         OptimizedInstitutionalUCBV()
-        print("  ✅ UCBV Algorithm - Initialized")
+        training_logger.info("  ✅ UCBV Algorithm - Initialized", operation="enhanced_logging")
         tests.append(True)
     except Exception as e:
-        print(f"  ❌ UCBV Algorithm - {e}")
+        training_logger.error(f"  ❌ UCBV Algorithm - {e}", operation="enhanced_logging")
         tests.append(False)
 
     passed = sum(tests)
@@ -106,7 +106,7 @@ def test_algorithm_initialization():
 
 def test_services_initialization():
     """Test services initialization"""
-    print("\n🧪 TESTING SERVICES INITIALIZATION...")
+    training_logger.info("\n🧪 TESTING SERVICES INITIALIZATION...", operation="enhanced_logging")
 
     tests = []
 
@@ -115,10 +115,10 @@ def test_services_initialization():
         from services.advanced_news_sentiment import AdvancedNewsSentimentAnalysis
 
         AdvancedNewsSentimentAnalysis()
-        print("  ✅ News Sentiment Analysis - Initialized")
+        training_logger.info("  ✅ News Sentiment Analysis - Initialized", operation="enhanced_logging")
         tests.append(True)
     except Exception as e:
-        print(f"  ❌ News Sentiment Analysis - {e}")
+        training_logger.error(f"  ❌ News Sentiment Analysis - {e}", operation="enhanced_logging")
         tests.append(False)
 
     # Test Infrastructure Manager
@@ -126,10 +126,10 @@ def test_services_initialization():
         from services.infrastructure_manager import InstitutionalInfrastructureManager
 
         InstitutionalInfrastructureManager()
-        print("  ✅ Infrastructure Manager - Initialized")
+        training_logger.info("  ✅ Infrastructure Manager - Initialized", operation="enhanced_logging")
         tests.append(True)
     except Exception as e:
-        print(f"  ❌ Infrastructure Manager - {e}")
+        training_logger.error(f"  ❌ Infrastructure Manager - {e}", operation="enhanced_logging")
         tests.append(False)
 
     # Test Compliance System
@@ -137,10 +137,10 @@ def test_services_initialization():
         from services.compliance_system import UKROIComplianceSystem
 
         UKROIComplianceSystem()
-        print("  ✅ Compliance System - Initialized")
+        training_logger.info("  ✅ Compliance System - Initialized", operation="enhanced_logging")
         tests.append(True)
     except Exception as e:
-        print(f"  ❌ Compliance System - {e}")
+        training_logger.error(f"  ❌ Compliance System - {e}", operation="enhanced_logging")
         tests.append(False)
 
     # Test Execution Bridge
@@ -148,10 +148,10 @@ def test_services_initialization():
         from services.execution_bridge import UltraInstitutionalExecutionBridge
 
         UltraInstitutionalExecutionBridge()
-        print("  ✅ Execution Bridge - Initialized")
+        training_logger.info("  ✅ Execution Bridge - Initialized", operation="enhanced_logging")
         tests.append(True)
     except Exception as e:
-        print(f"  ❌ Execution Bridge - {e}")
+        training_logger.error(f"  ❌ Execution Bridge - {e}", operation="enhanced_logging")
         tests.append(False)
 
     passed = sum(tests)
@@ -161,7 +161,7 @@ def test_services_initialization():
 
 def test_pipeline_components():
     """Test pipeline components"""
-    print("\n🧪 TESTING PIPELINE COMPONENTS...")
+    training_logger.info("\n🧪 TESTING PIPELINE COMPONENTS...", operation="enhanced_logging")
 
     tests = []
 
@@ -170,10 +170,10 @@ def test_pipeline_components():
         from pipeline.enhanced_runner import EnhancedPipelineRunner
 
         EnhancedPipelineRunner()
-        print("  ✅ Enhanced Pipeline Runner - Initialized")
+        training_logger.info("  ✅ Enhanced Pipeline Runner - Initialized", operation="enhanced_logging")
         tests.append(True)
     except Exception as e:
-        print(f"  ❌ Enhanced Pipeline Runner - {e}")
+        training_logger.error(f"  ❌ Enhanced Pipeline Runner - {e}", operation="enhanced_logging")
         tests.append(False)
 
     # Test Hygiene
@@ -181,18 +181,18 @@ def test_pipeline_components():
         from pipeline.hygiene import Hygiene
 
         Hygiene()
-        print("  ✅ Hygiene System - Initialized")
+        training_logger.info("  ✅ Hygiene System - Initialized", operation="enhanced_logging")
         tests.append(True)
     except Exception as e:
-        print(f"  ❌ Hygiene System - {e}")
+        training_logger.error(f"  ❌ Hygiene System - {e}", operation="enhanced_logging")
         tests.append(False)
 
     # Test Feature Builder
     try:
-        print("  ✅ Feature Builder - Imported")
+        training_logger.info("  ✅ Feature Builder - Imported", operation="enhanced_logging")
         tests.append(True)
     except Exception as e:
-        print(f"  ❌ Feature Builder - {e}")
+        training_logger.error(f"  ❌ Feature Builder - {e}", operation="enhanced_logging")
         tests.append(False)
 
     passed = sum(tests)
@@ -202,7 +202,7 @@ def test_pipeline_components():
 
 def run_individual_test_files():
     """Run individual test files directly"""
-    print("\n🧪 RUNNING INDIVIDUAL TEST FILES...")
+    training_logger.info("\n🧪 RUNNING INDIVIDUAL TEST FILES...", operation="enhanced_logging")
 
     test_files = [
         "tests/test_linucb_day1_foundation.py",
@@ -217,7 +217,7 @@ def run_individual_test_files():
     for test_file in test_files:
         test_path = project_root / test_file
         if test_path.exists():
-            print(f"\n📋 Running: {test_file}")
+            training_logger.info(f"\n📋 Running: {test_file}", operation="enhanced_logging")
             try:
                 # Execute the test file
                 with open(test_path, "r") as f:
@@ -236,15 +236,15 @@ def run_individual_test_files():
                 exec_globals["sys"].path.insert(0, str(project_root))
 
                 exec(test_code, exec_globals)
-                print(f"  ✅ {test_file} - Executed successfully")
+                training_logger.info(f"  ✅ {test_file} - Executed successfully", operation="enhanced_logging")
                 passed += 1
 
             except Exception as e:
-                print(f"  ❌ {test_file} - {e}")
-                print(f"      Traceback: {traceback.format_exc()[:200]}...")
+                training_logger.error(f"  ❌ {test_file} - {e}", operation="enhanced_logging")
+                training_logger.info(f"      Traceback: {traceback.format_exc(, operation="enhanced_logging")[:200]}...")
                 failed += 1
         else:
-            print(f"  ⚠️  {test_file} - File not found")
+            training_logger.warning(f"  ⚠️  {test_file} - File not found", operation="enhanced_logging")
             failed += 1
 
     return passed, failed
@@ -252,10 +252,10 @@ def run_individual_test_files():
 
 def main():
     """Run comprehensive direct tests"""
-    print("🚀 INSTITUTIONAL AI TRADING SYSTEM - DIRECT TEST RUNNER")
-    print("=" * 80)
-    print("100% GENUINE - NO SHORTCUTS - ALWAYS MAKE BETTER")
-    print("=" * 80)
+    training_logger.info("🚀 INSTITUTIONAL AI TRADING SYSTEM - DIRECT TEST RUNNER", operation="enhanced_logging")
+    training_logger.info("=" * 80, operation="enhanced_logging")
+    training_logger.info("100% GENUINE - NO SHORTCUTS - ALWAYS MAKE BETTER", operation="enhanced_logging")
+    training_logger.info("=" * 80, operation="enhanced_logging")
 
     total_passed = 0
     total_failed = 0
@@ -287,27 +287,26 @@ def main():
         total_failed += failed
 
     except Exception as e:
-        print(f"\n💥 TEST RUNNER ERROR: {e}")
+        training_logger.error(f"\n💥 TEST RUNNER ERROR: {e}", operation="enhanced_logging")
         traceback.print_exc()
         total_failed += 1
 
     # Summary
-    print(f"\n{'='*80}")
-    print("📊 DIRECT TEST SUMMARY")
-    print(f"{'='*80}")
-    print(f"Total Tests: {total_passed + total_failed}")
-    print(f"✅ Passed: {total_passed}")
-    print(f"❌ Failed: {total_failed}")
-    print(
-        f"📊 Success Rate: {(total_passed/(total_passed + total_failed)*100):.1f}%"
+    training_logger.info(f"\n{'='*80}", operation="enhanced_logging")
+    training_logger.info("📊 DIRECT TEST SUMMARY", operation="enhanced_logging")
+    training_logger.info(f"{'='*80}", operation="enhanced_logging")
+    training_logger.error(f"Total Tests: {total_passed + total_failed}", operation="enhanced_logging")
+    training_logger.info(f"✅ Passed: {total_passed}", operation="enhanced_logging")
+    training_logger.error(f"❌ Failed: {total_failed}", operation="enhanced_logging")
+    training_logger.error(f"📊 Success Rate: {(total_passed/(total_passed + total_failed, operation="enhanced_logging")*100):.1f}%"
         if (total_passed + total_failed) > 0
         else "📊 Success Rate: 0%"
     )
 
     if total_failed == 0:
-        print("\n🎉 ALL DIRECT TESTS PASSED! SYSTEM IS FUNCTIONAL!")
+        training_logger.info("\n🎉 ALL DIRECT TESTS PASSED! SYSTEM IS FUNCTIONAL!", operation="enhanced_logging")
     else:
-        print(f"\n⚠️  {total_failed} TESTS FAILED - REVIEW AND FIX")
+        training_logger.error(f"\n⚠️  {total_failed} TESTS FAILED - REVIEW AND FIX", operation="enhanced_logging")
 
     return 0 if total_failed == 0 else 1
 

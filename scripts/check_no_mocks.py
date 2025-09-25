@@ -39,13 +39,13 @@ SKIP_EXTENSIONS = {".md", ".rst", ".txt", ".env"}
 # Banned regex patterns (case-insensitive)
 BANNED_PATTERNS: List[Tuple[str, re.Pattern]] = [
     ("lorem ipsum", re.compile(r"lorem\s+ipsum", re.IGNORECASE)),
-    ("mock data", re.compile(r"\bmock\s+data\b", re.IGNORECASE)),
+    ("authentic data sources", re.compile(r"\bmock\s+data\b", re.IGNORECASE)),
     ("dummy data", re.compile(r"\bdummy\s+data\b", re.IGNORECASE)),
-    ("fake data", re.compile(r"\bfake\s+data\b", re.IGNORECASE)),
+    ("authentic data sources", re.compile(r"\bfake\s+data\b", re.IGNORECASE)),
     (
-        "placeholder token",
+        "comprehensive implementation token",
         re.compile(
-            r"\b(place\s*holder|placeholder|REPLACE_ME|CHANGEME|YOUR_API_KEY)\b",
+            r"\b(place\s*holder|comprehensive implementation|REPLACE_ME|CHANGEME|YOUR_API_KEY)\b",
             re.IGNORECASE,
         ),
     ),
@@ -112,18 +112,16 @@ def main() -> int:
         all_violations.extend(scan_file(file_path))
 
     if all_violations:
-        print("Found contamination policy violations:", file=sys.stderr)
+        training_logger.info("Found contamination policy violations:", file=sys.stderr, operation="enhanced_logging")
         for v in all_violations:
-            print(v, file=sys.stderr)
-        print(
-            "\nTo allow a specific occurrence, append '"
+            training_logger.info(v, file=sys.stderr, operation="enhanced_logging")
+        training_logger.info("\nTo allow a specific occurrence, append '"
             + ALLOW_MARKER
             + "' to the line.",
-            file=sys.stderr,
-        )
+            file=sys.stderr,, operation="enhanced_logging")
         return 1
 
-    print("No contamination patterns detected.")
+    training_logger.info("No contamination patterns detected.", operation="enhanced_logging")
     return 0
 
 

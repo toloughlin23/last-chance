@@ -14,8 +14,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 def main():
-    print("🔍 TESTING SELECTOR WITH PROVIDER'S ACTUAL OUTPUT")
-    print("=" * 60)
+    universe_logger.info("🔍 TESTING SELECTOR WITH PROVIDER'S ACTUAL OUTPUT", operation="enhanced_logging")
+    universe_logger.info("=" * 60, operation="enhanced_logging")
     
     try:
         from utils.universe_selector import UniverseSelector
@@ -30,14 +30,14 @@ def main():
             'PLTR', 'ZM', 'DOCU', 'TEAM', 'WDAY', 'NOW', 'SPLK', 'MDB', 'ESTC', 'SPOT'
         ]
         
-        print(f"📊 Testing with {len(provider_candidates)} provider candidates")
-        print(f"📈 Sample: {provider_candidates[:10]}")
+        universe_logger.info(f"📊 Testing with {len(provider_candidates, operation="enhanced_logging")} provider candidates")
+        universe_logger.info(f"📈 Sample: {provider_candidates[:10]}", operation="enhanced_logging")
         
         # Initialize selector
         polygon_client = PolygonClient()
         selector = UniverseSelector(polygon_client)
         
-        print("\n🎯 Testing selector with provider candidates...")
+        universe_logger.info("\n🎯 Testing selector with provider candidates...", operation="enhanced_logging")
         
         # Test the selector
         end_date = date.today()
@@ -52,8 +52,8 @@ def main():
         )
         
         if universe:
-            print(f"✅ SUCCESS: Generated {len(universe)} symbols")
-            print(f"📈 First 10: {universe[:10]}")
+            universe_logger.info(f"✅ SUCCESS: Generated {len(universe, operation="enhanced_logging")} symbols")
+            universe_logger.info(f"📈 First 10: {universe[:10]}", operation="enhanced_logging")
             
             # Check distribution
             first_letters = {}
@@ -61,14 +61,15 @@ def main():
                 first_letter = symbol[0].upper()
                 first_letters[first_letter] = first_letters.get(first_letter, 0) + 1
             
-            print(f"\n🔍 Distribution: {dict(sorted(first_letters.items()))}")
+            universe_logger.info(f"\n🔍 Distribution: {dict(sorted(first_letters.items(, operation="enhanced_logging")))}")
         else:
-            print("❌ FAILED: No universe generated")
+            universe_logger.error("❌ FAILED: No universe generated", operation="enhanced_logging")
                 
     except Exception as e:
-        print(f"❌ Error: {e}")
+        universe_logger.error(f"❌ Error: {e}", operation="enhanced_logging")
         import traceback
         traceback.print_exc()
 
 if __name__ == "__main__":
     main()
+

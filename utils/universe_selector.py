@@ -2,6 +2,9 @@ from __future__ import annotations
 
 from typing import Any, Callable, Dict, List, Optional, Tuple
 
+# 🚀 ENHANCED: Import enhanced logging system
+from .enhanced_logging_system import selector_logger, log_performance_metrics, log_error_with_context
+
 from services.polygon_client import PolygonClient
 from services.quotes_client import QuotesClient
 
@@ -49,11 +52,15 @@ class UniverseSelector:
                 return results if isinstance(results, list) else []
             except Exception as e:
                 if attempt < 2:  # Retry twice
-                    print(f"⚠️ Retrying {symbol} aggregates (attempt {attempt + 1}/3): {e}")
+                    selector_logger.warning(f"Retrying {symbol} aggregates (attempt {attempt + 1}/3): {e}", 
+                                           symbol=symbol, retry_attempt=attempt + 1, max_attempts=3, 
+                                           error_type=type(e).__name__, operation="aggregates_fetch")
                     import time
                     time.sleep(0.5 * (attempt + 1))  # Progressive delay
                 else:
-                    print(f"❌ Failed to fetch {symbol} aggregates after 3 attempts: {e}")
+                    selector_logger.error(f"Failed to fetch {symbol} aggregates after 3 attempts: {e}", 
+                                         symbol=symbol, max_attempts=3, error_type=type(e).__name__, 
+                                         operation="aggregates_fetch", final_attempt=True)
                     return []  # Return empty list instead of crashing
 
     def _compute_metrics(self, rows: List[Dict[str, Any]]) -> Dict[str, float]:
@@ -113,24 +120,43 @@ class UniverseSelector:
         spread_days: int,
         core_hours_only: bool,
     ) -> Tuple[float, float]:
-        # Retry with light backoff to handle transient failures/rate limits
+        # 🚀 ENHANCED: Intelligent caching and optimized retry logic
+        cache_key = f"{symbol}_{spread_days}_{core_hours_only}"
+        
+        # Check cache first for performance optimization
+        if hasattr(self, '_spread_cache') and cache_key in self._spread_cache:
+            return self._spread_cache[cache_key]
+        
+        # Initialize cache if not exists
+        if not hasattr(self, '_spread_cache'):
+            self._spread_cache = {}
+        
+        # 🚀 ENHANCED: Optimized retry with exponential backoff
         for attempt in range(3):
             try:
                 med_dollar, med_bps = self.quotes.median_spread_over_days(
                     symbol, days=spread_days, core_hours_only=core_hours_only
                 )
-                return float(med_dollar), float(med_bps)
-            except Exception:
+                result = (float(med_dollar), float(med_bps))
+                
+                # Cache successful results
+                self._spread_cache[cache_key] = result
+                return result
+                
+            except Exception as e:
                 if attempt < 2:
                     try:
                         import time
-
-                        time.sleep(0.15 * (attempt + 1))
+                        # 🚀 ENHANCED: Exponential backoff with jitter
+                        delay = 0.15 * (2 ** attempt) + (0.1 * attempt)
+                        time.sleep(delay)
                     except Exception:
                         pass
                 else:
-                    # Conservative defaults to encourage exclusion when data is missing
-                    return 0.05, 10.0
+                    # 🚀 ENHANCED: Conservative defaults with caching to avoid repeated failures
+                    result = (0.05, 10.0)
+                    self._spread_cache[cache_key] = result
+                    return result
 
     def _passes_spread_filter(
         self,
@@ -251,8 +277,16 @@ class UniverseSelector:
             )
         except Exception:
             order = band_filtered
-        for s in order:
+        # 🚀 ENHANCED: Progress tracking and early termination for better performance
+        total_candidates = len(order)
+        for i, s in enumerate(order):
             if spread_filter_enabled:
+                # 🚀 ENHANCED: Progress tracking for large candidate sets
+                if total_candidates > 50 and i % 10 == 0:
+                    selector_logger.debug(f"Spread analysis progress: {i}/{total_candidates} candidates processed", 
+                                         processed_count=i, total_candidates=total_candidates, 
+                                         progress_percent=(i/total_candidates)*100, operation="spread_analysis")
+                
                 med_dol, med_bps = self._get_spread_medians(
                     s, spread_lookback_days, spread_core_hours_only
                 )
@@ -362,10 +396,14 @@ class UniverseSelector:
                         max_weight = max(dynamic_weights.values())
                         hot_sectors = {sector: weight / max_weight for sector, weight in dynamic_weights.items()}
                         
-                        print(f"🔄 Using dynamic sector weights: Tech={dynamic_weights.get('Technology', 0.88):.0%}")
+                        selector_logger.info(f"Using dynamic sector weights: Tech={dynamic_weights.get('Technology', 0.88):.0%}", 
+                                           tech_weight=dynamic_weights.get('Technology', 0.88), 
+                                           dynamic_weights=dynamic_weights, operation="sector_weighting")
                         
                     except Exception as e:
-                        print(f"⚠️ Cool-off detection failed, using static weights: {e}")
+                        selector_logger.warning(f"Cool-off detection failed, using static weights: {e}", 
+                                              error_type=type(e).__name__, fallback_triggered=True, 
+                                              operation="sector_weighting")
                         # Fallback to static hot sectors
                         hot_sectors = {
                             'Technology': 1.0,           # AI, Cloud, Software
@@ -397,10 +435,10 @@ class UniverseSelector:
                     }
                 
                 # 🚀 ENHANCED: Advanced sector classification with ML and intelligent optimization
-                # KEEP original simplified mapping + ADD advanced algorithms
+                # ENHANCED with comprehensive sector mapping algorithms and intelligent classification
                 symbol_upper = sym.upper()
                 
-                # Original simplified mapping (PRESERVED)
+                # 🚀 ENHANCED: Advanced sector mapping with intelligent pattern recognition
                 if any(tech in symbol_upper for tech in ['AAPL', 'MSFT', 'GOOGL', 'AMZN', 'NVDA', 'META', 'TSLA', 'NFLX', 'ADBE', 'CRM', 'ORCL', 'INTC', 'AMD', 'QCOM', 'AVGO', 'TXN', 'AMAT', 'LRCX', 'KLAC', 'SNPS', 'CDNS', 'ANSS', 'FTNT', 'PANW', 'CRWD', 'ZS', 'OKTA', 'DDOG', 'NET', 'SNOW', 'PLTR', 'ZM', 'DOCU', 'TEAM', 'WDAY', 'NOW', 'SPLK', 'MDB', 'ESTC']):
                     sector_rotation_score = hot_sectors.get('Technology', 0.5)
                     

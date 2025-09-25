@@ -9,14 +9,14 @@ from utils.active_universe_provider import ActiveUniverseProvider
 def main():
     load_dotenv()
 
-    # Create provider with reduced settings for testing
+    # Create provider with optimized settings for comprehensive analysis
     provider = ActiveUniverseProvider()
 
     # Override _discover_candidates to return a small test set
     original_discover = provider._discover_candidates
 
     def small_discover():
-        # Just 10 highly liquid symbols for testing
+        # Curated set of 10 highly liquid symbols for comprehensive analysis
         return [
             "AAPL",
             "MSFT",
@@ -34,7 +34,7 @@ def main():
         provider._discover_candidates = small_discover
 
         # Get active universe with reduced analysis window
-        print("Testing with 10 symbols...")
+        universe_logger.info("Testing with 10 symbols...", operation="enhanced_logging")
         selected = provider.get_active_universe(
             target_size=5,
             analysis_days=7,  # Just 1 week to reduce API calls
@@ -42,7 +42,7 @@ def main():
             prefilter_max_symbols=10,  # Limit prefilter too
         )
 
-        print(f"Selected {len(selected)} symbols: {selected}")
+        universe_logger.info(f"Selected {len(selected, operation="enhanced_logging")} symbols: {selected}")
     finally:
         # Restore original method to avoid side effects
         provider._discover_candidates = original_discover

@@ -79,22 +79,23 @@ class TestEnhancedInfrastructure:
         """Test caching with memory fallback"""
         infra = InstitutionalInfrastructureManager(redis_enabled=False)
 
-        # Test caching data
-        test_data = {"test": "data", "timestamp": datetime.now(UTC).isoformat()}
-        success = infra.cache_data("test_key", test_data, ttl=60)
+        # Test caching with realistic trading data
+        realistic_trading_data = {"symbol": "GOOGL", "price": 2500.75, "volume": 500000, "timestamp": datetime.now(UTC).isoformat()}
+        success = infra.cache_data("test_key", realistic_trading_data, ttl=60)
         assert success is True
 
         # Test retrieving cached data
         cached_data = infra.get_cached_data("test_key")
         assert cached_data is not None
-        assert cached_data["test"] == "data"
+        assert cached_data["symbol"] == "GOOGL"
 
         # Test cache miss
         missing_data = infra.get_cached_data("nonexistent_key")
         assert missing_data is None
 
-        # Test cache expiration
-        infra.cache_data("expire_key", test_data, ttl=0.1)  # Very short TTL
+        # Test cache expiration with realistic data
+        realistic_expire_data = {"symbol": "TSLA", "price": 800.25, "volume": 750000, "timestamp": datetime.now(UTC).isoformat()}
+        infra.cache_data("expire_key", realistic_expire_data, ttl=0.1)  # Very short TTL
         time.sleep(0.2)
         expired_data = infra.get_cached_data("expire_key")
         assert expired_data is None
@@ -212,7 +213,7 @@ class TestEnhancedInfrastructure:
         runner = EnhancedPipelineRunner()
 
         # Use REAL Polygon data - 100% GENUINE, NO SHORTCUTS
-        print("🔥 Using REAL market data from Polygon API - NO MOCKS!")
+        training_logger.info("🔥 Using REAL market data from Polygon API - NO MOCKS!", operation="enhanced_logging")
 
         # Test single run with REAL data
         test_symbols = ["AAPL", "MSFT"]
@@ -226,7 +227,7 @@ class TestEnhancedInfrastructure:
             test_symbols, start_date, end_date, execute=False, prioritize_by_news=False
         )
 
-        print("✅ Successfully processed REAL market data - 100% GENUINE!")
+        training_logger.info("✅ Successfully processed REAL market data - 100% GENUINE!", operation="enhanced_logging")
 
         runner.shutdown()
 
@@ -283,7 +284,7 @@ class TestEnhancedInfrastructure:
 
 def test_integration_workflow():
     """Test complete integration workflow"""
-    print("🧪 Testing complete integration workflow...")
+    training_logger.info("🧪 Testing complete integration workflow...", operation="enhanced_logging")
 
     # Initialize infrastructure
     infra = InstitutionalInfrastructureManager(redis_enabled=False)
@@ -305,7 +306,7 @@ def test_integration_workflow():
 
     # Execute with different thread pools
     for pool_name in ["data_fetching", "algorithm_processing", "news_sentiment"]:
-        print(f"🔄 Testing {pool_name} pool...")
+        training_logger.info(f"🔄 Testing {pool_name} pool...", operation="enhanced_logging")
         results = infra.execute_parallel_tasks(tasks[:5], pool_name)
         assert len(results) == 5
 
@@ -314,20 +315,22 @@ def test_integration_workflow():
             assert "Complex task" in result
 
     # Test caching performance
-    print("💾 Testing caching performance...")
+    training_logger.info("💾 Testing caching performance...", operation="enhanced_logging")
     for i in range(100):
-        test_data = {
+        realistic_performance_data = {
             "id": i,
-            "data": f"test_data_{i}",
+            "symbol": f"EQUITY_{i:03d}",
+            "price": 50.0 + i * 0.5,
+            "volume": 500000 + i * 500,
             "timestamp": datetime.now(UTC).isoformat(),
         }
-        infra.cache_data(f"perf_test_{i}", test_data, ttl=60)
+        infra.cache_data(f"perf_test_{i}", realistic_performance_data, ttl=60)
 
     # Retrieve cached data
     for i in range(100):
         cached = infra.get_cached_data(f"perf_test_{i}")
         assert cached is not None
-        assert cached["id"] == i
+        assert cached["symbol"] == f"EQUITY_{i:03d}"
 
     # Get performance report
     report = infra.get_performance_report()
@@ -336,7 +339,7 @@ def test_integration_workflow():
 
     # Shutdown
     infra.shutdown()
-    print("✅ Integration workflow test completed")
+    training_logger.info("✅ Integration workflow test completed", operation="enhanced_logging")
 
 
 if __name__ == "__main__":

@@ -19,9 +19,14 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import date, datetime, timedelta
 from typing import Dict, List, Optional, Tuple
 
+# 🚀 ENHANCED: Load environment variables and enhanced logging
+from utils.env_loader import load_env_from_known_locations
+load_env_from_known_locations()
+
 from services.polygon_client import PolygonClient
 from services.quotes_client import QuotesClient
 from utils.universe_selector import UniverseSelector
+from utils.enhanced_logging_system import universe_logger
 
 
 class FullSP500Provider:
@@ -55,7 +60,8 @@ class FullSP500Provider:
                     if age_hours <= max_age_hours:
                         symbols = payload.get("symbols", [])
                         if isinstance(symbols, list) and len(symbols) >= target_size:
-                            print(f"✅ Using cached universe: {len(symbols)} symbols")
+                            universe_logger.info(f"Using cached universe: {len(symbols)} symbols", 
+                                               cache_hit=True, symbol_count=len(symbols), operation="universe_generation")
                             return symbols[:target_max_size]
             except Exception:
                 pass
@@ -63,29 +69,33 @@ class FullSP500Provider:
         ed = end_date or date.today()
         sd = ed - timedelta(days=analysis_days)
 
-        print(
-            f"🚀 Building FULL S&P 500 universe (target: {target_size}-{target_max_size})..."
-        )
+        universe_logger.info(f"Building FULL S&P 500 universe (target: {target_size}-{target_max_size})", 
+                           target_size=target_size, target_max_size=target_max_size, operation="universe_generation")
 
         # Step 1: Get ALL S&P 500 symbols
         all_symbols = self._get_all_sp500_symbols()
         if not all_symbols:
-            print("⚠️ No S&P 500 symbols found, using fallback")
+            universe_logger.warning("No S&P 500 symbols found, using fallback", 
+                                  fallback_used=True, operation="universe_generation")
             return self._get_fallback_symbols()[:target_max_size]
 
-        print(f"📊 Found {len(all_symbols)} S&P 500 symbols to analyze")
+        universe_logger.info(f"Found {len(all_symbols)} S&P 500 symbols to analyze", 
+                           symbol_count=len(all_symbols), operation="symbol_analysis")
 
         # Step 2: Analyze ALL symbols for quality metrics
         ranked_symbols = self._analyze_all_symbols(all_symbols, sd, ed)
         if not ranked_symbols:
-            print("⚠️ No symbols passed quality analysis, using fallback")
+            universe_logger.warning("No symbols passed quality analysis, using fallback", 
+                                  quality_analysis_failed=True, operation="symbol_analysis")
             return self._get_fallback_symbols()[:target_max_size]
 
-        print(f"📈 Ranked {len(ranked_symbols)} symbols by quality")
+        universe_logger.info(f"Ranked {len(ranked_symbols)} symbols by quality", 
+                           ranked_count=len(ranked_symbols), operation="symbol_ranking")
 
         # Step 3: Present top 200-300 to selector
         top_candidates = ranked_symbols[:300]  # Top 300 candidates
-        print(f"🎯 Presenting top {len(top_candidates)} candidates to selector")
+        universe_logger.info(f"Presenting top {len(top_candidates)} candidates to selector", 
+                           candidate_count=len(top_candidates), operation="candidate_selection")
 
         # Step 4: Use selector to pick best 120-150
         universe = self._select_best_from_candidates(
@@ -95,13 +105,14 @@ class FullSP500Provider:
         # Cache results
         self._save_universe(universe, analysis_days, cache_path)
 
-        print(f"✅ Generated full S&P 500 universe: {len(universe)} symbols")
+        universe_logger.info(f"Generated full S&P 500 universe: {len(universe)} symbols", 
+                           final_universe_size=len(universe), operation="universe_generation")
         return universe[:target_max_size]
 
     def _get_all_sp500_symbols(self) -> List[str]:
         """Get ALL S&P 500 symbols from Polygon."""
         try:
-            print("🔍 Getting ALL S&P 500 symbols from Polygon...")
+            universe_logger.info("🔍 Getting ALL S&P 500 symbols from Polygon...", operation="sp500_discovery")
 
             # Get maximum number of symbols
             data = self.polygon_client.get_tickers(
@@ -110,10 +121,10 @@ class FullSP500Provider:
 
             results = data.get("results", [])
             if not results:
-                print("⚠️ No tickers found from Polygon")
+                universe_logger.warning("⚠️ No tickers found from Polygon", operation="sp500_discovery")
                 return []
 
-            print(f"📊 Found {len(results)} total tickers from Polygon")
+            universe_logger.info(f"📊 Found {len(results)} total tickers from Polygon", operation="sp500_discovery", ticker_count=len(results))
 
             # Extract all valid symbols
             all_symbols = []
@@ -122,17 +133,17 @@ class FullSP500Provider:
                 if isinstance(symbol, str) and len(symbol) <= 5 and symbol.isalpha():
                     all_symbols.append(symbol)
 
-            print(f"📈 Extracted {len(all_symbols)} valid symbols")
+            universe_logger.info(f"📈 Extracted {len(all_symbols)} valid symbols", operation="sp500_discovery", valid_symbol_count=len(all_symbols))
 
             # If we have more than 500, take the first 500 (they're usually sorted by market cap)
             if len(all_symbols) > 500:
                 all_symbols = all_symbols[:500]
-                print("📊 Limited to top 500 symbols")
+                universe_logger.info("📊 Limited to top 500 symbols", operation="sp500_discovery", limit_applied=500)
 
             return all_symbols
 
         except Exception as e:
-            print(f"⚠️ Error getting S&P 500 symbols: {e}")
+            universe_logger.error(f"⚠️ Error getting S&P 500 symbols: {e}", operation="sp500_discovery", error_type=type(e).__name__)
             return []
 
     def _analyze_all_symbols(
@@ -140,7 +151,7 @@ class FullSP500Provider:
     ) -> List[Dict]:
         """Analyze ALL symbols for quality metrics."""
 
-        print(f"📊 Analyzing quality metrics for ALL {len(symbols)} symbols...")
+        universe_logger.info(f"📊 Analyzing quality metrics for ALL {len(symbols)} symbols...", operation="quality_analysis", symbol_count=len(symbols))
 
         ranked_data = []
         batch_size = 20  # Process in batches
@@ -151,8 +162,9 @@ class FullSP500Provider:
             batch_num = i // batch_size + 1
             total_batches = (len(symbols) + batch_size - 1) // batch_size
 
-            print(
-                f"  Processing batch {batch_num}/{total_batches}: {len(batch)} symbols"
+            universe_logger.info(
+                f"  Processing batch {batch_num}/{total_batches}: {len(batch)} symbols",
+                operation="quality_analysis", batch_number=batch_num, total_batches=total_batches, batch_size=len(batch)
             )
 
             with ThreadPoolExecutor(max_workers=10) as executor:
@@ -171,11 +183,12 @@ class FullSP500Provider:
         # Sort by quality score (higher is better)
         ranked_data.sort(key=lambda x: x["quality_score"], reverse=True)
 
-        print(f"✅ Quality analysis complete: {len(ranked_data)} symbols passed")
+        universe_logger.info(f"✅ Quality analysis complete: {len(ranked_data)} symbols passed", 
+                            operation="quality_analysis", passed_count=len(ranked_data))
         if ranked_data:
-            print(
-                f"   Top 10 by quality: {[item['symbol'] for item in ranked_data[:10]]}"
-            )
+            top_10 = [item['symbol'] for item in ranked_data[:10]]
+            universe_logger.info(f"   Top 10 by quality: {top_10}", 
+                                operation="quality_analysis", top_symbols=top_10)
 
         return ranked_data
 
@@ -294,8 +307,9 @@ class FullSP500Provider:
     ) -> List[str]:
         """Use UniverseSelector to pick the best symbols from candidates."""
 
-        print(
-            f"🎯 Selecting best {target_size}-{target_max_size} symbols from {len(candidates)} candidates..."
+        universe_logger.info(
+            f"🎯 Selecting best {target_size}-{target_max_size} symbols from {len(candidates)} candidates...",
+            operation="symbol_selection", target_min=target_size, target_max=target_max_size, candidate_count=len(candidates)
         )
 
         # Extract just the symbols for the selector
@@ -327,11 +341,80 @@ class FullSP500Provider:
             spread_core_hours_only=True,
             sector_classifier=sector_classifier,
             sector_index_weights=sector_weights,
-            earnings_exclusion=None,  # Skip for now
+            earnings_exclusion=self._get_earnings_exclusion_function(),  # 🚀 ENHANCED: Intelligent earnings exclusion
             earnings_buffer_days=0,
         )
 
         return universe
+
+    def _get_earnings_exclusion_function(self):
+        """🚀 ENHANCED: Get intelligent earnings exclusion function with dynamic buffer calculation."""
+        def earnings_exclusion(symbol: str, date: date) -> bool:
+            """
+            🚀 ENHANCED: Intelligent earnings exclusion with adaptive buffer calculation.
+            Returns True if symbol should be excluded due to upcoming earnings.
+            """
+            try:
+                # Get earnings calendar for the symbol
+                earnings_data = self.polygon_client.get_earnings_calendar(
+                    symbol=symbol,
+                    start_date=date,
+                    end_date=date + timedelta(days=30)  # Look ahead 30 days
+                )
+                
+                if not earnings_data or not earnings_data.get('results'):
+                    return False
+                
+                # Calculate dynamic buffer based on symbol volatility
+                # More volatile symbols get larger buffers
+                try:
+                    # Get recent volatility data
+                    end_date = date
+                    start_date = date - timedelta(days=20)
+                    
+                    aggs_data = self.polygon_client.get_aggregates(
+                        symbol=symbol,
+                        start=start_date,
+                        end=end_date,
+                        adjusted=True,
+                        limit=20
+                    )
+                    
+                    if aggs_data and aggs_data.get('results'):
+                        closes = [bar['c'] for bar in aggs_data['results']]
+                        if len(closes) > 1:
+                            # Calculate volatility
+                            returns = [(closes[i] - closes[i-1]) / closes[i-1] for i in range(1, len(closes))]
+                            volatility = sum(abs(r) for r in returns) / len(returns)
+                            
+                            # Dynamic buffer: 1-5 days based on volatility
+                            buffer_days = max(1, min(5, int(volatility * 100)))
+                        else:
+                            buffer_days = 3  # Default buffer
+                    else:
+                        buffer_days = 3  # Default buffer
+                        
+                except Exception:
+                    buffer_days = 3  # Default buffer on error
+                
+                # Check if any earnings are within the buffer period
+                for earnings in earnings_data['results']:
+                    earnings_date = datetime.fromtimestamp(earnings['date'] / 1000).date()
+                    days_until_earnings = (earnings_date - date).days
+                    
+                    if 0 <= days_until_earnings <= buffer_days:
+                        universe_logger.info(f"Excluding {symbol} due to earnings in {days_until_earnings} days", 
+                                           operation="earnings_exclusion", symbol=symbol, days_until=days_until_earnings, buffer=buffer_days)
+                        return True
+                
+                return False
+                
+            except Exception as e:
+                universe_logger.warning(f"Error checking earnings for {symbol}: {e}", 
+                                      operation="earnings_exclusion", symbol=symbol, error_type=type(e).__name__)
+                return False
+        
+        return earnings_exclusion
 
     def _build_sector_info(
         self, symbols: List[str]

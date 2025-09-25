@@ -18,8 +18,8 @@ def main():
     days = 5
     core_hours_only = True
 
-    print(f"Debugging median_spread_over_days for {symbol}")
-    print("=" * 60)
+    training_logger.info(f"Debugging median_spread_over_days for {symbol}", operation="enhanced_logging")
+    training_logger.info("=" * 60, operation="enhanced_logging")
 
     end = datetime.now(timezone.utc)
     medians = []
@@ -30,7 +30,7 @@ def main():
 
         # Skip weekends
         if day_start.weekday() >= 5:
-            print(f"\nDay {i}: {day_start.date()} - WEEKEND (skipped)")
+            training_logger.info(f"\nDay {i}: {day_start.date(, operation="enhanced_logging")} - WEEKEND (skipped)")
             continue
 
         if core_hours_only:
@@ -40,25 +40,25 @@ def main():
             start_utc = day_start
             end_utc = day_start.replace(hour=23, minute=59, second=59)
 
-        print(f"\nDay {i}: {day_start.date()}")
-        print(f"  Window: {start_utc} to {end_utc}")
+        training_logger.info(f"\nDay {i}: {day_start.date(, operation="enhanced_logging")}")
+        training_logger.info(f"  Window: {start_utc} to {end_utc}", operation="enhanced_logging")
 
         quotes = client.fetch_quotes_window(symbol, start_utc, end_utc, limit=1000)
-        print(f"  Quotes fetched: {len(quotes)}")
+        training_logger.info(f"  Quotes fetched: {len(quotes, operation="enhanced_logging")}")
 
         if quotes:
             # Check the structure
-            print(f"  First quote keys: {list(quotes[0].keys())}")
+            training_logger.info(f"  First quote keys: {list(quotes[0].keys(, operation="enhanced_logging"))}")
 
             # Show a few quotes
             for j, q in enumerate(quotes[:3]):
                 bid = q.get("bid_price", "N/A")
                 ask = q.get("ask_price", "N/A")
-                print(f"    Quote {j+1}: bid={bid}, ask={ask}")
+                training_logger.info(f"    Quote {j+1}: bid={bid}, ask={ask}", operation="enhanced_logging")
 
         day_median = client.compute_median_spreads(quotes)
         medians.append(day_median)
-        print(f"  Day median: ${day_median[0]:.3f} ({day_median[1]:.1f} bps)")
+        training_logger.info(f"  Day median: ${day_median[0]:.3f} ({day_median[1]:.1f} bps, operation="enhanced_logging")")
 
     # Compute final median
     if medians:
@@ -67,12 +67,12 @@ def main():
         final_dollar = dollar[len(dollar) // 2]
         final_bps = bps[len(bps) // 2]
 
-        print(f"\nFinal 5-day median: ${final_dollar:.3f} ({final_bps:.1f} bps)")
+        training_logger.info(f"\nFinal 5-day median: ${final_dollar:.3f} ({final_bps:.1f} bps, operation="enhanced_logging")")
 
         if final_dollar > 1000:
-            print("\n⚠️ Problem: Still getting unrealistic spreads!")
-            print("   This happens when some days have no valid quotes")
-            print("   Check if we're hitting weekends or holidays")
+            training_logger.warning("\n⚠️ Problem: Still getting unrealistic spreads!", operation="enhanced_logging")
+            training_logger.info("   This happens when some days have no valid quotes", operation="enhanced_logging")
+            training_logger.info("   Check if we're hitting weekends or holidays", operation="enhanced_logging")
 
 
 if __name__ == "__main__":

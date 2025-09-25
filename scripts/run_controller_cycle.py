@@ -10,17 +10,13 @@ def main() -> None:
     # Example subscriptions
     def on_decision(msg):
         try:
-            print(
-                f"DECISION {msg.symbol} {msg.algorithm} {msg.decision} conf={msg.confidence:.3f}"
-            )
+            training_logger.info(f"DECISION {msg.symbol} {msg.algorithm} {msg.decision} conf={msg.confidence:.3f}", operation="enhanced_logging")
         except Exception:
             pass
 
     def on_metrics(msg):
         try:
-            print(
-                f"METRICS var={msg.diversity_overall:.4f} cross={msg.diversity_cross_algorithm:.4f} cv={msg.coefficient_of_variation:.4f} lr={msg.learning_rate:.4f} pnl={msg.total_pnl:.2f}"
-            )
+            training_logger.info(f"METRICS var={msg.diversity_overall:.4f} cross={msg.diversity_cross_algorithm:.4f} cv={msg.coefficient_of_variation:.4f} lr={msg.learning_rate:.4f} pnl={msg.total_pnl:.2f}", operation="enhanced_logging")
         except Exception:
             pass
 

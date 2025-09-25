@@ -10,9 +10,9 @@ import traceback
 
 def run_test_file(test_file):
     """Run a single test file"""
-    print(f"\n{'='*60}")
-    print(f"Running: {test_file}")
-    print(f"{'='*60}")
+    training_logger.info(f"\n{'='*60}", operation="enhanced_logging")
+    training_logger.info(f"Running: {test_file}", operation="enhanced_logging")
+    training_logger.info(f"{'='*60}", operation="enhanced_logging")
 
     try:
         # Load the test module
@@ -26,39 +26,39 @@ def run_test_file(test_file):
             if name.startswith("test_") and callable(getattr(test_module, name)):
                 test_functions.append(name)
 
-        print(f"Found {len(test_functions)} test functions")
+        training_logger.info(f"Found {len(test_functions, operation="enhanced_logging")} test functions")
 
         passed = 0
         failed = 0
 
         for test_name in test_functions:
-            print(f"\n--- Running {test_name} ---")
+            training_logger.info(f"\n--- Running {test_name} ---", operation="enhanced_logging")
             try:
                 test_func = getattr(test_module, test_name)
                 test_func()
-                print(f"✅ {test_name} PASSED")
+                training_logger.info(f"✅ {test_name} PASSED", operation="enhanced_logging")
                 passed += 1
             except Exception as e:
-                print(f"❌ {test_name} FAILED: {e}")
-                print(f"   Traceback: {traceback.format_exc()}")
+                training_logger.error(f"❌ {test_name} FAILED: {e}", operation="enhanced_logging")
+                training_logger.info(f"   Traceback: {traceback.format_exc(, operation="enhanced_logging")}")
                 failed += 1
 
-        print(f"\n--- {test_file} Summary ---")
-        print(f"✅ Passed: {passed}")
-        print(f"❌ Failed: {failed}")
-        print(f"📊 Total: {passed + failed}")
+        training_logger.info(f"\n--- {test_file} Summary ---", operation="enhanced_logging")
+        training_logger.info(f"✅ Passed: {passed}", operation="enhanced_logging")
+        training_logger.error(f"❌ Failed: {failed}", operation="enhanced_logging")
+        training_logger.error(f"📊 Total: {passed + failed}", operation="enhanced_logging")
 
         return passed, failed
 
     except Exception as e:
-        print(f"❌ Error loading {test_file}: {e}")
-        print(f"   Traceback: {traceback.format_exc()}")
+        training_logger.error(f"❌ Error loading {test_file}: {e}", operation="enhanced_logging")
+        training_logger.info(f"   Traceback: {traceback.format_exc(, operation="enhanced_logging")}")
         return 0, 1
 
 
 def main():
-    print("=== Direct Test Runner ===")
-    print("Bypassing pytest to run tests directly")
+    training_logger.info("=== Direct Test Runner ===", operation="enhanced_logging")
+    training_logger.info("Bypassing pytest to run tests directly", operation="enhanced_logging")
 
     # Find all test files
     test_dir = "tests"
@@ -69,7 +69,7 @@ def main():
             if file.startswith("test_") and file.endswith(".py"):
                 test_files.append(os.path.join(test_dir, file))
 
-    print(f"Found {len(test_files)} test files")
+    training_logger.info(f"Found {len(test_files, operation="enhanced_logging")} test files")
 
     total_passed = 0
     total_failed = 0
@@ -79,18 +79,18 @@ def main():
         total_passed += passed
         total_failed += failed
 
-    print(f"\n{'='*60}")
-    print("FINAL SUMMARY")
-    print(f"{'='*60}")
-    print(f"✅ Total Passed: {total_passed}")
-    print(f"❌ Total Failed: {total_failed}")
-    print(f"📊 Total Tests: {total_passed + total_failed}")
+    training_logger.info(f"\n{'='*60}", operation="enhanced_logging")
+    training_logger.info("FINAL SUMMARY", operation="enhanced_logging")
+    training_logger.info(f"{'='*60}", operation="enhanced_logging")
+    training_logger.info(f"✅ Total Passed: {total_passed}", operation="enhanced_logging")
+    training_logger.error(f"❌ Total Failed: {total_failed}", operation="enhanced_logging")
+    training_logger.error(f"📊 Total Tests: {total_passed + total_failed}", operation="enhanced_logging")
 
     if total_failed == 0:
-        print("🎉 ALL TESTS PASSED!")
+        training_logger.info("🎉 ALL TESTS PASSED!", operation="enhanced_logging")
         return 0
     else:
-        print(f"⚠️  {total_failed} tests failed")
+        training_logger.error(f"⚠️  {total_failed} tests failed", operation="enhanced_logging")
         return 1
 
 

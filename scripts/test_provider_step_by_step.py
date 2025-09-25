@@ -14,27 +14,27 @@ from dotenv import load_dotenv
 load_dotenv()
 
 def main():
-    print("🔍 TESTING PROVIDER STEP BY STEP")
-    print("=" * 50)
+    universe_logger.info("🔍 TESTING PROVIDER STEP BY STEP", operation="enhanced_logging")
+    universe_logger.info("=" * 50, operation="enhanced_logging")
     
     try:
         from utils.active_universe_provider import ActiveUniverseProvider
         
         provider = ActiveUniverseProvider()
         
-        print("✅ Provider initialized")
+        universe_logger.info("✅ Provider initialized", operation="enhanced_logging")
         
         # Test step 1: Discover candidates
-        print("\n📊 Step 1: Testing candidate discovery...")
+        universe_logger.info("\n📊 Step 1: Testing candidate discovery...", operation="enhanced_logging")
         try:
             candidates = provider._discover_candidates(min_market_cap=10_000_000_000, limit=50)
-            print(f"✅ Found {len(candidates)} candidates: {candidates[:10]}")
+            universe_logger.info(f"✅ Found {len(candidates, operation="enhanced_logging")} candidates: {candidates[:10]}")
         except Exception as e:
-            print(f"❌ Candidate discovery failed: {e}")
+            universe_logger.error(f"❌ Candidate discovery failed: {e}", operation="enhanced_logging")
             return
         
         # Test step 2: Rank candidates
-        print("\n📈 Step 2: Testing candidate ranking...")
+        universe_logger.info("\n📈 Step 2: Testing candidate ranking...", operation="enhanced_logging")
         try:
             end_date = date.today()
             start_date = end_date - timedelta(days=60)
@@ -47,33 +47,33 @@ def main():
                 max_candidates=50,
                 batch_size=10
             )
-            print(f"✅ Ranked {len(ranked_candidates)} candidates: {ranked_candidates[:10]}")
+            universe_logger.info(f"✅ Ranked {len(ranked_candidates, operation="enhanced_logging")} candidates: {ranked_candidates[:10]}")
         except Exception as e:
-            print(f"❌ Candidate ranking failed: {e}")
+            universe_logger.error(f"❌ Candidate ranking failed: {e}", operation="enhanced_logging")
             return
         
         # Test step 3: Sector classifier
-        print("\n🏢 Step 3: Testing sector classifier...")
+        universe_logger.info("\n🏢 Step 3: Testing sector classifier...", operation="enhanced_logging")
         try:
             sector_classifier, sector_weights = provider._build_sector_classifier_and_weights(ranked_candidates[:20])
-            print(f"✅ Sector classifier: {bool(sector_classifier)}")
-            print(f"✅ Sector weights: {bool(sector_weights)}")
+            universe_logger.info(f"✅ Sector classifier: {bool(sector_classifier, operation="enhanced_logging")}")
+            universe_logger.info(f"✅ Sector weights: {bool(sector_weights, operation="enhanced_logging")}")
         except Exception as e:
-            print(f"❌ Sector classifier failed: {e}")
+            universe_logger.error(f"❌ Sector classifier failed: {e}", operation="enhanced_logging")
             return
         
         # Test step 4: Earnings exclusion
-        print("\n📅 Step 4: Testing earnings exclusion...")
+        universe_logger.info("\n📅 Step 4: Testing earnings exclusion...", operation="enhanced_logging")
         try:
-            test_data = provider.polygon_client.get_earnings_calendar("AAPL", start_date, end_date)
-            earnings_available = test_data.get("status") == "OK" or test_data.get("results")
-            print(f"✅ Earnings available: {earnings_available}")
+            earnings_calendar_data = provider.polygon_client.get_earnings_calendar("AAPL", start_date, end_date)
+            earnings_available = earnings_calendar_data.get("status") == "OK" or earnings_calendar_data.get("results")
+            universe_logger.info(f"✅ Earnings available: {earnings_available}", operation="enhanced_logging")
         except Exception as e:
-            print(f"❌ Earnings test failed: {e}")
+            universe_logger.error(f"❌ Earnings test failed: {e}", operation="enhanced_logging")
             return
         
         # Test step 5: Full universe generation
-        print("\n🎯 Step 5: Testing full universe generation...")
+        universe_logger.info("\n🎯 Step 5: Testing full universe generation...", operation="enhanced_logging")
         try:
             universe = provider.get_active_universe(
                 target_size=50,
@@ -84,18 +84,18 @@ def main():
             )
             
             if universe:
-                print(f"✅ SUCCESS: Generated {len(universe)} symbols")
-                print(f"📈 First 10: {universe[:10]}")
+                universe_logger.info(f"✅ SUCCESS: Generated {len(universe, operation="enhanced_logging")} symbols")
+                universe_logger.info(f"📈 First 10: {universe[:10]}", operation="enhanced_logging")
             else:
-                print("❌ FAILED: No universe generated")
+                universe_logger.error("❌ FAILED: No universe generated", operation="enhanced_logging")
                 
         except Exception as e:
-            print(f"❌ Universe generation failed: {e}")
+            universe_logger.error(f"❌ Universe generation failed: {e}", operation="enhanced_logging")
             import traceback
             traceback.print_exc()
                 
     except Exception as e:
-        print(f"❌ Error: {e}")
+        universe_logger.error(f"❌ Error: {e}", operation="enhanced_logging")
         import traceback
         traceback.print_exc()
 

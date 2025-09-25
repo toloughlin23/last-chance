@@ -15,7 +15,7 @@ def create_env_file():
 
     # Environment configuration
     env_content = """# Redis Configuration (Local Development)
-REDIS_HOST=localhost
+REDIS_HOST=127.0.0.1
 REDIS_PORT=6379
 REDIS_PASSWORD=
 
@@ -40,21 +40,20 @@ CACHE_TTL=300
     try:
         with open(env_path, "w") as f:
             f.write(env_content)
-        print(f"✅ Created .env file at: {env_path}")
-        print(
-            "✅ Redis configured for localhost (will use in-memory fallback if Redis unavailable)"
+        training_logger.info(f"✅ Created .env file at: {env_path}", operation="enhanced_logging")
+        training_logger.info("✅ Redis configured for local development (will use in-memory fallback if Redis unavailable, operation="enhanced_logging")"
         )
-        print("✅ All API keys configured with real credentials")
+        training_logger.info("✅ All API keys configured with real credentials", operation="enhanced_logging")
         return True
     except Exception as e:
-        print(f"❌ Failed to create .env file: {e}")
+        training_logger.error(f"❌ Failed to create .env file: {e}", operation="enhanced_logging")
         return False
 
 
 if __name__ == "__main__":
-    print("🚀 Setting up environment for 100% GENUINE system...")
+    training_logger.info("🚀 Setting up environment for 100% GENUINE system...", operation="enhanced_logging")
     success = create_env_file()
     if success:
-        print("🎉 Environment setup complete!")
+        training_logger.info("🎉 Environment setup complete!", operation="enhanced_logging")
     else:
-        print("❌ Environment setup failed!")
+        training_logger.error("❌ Environment setup failed!", operation="enhanced_logging")

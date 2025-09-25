@@ -15,6 +15,12 @@ from services.quotes_client import QuotesClient
 from services.sp500_client import SP500Client
 from utils.universe_selector import UniverseSelector
 
+# 🚀 ENHANCED: Import enhanced logging system
+from utils.enhanced_logging_system import get_enhanced_logger, log_performance_metrics, log_error_with_context
+
+# 🚀 ENHANCED: Initialize enhanced logger for optimized symbol pool
+pool_logger = get_enhanced_logger('optimized_symbol_pool', 'logs/optimized_pool.log')
+
 
 class OptimizedSymbolPool:
     """
@@ -68,21 +74,26 @@ class OptimizedSymbolPool:
                     cached_data.get("analysis_date", "2020-01-01")
                 )
                 if (datetime.now() - cache_date).days < 7:
-                    print("📂 Using cached optimized symbol pool...")
+                    pool_logger.info("Using cached optimized symbol pool", 
+                                   cache_used=True, operation="pool_creation")
                     return cached_data.get("symbols", [])
             except Exception as e:
-                print(f"⚠️ Failed to read optimized symbol pool cache: {e}")
+                pool_logger.warning(f"Failed to read optimized symbol pool cache: {e}", 
+                                  error_type=type(e).__name__, operation="cache_operations")
 
-        print(f"🔍 Analyzing symbols with {analysis_days} days of REAL Polygon data...")
+        pool_logger.info(f"Analyzing symbols with {analysis_days} days of REAL Polygon data", 
+                        analysis_days=analysis_days, operation="pool_creation")
 
         # Get candidate symbols (S&P 500 or fallback)
         candidates = self._get_candidate_symbols()
 
         if not candidates:
-            print("❌ No candidate symbols available")
+            pool_logger.error("No candidate symbols available", 
+                            operation="pool_creation", status="error")
             return []
 
-        print(f"📊 Analyzing {len(candidates)} candidate symbols...")
+        pool_logger.info(f"Analyzing {len(candidates)} candidate symbols", 
+                        candidates_count=len(candidates), operation="pool_creation")
 
         # Calculate date range
         end_date = datetime.now().date()
@@ -103,7 +114,8 @@ class OptimizedSymbolPool:
             spread_core_hours_only=True,
         )
 
-        print(f"✅ Selected {len(optimized_symbols)} optimized symbols!")
+        pool_logger.info(f"Selected {len(optimized_symbols)} optimized symbols!", 
+                        selected_count=len(optimized_symbols), status="success", operation="pool_creation")
 
         # Save results to cache
         self._save_optimized_pool(optimized_symbols, analysis_days, cache_file)
@@ -116,13 +128,16 @@ class OptimizedSymbolPool:
         try:
             sp500_symbols = self.sp500_client.fetch_symbols()
             if sp500_symbols:
-                print(f"📈 Using {len(sp500_symbols)} S&P 500 symbols as candidates")
+                pool_logger.info(f"Using {len(sp500_symbols)} S&P 500 symbols as candidates", 
+                               sp500_count=len(sp500_symbols), operation="candidate_discovery")
                 return sp500_symbols
         except Exception as e:
-            print(f"⚠️ S&P 500 fetch failed: {e}")
+            pool_logger.warning(f"S&P 500 fetch failed: {e}", 
+                              error_type=type(e).__name__, operation="candidate_discovery")
 
         # Fallback to known high-volume S&P 500 symbols
-        print("🔄 Using fallback high-volume S&P 500 symbols...")
+        pool_logger.warning("Using fallback high-volume S&P 500 symbols", 
+                          fallback_triggered=True, operation="candidate_discovery")
         return [
             # Tech Giants
             "AAPL",
@@ -403,7 +418,8 @@ class OptimizedSymbolPool:
         with open(filepath, "w") as f:
             json.dump(pool_data, f, indent=2)
 
-        print(f"💾 Optimized pool saved to {filepath}")
+        pool_logger.info(f"Optimized pool saved to {filepath}", 
+                        filepath=filepath, operation="file_operations")
 
     def validate_pool_performance(self, lookback_days: int = 30) -> Dict[str, Any]:
         """
@@ -415,7 +431,8 @@ class OptimizedSymbolPool:
         Returns:
             Performance validation metrics
         """
-        print(f"🔍 Validating pool performance over {lookback_days} days...")
+        pool_logger.info(f"Validating pool performance over {lookback_days} days", 
+                        lookback_days=lookback_days, operation="validation")
 
         # Get current optimized pool
         current_pool = self.get_optimized_pool(analysis_days=180, target_size=120)
@@ -455,11 +472,12 @@ class OptimizedSymbolPool:
             ),
         }
 
-        print("✅ Validation complete:")
-        print(f"   - Pool stability: {validation_metrics['pool_stability']}")
-        print(
-            f"   - Overlap: {len(overlap)}/{len(current_pool)} symbols ({validation_metrics['overlap_percentage']:.1f}%)"
-        )
+        pool_logger.info("Validation complete:", status="success", operation="validation")
+        pool_logger.info(f"Pool stability: {validation_metrics['pool_stability']}", 
+                        pool_stability=validation_metrics['pool_stability'], operation="validation")
+        pool_logger.info(f"Overlap: {len(overlap)}/{len(current_pool)} symbols ({validation_metrics['overlap_percentage']:.1f}%)", 
+                        overlap_count=len(overlap), total_count=len(current_pool), 
+                        overlap_percentage=validation_metrics['overlap_percentage'], operation="validation")
 
         return validation_metrics
 
@@ -483,8 +501,8 @@ def get_optimized_symbols(
 
 # Example usage
 if __name__ == "__main__":
-    print("🎯 OPTIMIZED SYMBOL POOL - 100% GENUINE DATA-DRIVEN")
-    print("=" * 60)
+    pool_logger.info("OPTIMIZED SYMBOL POOL - 100% GENUINE DATA-DRIVEN", operation="main")
+    pool_logger.info("=" * 60, operation="main")
 
     # Create optimized pool
     pool = OptimizedSymbolPool()
@@ -492,10 +510,13 @@ if __name__ == "__main__":
     # Get optimized symbols
     symbols = pool.get_optimized_pool(analysis_days=180, target_size=120)
 
-    print(f"\n✅ Optimized pool created with {len(symbols)} symbols!")
-    print(f"🎯 Top 10 symbols: {symbols[:10]}")
+    pool_logger.info(f"Optimized pool created with {len(symbols)} symbols!", 
+                    pool_size=len(symbols), status="success", operation="main")
+    pool_logger.info(f"Top 10 symbols: {symbols[:10]}", 
+                    top_symbols=symbols[:10], operation="main")
 
     # Validate performance
     validation = pool.validate_pool_performance(lookback_days=30)
 
-    print("\n🚀 Ready for day trading with REAL Polygon data!")
+    pool_logger.info("Ready for day trading with REAL Polygon data!", 
+                    status="ready", operation="main")

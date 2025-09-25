@@ -30,7 +30,7 @@ def test_phase1_learning_loop_initialization():
     assert learning_loop.neural is not None
     assert learning_loop.ucbv is not None
 
-    print("✅ Learning loop initialization test passed")
+    training_logger.info("✅ Learning loop initialization test passed", operation="enhanced_logging")
 
 
 def test_phase1_learning_cycle():
@@ -52,11 +52,9 @@ def test_phase1_learning_cycle():
     # Check iteration count increased
     assert learning_loop.current_iteration == 1
 
-    print("✅ Learning cycle test passed")
-    print(f"   Overall variance: {diversity_metrics['overall_variance']:.4f}")
-    print(
-        f"   Cross-algorithm variance: {diversity_metrics['cross_algorithm_variance']:.4f}"
-    )
+    training_logger.info("✅ Learning cycle test passed", operation="enhanced_logging")
+    training_logger.info(f"   Overall variance: {diversity_metrics['overall_variance']:.4f}", operation="enhanced_logging")
+    training_logger.info(f"   Cross-algorithm variance: {diversity_metrics['cross_algorithm_variance']:.4f}", operation="enhanced_logging")
 
 
 def test_phase1_learning_loop_diversity():
@@ -65,12 +63,12 @@ def test_phase1_learning_loop_diversity():
 
     learning_loop = Phase1LearningLoop(symbols, learning_rate=0.01)
 
-    print("\n🎯 RUNNING LEARNING LOOP DIVERSITY TEST")
-    print("=" * 50)
+    training_logger.info("\n🎯 RUNNING LEARNING LOOP DIVERSITY TEST", operation="enhanced_logging")
+    training_logger.info("=" * 50, operation="enhanced_logging")
 
     # Run multiple learning cycles
     for i in range(5):
-        print(f"\n🔄 Learning cycle {i + 1}/5")
+        training_logger.info(f"\n🔄 Learning cycle {i + 1}/5", operation="enhanced_logging")
         diversity_metrics = learning_loop.run_learning_cycle(
             lookback_days=3, execute_trades=False
         )
@@ -78,14 +76,12 @@ def test_phase1_learning_loop_diversity():
         overall_variance = diversity_metrics.get("overall_variance", 0)
         cross_algorithm_variance = diversity_metrics.get("cross_algorithm_variance", 0)
 
-        print(f"   Overall variance: {overall_variance:.4f}")
-        print(f"   Cross-algorithm variance: {cross_algorithm_variance:.4f}")
+        training_logger.info(f"   Overall variance: {overall_variance:.4f}", operation="enhanced_logging")
+        training_logger.info(f"   Cross-algorithm variance: {cross_algorithm_variance:.4f}", operation="enhanced_logging")
 
         # Check if we've achieved target diversity
         if overall_variance > 0.15:
-            print(
-                f"🎯 TARGET ACHIEVED! Overall variance: {overall_variance:.4f} > 0.15"
-            )
+            training_logger.info(f"🎯 TARGET ACHIEVED! Overall variance: {overall_variance:.4f} > 0.15", operation="enhanced_logging")
             break
 
     # Final diversity check
@@ -93,26 +89,23 @@ def test_phase1_learning_loop_diversity():
     overall_variance = final_diversity.get("overall_variance", 0)
     cross_algorithm_variance = final_diversity.get("cross_algorithm_variance", 0)
 
-    print("\n📊 FINAL DIVERSITY RESULTS:")
-    print(f"   Overall variance: {overall_variance:.4f}")
-    print(f"   Cross-algorithm variance: {cross_algorithm_variance:.4f}")
-    print(
-        f"   Coefficient of variation: {final_diversity.get('coefficient_of_variation', 0):.4f}"
+    training_logger.info("\n📊 FINAL DIVERSITY RESULTS:", operation="enhanced_logging")
+    training_logger.info(f"   Overall variance: {overall_variance:.4f}", operation="enhanced_logging")
+    training_logger.info(f"   Cross-algorithm variance: {cross_algorithm_variance:.4f}", operation="enhanced_logging")
+    training_logger.info(f"   Coefficient of variation: {final_diversity.get('coefficient_of_variation', 0, operation="enhanced_logging"):.4f}"
     )
 
     # Check Bronze Tier compliance
     if overall_variance > 0.15:
-        print("🏆 BRONZE TIER COMPLIANCE: ✅ ACHIEVED")
+        training_logger.info("🏆 BRONZE TIER COMPLIANCE: ✅ ACHIEVED", operation="enhanced_logging")
         assert (
             overall_variance > 0.15
         ), "Overall variance should be > 0.15 for Bronze Tier compliance"
     else:
-        print("⚠️ BRONZE TIER COMPLIANCE: ❌ NOT ACHIEVED")
-        print(
-            "   This is expected for initial test - real training will improve diversity"
-        )
+        training_logger.error("⚠️ BRONZE TIER COMPLIANCE: ❌ NOT ACHIEVED", operation="enhanced_logging")
+        training_logger.info("   This is expected for initial test - real training will improve diversity", operation="enhanced_logging")
 
-    print("✅ Learning loop diversity test completed")
+    training_logger.info("✅ Learning loop diversity test completed", operation="enhanced_logging")
 
 
 def test_phase1_algorithm_learning():
@@ -135,9 +128,9 @@ def test_phase1_algorithm_learning():
     final_neural_arms = len(learning_loop.neural.networks)
     final_ucbv_arms = len(learning_loop.ucbv.arms)
 
-    print(f"LinUCB arms: {initial_linucb_arms} → {final_linucb_arms}")
-    print(f"Neural networks: {initial_neural_arms} → {final_neural_arms}")
-    print(f"UCB-V arms: {initial_ucbv_arms} → {final_ucbv_arms}")
+    training_logger.info(f"LinUCB arms: {initial_linucb_arms} → {final_linucb_arms}", operation="enhanced_logging")
+    training_logger.info(f"Neural networks: {initial_neural_arms} → {final_neural_arms}", operation="enhanced_logging")
+    training_logger.info(f"UCB-V arms: {initial_ucbv_arms} → {final_ucbv_arms}", operation="enhanced_logging")
 
     # Check that algorithms have learned something
     assert (
@@ -148,7 +141,7 @@ def test_phase1_algorithm_learning():
     ), "Neural Bandit should have learned new networks"
     assert final_ucbv_arms >= initial_ucbv_arms, "UCB-V should have learned new arms"
 
-    print("✅ Algorithm learning test passed")
+    training_logger.info("✅ Algorithm learning test passed", operation="enhanced_logging")
 
 
 def test_phase1_learning_metrics():
@@ -180,7 +173,7 @@ def test_phase1_learning_metrics():
         assert "trades" in perf, f"{alg_name} should track trades"
         assert "avg_confidence" in perf, f"{alg_name} should track average confidence"
 
-    print("✅ Learning metrics test passed")
+    training_logger.info("✅ Learning metrics test passed", operation="enhanced_logging")
 
 
 if __name__ == "__main__":
@@ -191,4 +184,4 @@ if __name__ == "__main__":
     test_phase1_learning_metrics()
     test_phase1_learning_loop_diversity()
 
-    print("\n🎉 ALL PHASE 1 LEARNING LOOP TESTS PASSED!")
+    training_logger.info("\n🎉 ALL PHASE 1 LEARNING LOOP TESTS PASSED!", operation="enhanced_logging")

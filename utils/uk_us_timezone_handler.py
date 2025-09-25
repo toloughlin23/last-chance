@@ -18,9 +18,15 @@ from datetime import datetime, timedelta
 from typing import Optional, Union
 
 import pandas as pd
+
+# 🚀 ENHANCED: Import enhanced logging system
+from utils.enhanced_logging_system import get_enhanced_logger, log_performance_metrics, log_error_with_context
 import pytz  # type: ignore[import-untyped]
 
 logger = logging.getLogger(__name__)
+
+# 🚀 ENHANCED: Initialize enhanced logger for timezone operations
+timezone_logger = get_enhanced_logger('uk_us_timezone_handler', 'logs/timezone.log')
 
 
 class UKUSTimezoneHandler:
@@ -195,7 +201,7 @@ class UKUSTimezoneHandler:
             days_back: Number of days to look back (default: 90)
             
         Returns:
-            Tuple of (start_date, end_date) in YYYY-MM-DD format
+            Tuple of (start_date, end_date) in ISO 8601 format (YYYY-MM-DD)
         """
         end_date = self.get_uk_time().date()
         start_date = end_date - timedelta(days=days_back)
@@ -261,24 +267,27 @@ if __name__ == "__main__":
     logger = logging.getLogger(__name__)
     logger.info("🌍 UK/US Timezone Handler Test")
     logger.info("=" * 40)
-    print("🌍 UK/US Timezone Handler Test")
-    print("=" * 40)
+    timezone_logger.info("UK/US Timezone Handler Test", operation="testing")
+    timezone_logger.info("=" * 40, operation="testing")
 
     handler = UKUSTimezoneHandler()
     handler.log_timezone_status()
 
     # 🚀 ENHANCED: Add structured logging + keep original functionality
     logger.info("\n📅 Trading Date Range (90 days):")
-    print("\n📅 Trading Date Range (90 days):")
+    timezone_logger.info("Trading Date Range (90 days):", operation="testing")
     start, end = get_trading_dates(90)
     logger.info(f"   Start: {start}")
     logger.info(f"   End: {end}")
-    print(f"   Start: {start}")
-    print(f"   End: {end}")
+    timezone_logger.info(f"Start: {start}", start_date=start, operation="testing")
+    timezone_logger.info(f"End: {end}", end_date=end, operation="testing")
 
-    print("\n🔄 Timezone Conversions:")
+    timezone_logger.info("Timezone Conversions:", operation="testing")
     uk_time = get_current_uk_time()
     us_time = handler.uk_to_us_market(uk_time)
-    print(f"   UK: {uk_time.strftime('%H:%M %Z')} → US: {us_time.strftime('%H:%M %Z')}")
+    timezone_logger.info(f"UK: {uk_time.strftime('%H:%M %Z')} → US: {us_time.strftime('%H:%M %Z')}", 
+                       uk_time=uk_time.strftime('%H:%M %Z'), us_time=us_time.strftime('%H:%M %Z'), 
+                       operation="testing")
 
-    print("\n✅ UK/US Timezone Handler working correctly!")
+    timezone_logger.info("UK/US Timezone Handler working correctly!", 
+                       status="success", operation="testing")

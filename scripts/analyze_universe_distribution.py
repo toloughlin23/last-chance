@@ -73,17 +73,18 @@ def main(argv: List[str]) -> int:
     counts = analyze_distribution(symbols)
     total = len(symbols)
 
-    print(f"File: {path}")
-    print(f"Total symbols: {total}")
+    universe_logger.info(f"File: {path}", operation="enhanced_logging")
+    universe_logger.info(f"Total symbols: {total}", operation="enhanced_logging")
     for key in [chr(c) for c in range(ord("A"), ord("Z") + 1)] + ["#"]:
         if key in counts:
             pct = 100.0 * counts[key] / total if total else 0.0
-            print(f"{key}: {counts[key]} ({pct:.1f}%)")
+            universe_logger.info(f"{key}: {counts[key]} ({pct:.1f}%, operation="enhanced_logging")")
     return 0
 
 
 if __name__ == "__main__":
     raise SystemExit(main(sys.argv))
+
 
 
 

@@ -11,12 +11,14 @@ ENHANCEMENTS: 15 features, confidence boost 1.5x, adaptive alpha, market regime 
 import math
 import time
 from dataclasses import dataclass
+from datetime import datetime
 from enum import Enum
 from typing import Any, Dict, List, Optional
 
 import numpy as np
 
 from systems.personality import AuthenticPersonalitySystem, PersonalityProfile
+from utils.enhanced_logging_system import training_logger
 
 
 class ArmType(Enum):
@@ -104,6 +106,7 @@ class OptimizedInstitutionalLinUCB:
 
         # ENHANCED: Market regime detection
         self.regime_detector = MarketRegimeDetector()
+        self.market_regime_detector = self.regime_detector  # Alias for compatibility
         self.correlation_analyzer = CrossAssetCorrelationAnalyzer()
 
         # ENHANCED: Personality system integration
@@ -122,12 +125,12 @@ class OptimizedInstitutionalLinUCB:
             except Exception:
                 self.personality = None
 
-        print("🔥 OPTIMIZED LinUCB initialized")
-        print("✅ Enhanced features: 15")
-        print("✅ COMPETITIVE confidence boost: 1.5x")
-        print("✅ Market sensitivity: 1.8x")
-        print("✅ Institutional calibration: 45-90% range")
-        print("✅ Market regime detection: ENABLED")
+        training_logger.info("🔥 OPTIMIZED LinUCB initialized", operation="enhanced_logging")
+        training_logger.info("✅ Enhanced features: 15", operation="enhanced_logging")
+        training_logger.info("✅ COMPETITIVE confidence boost: 1.5x", operation="enhanced_logging")
+        training_logger.info("✅ Market sensitivity: 1.8x", operation="enhanced_logging")
+        training_logger.info("✅ Institutional calibration: 45-90% range", operation="enhanced_logging")
+        training_logger.info("✅ Market regime detection: ENABLED", operation="enhanced_logging")
 
     def extract_enhanced_market_features(self, enriched_data) -> np.ndarray:
         """Extract 15-dimensional feature vector - 100% GENUINE"""
@@ -233,15 +236,15 @@ class OptimizedInstitutionalLinUCB:
                 self._initialize_new_arm(best_arm)
 
             # Log selection
-            print(f"🔥 OPTIMIZED LinUCB selected: {best_arm}")
-            print(f"   Expected reward: {ucb_scores.get(best_arm, 0.0):.4f}")
+            training_logger.info(f"🔥 OPTIMIZED LinUCB selected: {best_arm}", operation="enhanced_logging")
+            training_logger.info(f"   Expected reward: {ucb_scores.get(best_arm, 0.0, operation="enhanced_logging"):.4f}")
             arm_state = self.arms.get(best_arm)
             if arm_state is not None:
                 conf_dbg = self._calculate_linucb_confidence(arm_state, features, alpha)
             else:
                 conf_dbg = 0.0
-            print(f"   Confidence bound: {conf_dbg:.4f}")
-            print(f"   Adaptive alpha: {alpha:.3f}")
+            training_logger.info(f"   Confidence bound: {conf_dbg:.4f}", operation="enhanced_logging")
+            training_logger.info(f"   Adaptive alpha: {alpha:.3f}", operation="enhanced_logging")
 
             return best_arm
 
@@ -278,158 +281,40 @@ class OptimizedInstitutionalLinUCB:
             return False
 
     def get_confidence_for_context(self, arm_id: str, enriched_data) -> float:
-        """Get confidence for specific arm and context - 100% GENUINE"""
+        """🚀 HIGHLY ADVANCED: Get confidence for specific arm and context - 100% GENUINE"""
         try:
-            print(
-                f"🔍 LinUCB: arm_id={arm_id}, enriched_data type={type(enriched_data)}"
-            )
+            training_logger.info(f"🔍 LinUCB: arm_id={arm_id}, enriched_data type={type(enriched_data)}", operation="enhanced_logging")
 
             # Initialize arm if it doesn't exist - 100% GENUINE
             if arm_id not in self.arms:
-                print(f"🔍 LinUCB: Initializing new arm {arm_id}")
+                training_logger.info(f"🔍 LinUCB: Initializing new arm {arm_id}", operation="enhanced_logging")
                 self._initialize_new_arm(arm_id)
 
             arm = self.arms[arm_id]
-            print(f"🔍 LinUCB: arm state={arm}")
+            training_logger.info(f"🔍 LinUCB: arm state={arm}", operation="enhanced_logging")
 
             # Handle numpy array input directly
             if isinstance(enriched_data, np.ndarray):
                 features = enriched_data
-                print(f"🔍 LinUCB: using direct numpy features={features[:3]}...")
+                training_logger.info(f"🔍 LinUCB: using direct numpy features={features[:3]}...", operation="enhanced_logging")
             else:
                 features = self.extract_enhanced_market_features(enriched_data)
-                print(f"🔍 LinUCB: extracted features={features[:3]}...")
+                training_logger.info(f"🔍 LinUCB: extracted features={features[:3]}...", operation="enhanced_logging")
 
             alpha = self._get_adaptive_alpha(features)
-            print(f"🔍 LinUCB: alpha={alpha}")
+            training_logger.info(f"🔍 LinUCB: alpha={alpha}", operation="enhanced_logging")
 
-            # GENUINE LinUCB Enhancement: Create meaningful variation based on linear exploration characteristics
-            # Build contributions purely from feature statistics to guarantee variation across inputs
+            # 🚀 HIGHLY ADVANCED: Calculate LinUCB confidence with all advanced factors
+            confidence = self._calculate_linucb_confidence(arm, features, alpha)
+            
+            # 🚀 HIGHLY ADVANCED: Apply enhanced confidence calculation with all advanced factors
+            enhanced_confidence = self._calculate_enhanced_confidence(confidence, features)
+            training_logger.info(f"🔍 LinUCB: enhanced_confidence={enhanced_confidence:.4f}", operation="enhanced_logging")
 
-            # 1. Feature magnitude variation (LinUCB's linear exploration strength)
-            feature_std = float(np.std(features))
-            feature_mean_abs = float(np.mean(np.abs(features)))
-            feature_norm = float(np.linalg.norm(features))
-
-            base_confidence = 0.50
-            # ENHANCED sensitivity to ensure meaningful variation for personality integration
-            contribution_norm = min(
-                0.15, feature_norm * 0.08
-            )  # Enhanced from 0.05 to 0.08
-            contribution_std = min(
-                0.10, feature_std * 0.80
-            )  # Enhanced from 0.60 to 0.80
-            contribution_mean = min(
-                0.10, feature_mean_abs * 0.60
-            )  # Enhanced from 0.40 to 0.60
-
-            # 2. Feature interaction variation (LinUCB's linear combination strength) - ENHANCED
-            feature_interactions = 0.0
-            if len(features) >= 3:
-                for i in range(min(3, len(features))):
-                    for j in range(i + 1, min(i + 3, len(features))):
-                        feature_interactions += abs(features[i] * features[j])
-            interaction_contrib = min(
-                0.12, feature_interactions * 0.35
-            )  # Enhanced from 0.25 to 0.35
-
-            # 3. Feature range variation (LinUCB's exploration range sensitivity) - ENHANCED
-            feature_range = (
-                float(np.max(features) - np.min(features)) if len(features) > 0 else 0.0
-            )
-            range_contrib = min(0.08, feature_range * 0.50)  # Enhanced from 0.3 to 0.50
-
-            # 4. Feature skewness variation (LinUCB's distribution sensitivity) - ENHANCED
-            feature_skewness = (
-                np.mean((features - np.mean(features)) ** 3) / (np.std(features) ** 3)
-                if np.std(features) > 0
-                else 0.0
-            )
-            skewness_contrib = min(
-                0.06, abs(feature_skewness) * 0.25
-            )  # Enhanced from 0.15 to 0.25
-
-            # 5. Feature variance variation (LinUCB's uncertainty sensitivity) - ENHANCED
-            feature_variance = float(np.var(features))
-            variance_contrib = min(
-                0.08, feature_variance * 0.60
-            )  # Enhanced from 0.4 to 0.60
-
-            # Targeted domain contributions for first market features - ENHANCED
-            sentiment_contrib = (
-                min(0.04, abs(float(features[0])) * 0.30) if len(features) > 0 else 0.0
-            )  # Enhanced from 0.20 to 0.30
-            momentum_contrib = (
-                min(0.06, abs(float(features[1])) * 0.90) if len(features) > 1 else 0.0
-            )  # Enhanced from 0.70 to 0.90
-            volatility_contrib = (
-                min(0.06, max(0.0, float(features[2])) * 0.90)
-                if len(features) > 2
-                else 0.0
-            )  # Enhanced from 0.70 to 0.90
-            volume_ratio_contrib = (
-                min(0.06, max(0.0, float(features[4]) - 1.0) * 0.18)
-                if len(features) > 4
-                else 0.0
-            )  # Enhanced from 0.12 to 0.18
-
-            confidence = (
-                base_confidence
-                + contribution_norm
-                + contribution_std
-                + contribution_mean
-                + interaction_contrib
-                + range_contrib
-                + skewness_contrib
-                + variance_contrib
-                + sentiment_contrib
-                + momentum_contrib
-                + volatility_contrib
-                + volume_ratio_contrib
-            )
-
-            # Deterministic personality influence (no randomness)
-            if self.personality is not None:
-                # Confidence bias centered at 0.5 → shift in [-0.15, +0.15] for meaningful variation
-                bias = float(self.personality.confidence_bias())
-                confidence += (bias - 0.5) * 0.30  # Increased from 0.16 to 0.30
-                # Exploration bias provides additional spread in [-0.08, +0.08]
-                confidence += (
-                    float(self.personality.exploration_bias()) * 0.16
-                )  # Increased from 0.04 to 0.16
-
-            # GENUINE LinUCB Enhancement: Ensure meaningful variation within bounds
-            # Add feature-based variation that creates genuine diversity
-            feature_entropy = 0.0
-            for feature in features:
-                if abs(feature) > 1e-10:
-                    feature_entropy += abs(feature) * np.log(abs(feature) + 1e-10)
-            entropy_contrib = min(0.06, feature_entropy * 0.15)
-            confidence += entropy_contrib
-
-            # Feature correlation variation (LinUCB's linear relationship strength)
-            correlation_strength = 0.0
-            if len(features) >= 2:
-                for i in range(min(2, len(features))):
-                    for j in range(i + 1, min(i + 2, len(features))):
-                        correlation_strength += abs(features[i] * features[j])
-            correlation_contrib = min(0.05, correlation_strength * 0.2)
-            confidence += correlation_contrib
-
-            # Feature distribution variation (LinUCB's distribution sensitivity)
-            feature_kurtosis = (
-                np.mean((features - np.mean(features)) ** 4) / (np.std(features) ** 4)
-                if np.std(features) > 0
-                else 0.0
-            )
-            kurtosis_contrib = min(0.04, abs(feature_kurtosis) * 0.1)
-            confidence += kurtosis_contrib
-
-            # Clamp to institutional bounds with genuine variation
-            return max(0.45, min(0.90, float(confidence)))
-
-        except Exception:
-            return 0.6  # Institutional fallback confidence
+            return enhanced_confidence
+        except Exception as e:
+            training_logger.error(f"❌ LinUCB confidence calculation failed: {e}", operation="enhanced_logging")
+            return 0.6  # Fallback confidence
 
     def get_arm_statistics(self, arm_id: str) -> Dict[str, Any]:
         """Get comprehensive statistics for a specific arm - 100% GENUINE"""
@@ -532,7 +417,53 @@ class OptimizedInstitutionalLinUCB:
             )
 
         except Exception as e:
-            print(f"Error initializing arm {arm_id}: {e}")
+            training_logger.error(f"Error initializing arm {arm_id}: {e}", operation="enhanced_logging")
+
+    def _calculate_enhanced_confidence(self, base_confidence: float, features: np.ndarray) -> float:
+        """🚀 HIGHLY ADVANCED: Calculate enhanced confidence with all advanced factors"""
+        try:
+            # Apply all enhancement factors
+            market_regime_factor = self._calculate_market_regime_factor(features)
+            correlation_factor = self._calculate_correlation_factor(features)
+            time_factor = self._get_time_of_day_factor()
+            
+            # Apply confidence boost
+            enhanced_confidence = base_confidence * self.confidence_boost_factor
+            enhanced_confidence *= market_regime_factor * correlation_factor * time_factor
+            
+            # Apply market sensitivity
+            enhanced_confidence *= self.market_sensitivity
+            
+            return min(0.85, max(0.30, enhanced_confidence))
+        except:
+            return min(0.95, max(0.40, base_confidence))
+
+    def _calculate_market_regime_factor(self, features: np.ndarray) -> float:
+        """🚀 HIGHLY ADVANCED: Calculate market regime factor"""
+        try:
+            # Extract market regime from features (index 12)
+            market_regime = features[12] if len(features) > 12 else 0.5
+            
+            # Map regime to factor
+            if market_regime > 0.7:  # Bull market
+                return 1.2
+            elif market_regime < 0.3:  # Bear market
+                return 0.8
+            else:  # Sideways market
+                return 1.0
+        except:
+            return 1.0
+
+    def _calculate_correlation_factor(self, features: np.ndarray) -> float:
+        """🚀 HIGHLY ADVANCED: Calculate correlation strength factor"""
+        try:
+            # Extract correlation strength from features (index 11)
+            correlation = features[11] if len(features) > 11 else 0.5
+            
+            # Higher correlation = more confidence
+            return 0.8 + (correlation * 0.4)  # Range: 0.8 to 1.2
+        except:
+            return 1.0
 
     def _calculate_linucb_confidence(
         self, arm: OptimizedLinUCBArmState, features: np.ndarray, alpha: float
@@ -840,6 +771,52 @@ class OptimizedInstitutionalLinUCB:
         except Exception:
             return 0.5
 
+    def export_state(self) -> Dict[str, Any]:
+        """🚀 ENHANCED: Export algorithm state for model persistence"""
+        try:
+            # Export arm states
+            arm_states = {}
+            for arm_id, arm in self.arms.items():
+                arm_states[arm_id] = {
+                    "arm_type": arm.arm_type.value,
+                    "dimension": arm.dimension,
+                    "A": arm.A.tolist() if hasattr(arm.A, 'tolist') else arm.A,
+                    "b": arm.b.tolist() if hasattr(arm.b, 'tolist') else arm.b,
+                    "theta": arm.theta.tolist() if hasattr(arm.theta, 'tolist') else arm.theta,
+                    "A_inv": arm.A_inv.tolist() if hasattr(arm.A_inv, 'tolist') else arm.A_inv,
+                    "total_reward": float(arm.total_reward),
+                    "pull_count": int(arm.pull_count),
+                    "last_updated": arm.last_updated,
+                    "confidence_history": [float(x) for x in arm.confidence_history]
+                }
+            
+            # Export algorithm configuration
+            config = {
+                "alpha": getattr(self, 'alpha', 0.5),
+                "dimension": getattr(self, 'dimension', 15),
+                "arms": list(self.arms.keys()),
+                "market_regime_detector": {
+                    "enabled": hasattr(self, 'market_regime_detector'),
+                    "current_regime": getattr(self.market_regime_detector, 'current_regime', 0.5) if hasattr(self, 'market_regime_detector') else 0.5
+                }
+            }
+            
+            return {
+                "algorithm_type": "OptimizedInstitutionalLinUCB",
+                "version": "1.0.0",
+                "export_timestamp": datetime.now().isoformat(),
+                "config": config,
+                "arm_states": arm_states,
+                "training_metadata": {
+                    "total_arms": len(self.arms),
+                    "total_pulls": sum(arm.pull_count for arm in self.arms.values()),
+                    "total_reward": sum(arm.total_reward for arm in self.arms.values())
+                }
+            }
+        except Exception as e:
+            training_logger.error(f"⚠️ Error exporting LinUCB state: {e}", operation="enhanced_logging")
+            return {"error": str(e), "algorithm_type": "OptimizedInstitutionalLinUCB"}
+
 
 class MarketRegimeDetector:
     """Market regime detection system"""
@@ -878,10 +855,10 @@ class CrossAssetCorrelationAnalyzer:
 
 
 if __name__ == "__main__":
-    print("🔥 OPTIMIZED INSTITUTIONAL LINUCB")
-    print("=" * 50)
-    print("✅ Enhanced feature engineering (15 dimensions)")
-    print("✅ Competitive confidence calculation")
-    print("✅ Market regime detection")
-    print("✅ Adaptive exploration parameters")
-    print("100% GENUINE - NO SHORTCUTS - ALWAYS MAKE BETTER NEVER REMOVE TO FIX")
+    training_logger.info("🔥 OPTIMIZED INSTITUTIONAL LINUCB", operation="enhanced_logging")
+    training_logger.info("=" * 50, operation="enhanced_logging")
+    training_logger.info("✅ Enhanced feature engineering (15 dimensions)", operation="enhanced_logging")
+    training_logger.info("✅ Competitive confidence calculation", operation="enhanced_logging")
+    training_logger.info("✅ Market regime detection", operation="enhanced_logging")
+    training_logger.info("✅ Adaptive exploration parameters", operation="enhanced_logging")
+    training_logger.info("100% GENUINE - NO SHORTCUTS - ALWAYS MAKE BETTER NEVER REMOVE TO FIX", operation="enhanced_logging")

@@ -19,9 +19,14 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import date, datetime, timedelta
 from typing import Dict, List, Optional, Tuple
 
+# 🚀 ENHANCED: Load environment variables and enhanced logging
+from utils.env_loader import load_env_from_known_locations
+load_env_from_known_locations()
+
 from services.polygon_client import PolygonClient
 from services.quotes_client import QuotesClient
 from utils.universe_selector import UniverseSelector
+from utils.enhanced_logging_system import universe_logger
 
 
 class AdaptiveUniverseProvider:
@@ -63,7 +68,7 @@ class AdaptiveUniverseProvider:
                     if age_hours <= max_age_hours:
                         symbols = payload.get("symbols", [])
                         if isinstance(symbols, list) and len(symbols) >= target_size:
-                            print(f"✅ Using cached universe: {len(symbols)} symbols")
+                            universe_logger.info(f"✅ Using cached universe: {len(symbols)} symbols", operation="cache_usage", cached_symbol_count=len(symbols))
                             return symbols[:target_max_size]
             except Exception:
                 pass
@@ -71,17 +76,18 @@ class AdaptiveUniverseProvider:
         ed = end_date or date.today()
         sd = ed - timedelta(days=analysis_days)
 
-        print(
-            f"🚀 Building adaptive universe (target: {target_size}-{target_max_size})..."
+        universe_logger.info(
+            f"🚀 Building adaptive universe (target: {target_size}-{target_max_size})...",
+            operation="adaptive_generation", target_min=target_size, target_max=target_max_size
         )
 
         # Get candidates from entire S&P 500
         candidates = self._discover_candidates()
         if not candidates:
-            print("⚠️ No candidates found, using fallback")
+            universe_logger.warning("⚠️ No candidates found, using fallback", operation="adaptive_generation")
             return self._get_fallback_symbols()[:target_max_size]
 
-        print(f"📊 Analyzing {len(candidates)} candidates...")
+        universe_logger.info(f"📊 Analyzing {len(candidates)} candidates...", operation="candidate_analysis", candidate_count=len(candidates))
 
         # Try progressive filter relaxation
         universe = self._progressive_filter_strategy(
@@ -89,13 +95,13 @@ class AdaptiveUniverseProvider:
         )
 
         if len(universe) < target_size:
-            print(f"⚠️ Only {len(universe)} symbols found, using fallback strategy")
+            universe_logger.warning(f"⚠️ Only {len(universe)} symbols found, using fallback strategy", operation="adaptive_generation", found_count=len(universe), target_min=target_size)
             universe = self._fallback_strategy(candidates, sd, ed, target_size)
 
         # Cache results
         self._save_universe(universe, analysis_days, cache_path)
 
-        print(f"✅ Generated adaptive universe: {len(universe)} symbols")
+        universe_logger.info(f"✅ Generated adaptive universe: {len(universe)} symbols", operation="adaptive_generation", final_symbol_count=len(universe))
         return universe[:target_max_size]
 
     def _progressive_filter_strategy(
@@ -163,7 +169,7 @@ class AdaptiveUniverseProvider:
         ]
 
         for i, config in enumerate(filter_configs):
-            print(f"🔍 Trying {config['name']} filters...")
+            universe_logger.info(f"🔍 Trying {config['name']} filters...", operation="progressive_filtering", filter_name=config['name'])
 
             try:
                 universe = self._apply_filters(
@@ -176,13 +182,13 @@ class AdaptiveUniverseProvider:
                 )
 
                 if len(universe) >= target_size:
-                    print(f"✅ {config['name']} filters: {len(universe)} symbols")
+                    universe_logger.info(f"✅ {config['name']} filters: {len(universe)} symbols", operation="progressive_filtering", filter_name=config['name'], symbol_count=len(universe))
                     return universe
                 else:
-                    print(f"⚠️ {config['name']} filters: only {len(universe)} symbols")
+                    universe_logger.warning(f"⚠️ {config['name']} filters: only {len(universe)} symbols", operation="progressive_filtering", filter_name=config['name'], symbol_count=len(universe), target_min=target_size)
 
             except Exception as e:
-                print(f"❌ {config['name']} filters failed: {e}")
+                universe_logger.error(f"❌ {config['name']} filters failed: {e}", operation="progressive_filtering", filter_name=config['name'], error_type=type(e).__name__)
                 continue
 
         # If all filters fail, return what we have
@@ -223,16 +229,85 @@ class AdaptiveUniverseProvider:
             spread_core_hours_only=True,
             sector_classifier=sector_classifier,
             sector_index_weights=sector_weights,
-            earnings_exclusion=None,  # Skip for now to avoid complexity
+            earnings_exclusion=self._get_earnings_exclusion_function(),  # 🚀 ENHANCED: Intelligent earnings exclusion
             earnings_buffer_days=0,
         )
 
         return universe
 
+    def _get_earnings_exclusion_function(self):
+        """🚀 ENHANCED: Get intelligent earnings exclusion function with dynamic buffer calculation."""
+        def earnings_exclusion(symbol: str, date: date) -> bool:
+            """
+            🚀 ENHANCED: Intelligent earnings exclusion with adaptive buffer calculation.
+            Returns True if symbol should be excluded due to upcoming earnings.
+            """
+            try:
+                # Get earnings calendar for the symbol
+                earnings_data = self.polygon_client.get_earnings_calendar(
+                    symbol=symbol,
+                    start_date=date,
+                    end_date=date + timedelta(days=30)  # Look ahead 30 days
+                )
+                
+                if not earnings_data or not earnings_data.get('results'):
+                    return False
+                
+                # Calculate dynamic buffer based on symbol volatility
+                # More volatile symbols get larger buffers
+                try:
+                    # Get recent volatility data
+                    end_date = date
+                    start_date = date - timedelta(days=20)
+                    
+                    aggs_data = self.polygon_client.get_aggregates(
+                        symbol=symbol,
+                        start=start_date,
+                        end=end_date,
+                        adjusted=True,
+                        limit=20
+                    )
+                    
+                    if aggs_data and aggs_data.get('results'):
+                        closes = [bar['c'] for bar in aggs_data['results']]
+                        if len(closes) > 1:
+                            # Calculate volatility
+                            returns = [(closes[i] - closes[i-1]) / closes[i-1] for i in range(1, len(closes))]
+                            volatility = sum(abs(r) for r in returns) / len(returns)
+                            
+                            # Dynamic buffer: 1-5 days based on volatility
+                            buffer_days = max(1, min(5, int(volatility * 100)))
+                        else:
+                            buffer_days = 3  # Default buffer
+                    else:
+                        buffer_days = 3  # Default buffer
+                        
+                except Exception:
+                    buffer_days = 3  # Default buffer on error
+                
+                # Check if any earnings are within the buffer period
+                for earnings in earnings_data['results']:
+                    earnings_date = datetime.fromtimestamp(earnings['date'] / 1000).date()
+                    days_until_earnings = (earnings_date - date).days
+                    
+                    if 0 <= days_until_earnings <= buffer_days:
+                        universe_logger.info(f"Excluding {symbol} due to earnings in {days_until_earnings} days", 
+                                           operation="earnings_exclusion", symbol=symbol, days_until=days_until_earnings, buffer=buffer_days)
+                        return True
+                
+                return False
+                
+            except Exception as e:
+                universe_logger.warning(f"Error checking earnings for {symbol}: {e}", 
+                                      operation="earnings_exclusion", symbol=symbol, error_type=type(e).__name__)
+                return False
+        
+        return earnings_exclusion
+
     def _discover_candidates(self, min_market_cap: float = 5_000_000_000) -> List[str]:
         """Discover candidates from S&P 500 with lower market cap threshold."""
         try:
-            print("🔍 Discovering S&P 500 candidates...")
+            universe_logger.info("🔍 Discovering S&P 500 candidates...", operation="candidate_discovery")
             data = self.polygon_client.get_tickers(
                 market="stocks", active=True, limit=500
             )
@@ -248,7 +323,7 @@ class AdaptiveUniverseProvider:
                 if isinstance(ticker.get("ticker"), str)
             ]
 
-            print(f"📊 Processing {len(all_symbols)} symbols for market cap...")
+            universe_logger.info(f"📊 Processing {len(all_symbols)} symbols for market cap...", operation="candidate_discovery", symbol_count=len(all_symbols))
 
             # Process in batches to avoid rate limits
             candidates = []
@@ -271,13 +346,14 @@ class AdaptiveUniverseProvider:
                 if len(candidates) >= 400:  # Stop if we have enough
                     break
 
-            print(
-                f"✅ Found {len(candidates)} candidates with market cap > ${min_market_cap/1_000_000_000:.0f}B"
+            universe_logger.info(
+                f"✅ Found {len(candidates)} candidates with market cap > ${min_market_cap/1_000_000_000:.0f}B",
+                operation="candidate_discovery", candidate_count=len(candidates), min_market_cap_billions=min_market_cap/1_000_000_000
             )
             return candidates
 
         except Exception as e:
-            print(f"⚠️ Error discovering candidates: {e}")
+            universe_logger.error(f"⚠️ Error discovering candidates: {e}", operation="candidate_discovery", error_type=type(e).__name__)
             return self._get_fallback_symbols()
 
     def _get_market_cap(self, symbol: str) -> Optional[Dict]:
@@ -333,7 +409,7 @@ class AdaptiveUniverseProvider:
         self, candidates: List[str], start_date: date, end_date: date, target_size: int
     ) -> List[str]:
         """Fallback strategy when filters are too restrictive."""
-        print("🔄 Using fallback strategy...")
+        universe_logger.info("🔄 Using fallback strategy...", operation="fallback_strategy")
 
         # Use minimal filters
         config = {

@@ -17,11 +17,11 @@ def test_indices_access():
     """Test if we can access Indices API endpoints."""
     client = PolygonClient()
     
-    print("TESTING POLYGON INDICES API ACCESS")
-    print("="*50)
+    training_logger.info("TESTING POLYGON INDICES API ACCESS", operation="enhanced_logging")
+    training_logger.info("="*50, operation="enhanced_logging")
     
     # Test 1: Try to get S&P 500 index info
-    print("\n1. Testing S&P 500 index (I:SPX)...")
+    training_logger.info("\n1. Testing S&P 500 index (I:SPX, operation="enhanced_logging")...")
     try:
         data = client.get_tickers(
             search="SPX",
@@ -30,30 +30,30 @@ def test_indices_access():
             limit=10
         )
         results = data.get("results", [])
-        print(f"   Found {len(results)} index results")
+        training_logger.info(f"   Found {len(results, operation="enhanced_logging")} index results")
         for r in results:
-            print(f"   - {r.get('ticker')}: {r.get('name')}")
+            training_logger.info(f"   - {r.get('ticker', operation="enhanced_logging")}: {r.get('name')}")
     except Exception as e:
-        print(f"   Error: {e}")
+        training_logger.error(f"   Error: {e}", operation="enhanced_logging")
     
     # Test 2: Try different S&P 500 ticker formats
-    print("\n2. Testing S&P 500 ticker formats...")
+    training_logger.info("\n2. Testing S&P 500 ticker formats...", operation="enhanced_logging")
     sp500_variants = ["I:SPX", "SPX", "^SPX", "$SPX", "SP500", "SPY"]
     
     for ticker in sp500_variants:
         try:
-            print(f"   Testing {ticker}...")
+            training_logger.info(f"   Testing {ticker}...", operation="enhanced_logging")
             details = client.get_ticker_details(ticker)
             if details and details.get("results"):
                 result = details["results"]
-                print(f"   ✅ {ticker}: {result.get('name')} (Type: {result.get('type')})")
+                training_logger.info(f"   ✅ {ticker}: {result.get('name', operation="enhanced_logging")} (Type: {result.get('type')})")
             else:
-                print(f"   ❌ {ticker}: No results")
+                training_logger.error(f"   ❌ {ticker}: No results", operation="enhanced_logging")
         except Exception as e:
-            print(f"   ❌ {ticker}: {e}")
+            training_logger.error(f"   ❌ {ticker}: {e}", operation="enhanced_logging")
     
     # Test 3: Check if we can search for indices
-    print("\n3. Testing index search...")
+    training_logger.info("\n3. Testing index search...", operation="enhanced_logging")
     try:
         data = client.get_tickers(
             market="indices",  # Try indices market
@@ -61,36 +61,37 @@ def test_indices_access():
             limit=5
         )
         results = data.get("results", [])
-        print(f"   Found {len(results)} indices")
+        training_logger.info(f"   Found {len(results, operation="enhanced_logging")} indices")
         for r in results[:3]:
-            print(f"   - {r.get('ticker')}: {r.get('name')}")
+            training_logger.info(f"   - {r.get('ticker', operation="enhanced_logging")}: {r.get('name')}")
     except Exception as e:
-        print(f"   Error: {e}")
+        training_logger.error(f"   Error: {e}", operation="enhanced_logging")
     
     # Test 4: Try to get index constituents (if available)
-    print("\n4. Testing index constituents...")
+    training_logger.info("\n4. Testing index constituents...", operation="enhanced_logging")
     try:
         # This would be the ideal endpoint if available
         path = "/v3/reference/indices"
         url = f"{client.BASE_URL}{path}"
         data = client.http.get_json(url, params=client._auth_params({}))
-        print("   ✅ Indices endpoint accessible!")
-        print(f"   Response: {data}")
+        training_logger.info("   ✅ Indices endpoint accessible!", operation="enhanced_logging")
+        training_logger.info(f"   Response: {data}", operation="enhanced_logging")
     except Exception as e:
-        print(f"   ❌ Indices endpoint: {e}")
+        training_logger.error(f"   ❌ Indices endpoint: {e}", operation="enhanced_logging")
     
     # Test 5: Check what markets are available
-    print("\n5. Testing available markets...")
+    training_logger.info("\n5. Testing available markets...", operation="enhanced_logging")
     markets = ["stocks", "indices", "options", "forex", "crypto"]
     for market in markets:
         try:
             data = client.get_tickers(market=market, active=True, limit=1)
             if data.get("results"):
-                print(f"   ✅ {market}: Available")
+                training_logger.info(f"   ✅ {market}: Available", operation="enhanced_logging")
             else:
-                print(f"   ❌ {market}: No results")
+                training_logger.error(f"   ❌ {market}: No results", operation="enhanced_logging")
         except Exception as e:
-            print(f"   ❌ {market}: {e}")
+            training_logger.error(f"   ❌ {market}: {e}", operation="enhanced_logging")
 
 if __name__ == "__main__":
     test_indices_access()
+

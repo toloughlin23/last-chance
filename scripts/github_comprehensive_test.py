@@ -24,7 +24,7 @@ class GitHubComprehensiveTester:
 
     def test_github_connectivity(self):
         """Test GitHub connectivity and authentication"""
-        print("🔗 TESTING GITHUB CONNECTIVITY...")
+        training_logger.info("🔗 TESTING GITHUB CONNECTIVITY...", operation="enhanced_logging")
 
         tests = []
 
@@ -35,13 +35,13 @@ class GitHubComprehensiveTester:
             )
 
             if result.returncode == 0 and "github.com" in result.stdout:
-                print("  ✅ Git remote configured correctly")
+                training_logger.info("  ✅ Git remote configured correctly", operation="enhanced_logging")
                 tests.append(True)
             else:
-                print("  ❌ Git remote not configured")
+                training_logger.error("  ❌ Git remote not configured", operation="enhanced_logging")
                 tests.append(False)
         except Exception as e:
-            print(f"  ❌ Git remote test failed: {e}")
+            training_logger.error(f"  ❌ Git remote test failed: {e}", operation="enhanced_logging")
             tests.append(False)
 
         # Test Git fetch
@@ -51,13 +51,13 @@ class GitHubComprehensiveTester:
             )
 
             if result.returncode == 0:
-                print("  ✅ Git fetch successful - GitHub connection working")
+                training_logger.info("  ✅ Git fetch successful - GitHub connection working", operation="enhanced_logging")
                 tests.append(True)
             else:
-                print(f"  ❌ Git fetch failed: {result.stderr}")
+                training_logger.error(f"  ❌ Git fetch failed: {result.stderr}", operation="enhanced_logging")
                 tests.append(False)
         except Exception as e:
-            print(f"  ❌ Git fetch test failed: {e}")
+            training_logger.error(f"  ❌ Git fetch test failed: {e}", operation="enhanced_logging")
             tests.append(False)
 
         # Test GitHub CLI
@@ -67,13 +67,13 @@ class GitHubComprehensiveTester:
             )
 
             if result.returncode == 0 and "Logged in" in result.stdout:
-                print("  ✅ GitHub CLI authenticated")
+                training_logger.info("  ✅ GitHub CLI authenticated", operation="enhanced_logging")
                 tests.append(True)
             else:
-                print("  ⚠️  GitHub CLI not authenticated (using Git credentials)")
+                training_logger.warning("  ⚠️  GitHub CLI not authenticated (using Git credentials, operation="enhanced_logging")")
                 tests.append(True)  # Still pass if Git works
         except Exception:
-            print("  ⚠️  GitHub CLI not available (using Git credentials)")
+            training_logger.warning("  ⚠️  GitHub CLI not available (using Git credentials, operation="enhanced_logging")")
             tests.append(True)  # Still pass if Git works
 
         passed = sum(tests)
@@ -82,7 +82,7 @@ class GitHubComprehensiveTester:
 
     def test_core_system_components(self):
         """Test all core system components"""
-        print("\n🧪 TESTING CORE SYSTEM COMPONENTS...")
+        training_logger.info("\n🧪 TESTING CORE SYSTEM COMPONENTS...", operation="enhanced_logging")
 
         tests = []
 
@@ -99,10 +99,10 @@ class GitHubComprehensiveTester:
         for module_name, description in algorithm_tests:
             try:
                 __import__(module_name)
-                print(f"  ✅ {description}")
+                training_logger.info(f"  ✅ {description}", operation="enhanced_logging")
                 tests.append(True)
             except Exception as e:
-                print(f"  ❌ {description} - {e}")
+                training_logger.error(f"  ❌ {description} - {e}", operation="enhanced_logging")
                 tests.append(False)
 
         # Test Service Imports
@@ -119,10 +119,10 @@ class GitHubComprehensiveTester:
         for module_name, description in service_tests:
             try:
                 __import__(module_name)
-                print(f"  ✅ {description}")
+                training_logger.info(f"  ✅ {description}", operation="enhanced_logging")
                 tests.append(True)
             except Exception as e:
-                print(f"  ❌ {description} - {e}")
+                training_logger.error(f"  ❌ {description} - {e}", operation="enhanced_logging")
                 tests.append(False)
 
         # Test Pipeline Imports
@@ -135,10 +135,10 @@ class GitHubComprehensiveTester:
         for module_name, description in pipeline_tests:
             try:
                 __import__(module_name)
-                print(f"  ✅ {description}")
+                training_logger.info(f"  ✅ {description}", operation="enhanced_logging")
                 tests.append(True)
             except Exception as e:
-                print(f"  ❌ {description} - {e}")
+                training_logger.error(f"  ❌ {description} - {e}", operation="enhanced_logging")
                 tests.append(False)
 
         # Test Utility Imports
@@ -152,10 +152,10 @@ class GitHubComprehensiveTester:
         for module_name, description in utility_tests:
             try:
                 __import__(module_name)
-                print(f"  ✅ {description}")
+                training_logger.info(f"  ✅ {description}", operation="enhanced_logging")
                 tests.append(True)
             except Exception as e:
-                print(f"  ❌ {description} - {e}")
+                training_logger.error(f"  ❌ {description} - {e}", operation="enhanced_logging")
                 tests.append(False)
 
         passed = sum(tests)
@@ -164,7 +164,7 @@ class GitHubComprehensiveTester:
 
     def test_algorithm_functionality(self):
         """Test algorithm functionality"""
-        print("\n🧪 TESTING ALGORITHM FUNCTIONALITY...")
+        training_logger.info("\n🧪 TESTING ALGORITHM FUNCTIONALITY...", operation="enhanced_logging")
 
         tests = []
 
@@ -213,10 +213,10 @@ class GitHubComprehensiveTester:
             assert 0 <= arm < 8
             assert 0 <= confidence <= 1
 
-            print("  ✅ LinUCB Algorithm - Full functionality test passed")
+            training_logger.info("  ✅ LinUCB Algorithm - Full functionality test passed", operation="enhanced_logging")
             tests.append(True)
         except Exception as e:
-            print(f"  ❌ LinUCB Algorithm - {e}")
+            training_logger.error(f"  ❌ LinUCB Algorithm - {e}", operation="enhanced_logging")
             tests.append(False)
 
         # Test Neural Bandit
@@ -264,10 +264,10 @@ class GitHubComprehensiveTester:
             assert 0 <= arm < 8
             assert 0 <= confidence <= 1
 
-            print("  ✅ Neural Bandit Algorithm - Full functionality test passed")
+            training_logger.info("  ✅ Neural Bandit Algorithm - Full functionality test passed", operation="enhanced_logging")
             tests.append(True)
         except Exception as e:
-            print(f"  ❌ Neural Bandit Algorithm - {e}")
+            training_logger.error(f"  ❌ Neural Bandit Algorithm - {e}", operation="enhanced_logging")
             tests.append(False)
 
         # Test UCBV
@@ -315,10 +315,10 @@ class GitHubComprehensiveTester:
             assert 0 <= arm < 8
             assert 0 <= confidence <= 1
 
-            print("  ✅ UCBV Algorithm - Full functionality test passed")
+            training_logger.info("  ✅ UCBV Algorithm - Full functionality test passed", operation="enhanced_logging")
             tests.append(True)
         except Exception as e:
-            print(f"  ❌ UCBV Algorithm - {e}")
+            training_logger.error(f"  ❌ UCBV Algorithm - {e}", operation="enhanced_logging")
             tests.append(False)
 
         passed = sum(tests)
@@ -327,7 +327,7 @@ class GitHubComprehensiveTester:
 
     def test_services_functionality(self):
         """Test services functionality"""
-        print("\n🧪 TESTING SERVICES FUNCTIONALITY...")
+        training_logger.info("\n🧪 TESTING SERVICES FUNCTIONALITY...", operation="enhanced_logging")
 
         tests = []
 
@@ -342,10 +342,10 @@ class GitHubComprehensiveTester:
             assert hasattr(result, "overall_sentiment")
             assert hasattr(result, "confidence_level")
 
-            print("  ✅ News Sentiment Analysis - Functionality test passed")
+            training_logger.info("  ✅ News Sentiment Analysis - Functionality test passed", operation="enhanced_logging")
             tests.append(True)
         except Exception as e:
-            print(f"  ❌ News Sentiment Analysis - {e}")
+            training_logger.error(f"  ❌ News Sentiment Analysis - {e}", operation="enhanced_logging")
             tests.append(False)
 
         # Test Infrastructure Manager
@@ -360,10 +360,10 @@ class GitHubComprehensiveTester:
             assert hasattr(manager, "execute_parallel_tasks")
             assert hasattr(manager, "thread_pools")
 
-            print("  ✅ Infrastructure Manager - Functionality test passed")
+            training_logger.info("  ✅ Infrastructure Manager - Functionality test passed", operation="enhanced_logging")
             tests.append(True)
         except Exception as e:
-            print(f"  ❌ Infrastructure Manager - {e}")
+            training_logger.error(f"  ❌ Infrastructure Manager - {e}", operation="enhanced_logging")
             tests.append(False)
 
         # Test Compliance System
@@ -383,10 +383,10 @@ class GitHubComprehensiveTester:
             assert hasattr(result, "is_compliant")
             assert hasattr(result, "compliance_score")
 
-            print("  ✅ Compliance System - Functionality test passed")
+            training_logger.info("  ✅ Compliance System - Functionality test passed", operation="enhanced_logging")
             tests.append(True)
         except Exception as e:
-            print(f"  ❌ Compliance System - {e}")
+            training_logger.error(f"  ❌ Compliance System - {e}", operation="enhanced_logging")
             tests.append(False)
 
         # Test Execution Bridge
@@ -399,10 +399,10 @@ class GitHubComprehensiveTester:
             assert hasattr(bridge, "submit_order")
             assert hasattr(bridge, "get_portfolio_metrics")
 
-            print("  ✅ Execution Bridge - Functionality test passed")
+            training_logger.info("  ✅ Execution Bridge - Functionality test passed", operation="enhanced_logging")
             tests.append(True)
         except Exception as e:
-            print(f"  ❌ Execution Bridge - {e}")
+            training_logger.error(f"  ❌ Execution Bridge - {e}", operation="enhanced_logging")
             tests.append(False)
 
         passed = sum(tests)
@@ -411,7 +411,7 @@ class GitHubComprehensiveTester:
 
     def test_pipeline_integration(self):
         """Test pipeline integration"""
-        print("\n🧪 TESTING PIPELINE INTEGRATION...")
+        training_logger.info("\n🧪 TESTING PIPELINE INTEGRATION...", operation="enhanced_logging")
 
         tests = []
 
@@ -425,10 +425,10 @@ class GitHubComprehensiveTester:
             assert hasattr(runner, "run_enhanced_once")
             assert hasattr(runner, "run_enhanced_loop")
 
-            print("  ✅ Enhanced Pipeline Runner - Integration test passed")
+            training_logger.info("  ✅ Enhanced Pipeline Runner - Integration test passed", operation="enhanced_logging")
             tests.append(True)
         except Exception as e:
-            print(f"  ❌ Enhanced Pipeline Runner - {e}")
+            training_logger.error(f"  ❌ Enhanced Pipeline Runner - {e}", operation="enhanced_logging")
             tests.append(False)
 
         # Test Hygiene System
@@ -442,10 +442,10 @@ class GitHubComprehensiveTester:
             filtered = hygiene.filter_symbols(symbols)
             assert isinstance(filtered, list)
 
-            print("  ✅ Hygiene System - Integration test passed")
+            training_logger.info("  ✅ Hygiene System - Integration test passed", operation="enhanced_logging")
             tests.append(True)
         except Exception as e:
-            print(f"  ❌ Hygiene System - {e}")
+            training_logger.error(f"  ❌ Hygiene System - {e}", operation="enhanced_logging")
             tests.append(False)
 
         # Test Feature Builder
@@ -459,10 +459,10 @@ class GitHubComprehensiveTester:
             assert hasattr(result, "sentiment_analysis")
             assert hasattr(result, "market_data")
 
-            print("  ✅ Feature Builder - Integration test passed")
+            training_logger.info("  ✅ Feature Builder - Integration test passed", operation="enhanced_logging")
             tests.append(True)
         except Exception as e:
-            print(f"  ❌ Feature Builder - {e}")
+            training_logger.error(f"  ❌ Feature Builder - {e}", operation="enhanced_logging")
             tests.append(False)
 
         passed = sum(tests)
@@ -471,7 +471,7 @@ class GitHubComprehensiveTester:
 
     def test_github_workflow(self):
         """Test GitHub workflow functionality"""
-        print("\n🔗 TESTING GITHUB WORKFLOW...")
+        training_logger.info("\n🔗 TESTING GITHUB WORKFLOW...", operation="enhanced_logging")
 
         tests = []
 
@@ -485,13 +485,13 @@ class GitHubComprehensiveTester:
             )
 
             if result.returncode == 0:
-                print("  ✅ Git status working")
+                training_logger.info("  ✅ Git status working", operation="enhanced_logging")
                 tests.append(True)
             else:
-                print(f"  ❌ Git status failed: {result.stderr}")
+                training_logger.error(f"  ❌ Git status failed: {result.stderr}", operation="enhanced_logging")
                 tests.append(False)
         except Exception as e:
-            print(f"  ❌ Git status test failed: {e}")
+            training_logger.error(f"  ❌ Git status test failed: {e}", operation="enhanced_logging")
             tests.append(False)
 
         # Test Git branch
@@ -504,13 +504,13 @@ class GitHubComprehensiveTester:
             )
 
             if result.returncode == 0 and result.stdout.strip():
-                print(f"  ✅ Current branch: {result.stdout.strip()}")
+                training_logger.info(f"  ✅ Current branch: {result.stdout.strip(, operation="enhanced_logging")}")
                 tests.append(True)
             else:
-                print("  ❌ Git branch detection failed")
+                training_logger.error("  ❌ Git branch detection failed", operation="enhanced_logging")
                 tests.append(False)
         except Exception as e:
-            print(f"  ❌ Git branch test failed: {e}")
+            training_logger.error(f"  ❌ Git branch test failed: {e}", operation="enhanced_logging")
             tests.append(False)
 
         # Test Git log
@@ -523,13 +523,13 @@ class GitHubComprehensiveTester:
             )
 
             if result.returncode == 0 and result.stdout.strip():
-                print("  ✅ Git log working")
+                training_logger.info("  ✅ Git log working", operation="enhanced_logging")
                 tests.append(True)
             else:
-                print("  ❌ Git log failed")
+                training_logger.error("  ❌ Git log failed", operation="enhanced_logging")
                 tests.append(False)
         except Exception as e:
-            print(f"  ❌ Git log test failed: {e}")
+            training_logger.error(f"  ❌ Git log test failed: {e}", operation="enhanced_logging")
             tests.append(False)
 
         passed = sum(tests)
@@ -538,10 +538,10 @@ class GitHubComprehensiveTester:
 
     def run_comprehensive_test(self):
         """Run comprehensive GitHub test suite"""
-        print("🚀 INSTITUTIONAL AI TRADING SYSTEM - GITHUB COMPREHENSIVE TEST")
-        print("=" * 80)
-        print("100% GENUINE - NO SHORTCUTS - ALWAYS MAKE BETTER")
-        print("=" * 80)
+        training_logger.info("🚀 INSTITUTIONAL AI TRADING SYSTEM - GITHUB COMPREHENSIVE TEST", operation="enhanced_logging")
+        training_logger.info("=" * 80, operation="enhanced_logging")
+        training_logger.info("100% GENUINE - NO SHORTCUTS - ALWAYS MAKE BETTER", operation="enhanced_logging")
+        training_logger.info("=" * 80, operation="enhanced_logging")
 
         total_passed = 0
         total_failed = 0
@@ -578,7 +578,7 @@ class GitHubComprehensiveTester:
             total_failed += failed
 
         except Exception as e:
-            print(f"\n💥 COMPREHENSIVE TEST ERROR: {e}")
+            training_logger.error(f"\n💥 COMPREHENSIVE TEST ERROR: {e}", operation="enhanced_logging")
             traceback.print_exc()
             total_failed += 1
 
@@ -586,26 +586,23 @@ class GitHubComprehensiveTester:
         end_time = time.time()
         duration = end_time - self.start_time
 
-        print(f"\n{'='*80}")
-        print("📊 GITHUB COMPREHENSIVE TEST SUMMARY")
-        print(f"{'='*80}")
-        print(f"Total Tests: {total_passed + total_failed}")
-        print(f"✅ Passed: {total_passed}")
-        print(f"❌ Failed: {total_failed}")
-        print(
-            f"📊 Success Rate: {(total_passed/(total_passed + total_failed)*100):.1f}%"
+        training_logger.info(f"\n{'='*80}", operation="enhanced_logging")
+        training_logger.info("📊 GITHUB COMPREHENSIVE TEST SUMMARY", operation="enhanced_logging")
+        training_logger.info(f"{'='*80}", operation="enhanced_logging")
+        training_logger.error(f"Total Tests: {total_passed + total_failed}", operation="enhanced_logging")
+        training_logger.info(f"✅ Passed: {total_passed}", operation="enhanced_logging")
+        training_logger.error(f"❌ Failed: {total_failed}", operation="enhanced_logging")
+        training_logger.error(f"📊 Success Rate: {(total_passed/(total_passed + total_failed, operation="enhanced_logging")*100):.1f}%"
             if (total_passed + total_failed) > 0
             else "📊 Success Rate: 0%"
         )
-        print(f"⏱️  Duration: {duration:.2f} seconds")
-        print(f"{'='*80}")
+        training_logger.info(f"⏱️  Duration: {duration:.2f} seconds", operation="enhanced_logging")
+        training_logger.info(f"{'='*80}", operation="enhanced_logging")
 
         if total_failed == 0:
-            print(
-                "🎉 ALL GITHUB COMPREHENSIVE TESTS PASSED! SYSTEM IS PRODUCTION READY!"
-            )
+            training_logger.info("🎉 ALL GITHUB COMPREHENSIVE TESTS PASSED! SYSTEM IS PRODUCTION READY!", operation="enhanced_logging")
         else:
-            print(f"⚠️  {total_failed} TESTS FAILED - REVIEW AND FIX BEFORE PRODUCTION")
+            training_logger.error(f"⚠️  {total_failed} TESTS FAILED - REVIEW AND FIX BEFORE PRODUCTION", operation="enhanced_logging")
 
         return total_passed, total_failed
 
@@ -618,10 +615,10 @@ def main():
         passed, failed = tester.run_comprehensive_test()
         return 0 if failed == 0 else 1
     except KeyboardInterrupt:
-        print("\n\n⚠️  Test run interrupted by user")
+        training_logger.warning("\n\n⚠️  Test run interrupted by user", operation="enhanced_logging")
         return 1
     except Exception as e:
-        print(f"\n\n💥 Test runner error: {e}")
+        training_logger.error(f"\n\n💥 Test runner error: {e}", operation="enhanced_logging")
         traceback.print_exc()
         return 1
 

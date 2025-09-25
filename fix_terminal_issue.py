@@ -12,8 +12,8 @@ import sys
 def execute_universe_generation():
     """Execute universe generation directly."""
 
-    print("🚀 FIXING TERMINAL ISSUE - DIRECT EXECUTION")
-    print("=" * 60)
+    training_logger.info("🚀 FIXING TERMINAL ISSUE - DIRECT EXECUTION", operation="enhanced_logging")
+    training_logger.info("=" * 60, operation="enhanced_logging")
 
     # Set environment
     env = os.environ.copy()
@@ -21,7 +21,7 @@ def execute_universe_generation():
 
     # Run the universe generation directly
     try:
-        print("🔄 Running universe generation...")
+        training_logger.info("🔄 Running universe generation...", operation="enhanced_logging")
 
         # Use subprocess to run the command directly
         result = subprocess.run(
@@ -35,25 +35,25 @@ def execute_universe_generation():
             timeout=600,  # 10 minute timeout
         )
 
-        print(f"Return code: {result.returncode}")
+        training_logger.info(f"Return code: {result.returncode}", operation="enhanced_logging")
 
         if result.stdout:
-            print("📤 STDOUT:")
-            print(result.stdout)
+            training_logger.info("📤 STDOUT:", operation="enhanced_logging")
+            training_logger.info(result.stdout, operation="enhanced_logging")
 
         if result.stderr:
-            print("📤 STDERR:")
-            print(result.stderr)
+            training_logger.info("📤 STDERR:", operation="enhanced_logging")
+            training_logger.info(result.stderr, operation="enhanced_logging")
 
         if result.returncode == 0:
-            print("✅ Universe generation completed successfully!")
+            training_logger.info("✅ Universe generation completed successfully!", operation="enhanced_logging")
         else:
-            print("❌ Universe generation failed")
+            training_logger.error("❌ Universe generation failed", operation="enhanced_logging")
 
     except subprocess.TimeoutExpired:
-        print("⏰ Command timed out")
+        training_logger.info("⏰ Command timed out", operation="enhanced_logging")
     except Exception as e:
-        print(f"💥 Error: {e}")
+        training_logger.error(f"💥 Error: {e}", operation="enhanced_logging")
 
 
 if __name__ == "__main__":

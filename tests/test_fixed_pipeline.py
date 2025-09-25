@@ -14,12 +14,12 @@ from pipeline.enhanced_runner import EnhancedPipelineRunner
 
 def test_fixed_pipeline():
     """Test the fixed pipeline"""
-    print("🔧 TESTING FIXED PIPELINE")
-    print("=" * 40)
+    training_logger.info("🔧 TESTING FIXED PIPELINE", operation="enhanced_logging")
+    training_logger.info("=" * 40, operation="enhanced_logging")
 
     runner = EnhancedPipelineRunner()
 
-    print("🔥 Using REAL market data from Polygon API - NO MOCKS!")
+    training_logger.info("🔥 Using REAL market data from Polygon API - NO MOCKS!", operation="enhanced_logging")
 
     # Use recent dates to ensure data availability
     from datetime import datetime, timedelta
@@ -32,7 +32,7 @@ def test_fixed_pipeline():
         ["AAPL"], start_date, end_date, execute=False, prioritize_by_news=False
     )
 
-    print("✅ Pipeline working with REAL DATA - 100% GENUINE!")
+    training_logger.info("✅ Pipeline working with REAL DATA - 100% GENUINE!", operation="enhanced_logging")
 
     runner.shutdown()
 

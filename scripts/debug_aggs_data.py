@@ -14,21 +14,21 @@ from pipeline.enhanced_runner import EnhancedPipelineRunner
 
 def debug_aggs_data():
     """Debug what type aggs_data actually is"""
-    print("🔍 DEBUGGING AGGS_DATA TYPE")
-    print("=" * 40)
+    training_logger.info("🔍 DEBUGGING AGGS_DATA TYPE", operation="enhanced_logging")
+    training_logger.info("=" * 40, operation="enhanced_logging")
 
     runner = EnhancedPipelineRunner()
 
     # Create a custom process_algorithm function that shows the data type
     def debug_process_algorithm(alg_name: str, algorithm, aggs_data):
-        print(f"🔍 Algorithm: {alg_name}")
-        print(f"🔍 aggs_data type: {type(aggs_data)}")
-        print(f"🔍 aggs_data: {aggs_data}")
+        training_logger.info(f"🔍 Algorithm: {alg_name}", operation="enhanced_logging")
+        training_logger.info(f"🔍 aggs_data type: {type(aggs_data, operation="enhanced_logging")}")
+        training_logger.info(f"🔍 aggs_data: {aggs_data}", operation="enhanced_logging")
         if hasattr(aggs_data, "get"):
-            print("🔍 Has get method: True")
-            print(f"🔍 aggs_data.get('results'): {aggs_data.get('results')}")
+            training_logger.info("🔍 Has get method: True", operation="enhanced_logging")
+            training_logger.info(f"🔍 aggs_data.get('results', operation="enhanced_logging"): {aggs_data.get('results')}")
         else:
-            print("🔍 Has get method: False")
+            training_logger.info("🔍 Has get method: False", operation="enhanced_logging")
         return alg_name, 0.5
 
     # Monkey patch the process_algorithm function to diagnose genuine pipeline flow

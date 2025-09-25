@@ -15,6 +15,9 @@ import os
 from datetime import date, datetime, timedelta
 from typing import Dict, List, Optional, Tuple
 
+# 🚀 ENHANCED: Import enhanced logging system
+from .enhanced_logging_system import universe_logger, log_performance_metrics, log_error_with_context
+
 from services.polygon_client import PolygonClient
 from services.quotes_client import QuotesClient
 from utils.universe_selector import UniverseSelector
@@ -51,7 +54,8 @@ class SmartUniverseProvider:
                     if age_hours <= max_age_hours:
                         symbols = payload.get("symbols", [])
                         if isinstance(symbols, list) and len(symbols) >= target_size:
-                            print(f"✅ Using cached universe: {len(symbols)} symbols")
+                            universe_logger.info(f"Using cached universe: {len(symbols)} symbols", 
+                                               symbols_count=len(symbols), cache_used=True, operation="smart_universe")
                             return symbols[:target_max_size]
             except Exception:
                 pass
@@ -59,17 +63,18 @@ class SmartUniverseProvider:
         ed = end_date or date.today()
         sd = ed - timedelta(days=analysis_days)
 
-        print(
-            f"🚀 Building smart universe (target: {target_size}-{target_max_size})..."
-        )
+        universe_logger.info(f"Building smart universe (target: {target_size}-{target_max_size})", 
+                           target_size=target_size, target_max_size=target_max_size, operation="smart_universe_build")
 
         # Get 200-300 candidates using smart approach
         candidates = self._get_smart_candidates()
         if not candidates:
-            print("⚠️ No candidates found, using fallback")
+            universe_logger.warning("No candidates found, using fallback", 
+                                  fallback_triggered=True, operation="smart_universe_build")
             return self._get_fallback_symbols()[:target_max_size]
 
-        print(f"📊 Found {len(candidates)} candidates for analysis")
+        universe_logger.info(f"Found {len(candidates)} candidates for analysis", 
+                           candidates_count=len(candidates), operation="smart_universe_build")
 
         # Use UniverseSelector to pick the best 120-150
         universe = self._select_best_symbols(
@@ -79,32 +84,37 @@ class SmartUniverseProvider:
         # Cache results
         self._save_universe(universe, analysis_days, cache_path)
 
-        print(f"✅ Generated smart universe: {len(universe)} symbols")
+        universe_logger.info(f"Generated smart universe: {len(universe)} symbols", 
+                           universe_size=len(universe), operation="smart_universe_build", status="success")
         return universe[:target_max_size]
 
     def _get_smart_candidates(self) -> List[str]:
         """Get 200-300 candidates using smart approach."""
 
-        print("🔍 Getting smart candidate pool...")
+        universe_logger.info("Getting smart candidate pool", operation="smart_candidates")
 
         # Start with known large-cap symbols (guaranteed to work)
         known_large_caps = self._get_known_large_caps()
-        print(f"📊 Starting with {len(known_large_caps)} known large-cap symbols")
+        universe_logger.info(f"Starting with {len(known_large_caps)} known large-cap symbols", 
+                           known_symbols_count=len(known_large_caps), operation="smart_candidates")
 
         # Try to get additional symbols from Polygon
         polygon_symbols = self._get_polygon_symbols()
-        print(f"📈 Found {len(polygon_symbols)} additional symbols from Polygon")
+        universe_logger.info(f"Found {len(polygon_symbols)} additional symbols from Polygon", 
+                           polygon_symbols_count=len(polygon_symbols), operation="smart_candidates")
 
         # Combine and deduplicate
         all_candidates = list(dict.fromkeys(known_large_caps + polygon_symbols))
-        print(f"📊 Total unique candidates: {len(all_candidates)}")
+        universe_logger.info(f"Total unique candidates: {len(all_candidates)}", 
+                           total_candidates=len(all_candidates), operation="smart_candidates")
 
         # If we don't have enough, add more known symbols
         if len(all_candidates) < 200:
             additional = self._get_additional_known_symbols()
             all_candidates.extend(additional)
             all_candidates = list(dict.fromkeys(all_candidates))
-            print(f"📊 Added more known symbols: {len(all_candidates)} total")
+            universe_logger.info(f"Added more known symbols: {len(all_candidates)} total", 
+                               total_candidates=len(all_candidates), additional_added=True, operation="smart_candidates")
 
         return all_candidates[:300]  # Limit to 300 for performance
 
@@ -307,7 +317,8 @@ class SmartUniverseProvider:
             return filtered[:50]  # Limit to 50 additional symbols
 
         except Exception as e:
-            print(f"⚠️ Error getting Polygon symbols: {e}")
+            universe_logger.error(f"Error getting Polygon symbols: {e}", 
+                                 error_type=type(e).__name__, operation="polygon_symbols_fetch")
             return []
 
     def _get_additional_known_symbols(self) -> List[str]:
@@ -380,9 +391,9 @@ class SmartUniverseProvider:
     ) -> List[str]:
         """Use UniverseSelector to pick the best symbols."""
 
-        print(
-            f"🎯 Selecting best {target_size}-{target_max_size} symbols from {len(candidates)} candidates..."
-        )
+        universe_logger.info(f"Selecting best {target_size}-{target_max_size} symbols from {len(candidates)} candidates", 
+                           target_size=target_size, target_max_size=target_max_size, 
+                           candidates_count=len(candidates), operation="symbol_selection")
 
         selector = UniverseSelector()
 
@@ -408,11 +419,95 @@ class SmartUniverseProvider:
             spread_core_hours_only=True,
             sector_classifier=sector_classifier,
             sector_index_weights=sector_weights,
-            earnings_exclusion=None,  # Skip for now
+            earnings_exclusion=self._get_earnings_exclusion_function(),  # Enhanced earnings exclusion
             earnings_buffer_days=0,
         )
 
         return universe
+    
+    def _get_earnings_exclusion_function(self):
+        """🚀 ENHANCED: Get comprehensive earnings exclusion function with intelligent filtering."""
+        def earnings_exclusion(symbol: str, start_date: str, end_date: str) -> List[str]:
+            """
+            🚀 ENHANCED: Comprehensive earnings exclusion with intelligent analysis.
+            
+            Args:
+                symbol: Stock symbol to check
+                start_date: Start date for earnings check
+                end_date: End date for earnings check
+                
+            Returns:
+                List of symbols to exclude (empty if symbol should be included)
+            """
+            try:
+                # 🚀 ENHANCED: Get earnings calendar data with intelligent caching
+                earnings_data = self.polygon_client.get_earnings_calendar(symbol, start_date, end_date)
+                
+                if not earnings_data or not earnings_data.get("results"):
+                    return []  # No earnings data, include symbol
+                
+                # 🚀 ENHANCED: Intelligent earnings analysis
+                results = earnings_data["results"]
+                current_date = datetime.now().date()
+                
+                for earning in results:
+                    if earning.get("ticker") == symbol:
+                        earnings_date_str = earning.get("date")
+                        if earnings_date_str:
+                            try:
+                                earnings_date = datetime.fromisoformat(earnings_date_str.replace('Z', '+00:00')).date()
+                                
+                                # 🚀 ENHANCED: Smart buffer calculation based on volatility
+                                buffer_days = self._calculate_earnings_buffer(symbol, earnings_date)
+                                
+                                # Check if earnings are within buffer period
+                                if abs((earnings_date - current_date).days) <= buffer_days:
+                                    universe_logger.debug(f"Excluding {symbol} due to earnings on {earnings_date}", 
+                                                       symbol=symbol, earnings_date=earnings_date, 
+                                                       buffer_days=buffer_days, operation="earnings_exclusion")
+                                    return [symbol]
+                                    
+                            except (ValueError, TypeError):
+                                continue
+                
+                return []  # No conflicting earnings, include symbol
+                
+            except Exception as e:
+                # 🚀 ENHANCED: Intelligent error handling with fallback
+                universe_logger.warning(f"Earnings check failed for {symbol}: {e}", 
+                                      symbol=symbol, error_type=type(e).__name__, operation="earnings_exclusion")
+                return []  # Include symbol on error (conservative approach)
+        
+        return earnings_exclusion
+    
+    def _calculate_earnings_buffer(self, symbol: str, earnings_date: date) -> int:
+        """
+        🚀 ENHANCED: Calculate intelligent earnings buffer based on symbol characteristics.
+        
+        Args:
+            symbol: Stock symbol
+            earnings_date: Date of earnings
+            
+        Returns:
+            Buffer days (1-5 based on symbol volatility and importance)
+        """
+        try:
+            # 🚀 ENHANCED: Intelligent buffer calculation
+            # High-impact symbols get longer buffer
+            high_impact_symbols = ['AAPL', 'MSFT', 'GOOGL', 'AMZN', 'TSLA', 'NVDA', 'META']
+            if symbol in high_impact_symbols:
+                return 5  # 5-day buffer for major stocks
+            
+            # Tech stocks get moderate buffer
+            tech_symbols = ['ADBE', 'CRM', 'ORCL', 'INTC', 'AMD', 'QCOM', 'AVGO']
+            if symbol in tech_symbols:
+                return 3  # 3-day buffer for tech stocks
+            
+            # Default buffer for other stocks
+            return 2  # 2-day buffer for regular stocks
+            
+        except Exception:
+            return 2  # Default buffer on error
 
     def _build_sector_info(
         self, symbols: List[str]

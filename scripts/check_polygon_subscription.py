@@ -8,30 +8,30 @@ from services.polygon_client import PolygonClient
 
 
 def test_endpoint(client, name, test_func):
-    print(f"\n{name}:")
+    polygon_logger.info(f"\n{name}:", operation="enhanced_logging")
     try:
         result = test_func()
         if isinstance(result, dict):
             status = result.get("status", "No status")
             if status == "OK":
-                print(f"  ✅ Available (status: {status})")
+                polygon_logger.info(f"  ✅ Available (status: {status}, operation="enhanced_logging")")
                 if "results" in result:
-                    print(f"     Results: {len(result.get('results', []))}")
+                    polygon_logger.info(f"     Results: {len(result.get('results', [], operation="enhanced_logging"))}")
             else:
-                print(f"  ❌ Error: {status}")
+                polygon_logger.error(f"  ❌ Error: {status}", operation="enhanced_logging")
                 if "error" in result:
-                    print(f"     {result['error']}")
+                    polygon_logger.error(f"     {result['error']}", operation="enhanced_logging")
         else:
-            print("  ✅ Available")
+            polygon_logger.info("  ✅ Available", operation="enhanced_logging")
     except Exception as e:
-        print(f"  ❌ Not available: {e}")
+        polygon_logger.error(f"  ❌ Not available: {e}", operation="enhanced_logging")
 
 
 def main():
     load_dotenv()
 
-    print("Checking Polygon Premium Subscription Features")
-    print("=" * 50)
+    polygon_logger.info("Checking Polygon Premium Subscription Features", operation="enhanced_logging")
+    polygon_logger.info("=" * 50, operation="enhanced_logging")
 
     client = PolygonClient()
 
@@ -57,7 +57,7 @@ def main():
     )
 
     # Test news endpoint if available
-    print("\n4. News API:")
+    polygon_logger.info("\n4. News API:", operation="enhanced_logging")
     try:
         # Try the news endpoint
         import requests
@@ -66,14 +66,14 @@ def main():
         params = {"apiKey": client.api_key, "ticker": "AAPL", "limit": 1}
         resp = requests.get(url, params=params)
         if resp.status_code == 200:
-            print("  ✅ News API available")
+            polygon_logger.info("  ✅ News API available", operation="enhanced_logging")
         else:
-            print(f"  ❌ News API status: {resp.status_code}")
+            polygon_logger.error(f"  ❌ News API status: {resp.status_code}", operation="enhanced_logging")
     except Exception as e:
-        print(f"  ❌ News API error: {e}")
+        polygon_logger.error(f"  ❌ News API error: {e}", operation="enhanced_logging")
 
     # Check ticker details endpoint
-    print("\n5. Ticker Details (with market cap):")
+    polygon_logger.info("\n5. Ticker Details (with market cap, operation="enhanced_logging"):")
     try:
         url = "https://api.polygon.io/v3/reference/tickers/AAPL"
         params = {"apiKey": client.api_key}
@@ -81,26 +81,26 @@ def main():
         if resp.status_code == 200:
             data = resp.json()
             results = data.get("results", {})
-            print("  ✅ Ticker details available")
-            print(f"     Market cap field: {'market_cap' in results}")
+            polygon_logger.info("  ✅ Ticker details available", operation="enhanced_logging")
+            polygon_logger.info(f"     Market cap field: {'market_cap' in results}", operation="enhanced_logging")
             if "market_cap" in results:
-                print(f"     Market cap: ${results['market_cap']:,.0f}")
+                polygon_logger.info(f"     Market cap: ${results['market_cap']:,.0f}", operation="enhanced_logging")
         else:
-            print(f"  ❌ Status: {resp.status_code}")
+            polygon_logger.error(f"  ❌ Status: {resp.status_code}", operation="enhanced_logging")
     except Exception as e:
-        print(f"  ❌ Error: {e}")
+        polygon_logger.error(f"  ❌ Error: {e}", operation="enhanced_logging")
 
     # Check financials endpoint
-    print("\n6. Financials/Fundamentals:")
+    polygon_logger.info("\n6. Financials/Fundamentals:", operation="enhanced_logging")
     try:
         url = "https://api.polygon.io/vX/reference/financials"
         params = {"apiKey": client.api_key, "ticker": "AAPL", "limit": 1}
         resp = requests.get(url, params=params)
-        print(f"  Status code: {resp.status_code}")
+        polygon_logger.info(f"  Status code: {resp.status_code}", operation="enhanced_logging")
         if resp.status_code == 404:
-            print("  ℹ️  Financials might be under different endpoint")
+            polygon_logger.info("  ℹ️  Financials might be under different endpoint", operation="enhanced_logging")
     except Exception as e:
-        print(f"  ❌ Error: {e}")
+        polygon_logger.error(f"  ❌ Error: {e}", operation="enhanced_logging")
 
 
 if __name__ == "__main__":

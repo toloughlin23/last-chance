@@ -57,7 +57,7 @@ def load_env_from_known_locations() -> Dict[str, str]:
                                 key, value = line.split("=", 1)
                                 loaded_vars[key.strip()] = value.strip()
                 except Exception as e:
-                    print(f"Warning: Could not read {dotenv_path}: {e}")
+                    training_logger.info(f"Warning: Could not read {dotenv_path}: {e}", operation="enhanced_logging")
 
     return loaded_vars
 

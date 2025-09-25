@@ -1,1 +1,1 @@
-print("Hello World - Simple Test")
+training_logger.info("Hello World - Simple Test", operation="enhanced_logging")

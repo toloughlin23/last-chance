@@ -14,9 +14,15 @@ import json
 # Add project root to path
 sys.path.insert(0, os.path.abspath("."))
 
+# 🚀 ENHANCED: Import enhanced logging system
+from utils.enhanced_logging_system import get_enhanced_logger, log_performance_metrics, log_error_with_context
+
 # Load environment variables from .env file
 from dotenv import load_dotenv
 load_dotenv()
+
+# 🚀 ENHANCED: Initialize enhanced logger for market condition monitoring
+market_logger = get_enhanced_logger('market_condition_monitor', 'logs/market_condition.log')
 
 from services.polygon_client import PolygonClient
 
@@ -151,10 +157,12 @@ class MarketConditionMonitor:
         self.logger.info("=" * 70)
         
         # 🚀 ENHANCED: Keep original print functionality for immediate feedback
-        print(f"🔍 ENHANCED MARKET CONDITIONS ANALYSIS ({lookback_days} days)")
-        print("=" * 70)
-        print("🎯 MAXIMUM SENSITIVITY - KITCHEN SINK APPROACH")
-        print("=" * 70)
+        market_logger.info(f"ENHANCED MARKET CONDITIONS ANALYSIS ({lookback_days} days)", 
+                          lookback_days=lookback_days, operation="market_analysis")
+        market_logger.info("=" * 70, operation="market_analysis")
+        market_logger.info("MAXIMUM SENSITIVITY - KITCHEN SINK APPROACH", 
+                          analysis_type="enhanced", operation="market_analysis")
+        market_logger.info("=" * 70, operation="market_analysis")
         
         end_date = date.today()
         
@@ -165,7 +173,8 @@ class MarketConditionMonitor:
                 start_date = end_date - timedelta(days=days)
                 # 🚀 ENHANCED: Add structured logging + keep original functionality
                 self.logger.info(f"📊 Analyzing {timeframe_name} timeframe ({days} days)...")
-                print(f"\n📊 Analyzing {timeframe_name} timeframe ({days} days)...")
+                market_logger.info(f"Analyzing {timeframe_name} timeframe ({days} days)", 
+                                 timeframe=timeframe_name, days=days, operation="timeframe_analysis")
                 
                 # Get tech sector performance for this timeframe
                 tech_perf = self._get_sector_performance(
@@ -215,7 +224,8 @@ class MarketConditionMonitor:
         """Get sector performance metrics."""
         # 🚀 ENHANCED: Add structured logging + keep original functionality
         self.logger.info(f"📊 Analyzing {sector_name} sector ({len(symbols)} symbols)...")
-        print(f"📊 Analyzing {sector_name} sector ({len(symbols)} symbols)...")
+        market_logger.info(f"Analyzing {sector_name} sector ({len(symbols)} symbols)", 
+                          sector_name=sector_name, symbols_count=len(symbols), operation="sector_analysis")
         
         # 100% GENUINE - Always use real API data
         
@@ -268,7 +278,8 @@ class MarketConditionMonitor:
                         valid_symbols += 1
                             
             except Exception as e:
-                print(f"⚠️ Error analyzing {symbol}: {e}")
+                market_logger.warning(f"Error analyzing {symbol}: {e}", 
+                                    symbol=symbol, error_type=type(e).__name__, operation="symbol_analysis")
                 continue
         
         if valid_symbols > 0:
@@ -303,7 +314,8 @@ class MarketConditionMonitor:
             if real_time_data:
                 analysis_sources.append(('real_time', real_time_data))
         except Exception as e:
-            print(f"⚠️ Real-time data unavailable: {e}")
+            market_logger.warning(f"Real-time data unavailable: {e}", 
+                                error_type=type(e).__name__, operation="real_time_data")
         
         # Source 2: Historical pattern analysis
         try:
@@ -311,7 +323,8 @@ class MarketConditionMonitor:
             if historical_data:
                 analysis_sources.append(('historical', historical_data))
         except Exception as e:
-            print(f"⚠️ Historical data unavailable: {e}")
+            market_logger.warning(f"Historical data unavailable: {e}", 
+                                error_type=type(e).__name__, operation="historical_data")
         
         # Source 3: Market sentiment analysis
         try:
@@ -319,7 +332,8 @@ class MarketConditionMonitor:
             if sentiment_data:
                 analysis_sources.append(('sentiment', sentiment_data))
         except Exception as e:
-            print(f"⚠️ Sentiment data unavailable: {e}")
+            market_logger.warning(f"Sentiment data unavailable: {e}", 
+                                error_type=type(e).__name__, operation="sentiment_analysis")
         
         # Source 4: Cached data (fallback)
         try:
@@ -818,7 +832,8 @@ class MarketConditionMonitor:
             with open(self.cache_path, 'w') as f:
                 json.dump(cache_data, f, indent=2)
         except Exception as e:
-            print(f"⚠️ Failed to cache market conditions: {e}")
+            market_logger.warning(f"Failed to cache market conditions: {e}", 
+                                error_type=type(e).__name__, operation="cache_operations")
     
     def get_cached_conditions(self) -> Optional[Dict]:
         """Get cached market conditions if available and recent."""
@@ -844,11 +859,12 @@ class MarketConditionMonitor:
         # Check cache first
         cached_conditions = self.get_cached_conditions()
         if cached_conditions:
-            print("📊 Using cached market conditions")
+            market_logger.info("Using cached market conditions", 
+                             cache_used=True, operation="cache_operations")
             return cached_conditions['recommendations']['sector_weights']
         
         # Analyze current conditions
-        print("🔍 Analyzing fresh market conditions...")
+        market_logger.info("Analyzing fresh market conditions", operation="market_analysis")
         analysis = self.analyze_market_conditions()
         
         return analysis['recommendations']['sector_weights']
@@ -858,63 +874,83 @@ class MarketConditionMonitor:
         condition = analysis['market_condition']
         recommendations = analysis['recommendations']
         
-        print(f"\n🎯 ENHANCED MARKET CONDITION ANALYSIS")
-        print("=" * 70)
-        print(f"Condition: {condition['condition']}")
-        print(f"Severity: {condition['severity']}")
-        print(f"Confidence Score: {condition['confidence_score']:.2%}")
+        market_logger.info("ENHANCED MARKET CONDITION ANALYSIS", operation="analysis_display")
+        market_logger.info("=" * 70, operation="analysis_display")
+        market_logger.info(f"Condition: {condition['condition']}", 
+                          condition=condition['condition'], operation="analysis_display")
+        market_logger.info(f"Severity: {condition['severity']}", 
+                          severity=condition['severity'], operation="analysis_display")
+        market_logger.info(f"Confidence Score: {condition['confidence_score']:.2%}", 
+                          confidence_score=condition['confidence_score'], operation="analysis_display")
         
         # Print enhanced signals
         if 'signals' in condition:
-            print(f"\n🚨 DETECTED SIGNALS")
-            print("=" * 70)
+            market_logger.info("DETECTED SIGNALS", operation="analysis_display")
+            market_logger.info("=" * 70, operation="analysis_display")
             active_signals = [signal for signal, active in condition['signals'].items() if active]
             if active_signals:
                 for signal in active_signals:
-                    print(f"  ⚠️ {signal.replace('_', ' ').title()}")
+                    market_logger.info(f"⚠️ {signal.replace('_', ' ').title()}", 
+                                     signal=signal, operation="analysis_display")
             else:
-                print("  ✅ No warning signals detected")
+                market_logger.info("✅ No warning signals detected", 
+                                 operation="analysis_display", status="clean")
         
-        print(f"\n📊 ENHANCED RECOMMENDATIONS")
-        print("=" * 70)
-        print(f"Recommendation: {recommendations['recommendation']}")
-        print(f"Tech Cap: {recommendations['tech_cap']:.0%}")
-        print(f"Diversification: {recommendations['diversification_level']}")
-        print(f"Urgency: {recommendations['urgency']}")
-        print(f"Risk Level: {recommendations['risk_level']}")
-        print(f"Adjustment: {recommendations['adjustment_magnitude']}")
+        market_logger.info("ENHANCED RECOMMENDATIONS", operation="analysis_display")
+        market_logger.info("=" * 70, operation="analysis_display")
+        market_logger.info(f"Recommendation: {recommendations['recommendation']}", 
+                          recommendation=recommendations['recommendation'], operation="analysis_display")
+        market_logger.info(f"Tech Cap: {recommendations['tech_cap']:.0%}", 
+                          tech_cap=recommendations['tech_cap'], operation="analysis_display")
+        market_logger.info(f"Diversification: {recommendations['diversification_level']}", 
+                          diversification=recommendations['diversification_level'], operation="analysis_display")
+        market_logger.info(f"Urgency: {recommendations['urgency']}", 
+                          urgency=recommendations['urgency'], operation="analysis_display")
+        market_logger.info(f"Risk Level: {recommendations['risk_level']}", 
+                          risk_level=recommendations['risk_level'], operation="analysis_display")
+        market_logger.info(f"Adjustment: {recommendations['adjustment_magnitude']}", 
+                          adjustment=recommendations['adjustment_magnitude'], operation="analysis_display")
         
-        print(f"\n🏢 DYNAMIC SECTOR WEIGHTS")
-        print("=" * 70)
+        market_logger.info("DYNAMIC SECTOR WEIGHTS", operation="analysis_display")
+        market_logger.info("=" * 70, operation="analysis_display")
         for sector, weight in recommendations['sector_weights'].items():
-            print(f"  {sector}: {weight:.0%}")
+            market_logger.info(f"{sector}: {weight:.0%}", 
+                             sector=sector, weight=weight, operation="analysis_display")
         
         # Print timeframe analysis if available
         if 'timeframe_analysis' in analysis:
-            print(f"\n📈 MULTI-TIMEFRAME ANALYSIS")
-            print("=" * 70)
+            market_logger.info("MULTI-TIMEFRAME ANALYSIS", operation="analysis_display")
+            market_logger.info("=" * 70, operation="analysis_display")
             for timeframe, data in analysis['timeframe_analysis'].items():
                 tech_perf = data['tech_performance']
-                print(f"  {timeframe.title()} ({data['days']} days):")
-                print(f"    Tech Return: {tech_perf['total_return']:.2%}")
-                print(f"    Tech Momentum: {tech_perf['momentum']:.2%}")
-                print(f"    Tech vs Defensive: {data['tech_vs_defensive']:.2%}")
+                market_logger.info(f"{timeframe.title()} ({data['days']} days):", 
+                                 timeframe=timeframe, days=data['days'], operation="analysis_display")
+                market_logger.info(f"Tech Return: {tech_perf['total_return']:.2%}", 
+                                 tech_return=tech_perf['total_return'], operation="analysis_display")
+                market_logger.info(f"Tech Momentum: {tech_perf['momentum']:.2%}", 
+                                 tech_momentum=tech_perf['momentum'], operation="analysis_display")
+                market_logger.info(f"Tech vs Defensive: {data['tech_vs_defensive']:.2%}", 
+                                 tech_vs_defensive=data['tech_vs_defensive'], operation="analysis_display")
         
         # Print analysis summary
         if 'analysis_summary' in analysis:
             summary = analysis['analysis_summary']
-            print(f"\n📊 ANALYSIS SUMMARY")
-            print("=" * 70)
-            print(f"Timeframes Analyzed: {summary['total_timeframes_analyzed']}")
-            print(f"Overall Tech Performance: {summary['overall_tech_performance']:.2%}")
-            print(f"Overall Defensive Performance: {summary['overall_defensive_performance']:.2%}")
-            print(f"Performance Trend: {summary['performance_trend']}")
+            market_logger.info("ANALYSIS SUMMARY", operation="analysis_display")
+            market_logger.info("=" * 70, operation="analysis_display")
+            market_logger.info(f"Timeframes Analyzed: {summary['total_timeframes_analyzed']}", 
+                             timeframes_analyzed=summary['total_timeframes_analyzed'], operation="analysis_display")
+            market_logger.info(f"Overall Tech Performance: {summary['overall_tech_performance']:.2%}", 
+                             tech_performance=summary['overall_tech_performance'], operation="analysis_display")
+            market_logger.info(f"Overall Defensive Performance: {summary['overall_defensive_performance']:.2%}", 
+                             defensive_performance=summary['overall_defensive_performance'], operation="analysis_display")
+            market_logger.info(f"Performance Trend: {summary['performance_trend']}", 
+                             performance_trend=summary['performance_trend'], operation="analysis_display")
 
 
 def main():
     """Test the market condition monitor."""
-    print("🧪 TESTING MARKET CONDITION MONITOR")
-    print("=" * 60)
+    market_logger.info("TESTING MARKET CONDITION MONITOR", operation="testing")
+    market_logger.info("=" * 60, operation="testing")
     
     monitor = MarketConditionMonitor()
     
@@ -925,12 +961,13 @@ def main():
     monitor.print_market_analysis(analysis)
     
     # Test dynamic sector weights
-    print(f"\n🔄 TESTING DYNAMIC SECTOR WEIGHTS")
-    print("=" * 60)
+    market_logger.info("TESTING DYNAMIC SECTOR WEIGHTS", operation="testing")
+    market_logger.info("=" * 60, operation="testing")
     sector_weights = monitor.get_dynamic_sector_weights()
-    print("Dynamic sector weights:")
+    market_logger.info("Dynamic sector weights:", operation="testing")
     for sector, weight in sector_weights.items():
-        print(f"  {sector}: {weight:.0%}")
+        market_logger.info(f"{sector}: {weight:.0%}", 
+                         sector=sector, weight=weight, operation="testing")
 
 
 if __name__ == "__main__":

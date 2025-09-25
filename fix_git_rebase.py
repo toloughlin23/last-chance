@@ -15,50 +15,50 @@ def run_git_command(cmd):
         return -1, "", str(e)
 
 
-print("=== Diagnosing Git Rebase Issue ===")
+training_logger.info("=== Diagnosing Git Rebase Issue ===", operation="enhanced_logging")
 
 # Check current status
-print("\n1. Checking git status...")
+training_logger.info("\n1. Checking git status...", operation="enhanced_logging")
 code, out, err = run_git_command("status --porcelain")
-print(f"Status: {code}")
-print(f"Output: {out}")
-print(f"Error: {err}")
+training_logger.info(f"Status: {code}", operation="enhanced_logging")
+training_logger.info(f"Output: {out}", operation="enhanced_logging")
+training_logger.error(f"Error: {err}", operation="enhanced_logging")
 
 # Check if we're in a rebase
-print("\n2. Checking if in rebase...")
+training_logger.info("\n2. Checking if in rebase...", operation="enhanced_logging")
 code, out, err = run_git_command("rev-parse --git-dir")
 if code == 0:
     rebase_dir = f"{out}/rebase-merge"
     import os
 
     if os.path.exists(rebase_dir):
-        print("❌ STUCK IN REBASE - This is the problem!")
-        print("Aborting rebase to fix the issue...")
+        training_logger.error("❌ STUCK IN REBASE - This is the problem!", operation="enhanced_logging")
+        training_logger.info("Aborting rebase to fix the issue...", operation="enhanced_logging")
 
         abort_code, abort_out, abort_err = run_git_command("rebase --abort")
-        print(f"Abort result: {abort_code}")
-        print(f"Abort output: {abort_out}")
-        print(f"Abort error: {abort_err}")
+        training_logger.info(f"Abort result: {abort_code}", operation="enhanced_logging")
+        training_logger.info(f"Abort output: {abort_out}", operation="enhanced_logging")
+        training_logger.error(f"Abort error: {abort_err}", operation="enhanced_logging")
 
         if abort_code == 0:
-            print("✅ Rebase aborted successfully!")
+            training_logger.info("✅ Rebase aborted successfully!", operation="enhanced_logging")
         else:
-            print("❌ Failed to abort rebase")
+            training_logger.error("❌ Failed to abort rebase", operation="enhanced_logging")
     else:
-        print("✅ Not in rebase")
+        training_logger.info("✅ Not in rebase", operation="enhanced_logging")
 else:
-    print(f"❌ Git error: {err}")
+    training_logger.error(f"❌ Git error: {err}", operation="enhanced_logging")
 
 # Check final status
-print("\n3. Final status after fix...")
+training_logger.info("\n3. Final status after fix...", operation="enhanced_logging")
 code, out, err = run_git_command("status --porcelain")
-print(f"Final status: {code}")
-print(f"Output: {out}")
-print(f"Error: {err}")
+training_logger.info(f"Final status: {code}", operation="enhanced_logging")
+training_logger.info(f"Output: {out}", operation="enhanced_logging")
+training_logger.error(f"Error: {err}", operation="enhanced_logging")
 
 # Check remote
-print("\n4. Checking GitHub remote...")
+training_logger.info("\n4. Checking GitHub remote...", operation="enhanced_logging")
 code, out, err = run_git_command("remote -v")
-print(f"Remote: {code}")
-print(f"Output: {out}")
-print(f"Error: {err}")
+training_logger.info(f"Remote: {code}", operation="enhanced_logging")
+training_logger.info(f"Output: {out}", operation="enhanced_logging")
+training_logger.error(f"Error: {err}", operation="enhanced_logging")

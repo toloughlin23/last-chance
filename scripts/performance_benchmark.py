@@ -15,8 +15,8 @@ from utils.active_universe_provider import ActiveUniverseProvider
 
 def benchmark_candidate_discovery():
     """Benchmark: Candidate discovery performance"""
-    print("⚡ Benchmark 1: Candidate Discovery")
-    print("-" * 50)
+    training_logger.info("⚡ Benchmark 1: Candidate Discovery", operation="enhanced_logging")
+    training_logger.info("-" * 50, operation="enhanced_logging")
 
     provider = ActiveUniverseProvider()
 
@@ -46,8 +46,7 @@ def benchmark_candidate_discovery():
             }
         )
 
-        print(
-            f"  Limit {limit:3d}: {len(candidates):3d} candidates in {elapsed:.2f}s ({memory_used:.1f}MB)"
+        training_logger.info(f"  Limit {limit:3d}: {len(candidates, operation="enhanced_logging"):3d} candidates in {elapsed:.2f}s ({memory_used:.1f}MB)"
         )
 
     return results
@@ -55,15 +54,15 @@ def benchmark_candidate_discovery():
 
 def benchmark_adv_prefiltering():
     """Benchmark: ADV prefiltering performance"""
-    print("\n⚡ Benchmark 2: ADV Prefiltering")
-    print("-" * 50)
+    training_logger.info("\n⚡ Benchmark 2: ADV Prefiltering", operation="enhanced_logging")
+    training_logger.info("-" * 50, operation="enhanced_logging")
 
     provider = ActiveUniverseProvider()
 
     # Get candidates first
     candidates = provider._discover_candidates(limit=100)
     if not candidates:
-        print("  ❌ No candidates for benchmarking")
+        training_logger.error("  ❌ No candidates for benchmarking", operation="enhanced_logging")
         return []
 
     end_date = date.today()
@@ -104,8 +103,7 @@ def benchmark_adv_prefiltering():
             }
         )
 
-        print(
-            f"  Batch {batch_size:2d}: {len(candidates):3d}→{len(_prefiltered_results):2d} in {elapsed:.2f}s ({memory_used:.1f}MB)"
+        training_logger.info(f"  Batch {batch_size:2d}: {len(candidates, operation="enhanced_logging"):3d}→{len(_prefiltered_results):2d} in {elapsed:.2f}s ({memory_used:.1f}MB)"
         )
 
     return results
@@ -113,8 +111,8 @@ def benchmark_adv_prefiltering():
 
 def benchmark_spread_calculation():
     """Benchmark: Spread calculation performance"""
-    print("\n⚡ Benchmark 3: Spread Calculation")
-    print("-" * 50)
+    training_logger.info("\n⚡ Benchmark 3: Spread Calculation", operation="enhanced_logging")
+    training_logger.info("-" * 50, operation="enhanced_logging")
 
     from services.quotes_client import QuotesClient
 
@@ -148,7 +146,7 @@ def benchmark_spread_calculation():
                 med_dollar, med_bps = client.median_spread_over_days(symbol, days=5)
                 spreads.append((symbol, med_dollar, med_bps))
             except Exception as e:
-                print(f"    Error with {symbol}: {e}")
+                training_logger.error(f"    Error with {symbol}: {e}", operation="enhanced_logging")
 
         end_time = time.time()
         end_memory = psutil.Process().memory_info().rss / 1024 / 1024
@@ -166,8 +164,7 @@ def benchmark_spread_calculation():
             }
         )
 
-        print(
-            f"  {num_symbols:2d} symbols: {len(spreads):2d} successful in {elapsed:.2f}s ({memory_used:.1f}MB)"
+        training_logger.info(f"  {num_symbols:2d} symbols: {len(spreads, operation="enhanced_logging"):2d} successful in {elapsed:.2f}s ({memory_used:.1f}MB)"
         )
 
     return results
@@ -175,8 +172,8 @@ def benchmark_spread_calculation():
 
 def benchmark_full_pipeline():
     """Benchmark: Complete pipeline performance"""
-    print("\n⚡ Benchmark 4: Full Pipeline")
-    print("-" * 50)
+    training_logger.info("\n⚡ Benchmark 4: Full Pipeline", operation="enhanced_logging")
+    training_logger.info("-" * 50, operation="enhanced_logging")
 
     provider = ActiveUniverseProvider()
 
@@ -211,8 +208,7 @@ def benchmark_full_pipeline():
             }
         )
 
-        print(
-            f"  Target {target_size:3d}: {len(universe):3d} symbols in {elapsed:.1f}s ({memory_used:.1f}MB)"
+        training_logger.info(f"  Target {target_size:3d}: {len(universe, operation="enhanced_logging"):3d} symbols in {elapsed:.1f}s ({memory_used:.1f}MB)"
         )
 
     return results
@@ -220,25 +216,24 @@ def benchmark_full_pipeline():
 
 def benchmark_memory_usage():
     """Benchmark: Memory usage patterns"""
-    print("\n⚡ Benchmark 5: Memory Usage")
-    print("-" * 50)
+    training_logger.info("\n⚡ Benchmark 5: Memory Usage", operation="enhanced_logging")
+    training_logger.info("-" * 50, operation="enhanced_logging")
 
     provider = ActiveUniverseProvider()
 
     # Monitor memory during full process
     process = psutil.Process()
 
-    print("  Memory usage during pipeline execution:")
+    training_logger.info("  Memory usage during pipeline execution:", operation="enhanced_logging")
 
     # Initial memory
     initial_memory = process.memory_info().rss / 1024 / 1024
-    print(f"    Initial: {initial_memory:.1f} MB")
+    training_logger.info(f"    Initial: {initial_memory:.1f} MB", operation="enhanced_logging")
 
     # After candidate discovery
     candidates = provider._discover_candidates(limit=200)
     after_discovery = process.memory_info().rss / 1024 / 1024
-    print(
-        f"    After discovery: {after_discovery:.1f} MB (+{after_discovery - initial_memory:.1f})"
+    training_logger.info(f"    After discovery: {after_discovery:.1f} MB (+{after_discovery - initial_memory:.1f}, operation="enhanced_logging")"
     )
 
     # After prefiltering
@@ -254,8 +249,7 @@ def benchmark_memory_usage():
         batch_size=20,
     )
     after_prefilter = process.memory_info().rss / 1024 / 1024
-    print(
-        f"    After prefilter: {after_prefilter:.1f} MB (+{after_prefilter - after_discovery:.1f})"
+    training_logger.info(f"    After prefilter: {after_prefilter:.1f} MB (+{after_prefilter - after_discovery:.1f}, operation="enhanced_logging")"
     )
 
     # After full selection
@@ -265,12 +259,11 @@ def benchmark_memory_usage():
         force_refresh=True,
     )
     after_selection = process.memory_info().rss / 1024 / 1024
-    print(
-        f"    After selection: {after_selection:.1f} MB (+{after_selection - after_prefilter:.1f})"
+    training_logger.info(f"    After selection: {after_selection:.1f} MB (+{after_selection - after_prefilter:.1f}, operation="enhanced_logging")"
     )
 
     total_memory_used = after_selection - initial_memory
-    print(f"    Total memory used: {total_memory_used:.1f} MB")
+    training_logger.info(f"    Total memory used: {total_memory_used:.1f} MB", operation="enhanced_logging")
 
     return {
         "initial_mb": initial_memory,
@@ -282,8 +275,8 @@ def benchmark_memory_usage():
 
 def benchmark_api_efficiency():
     """Benchmark: API call efficiency"""
-    print("\n⚡ Benchmark 6: API Efficiency")
-    print("-" * 50)
+    training_logger.info("\n⚡ Benchmark 6: API Efficiency", operation="enhanced_logging")
+    training_logger.info("-" * 50, operation="enhanced_logging")
 
     from services.polygon_client import PolygonClient
 
@@ -315,7 +308,7 @@ def benchmark_api_efficiency():
                     )
                     api_calls += 1
                 except Exception as e:
-                    print(f"    API error for {symbol}: {e}")
+                    training_logger.error(f"    API error for {symbol}: {e}", operation="enhanced_logging")
 
         end_time = time.time()
         elapsed = end_time - start_time
@@ -329,8 +322,7 @@ def benchmark_api_efficiency():
             }
         )
 
-        print(
-            f"  Batch {batch_size}: {api_calls} calls in {elapsed:.2f}s ({api_calls/elapsed:.1f} calls/s)"
+        training_logger.info(f"  Batch {batch_size}: {api_calls} calls in {elapsed:.2f}s ({api_calls/elapsed:.1f} calls/s, operation="enhanced_logging")"
         )
 
     return results
@@ -339,10 +331,10 @@ def benchmark_api_efficiency():
 def main():
     load_dotenv()
 
-    print("🚀 PERFORMANCE BENCHMARK SUITE")
-    print("=" * 70)
-    print("Measuring speed, memory, and API efficiency")
-    print("=" * 70)
+    training_logger.info("🚀 PERFORMANCE BENCHMARK SUITE", operation="enhanced_logging")
+    training_logger.info("=" * 70, operation="enhanced_logging")
+    training_logger.info("Measuring speed, memory, and API efficiency", operation="enhanced_logging")
+    training_logger.info("=" * 70, operation="enhanced_logging")
 
     benchmarks = [
         ("Candidate Discovery", benchmark_candidate_discovery),
@@ -357,38 +349,37 @@ def main():
 
     for benchmark_name, benchmark_func in benchmarks:
         try:
-            print(f"\n{'='*20} {benchmark_name} {'='*20}")
+            training_logger.info(f"\n{'='*20} {benchmark_name} {'='*20}", operation="enhanced_logging")
             results = benchmark_func()
             all_results[benchmark_name] = results
-            print(f"✅ {benchmark_name} completed")
+            training_logger.info(f"✅ {benchmark_name} completed", operation="enhanced_logging")
         except Exception as e:
-            print(f"❌ {benchmark_name} failed: {e}")
+            training_logger.error(f"❌ {benchmark_name} failed: {e}", operation="enhanced_logging")
             all_results[benchmark_name] = None
 
     # Summary
-    print("\n" + "=" * 70)
-    print("PERFORMANCE SUMMARY")
-    print("=" * 70)
+    training_logger.info("\n" + "=" * 70, operation="enhanced_logging")
+    training_logger.info("PERFORMANCE SUMMARY", operation="enhanced_logging")
+    training_logger.info("=" * 70, operation="enhanced_logging")
 
     for benchmark_name, results in all_results.items():
         if results:
-            print(f"\n📊 {benchmark_name}:")
+            training_logger.info(f"\n📊 {benchmark_name}:", operation="enhanced_logging")
             if isinstance(results, list) and results:
                 # Show key metrics
                 if "time" in results[0]:
                     times = [r["time"] for r in results]
-                    print(f"  Time range: {min(times):.2f}s - {max(times):.2f}s")
+                    training_logger.info(f"  Time range: {min(times, operation="enhanced_logging"):.2f}s - {max(times):.2f}s")
                 if "memory_mb" in results[0]:
                     memories = [r["memory_mb"] for r in results]
-                    print(
-                        f"  Memory range: {min(memories):.1f}MB - {max(memories):.1f}MB"
+                    training_logger.info(f"  Memory range: {min(memories, operation="enhanced_logging"):.1f}MB - {max(memories):.1f}MB"
                     )
             elif isinstance(results, dict):
-                print(f"  Results: {results}")
+                training_logger.info(f"  Results: {results}", operation="enhanced_logging")
         else:
-            print(f"\n❌ {benchmark_name}: FAILED")
+            training_logger.error(f"\n❌ {benchmark_name}: FAILED", operation="enhanced_logging")
 
-    print("\n🎯 Performance testing complete!")
+    training_logger.info("\n🎯 Performance testing complete!", operation="enhanced_logging")
 
 
 if __name__ == "__main__":

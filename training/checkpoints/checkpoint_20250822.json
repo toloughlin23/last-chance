@@ -1,0 +1,9 @@
+{
+  "date": "2025-08-22T16:38:27.799698",
+  "training_days": 10,
+  "algorithm_states": {
+    "linucb": {},
+    "neural": {},
+    "ucbv": {}
+  }
+}

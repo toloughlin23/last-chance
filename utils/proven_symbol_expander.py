@@ -247,19 +247,21 @@ class ProvenSymbolExpander:
                     cached_data.get("analysis_date", "2020-01-01")
                 )
                 if (datetime.now() - cache_date).days < 7:
-                    print("📂 Using cached proven expanded symbol pool...")
+                    universe_logger.info("Using cached proven expanded symbol pool", 
+                                       cache_hit=True, operation="proven_expansion")
                     return cached_data.get("symbols", [])
             except Exception as e:
-                print(f"⚠️ Failed to read proven expanded cache: {e}")
+                universe_logger.warning(f"Failed to read proven expanded cache: {e}", 
+                                      cache_error=str(e), operation="proven_expansion")
 
-        print(
-            f"🔍 Expanding proven symbols with {analysis_days} days of REAL Polygon data..."
-        )
+        universe_logger.info(f"Expanding proven symbols with {analysis_days} days of REAL Polygon data", 
+                           analysis_days=analysis_days, operation="proven_expansion")
 
         # Use proven symbols as candidates
         candidates = self.proven_symbols.copy()
 
-        print(f"📊 Analyzing {len(candidates)} proven candidate symbols...")
+        universe_logger.info(f"Analyzing {len(candidates)} proven candidate symbols", 
+                           candidate_count=len(candidates), operation="proven_analysis")
 
         # Calculate date range
         end_date = datetime.now().date()
@@ -280,9 +282,8 @@ class ProvenSymbolExpander:
             spread_core_hours_only=True,
         )
 
-        print(
-            f"✅ Selected {len(optimized_symbols)} optimized symbols from proven candidates!"
-        )
+        universe_logger.info(f"Selected {len(optimized_symbols)} optimized symbols from proven candidates", 
+                           optimized_count=len(optimized_symbols), operation="proven_selection")
 
         # Save results to cache
         self._save_expanded_pool(optimized_symbols, analysis_days, cache_file)
@@ -316,7 +317,8 @@ class ProvenSymbolExpander:
         with open(filepath, "w") as f:
             json.dump(pool_data, f, indent=2)
 
-        print(f"💾 Proven expanded pool saved to {filepath}")
+        universe_logger.info(f"Proven expanded pool saved to {filepath}", 
+                           filepath=filepath, operation="proven_save")
 
     def validate_pool_performance(self, lookback_days: int = 30) -> Dict[str, Any]:
         """
@@ -328,9 +330,8 @@ class ProvenSymbolExpander:
         Returns:
             Performance validation metrics
         """
-        print(
-            f"🔍 Validating proven expanded pool performance over {lookback_days} days..."
-        )
+        universe_logger.info(f"Validating proven expanded pool performance over {lookback_days} days", 
+                           lookback_days=lookback_days, operation="proven_validation")
 
         # Get current optimized pool
         current_pool = self.get_expanded_symbol_pool(analysis_days=180, target_size=120)
@@ -371,12 +372,14 @@ class ProvenSymbolExpander:
             ),
         }
 
-        print("✅ Validation complete:")
-        print("   - Data source: Proven symbols + Polygon API")
-        print(f"   - Pool stability: {validation_metrics['pool_stability']}")
-        print(
-            f"   - Overlap: {len(overlap)}/{len(current_pool)} symbols ({validation_metrics['overlap_percentage']:.1f}%)"
-        )
+        universe_logger.info("Validation complete", operation="proven_validation")
+        universe_logger.info("Data source: Proven symbols + Polygon API", 
+                           data_source="proven_symbols_polygon", operation="proven_validation")
+        universe_logger.info(f"Pool stability: {validation_metrics['pool_stability']}", 
+                           pool_stability=validation_metrics['pool_stability'], operation="proven_validation")
+        universe_logger.info(f"Overlap: {len(overlap)}/{len(current_pool)} symbols ({validation_metrics['overlap_percentage']:.1f}%)", 
+                           overlap_count=len(overlap), total_pool=len(current_pool), 
+                           overlap_percentage=validation_metrics['overlap_percentage'], operation="proven_validation")
 
         return validation_metrics
 
@@ -400,8 +403,9 @@ def get_proven_expanded_symbols(
 
 # Example usage
 if __name__ == "__main__":
-    print("🎯 PROVEN SYMBOL EXPANDER - 100% GENUINE DATA-DRIVEN")
-    print("=" * 60)
+    universe_logger.info("PROVEN SYMBOL EXPANDER - 100% GENUINE DATA-DRIVEN", 
+                       operation="system_initialization")
+    universe_logger.info("=" * 60, operation="system_initialization")
 
     # Create proven expanded pool
     expander = ProvenSymbolExpander()
@@ -409,10 +413,13 @@ if __name__ == "__main__":
     # Get optimized symbols using proven symbols + REAL Polygon data
     symbols = expander.get_expanded_symbol_pool(analysis_days=180, target_size=120)
 
-    print(f"\n✅ Proven expanded pool created with {len(symbols)} symbols!")
-    print(f"🎯 Top 10 symbols: {symbols[:10]}")
+    universe_logger.info(f"Proven expanded pool created with {len(symbols)} symbols", 
+                       final_pool_size=len(symbols), operation="proven_expansion")
+    universe_logger.info(f"Top 10 symbols: {symbols[:10]}", 
+                       top_symbols=symbols[:10], operation="proven_expansion")
 
     # Validate performance
     validation = expander.validate_pool_performance(lookback_days=30)
 
-    print("\n🚀 Ready for day trading with proven symbols + REAL Polygon data!")
+    universe_logger.info("Ready for day trading with proven symbols + REAL Polygon data", 
+                       trading_ready=True, operation="proven_expansion")

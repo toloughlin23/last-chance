@@ -20,8 +20,8 @@ load_dotenv()
 def test_adaptive_universe():
     """Test that we get 120-150 symbols with adaptive filtering."""
 
-    print("🚀 Testing Adaptive Universe Provider")
-    print("=" * 50)
+    universe_logger.info("🚀 Testing Adaptive Universe Provider", operation="enhanced_logging")
+    universe_logger.info("=" * 50, operation="enhanced_logging")
 
     try:
         provider = AdaptiveUniverseProvider()
@@ -34,9 +34,7 @@ def test_adaptive_universe():
         ]
 
         for case in test_cases:
-            print(
-                f"\n📊 Testing {case['name']} case: {case['target_size']}-{case['target_max_size']} symbols"
-            )
+            universe_logger.info(f"\n📊 Testing {case['name']} case: {case['target_size']}-{case['target_max_size']} symbols", operation="enhanced_logging")
 
             universe = provider.get_adaptive_universe(
                 target_size=case["target_size"],
@@ -45,31 +43,29 @@ def test_adaptive_universe():
                 force_refresh=True,
             )
 
-            print(f"✅ Generated {len(universe)} symbols")
+            universe_logger.info(f"✅ Generated {len(universe, operation="enhanced_logging")} symbols")
 
             if len(universe) >= case["target_size"]:
-                print(
-                    f"🎯 SUCCESS: Got {len(universe)} symbols (target: {case['target_size']})"
+                universe_logger.info(f"🎯 SUCCESS: Got {len(universe, operation="enhanced_logging")} symbols (target: {case['target_size']})"
                 )
             else:
-                print(
-                    f"⚠️ WARNING: Only {len(universe)} symbols (target: {case['target_size']})"
+                universe_logger.warning(f"⚠️ WARNING: Only {len(universe, operation="enhanced_logging")} symbols (target: {case['target_size']})"
                 )
 
             # Show first 10 symbols
-            print(f"   Top 10: {universe[:10]}")
+            universe_logger.info(f"   Top 10: {universe[:10]}", operation="enhanced_logging")
 
             # Check if we have good diversity
             if len(universe) >= 50:
-                print(f"   Diversity: Good ({len(universe)} symbols)")
+                universe_logger.info(f"   Diversity: Good ({len(universe, operation="enhanced_logging")} symbols)")
             else:
-                print(f"   Diversity: Limited ({len(universe)} symbols)")
+                universe_logger.info(f"   Diversity: Limited ({len(universe, operation="enhanced_logging")} symbols)")
 
-        print("\n🎉 Adaptive Universe Provider test completed!")
+        universe_logger.info("\n🎉 Adaptive Universe Provider test completed!", operation="enhanced_logging")
         return True
 
     except Exception as e:
-        print(f"❌ Test failed: {e}")
+        universe_logger.error(f"❌ Test failed: {e}", operation="enhanced_logging")
         import traceback
 
         traceback.print_exc()

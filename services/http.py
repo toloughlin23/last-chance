@@ -79,7 +79,7 @@ class HttpClient:
                 # Enhanced error handling for specific network issues
                 error_msg = str(exc).lower()
                 if any(keyword in error_msg for keyword in ['ssl', 'certificate', 'connection', 'timeout', 'network']):
-                    print(f"⚠️ Network error (attempt {attempt + 1}/{self.max_retries + 1}): {exc}")
+                    training_logger.error(f"⚠️ Network error (attempt {attempt + 1}/{self.max_retries + 1}): {exc}", operation="enhanced_logging")
                 
                 # Exponential backoff with jitter
                 sleep_seconds = self.backoff * (2**attempt) + (0.1 * attempt)  # Add jitter

@@ -15,38 +15,37 @@ try:
         OptimizedInstitutionalLinUCB,
     )
 
-    print("✅ LinUCB imported successfully")
+    training_logger.info("✅ LinUCB imported successfully", operation="enhanced_logging")
 
     # Create instance
     bandit = OptimizedInstitutionalLinUCB()
-    print("✅ LinUCB instance created")
+    training_logger.info("✅ LinUCB instance created", operation="enhanced_logging")
 
     # Check all methods
     methods = [method for method in dir(bandit) if not method.startswith("_")]
-    print(f"✅ Available methods: {methods}")
+    training_logger.info(f"✅ Available methods: {methods}", operation="enhanced_logging")
 
     # Check specific methods
-    print(f"✅ get_arm_statistics exists: {hasattr(bandit, 'get_arm_statistics')}")
-    print(f"✅ reset_arm exists: {hasattr(bandit, 'reset_arm')}")
-    print(
-        f"✅ get_confidence_for_context exists: {hasattr(bandit, 'get_confidence_for_context')}"
+    training_logger.info(f"✅ get_arm_statistics exists: {hasattr(bandit, 'get_arm_statistics', operation="enhanced_logging")}")
+    training_logger.info(f"✅ reset_arm exists: {hasattr(bandit, 'reset_arm', operation="enhanced_logging")}")
+    training_logger.info(f"✅ get_confidence_for_context exists: {hasattr(bandit, 'get_confidence_for_context', operation="enhanced_logging")}"
     )
 
     # Try to call the methods
     try:
         stats = bandit.get_arm_statistics("test_arm")
-        print(f"✅ get_arm_statistics call successful: {stats}")
+        training_logger.info(f"✅ get_arm_statistics call successful: {stats}", operation="enhanced_logging")
     except Exception as e:
-        print(f"❌ get_arm_statistics call failed: {e}")
+        training_logger.error(f"❌ get_arm_statistics call failed: {e}", operation="enhanced_logging")
 
     try:
         reset_result = bandit.reset_arm("test_arm")
-        print(f"✅ reset_arm call successful: {reset_result}")
+        training_logger.info(f"✅ reset_arm call successful: {reset_result}", operation="enhanced_logging")
     except Exception as e:
-        print(f"❌ reset_arm call failed: {e}")
+        training_logger.error(f"❌ reset_arm call failed: {e}", operation="enhanced_logging")
 
 except Exception as e:
-    print(f"❌ Import failed: {e}")
+    training_logger.error(f"❌ Import failed: {e}", operation="enhanced_logging")
     import traceback
 
     traceback.print_exc()

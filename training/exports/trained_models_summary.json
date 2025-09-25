@@ -1,0 +1,40 @@
+{
+  "total_trades": 1056,
+  "overall_variance": 0.003104321084151412,
+  "diversity_achieved": false,
+  "algorithm_performance": {
+    "linucb": {
+      "total_trades": 352,
+      "avg_reward_bps": 0.014901328606957493,
+      "win_rate": 0.5198863636363636,
+      "confidence_variance": 0.005046881597171058,
+      "unique_confidence_count": 350,
+      "confidence_range": [
+        0.5122286657630432,
+        0.9
+      ]
+    },
+    "neural": {
+      "total_trades": 352,
+      "avg_reward_bps": 0.015637144978770515,
+      "win_rate": 0.5255681818181818,
+      "confidence_variance": 0.004263317916780032,
+      "unique_confidence_count": 349,
+      "confidence_range": [
+        0.5805841889337487,
+        0.95
+      ]
+    },
+    "ucbv": {
+      "total_trades": 352,
+      "avg_reward_bps": 0.014901328606957493,
+      "win_rate": 0.5198863636363636,
+      "confidence_variance": 2.7637385031475467e-06,
+      "unique_confidence_count": 342,
+      "confidence_range": [
+        0.7950167388457345,
+        0.8044080038634096
+      ]
+    }
+  }
+}

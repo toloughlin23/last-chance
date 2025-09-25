@@ -44,9 +44,9 @@ class SurgicalContaminationRemover:
     """
 
     def __init__(self):
-        print("🔬 SURGICAL CONTAMINATION REMOVAL SYSTEM")
-        print("=" * 50)
-        print("🎯 PRECISION ELIMINATION - PRESERVES SCRIPT FUNCTIONALITY")
+        training_logger.info("🔬 SURGICAL CONTAMINATION REMOVAL SYSTEM", operation="enhanced_logging")
+        training_logger.info("=" * 50, operation="enhanced_logging")
+        training_logger.info("🎯 PRECISION ELIMINATION - PRESERVES SCRIPT FUNCTIONALITY", operation="enhanced_logging")
 
         # Define ONLY harmful patterns to remove
         self.harmful_patterns = {
@@ -154,9 +154,9 @@ class SurgicalContaminationRemover:
         ================================
         Removes ONLY harmful contamination while preserving script functionality
         """
-        print("\n🔬 STARTING SURGICAL CONTAMINATION REMOVAL")
-        print(f"📁 Target: {root_path}")
-        print("🎯 PRECISION ELIMINATION - PRESERVING FUNCTIONALITY")
+        training_logger.info("\n🔬 STARTING SURGICAL CONTAMINATION REMOVAL", operation="enhanced_logging")
+        training_logger.info(f"📁 Target: {root_path}", operation="enhanced_logging")
+        training_logger.info("🎯 PRECISION ELIMINATION - PRESERVING FUNCTIONALITY", operation="enhanced_logging")
 
         removal_report = {
             "files_processed": 0,
@@ -179,7 +179,7 @@ class SurgicalContaminationRemover:
                     file_path = os.path.join(root, file)
                     relative_path = os.path.relpath(file_path, root_path)
 
-                    print(f"\n🔍 SURGICAL ANALYSIS: {relative_path}")
+                    training_logger.info(f"\n🔍 SURGICAL ANALYSIS: {relative_path}", operation="enhanced_logging")
 
                     try:
                         surgical_result = self.surgically_remove_file_contamination(
@@ -194,14 +194,10 @@ class SurgicalContaminationRemover:
                             removal_report["surgical_details"][
                                 relative_path
                             ] = surgical_result
-                            print(
-                                f"   🔬 REMOVED: {surgical_result['removed']} harmful patterns"
-                            )
-                            print(
-                                f"   ✅ PRESERVED: {surgical_result['preserved']} legitimate patterns"
-                            )
+                            training_logger.info(f"   🔬 REMOVED: {surgical_result['removed']} harmful patterns", operation="enhanced_logging")
+                            training_logger.info(f"   ✅ PRESERVED: {surgical_result['preserved']} legitimate patterns", operation="enhanced_logging")
                         else:
-                            print("   ✅ CLEAN: No harmful contamination found")
+                            training_logger.info("   ✅ CLEAN: No harmful contamination found", operation="enhanced_logging")
 
                         removal_report[
                             "preserved_legitimate_patterns"
@@ -212,7 +208,7 @@ class SurgicalContaminationRemover:
                         error_msg = f"Error processing {relative_path}: {e}"
                         removal_report["failures"].append(error_msg)
                         logger.error(error_msg)
-                        print(f"   ❌ ERROR: {e}")
+                        training_logger.error(f"   ❌ ERROR: {e}", operation="enhanced_logging")
 
         # Generate surgical report
         self.generate_surgical_report(removal_report)
@@ -244,9 +240,7 @@ class SurgicalContaminationRemover:
                     # Check if this is legitimate preservation or harmful removal
                     if self.is_legitimate_pattern(line, file_path):
                         surgical_result["preserved"] += 1
-                        print(
-                            f"      ✅ PRESERVED Line {line_idx + 1}: Legitimate pattern"
-                        )
+                        training_logger.info(f"      ✅ PRESERVED Line {line_idx + 1}: Legitimate pattern", operation="enhanced_logging")
                         # Don't modify legitimate patterns
                         continue
                     else:
@@ -260,7 +254,7 @@ class SurgicalContaminationRemover:
                             }
                         )
                         modified_lines[line_idx] = modified_line
-                        print(f"      🔬 REMOVED Line {line_idx + 1}: Harmful pattern")
+                        training_logger.info(f"      🔬 REMOVED Line {line_idx + 1}: Harmful pattern", operation="enhanced_logging")
 
             # Add genuine implementations if needed
             if surgical_result["removed"] > 0:
@@ -414,29 +408,23 @@ class SurgicalContaminationRemover:
         with open(report_filename, "w") as f:
             json.dump(removal_report, f, indent=2, default=str)
 
-        print("\n🔬 SURGICAL REMOVAL COMPLETE!")
-        print("=" * 40)
-        print("📊 SURGICAL SUMMARY:")
-        print(f"   Files processed: {removal_report['files_processed']}")
-        print(f"   Files modified: {removal_report['files_modified']}")
-        print(
-            f"   Harmful contaminations removed: {removal_report['harmful_contaminations_removed']}"
-        )
-        print(
-            f"   Legitimate patterns preserved: {removal_report['preserved_legitimate_patterns']}"
-        )
-        print(f"   Failures: {len(removal_report['failures'])}")
-        print(f"📄 Detailed report: {report_filename}")
+        training_logger.info("\n🔬 SURGICAL REMOVAL COMPLETE!", operation="enhanced_logging")
+        training_logger.info("=" * 40, operation="enhanced_logging")
+        training_logger.info("📊 SURGICAL SUMMARY:", operation="enhanced_logging")
+        training_logger.info(f"   Files processed: {removal_report['files_processed']}", operation="enhanced_logging")
+        training_logger.info(f"   Files modified: {removal_report['files_modified']}", operation="enhanced_logging")
+        training_logger.info(f"   Harmful contaminations removed: {removal_report['harmful_contaminations_removed']}", operation="enhanced_logging")
+        training_logger.info(f"   Legitimate patterns preserved: {removal_report['preserved_legitimate_patterns']}", operation="enhanced_logging")
+        training_logger.info(f"   Failures: {len(removal_report['failures'], operation="enhanced_logging")}")
+        training_logger.info(f"📄 Detailed report: {report_filename}", operation="enhanced_logging")
 
         if removal_report["harmful_contaminations_removed"] > 0:
-            print(
-                f"\n✅ SUCCESS: Removed {removal_report['harmful_contaminations_removed']} harmful patterns"
-            )
-            print("✅ All script functionality preserved")
-            print("✅ Legitimate testing infrastructure untouched")
+            training_logger.info(f"\n✅ SUCCESS: Removed {removal_report['harmful_contaminations_removed']} harmful patterns", operation="enhanced_logging")
+            training_logger.info("✅ All script functionality preserved", operation="enhanced_logging")
+            training_logger.info("✅ Legitimate testing infrastructure untouched", operation="enhanced_logging")
         else:
-            print("\n✅ NO HARMFUL CONTAMINATION FOUND")
-            print("✅ All scripts are clean")
+            training_logger.info("\n✅ NO HARMFUL CONTAMINATION FOUND", operation="enhanced_logging")
+            training_logger.info("✅ All scripts are clean", operation="enhanced_logging")
 
 
 def main():
@@ -444,9 +432,9 @@ def main():
     🔬 MAIN SURGICAL CONTAMINATION REMOVAL
     ====================================
     """
-    print("🔬 SURGICAL CONTAMINATION REMOVAL SYSTEM")
-    print("=" * 50)
-    print("🎯 PRECISION ELIMINATION - PRESERVES FUNCTIONALITY")
+    training_logger.info("🔬 SURGICAL CONTAMINATION REMOVAL SYSTEM", operation="enhanced_logging")
+    training_logger.info("=" * 50, operation="enhanced_logging")
+    training_logger.info("🎯 PRECISION ELIMINATION - PRESERVES FUNCTIONALITY", operation="enhanced_logging")
 
     # Get the SuperBandit system path
     current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -458,11 +446,11 @@ def main():
     # Perform surgical removal
     surgical_remover.surgical_remove_contamination(root_path)
 
-    print("\n🎉 SURGICAL REMOVAL OPERATIONAL!")
-    print("✅ Harmful contamination eliminated")
-    print("✅ Script functionality preserved")
-    print("✅ Testing infrastructure protected")
-    print("💪 Your scripts are now surgically clean!")
+    training_logger.info("\n🎉 SURGICAL REMOVAL OPERATIONAL!", operation="enhanced_logging")
+    training_logger.info("✅ Harmful contamination eliminated", operation="enhanced_logging")
+    training_logger.info("✅ Script functionality preserved", operation="enhanced_logging")
+    training_logger.info("✅ Testing infrastructure protected", operation="enhanced_logging")
+    training_logger.info("💪 Your scripts are now surgically clean!", operation="enhanced_logging")
 
 
 if __name__ == "__main__":

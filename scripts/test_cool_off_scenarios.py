@@ -16,16 +16,16 @@ load_dotenv()
 def test_cool_off_scenarios():
     """Test different market scenarios to show automatic adjustment."""
     
-    print("🧪 TESTING COOL-OFF DETECTION SCENARIOS")
-    print("=" * 60)
+    training_logger.info("🧪 TESTING COOL-OFF DETECTION SCENARIOS", operation="enhanced_logging")
+    training_logger.info("=" * 60, operation="enhanced_logging")
     
     from utils.market_condition_monitor import MarketConditionMonitor
     
     monitor = MarketConditionMonitor()
     
     # Test Scenario 1: Tech Bullish (Current AI Boom)
-    print("\n📈 SCENARIO 1: TECH BULLISH (Current AI Boom)")
-    print("-" * 50)
+    training_logger.info("\n📈 SCENARIO 1: TECH BULLISH (Current AI Boom, operation="enhanced_logging")")
+    training_logger.info("-" * 50, operation="enhanced_logging")
     
     # Simulate bullish tech conditions
     monitor.tech_cool_off_threshold = -0.05
@@ -35,11 +35,11 @@ def test_cool_off_scenarios():
     monitor.print_market_analysis(analysis1)
     
     # Test Scenario 2: Tech Weakness (Moderate Cool-off)
-    print("\n📉 SCENARIO 2: TECH WEAKNESS (Moderate Cool-off)")
-    print("-" * 50)
+    training_logger.info("\n📉 SCENARIO 2: TECH WEAKNESS (Moderate Cool-off, operation="enhanced_logging")")
+    training_logger.info("-" * 50, operation="enhanced_logging")
     
     # ENHANCED: Use real historical data analysis for tech weakness scenarios
-    print("🔍 ENHANCED: Analyzing real historical tech weakness patterns...")
+    training_logger.info("🔍 ENHANCED: Analyzing real historical tech weakness patterns...", operation="enhanced_logging")
     
     # Get real historical data for tech weakness analysis
     from datetime import datetime, timedelta
@@ -51,28 +51,28 @@ def test_cool_off_scenarios():
         monitor.tech_symbols, start_date, end_date, "Technology"
     )
     
-    print(f"📊 Real Tech Analysis: Return={tech_analysis.get('total_return', 0):.3f}, "
+    training_logger.info(f"📊 Real Tech Analysis: Return={tech_analysis.get('total_return', 0, operation="enhanced_logging"):.3f}, "
           f"Volatility={tech_analysis.get('volatility', 0):.3f}, "
           f"Momentum={tech_analysis.get('momentum', 0):.3f}")
     
     # Enhanced scenario: Use real data to simulate tech weakness
     if tech_analysis.get('total_return', 0) > 0.1:  # If tech is strong, simulate weakness
-        print("🎯 Simulating tech weakness scenario using real market patterns...")
+        training_logger.info("🎯 Simulating tech weakness scenario using real market patterns...", operation="enhanced_logging")
         # Use real defensive sector data for comparison
         defensive_symbols = ['JNJ', 'PG', 'KO', 'PEP', 'WMT', 'CL', 'KMB', 'GIS', 'CPB', 'HSY']
         defensive_analysis = monitor._get_sector_performance(
             defensive_symbols, start_date, end_date, "Consumer Staples"
         )
-        print(f"📊 Real Defensive Analysis: Return={defensive_analysis.get('total_return', 0):.3f}")
+        training_logger.info(f"📊 Real Defensive Analysis: Return={defensive_analysis.get('total_return', 0, operation="enhanced_logging"):.3f}")
     else:
-        print("📉 Real tech weakness detected - no simulation needed!")
+        training_logger.info("📉 Real tech weakness detected - no simulation needed!", operation="enhanced_logging")
     
     analysis2 = monitor.analyze_market_conditions(lookback_days=30)
     monitor.print_market_analysis(analysis2)
     
     # Test Scenario 3: Tech Cool-off (Severe)
-    print("\n❄️ SCENARIO 3: TECH COOL-OFF (Severe)")
-    print("-" * 50)
+    training_logger.info("\n❄️ SCENARIO 3: TECH COOL-OFF (Severe, operation="enhanced_logging")")
+    training_logger.info("-" * 50, operation="enhanced_logging")
     
     def mock_tech_cool_off(sector_name):
         if sector_name == "Technology":
@@ -102,8 +102,8 @@ def test_cool_off_scenarios():
     monitor.print_market_analysis(analysis3)
     
     # Test Scenario 4: Tech Volatility Spike
-    print("\n⚡ SCENARIO 4: TECH VOLATILITY SPIKE")
-    print("-" * 50)
+    training_logger.info("\n⚡ SCENARIO 4: TECH VOLATILITY SPIKE", operation="enhanced_logging")
+    training_logger.info("-" * 50, operation="enhanced_logging")
     
     def mock_tech_volatility(sector_name):
         if sector_name == "Technology":
@@ -133,23 +133,23 @@ def test_cool_off_scenarios():
     monitor.print_market_analysis(analysis4)
     
     # Summary
-    print("\n🎯 COOL-OFF DETECTION SUMMARY")
-    print("=" * 60)
-    print("✅ Scenario 1 (Tech Bullish): 88% Tech - MAINTAIN_AGGRESSIVE_TECH")
-    print("✅ Scenario 2 (Tech Weakness): 60% Tech - MODERATE_TECH_REDUCTION")
-    print("✅ Scenario 3 (Tech Cool-off): 40% Tech - REDUCE_TECH_EXPOSURE")
-    print("✅ Scenario 4 (Tech Volatility): 75% Tech - SLIGHT_TECH_REDUCTION")
+    training_logger.info("\n🎯 COOL-OFF DETECTION SUMMARY", operation="enhanced_logging")
+    training_logger.info("=" * 60, operation="enhanced_logging")
+    training_logger.info("✅ Scenario 1 (Tech Bullish, operation="enhanced_logging"): 88% Tech - MAINTAIN_AGGRESSIVE_TECH")
+    training_logger.info("✅ Scenario 2 (Tech Weakness, operation="enhanced_logging"): 60% Tech - MODERATE_TECH_REDUCTION")
+    training_logger.info("✅ Scenario 3 (Tech Cool-off, operation="enhanced_logging"): 40% Tech - REDUCE_TECH_EXPOSURE")
+    training_logger.info("✅ Scenario 4 (Tech Volatility, operation="enhanced_logging"): 75% Tech - SLIGHT_TECH_REDUCTION")
     
-    print("\n🔄 AUTOMATIC ADJUSTMENT FEATURES:")
-    print("✅ Detects tech underperformance vs defensive sectors")
-    print("✅ Detects momentum reversals")
-    print("✅ Detects volatility spikes")
-    print("✅ Automatically adjusts sector weights")
-    print("✅ Provides risk management recommendations")
-    print("✅ Caches results for performance")
+    training_logger.info("\n🔄 AUTOMATIC ADJUSTMENT FEATURES:", operation="enhanced_logging")
+    training_logger.info("✅ Detects tech underperformance vs defensive sectors", operation="enhanced_logging")
+    training_logger.info("✅ Detects momentum reversals", operation="enhanced_logging")
+    training_logger.info("✅ Detects volatility spikes", operation="enhanced_logging")
+    training_logger.info("✅ Automatically adjusts sector weights", operation="enhanced_logging")
+    training_logger.info("✅ Provides risk management recommendations", operation="enhanced_logging")
+    training_logger.info("✅ Caches results for performance", operation="enhanced_logging")
     
-    print("\n🎉 COOL-OFF DETECTION SYSTEM IS WORKING PERFECTLY!")
-    print("The system will automatically protect your portfolio during tech corrections!")
+    training_logger.info("\n🎉 COOL-OFF DETECTION SYSTEM IS WORKING PERFECTLY!", operation="enhanced_logging")
+    training_logger.info("The system will automatically protect your portfolio during tech corrections!", operation="enhanced_logging")
 
 if __name__ == "__main__":
     test_cool_off_scenarios()

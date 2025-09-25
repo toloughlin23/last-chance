@@ -23,71 +23,71 @@ def run_git_command(cmd, timeout=15):
 
 
 def main():
-    print("=== Manual Git Rebase Resolution ===")
+    training_logger.info("=== Manual Git Rebase Resolution ===", operation="enhanced_logging")
 
     # Check if we're in a rebase
     if not os.path.exists(".git/rebase-merge"):
-        print("❌ Not in rebase state")
+        training_logger.error("❌ Not in rebase state", operation="enhanced_logging")
         return
 
-    print("✅ Confirmed: Repository is in rebase state")
-    print("✅ GitHub remote: https://github.com/toloughlin23/last-chance.git")
+    training_logger.info("✅ Confirmed: Repository is in rebase state", operation="enhanced_logging")
+    training_logger.info("✅ GitHub remote: https://github.com/toloughlin23/last-chance.git", operation="enhanced_logging")
 
     # Step 1: Try to complete the current commit
-    print("\n1. Completing current commit...")
+    training_logger.info("\n1. Completing current commit...", operation="enhanced_logging")
     code, out, err = run_git_command("commit --no-edit")
-    print(f"   Return code: {code}")
+    training_logger.info(f"   Return code: {code}", operation="enhanced_logging")
     if out:
-        print(f"   Output: {out}")
+        training_logger.info(f"   Output: {out}", operation="enhanced_logging")
     if err:
-        print(f"   Error: {err}")
+        training_logger.error(f"   Error: {err}", operation="enhanced_logging")
 
     if code == 0:
-        print("✅ Commit completed successfully")
+        training_logger.info("✅ Commit completed successfully", operation="enhanced_logging")
 
         # Step 2: Continue the rebase
-        print("\n2. Continuing rebase...")
+        training_logger.info("\n2. Continuing rebase...", operation="enhanced_logging")
         code, out, err = run_git_command("rebase --continue")
-        print(f"   Return code: {code}")
+        training_logger.info(f"   Return code: {code}", operation="enhanced_logging")
         if out:
-            print(f"   Output: {out}")
+            training_logger.info(f"   Output: {out}", operation="enhanced_logging")
         if err:
-            print(f"   Error: {err}")
+            training_logger.error(f"   Error: {err}", operation="enhanced_logging")
 
         if code == 0:
-            print("✅ Rebase continued successfully")
+            training_logger.info("✅ Rebase continued successfully", operation="enhanced_logging")
         else:
-            print("❌ Rebase continue failed - trying to abort...")
+            training_logger.error("❌ Rebase continue failed - trying to abort...", operation="enhanced_logging")
             abort_code, abort_out, abort_err = run_git_command("rebase --abort")
             if abort_code == 0:
-                print("✅ Rebase aborted successfully")
+                training_logger.info("✅ Rebase aborted successfully", operation="enhanced_logging")
             else:
-                print(f"❌ Failed to abort rebase: {abort_err}")
+                training_logger.error(f"❌ Failed to abort rebase: {abort_err}", operation="enhanced_logging")
     else:
-        print("❌ Commit failed - trying to abort rebase...")
+        training_logger.error("❌ Commit failed - trying to abort rebase...", operation="enhanced_logging")
         abort_code, abort_out, abort_err = run_git_command("rebase --abort")
         if abort_code == 0:
-            print("✅ Rebase aborted successfully")
+            training_logger.info("✅ Rebase aborted successfully", operation="enhanced_logging")
         else:
-            print(f"❌ Failed to abort rebase: {abort_err}")
+            training_logger.error(f"❌ Failed to abort rebase: {abort_err}", operation="enhanced_logging")
 
     # Step 3: Check final status
-    print("\n3. Final status check...")
+    training_logger.info("\n3. Final status check...", operation="enhanced_logging")
     code, out, err = run_git_command("status --porcelain")
-    print(f"   Status code: {code}")
-    print(f"   Status: {out}")
+    training_logger.info(f"   Status code: {code}", operation="enhanced_logging")
+    training_logger.info(f"   Status: {out}", operation="enhanced_logging")
     if err:
-        print(f"   Error: {err}")
+        training_logger.error(f"   Error: {err}", operation="enhanced_logging")
 
     # Step 4: Check GitHub connection
-    print("\n4. Checking GitHub connection...")
+    training_logger.info("\n4. Checking GitHub connection...", operation="enhanced_logging")
     code, out, err = run_git_command("remote -v")
-    print(f"   Remote code: {code}")
-    print(f"   Remotes: {out}")
+    training_logger.info(f"   Remote code: {code}", operation="enhanced_logging")
+    training_logger.info(f"   Remotes: {out}", operation="enhanced_logging")
     if err:
-        print(f"   Error: {err}")
+        training_logger.error(f"   Error: {err}", operation="enhanced_logging")
 
-    print("\n=== Resolution Complete ===")
+    training_logger.info("\n=== Resolution Complete ===", operation="enhanced_logging")
 
 
 if __name__ == "__main__":

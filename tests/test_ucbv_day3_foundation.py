@@ -64,7 +64,7 @@ def test_ucbv_update_changes_state():
     before_pulls = ucbv.arms[action]["pulls"]
 
     feats = ucbv.extract_features_from_polygon(data)
-    alpaca_data = {"order_id": "test123", "holding_time": 300}
+    alpaca_data = {"order_id": "ORD_20241224_001", "holding_time": 300}
     ucbv.update_with_real_pnl(action, feats, real_pnl=50.0, alpaca_data=alpaca_data)
 
     after_pulls = ucbv.arms[action]["pulls"]

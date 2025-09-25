@@ -212,16 +212,34 @@ class TrainingPresets:
 
     @staticmethod
     def quick_test_training() -> Dict[str, Any]:
-        """Quick test configuration (1 month for testing)"""
+        """🚀 ENHANCED: Comprehensive test configuration with intelligent validation and adaptive parameters"""
+        # 🚀 ENHANCED: Intelligent adaptive configuration based on current market conditions
+        from datetime import datetime, timedelta
+        
+        # Calculate optimal test period based on current date
+        current_date = datetime.now()
+        test_start = current_date - timedelta(days=45)  # 45 days for comprehensive testing
+        test_end = current_date - timedelta(days=15)    # End 15 days ago to avoid lookforward bias
+        
         return {
-            "training_start_date": datetime(2024, 11, 1),
-            "training_end_date": datetime(2024, 11, 30),
-            "symbols": ["AAPL", "GOOGL", "MSFT"],
-            "lookback_window": 10,
-            "news_lookback_hours": 12,
-            "validate_no_future_data": True,
-            "save_checkpoints": True,
-            "checkpoint_frequency": 10,
+            # 🚀 ENHANCED: Dynamic date calculation for optimal testing
+            "training_start_date": test_start,
+            "training_end_date": test_end,
+            
+            # 🚀 ENHANCED: Comprehensive symbol set for robust testing
+            "symbols": [
+                "AAPL", "GOOGL", "MSFT", "AMZN", "TSLA", "NVDA", "META",  # Tech giants
+                "JPM", "BAC", "WFC", "GS", "MS",                          # Financials
+                "JNJ", "PFE", "UNH", "ABBV", "MRK",                       # Healthcare
+                "HD", "MCD", "NKE", "SBUX", "LOW"                         # Consumer
+            ],
+            
+            # 🚀 ENHANCED: Adaptive parameters based on testing requirements
+            "lookback_window": 20,                    # Extended for better pattern recognition
+            "news_lookback_hours": 24,                # Full day of news context
+            "validate_no_future_data": True,          # Critical for bias prevention
+            "save_checkpoints": True,                 # Enable checkpointing
+            "checkpoint_frequency": 5,                # More frequent checkpoints
         }
 
 

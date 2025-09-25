@@ -1,0 +1,59 @@
+{
+  "training_config": {
+    "config_name": "rapid_test",
+    "training_start_date": "2025-09-21T19:18:57.194049",
+    "training_end_date": "2025-09-24T18:18:57.194049",
+    "symbols": [
+      "AAPL",
+      "MSFT",
+      "TSLA",
+      "SPY",
+      "QQQ"
+    ],
+    "data_granularity": "minute",
+    "zero_lookforward_bias": true
+  },
+  "training_metrics": {
+    "total_trades": 15,
+    "overall_variance": 0.003209477269582981,
+    "diversity_achieved": false,
+    "training_duration_seconds": 199.08832812309265,
+    "data_load_duration_seconds": 207.78481435775757,
+    "total_minute_bars": 155104
+  },
+  "algorithm_performance": {
+    "linucb": {
+      "total_trades": 5,
+      "avg_reward_bps": -0.08411860294345964,
+      "win_rate": 0.0,
+      "confidence_variance": 0.004244474891097327,
+      "unique_confidence_count": 5,
+      "confidence_range": [
+        0.6226611410556437,
+        0.7926275049107506
+      ]
+    },
+    "neural": {
+      "total_trades": 5,
+      "avg_reward_bps": -0.08411860294345964,
+      "win_rate": 0.0,
+      "confidence_variance": 0.005378465613039543,
+      "unique_confidence_count": 5,
+      "confidence_range": [
+        0.6602780131052368,
+        0.8554416050163342
+      ]
+    },
+    "ucbv": {
+      "total_trades": 5,
+      "avg_reward_bps": -0.08411860294345964,
+      "win_rate": 0.0,
+      "confidence_variance": 5.491304612071648e-06,
+      "unique_confidence_count": 5,
+      "confidence_range": [
+        0.7966364773355167,
+        0.8027188550681784
+      ]
+    }
+  }
+}

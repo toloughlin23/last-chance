@@ -17,7 +17,7 @@ sys.path.insert(0, str(project_root))
 
 def test_github_integration():
     """Test GitHub integration"""
-    print("🔗 TESTING GITHUB INTEGRATION...")
+    training_logger.info("🔗 TESTING GITHUB INTEGRATION...", operation="enhanced_logging")
 
     tests = []
 
@@ -27,13 +27,13 @@ def test_github_integration():
             ["git", "remote", "-v"], capture_output=True, text=True, timeout=10
         )
         if result.returncode == 0 and "github.com" in result.stdout:
-            print("  ✅ Git remote configured")
+            training_logger.info("  ✅ Git remote configured", operation="enhanced_logging")
             tests.append(True)
         else:
-            print("  ❌ Git remote not configured")
+            training_logger.error("  ❌ Git remote not configured", operation="enhanced_logging")
             tests.append(False)
     except Exception as e:
-        print(f"  ❌ Git remote test failed: {e}")
+        training_logger.error(f"  ❌ Git remote test failed: {e}", operation="enhanced_logging")
         tests.append(False)
 
     # Test Git fetch
@@ -42,13 +42,13 @@ def test_github_integration():
             ["git", "fetch", "origin"], capture_output=True, text=True, timeout=30
         )
         if result.returncode == 0:
-            print("  ✅ Git fetch successful")
+            training_logger.info("  ✅ Git fetch successful", operation="enhanced_logging")
             tests.append(True)
         else:
-            print(f"  ❌ Git fetch failed: {result.stderr}")
+            training_logger.error(f"  ❌ Git fetch failed: {result.stderr}", operation="enhanced_logging")
             tests.append(False)
     except Exception as e:
-        print(f"  ❌ Git fetch test failed: {e}")
+        training_logger.error(f"  ❌ Git fetch test failed: {e}", operation="enhanced_logging")
         tests.append(False)
 
     # Test Git status
@@ -57,13 +57,13 @@ def test_github_integration():
             ["git", "status", "--porcelain"], capture_output=True, text=True, timeout=10
         )
         if result.returncode == 0:
-            print("  ✅ Git status working")
+            training_logger.info("  ✅ Git status working", operation="enhanced_logging")
             tests.append(True)
         else:
-            print(f"  ❌ Git status failed: {result.stderr}")
+            training_logger.error(f"  ❌ Git status failed: {result.stderr}", operation="enhanced_logging")
             tests.append(False)
     except Exception as e:
-        print(f"  ❌ Git status test failed: {e}")
+        training_logger.error(f"  ❌ Git status test failed: {e}", operation="enhanced_logging")
         tests.append(False)
 
     # Test Git branch (support detached HEAD in CI)
@@ -88,16 +88,16 @@ def test_github_integration():
                 timeout=10,
             )
             if sha.returncode == 0 and sha.stdout.strip():
-                print(f"  ✅ Detached HEAD detected @ {sha.stdout.strip()} (CI)\n")
+                training_logger.info(f"  ✅ Detached HEAD detected @ {sha.stdout.strip(, operation="enhanced_logging")} (CI)\n")
                 tests.append(True)
             else:
-                print("  ❌ Git branch detection failed")
+                training_logger.error("  ❌ Git branch detection failed", operation="enhanced_logging")
                 tests.append(False)
         else:
-            print(f"  ✅ Current branch: {branch}")
+            training_logger.info(f"  ✅ Current branch: {branch}", operation="enhanced_logging")
             tests.append(True)
     except Exception as e:
-        print(f"  ❌ Git branch test failed: {e}")
+        training_logger.error(f"  ❌ Git branch test failed: {e}", operation="enhanced_logging")
         tests.append(False)
 
     passed = sum(tests)
@@ -108,7 +108,7 @@ def test_github_integration():
 
 def test_core_imports():
     """Test core module imports"""
-    print("\n🧪 TESTING CORE IMPORTS...")
+    training_logger.info("\n🧪 TESTING CORE IMPORTS...", operation="enhanced_logging")
 
     modules = [
         ("CORE_SUPER_BANDITS.optimized_linucb_institutional", "LinUCB Algorithm"),
@@ -137,10 +137,10 @@ def test_core_imports():
     for module_name, description in modules:
         try:
             __import__(module_name)
-            print(f"  ✅ {description}")
+            training_logger.info(f"  ✅ {description}", operation="enhanced_logging")
             passed += 1
         except Exception as e:
-            print(f"  ❌ {description} - {e}")
+            training_logger.error(f"  ❌ {description} - {e}", operation="enhanced_logging")
             failed += 1
 
     assert passed > 0, f"GitHub integration tests failed: {failed} failures"
@@ -149,7 +149,7 @@ def test_core_imports():
 
 def test_algorithm_initialization():
     """Test algorithm initialization"""
-    print("\n🧪 TESTING ALGORITHM INITIALIZATION...")
+    training_logger.info("\n🧪 TESTING ALGORITHM INITIALIZATION...", operation="enhanced_logging")
 
     tests = []
 
@@ -160,10 +160,10 @@ def test_algorithm_initialization():
         )
 
         OptimizedInstitutionalLinUCB()
-        print("  ✅ LinUCB Algorithm - Initialized")
+        training_logger.info("  ✅ LinUCB Algorithm - Initialized", operation="enhanced_logging")
         tests.append(True)
     except Exception as e:
-        print(f"  ❌ LinUCB Algorithm - {e}")
+        training_logger.error(f"  ❌ LinUCB Algorithm - {e}", operation="enhanced_logging")
         tests.append(False)
 
     # Test Neural Bandit
@@ -173,10 +173,10 @@ def test_algorithm_initialization():
         )
 
         OptimizedInstitutionalNeuralBandit()
-        print("  ✅ Neural Bandit Algorithm - Initialized")
+        training_logger.info("  ✅ Neural Bandit Algorithm - Initialized", operation="enhanced_logging")
         tests.append(True)
     except Exception as e:
-        print(f"  ❌ Neural Bandit Algorithm - {e}")
+        training_logger.error(f"  ❌ Neural Bandit Algorithm - {e}", operation="enhanced_logging")
         tests.append(False)
 
     # Test UCBV
@@ -186,10 +186,10 @@ def test_algorithm_initialization():
         )
 
         OptimizedInstitutionalUCBV()
-        print("  ✅ UCBV Algorithm - Initialized")
+        training_logger.info("  ✅ UCBV Algorithm - Initialized", operation="enhanced_logging")
         tests.append(True)
     except Exception as e:
-        print(f"  ❌ UCBV Algorithm - {e}")
+        training_logger.error(f"  ❌ UCBV Algorithm - {e}", operation="enhanced_logging")
         tests.append(False)
 
     passed = sum(tests)
@@ -200,7 +200,7 @@ def test_algorithm_initialization():
 
 def test_services_initialization():
     """Test services initialization"""
-    print("\n🧪 TESTING SERVICES INITIALIZATION...")
+    training_logger.info("\n🧪 TESTING SERVICES INITIALIZATION...", operation="enhanced_logging")
 
     tests = []
 
@@ -209,10 +209,10 @@ def test_services_initialization():
         from services.advanced_news_sentiment import AdvancedNewsSentimentAnalysis
 
         AdvancedNewsSentimentAnalysis()
-        print("  ✅ News Sentiment Analysis - Initialized")
+        training_logger.info("  ✅ News Sentiment Analysis - Initialized", operation="enhanced_logging")
         tests.append(True)
     except Exception as e:
-        print(f"  ❌ News Sentiment Analysis - {e}")
+        training_logger.error(f"  ❌ News Sentiment Analysis - {e}", operation="enhanced_logging")
         tests.append(False)
 
     # Test Infrastructure Manager
@@ -220,10 +220,10 @@ def test_services_initialization():
         from services.infrastructure_manager import InstitutionalInfrastructureManager
 
         InstitutionalInfrastructureManager()
-        print("  ✅ Infrastructure Manager - Initialized")
+        training_logger.info("  ✅ Infrastructure Manager - Initialized", operation="enhanced_logging")
         tests.append(True)
     except Exception as e:
-        print(f"  ❌ Infrastructure Manager - {e}")
+        training_logger.error(f"  ❌ Infrastructure Manager - {e}", operation="enhanced_logging")
         tests.append(False)
 
     # Test Compliance System
@@ -231,10 +231,10 @@ def test_services_initialization():
         from services.compliance_system import UKROIComplianceSystem
 
         UKROIComplianceSystem()
-        print("  ✅ Compliance System - Initialized")
+        training_logger.info("  ✅ Compliance System - Initialized", operation="enhanced_logging")
         tests.append(True)
     except Exception as e:
-        print(f"  ❌ Compliance System - {e}")
+        training_logger.error(f"  ❌ Compliance System - {e}", operation="enhanced_logging")
         tests.append(False)
 
     # Test Execution Bridge
@@ -242,10 +242,10 @@ def test_services_initialization():
         from services.execution_bridge import UltraInstitutionalExecutionBridge
 
         UltraInstitutionalExecutionBridge()
-        print("  ✅ Execution Bridge - Initialized")
+        training_logger.info("  ✅ Execution Bridge - Initialized", operation="enhanced_logging")
         tests.append(True)
     except Exception as e:
-        print(f"  ❌ Execution Bridge - {e}")
+        training_logger.error(f"  ❌ Execution Bridge - {e}", operation="enhanced_logging")
         tests.append(False)
 
     passed = sum(tests)
@@ -256,7 +256,7 @@ def test_services_initialization():
 
 def test_pipeline_components():
     """Test pipeline components"""
-    print("\n🧪 TESTING PIPELINE COMPONENTS...")
+    training_logger.info("\n🧪 TESTING PIPELINE COMPONENTS...", operation="enhanced_logging")
 
     tests = []
 
@@ -265,10 +265,10 @@ def test_pipeline_components():
         from pipeline.enhanced_runner import EnhancedPipelineRunner
 
         EnhancedPipelineRunner()
-        print("  ✅ Enhanced Pipeline Runner - Initialized")
+        training_logger.info("  ✅ Enhanced Pipeline Runner - Initialized", operation="enhanced_logging")
         tests.append(True)
     except Exception as e:
-        print(f"  ❌ Enhanced Pipeline Runner - {e}")
+        training_logger.error(f"  ❌ Enhanced Pipeline Runner - {e}", operation="enhanced_logging")
         tests.append(False)
 
     # Test Hygiene
@@ -276,18 +276,18 @@ def test_pipeline_components():
         from pipeline.hygiene import Hygiene
 
         Hygiene()
-        print("  ✅ Hygiene System - Initialized")
+        training_logger.info("  ✅ Hygiene System - Initialized", operation="enhanced_logging")
         tests.append(True)
     except Exception as e:
-        print(f"  ❌ Hygiene System - {e}")
+        training_logger.error(f"  ❌ Hygiene System - {e}", operation="enhanced_logging")
         tests.append(False)
 
     # Test Feature Builder
     try:
-        print("  ✅ Feature Builder - Imported")
+        training_logger.info("  ✅ Feature Builder - Imported", operation="enhanced_logging")
         tests.append(True)
     except Exception as e:
-        print(f"  ❌ Feature Builder - {e}")
+        training_logger.error(f"  ❌ Feature Builder - {e}", operation="enhanced_logging")
         tests.append(False)
 
     passed = sum(tests)
@@ -298,10 +298,10 @@ def test_pipeline_components():
 
 def main():
     """Run final GitHub test"""
-    print("🚀 INSTITUTIONAL AI TRADING SYSTEM - FINAL GITHUB TEST")
-    print("=" * 80)
-    print("100% GENUINE - NO SHORTCUTS - ALWAYS MAKE BETTER")
-    print("=" * 80)
+    training_logger.info("🚀 INSTITUTIONAL AI TRADING SYSTEM - FINAL GITHUB TEST", operation="enhanced_logging")
+    training_logger.info("=" * 80, operation="enhanced_logging")
+    training_logger.info("100% GENUINE - NO SHORTCUTS - ALWAYS MAKE BETTER", operation="enhanced_logging")
+    training_logger.info("=" * 80, operation="enhanced_logging")
 
     start_time = time.time()
     total_passed = 0
@@ -334,35 +334,34 @@ def main():
         total_failed += failed
 
     except Exception as e:
-        print(f"\n💥 TEST ERROR: {e}")
+        training_logger.error(f"\n💥 TEST ERROR: {e}", operation="enhanced_logging")
         total_failed += 1
 
     # Summary
     end_time = time.time()
     duration = end_time - start_time
 
-    print(f"\n{'='*80}")
-    print("📊 FINAL GITHUB TEST SUMMARY")
-    print(f"{'='*80}")
-    print(f"Total Tests: {total_passed + total_failed}")
-    print(f"✅ Passed: {total_passed}")
-    print(f"❌ Failed: {total_failed}")
-    print(
-        f"📊 Success Rate: {(total_passed/(total_passed + total_failed)*100):.1f}%"
+    training_logger.info(f"\n{'='*80}", operation="enhanced_logging")
+    training_logger.info("📊 FINAL GITHUB TEST SUMMARY", operation="enhanced_logging")
+    training_logger.info(f"{'='*80}", operation="enhanced_logging")
+    training_logger.error(f"Total Tests: {total_passed + total_failed}", operation="enhanced_logging")
+    training_logger.info(f"✅ Passed: {total_passed}", operation="enhanced_logging")
+    training_logger.error(f"❌ Failed: {total_failed}", operation="enhanced_logging")
+    training_logger.error(f"📊 Success Rate: {(total_passed/(total_passed + total_failed, operation="enhanced_logging")*100):.1f}%"
         if (total_passed + total_failed) > 0
         else "📊 Success Rate: 0%"
     )
-    print(f"⏱️  Duration: {duration:.2f} seconds")
-    print(f"{'='*80}")
+    training_logger.info(f"⏱️  Duration: {duration:.2f} seconds", operation="enhanced_logging")
+    training_logger.info(f"{'='*80}", operation="enhanced_logging")
 
     if total_failed == 0:
-        print("🎉 ALL GITHUB TESTS PASSED! SYSTEM IS PRODUCTION READY!")
+        training_logger.info("🎉 ALL GITHUB TESTS PASSED! SYSTEM IS PRODUCTION READY!", operation="enhanced_logging")
     elif total_passed / (total_passed + total_failed) >= 0.9:
-        print("🎯 EXCELLENT! 90%+ tests passed - System is highly functional!")
+        training_logger.info("🎯 EXCELLENT! 90%+ tests passed - System is highly functional!", operation="enhanced_logging")
     elif total_passed / (total_passed + total_failed) >= 0.8:
-        print("✅ VERY GOOD! 80%+ tests passed - System is functional!")
+        training_logger.info("✅ VERY GOOD! 80%+ tests passed - System is functional!", operation="enhanced_logging")
     else:
-        print(f"⚠️  {total_failed} TESTS FAILED - Review and fix")
+        training_logger.error(f"⚠️  {total_failed} TESTS FAILED - Review and fix", operation="enhanced_logging")
 
     assert total_failed == 0, f"Total failures: {total_failed}"
 

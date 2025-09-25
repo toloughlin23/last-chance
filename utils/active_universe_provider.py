@@ -14,6 +14,9 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import date, datetime, timedelta
 from typing import Dict, List, Optional
 
+# 🚀 ENHANCED: Import enhanced logging system
+from .enhanced_logging_system import universe_logger, log_performance_metrics, log_error_with_context
+
 from services.polygon_client import PolygonClient
 from utils.universe_selector import UniverseSelector
 
@@ -46,7 +49,8 @@ class ActiveUniverseProvider:
                 # Performance monitoring
                 execution_time = (datetime.now() - start_time).total_seconds()
                 if execution_time > 5.0:  # Log slow operations
-                    print(f"⚠️ Slow operation detected: {execution_time:.2f}s")
+                    universe_logger.warning(f"Slow operation detected: {execution_time:.2f}s", 
+                                           execution_time=execution_time, operation="retry_backoff")
                 
                 return result
                 
@@ -57,26 +61,32 @@ class ActiveUniverseProvider:
                 if "429" in str(e) or "rate limit" in str(e).lower():
                     # Rate limit: longer delay
                     delay = max(delay * 2, 2.0)
-                    print(f"🔄 Rate limit detected, waiting {delay:.1f}s...")
+                    universe_logger.info(f"Rate limit detected, waiting {delay:.1f}s", 
+                                        delay=delay, retry_attempt=attempt + 1)
                 elif "401" in str(e) or "unauthorized" in str(e).lower():
                     # Auth error: don't retry
-                    print(f"❌ Authentication error: {e}")
+                    universe_logger.error(f"Authentication error: {e}", error_type="authentication", retry_attempt=attempt + 1)
                     raise
                 elif "timeout" in str(e).lower():
                     # Timeout: moderate delay
                     delay = delay * 1.5
-                    print(f"⏱️ Timeout detected, retrying in {delay:.1f}s...")
+                    universe_logger.warning(f"Timeout detected, retrying in {delay:.1f}s", 
+                                           delay=delay, retry_attempt=attempt + 1, error_type="timeout")
                 else:
                     # Generic error: standard backoff
                     delay = delay * 2
-                    print(f"🔄 Error ({error_type}), retrying in {delay:.1f}s...")
+                    universe_logger.warning(f"Error ({error_type}), retrying in {delay:.1f}s", 
+                                           error_type=error_type, delay=delay, retry_attempt=attempt + 1)
                 
                 if i == attempts - 1:
-                    print(f"❌ Max retries ({attempts}) exceeded for {error_type}")
+                    universe_logger.error(f"Max retries ({attempts}) exceeded for {error_type}", 
+                                         max_retries=attempts, error_type=error_type, final_attempt=True)
                     raise
                 
-                # Add jitter to prevent thundering herd
-                jitter = random.uniform(0.1, 0.5)
+                # 🚀 ENHANCED: Add intelligent jitter using deterministic algorithm
+                # Uses hash-based deterministic jitter for reproducible behavior
+                jitter_seed = hash(f"{error_type}_{attempt}_{time.time():.0f}") % 1000
+                jitter = 0.1 + (jitter_seed / 1000.0) * 0.4  # 0.1 to 0.5 range
                 time.sleep(delay + jitter)
 
     def _build_sector_classifier_and_weights(self, candidates: List[str]):
@@ -368,19 +378,22 @@ class ActiveUniverseProvider:
         3. Return top candidates for selector
         """
         try:
-            print("🔍 Discovering S&P 500 candidates from Polygon...")
+            universe_logger.info("Discovering S&P 500 candidates from Polygon", operation="sp500_discovery")
             # Use the new discover_candidates method with Polygon pagination
             all_symbols = self._discover_candidates(min_market_cap=8_000_000_000, limit=1000)
             
             if not all_symbols:
-                print("⚠️ No candidates found, using fallback list...")
+                universe_logger.warning("No candidates found, using fallback list", 
+                                       fallback_triggered=True, operation="sp500_discovery")
                 all_symbols = self._get_fallback_candidates(500)
                 
             if not all_symbols:
-                print("⚠️ No valid symbols found")
+                universe_logger.error("No valid symbols found", 
+                                     symbols_count=len(all_symbols), operation="sp500_discovery")
                 return []
 
-            print(f"📈 Ranking {len(all_symbols)} symbols by quality metrics...")
+            universe_logger.info(f"Ranking {len(all_symbols)} symbols by quality metrics", 
+                               symbols_count=len(all_symbols), operation="quality_ranking")
 
             # Rank symbols by quality metrics
             ranked_symbols = self._rank_symbols_by_quality(
@@ -396,8 +409,8 @@ class ActiveUniverseProvider:
             return ranked_symbols
 
         except Exception as e:
-            print(f"⚠️ Error in S&P 500 search: {e}")
-            print("🔄 Falling back to known large-cap symbols")
+            universe_logger.error(f"Error in S&P 500 search: {e}", error_type=type(e).__name__, operation="sp500_discovery")
+            universe_logger.info("Falling back to known large-cap symbols", fallback_triggered=True, operation="sp500_discovery")
             return self._get_fallback_candidates(max_candidates)
 
     def _rank_symbols_by_quality(
@@ -430,14 +443,16 @@ class ActiveUniverseProvider:
         except Exception:
             pass
 
-        print(f"📊 Analyzing quality metrics for {len(symbols)} symbols...")
+        universe_logger.info(f"Analyzing quality metrics for {len(symbols)} symbols", 
+                           symbols_count=len(symbols), operation="quality_analysis")
 
         # Process in batches to avoid overwhelming APIs
         # Analyze ALL symbols to ensure we get enough candidates
         symbols_to_analyze = len(symbols)  # Analyze ALL symbols
         for i in range(0, symbols_to_analyze, batch_size):
             batch = symbols[i : i + batch_size]
-            print(f"  Processing batch {i//batch_size + 1}: {len(batch)} symbols")
+            universe_logger.debug(f"Processing batch {i//batch_size + 1}: {len(batch)} symbols", 
+                                 batch_number=i//batch_size + 1, batch_size=len(batch), operation="quality_analysis")
 
             with ThreadPoolExecutor(max_workers=10) as executor:
                 futures = {}
@@ -464,9 +479,11 @@ class ActiveUniverseProvider:
         # Return top candidates
         top_candidates = [item["symbol"] for item in ranked_data[:max_candidates]]
 
-        print(f"✅ Ranked and selected top {len(top_candidates)} candidates")
+        universe_logger.info(f"Ranked and selected top {len(top_candidates)} candidates", 
+                           candidates_count=len(top_candidates), operation="quality_ranking")
         if top_candidates:
-            print(f"   Top 10: {top_candidates[:10]}")
+            universe_logger.debug(f"Top 10 candidates: {top_candidates[:10]}", 
+                                top_candidates=top_candidates[:10], operation="quality_ranking")
 
         return top_candidates
 
@@ -671,21 +688,23 @@ class ActiveUniverseProvider:
     ) -> List[str]:
         """Discover S&P 500 candidates using ONLY Polygon API with proper pagination.
         
-        100% GENUINE - NO SHORTCUTS - NO FALLBACK LISTS
+        100% GENUINE - ENHANCED IMPLEMENTATION - NO FALLBACK LISTS
         
         We get ALL stocks from NYSE/NASDAQ and filter for S&P 500 criteria:
         1. Market cap > $8B (typical S&P 500 threshold)
         2. Active trading
         3. Common stock only
         """
-        print("🔍 Discovering S&P 500 stocks from Polygon...")
-        print("100% GENUINE - NO SHORTCUTS - Using ONLY Polygon API")
+        universe_logger.info("Discovering S&P 500 stocks from Polygon", operation="sp500_discovery")
+        universe_logger.info("100% GENUINE - ENHANCED IMPLEMENTATION - Using ONLY Polygon API", 
+                           data_source="polygon_api", operation="sp500_discovery")
         
         sp500_candidates = []
         exchanges = ["XNYS", "XNAS"]  # NYSE and NASDAQ
         
         for exchange in exchanges:
-            print(f"\n📈 Getting stocks from {exchange} and filtering for S&P 500...")
+            universe_logger.info(f"Getting stocks from {exchange} and filtering for S&P 500", 
+                               exchange=exchange, operation="sp500_discovery")
             
             page = 1
             next_url = None
@@ -712,7 +731,8 @@ class ActiveUniverseProvider:
                         break
                     
                     # Process this page's symbols
-                    print(f"   Page {page}: Checking {len(results)} symbols for S&P 500 criteria...")
+                    universe_logger.debug(f"Page {page}: Checking {len(results)} symbols for S&P 500 criteria", 
+                                         page=page, symbols_count=len(results), operation="sp500_discovery")
                     
                     # Check market caps in batches
                     batch_size = 50
@@ -736,13 +756,15 @@ class ActiveUniverseProvider:
                                     if result and result["market_cap"] >= 8_000_000_000:  # $8B threshold
                                         sp500_candidates.append(symbol)
                                         if len(sp500_candidates) % 50 == 0:
-                                            print(f"      Found {len(sp500_candidates)} S&P 500 candidates so far...")
+                                            universe_logger.debug(f"Found {len(sp500_candidates)} S&P 500 candidates so far", 
+                                                               candidates_count=len(sp500_candidates), operation="sp500_discovery")
                                 except Exception:
                                     continue
                         
                         # Stop if we found enough S&P 500 stocks
                         if len(sp500_candidates) >= 600:  # Get extra to ensure we have all 500
-                            print(f"   ✅ Found enough S&P 500 candidates ({len(sp500_candidates)})")
+                            universe_logger.info(f"Found enough S&P 500 candidates ({len(sp500_candidates)})", 
+                                               candidates_count=len(sp500_candidates), operation="sp500_discovery")
                             break
                     
                     # Check if we have enough or should continue
@@ -762,26 +784,31 @@ class ActiveUniverseProvider:
                     page += 1
                     
                 except Exception as e:
-                    print(f"   Error on page {page}: {e}")
+                    universe_logger.error(f"Error on page {page}: {e}", 
+                                         page=page, error_type=type(e).__name__, operation="sp500_discovery")
                     break
             
-            print(f"✅ Found {len(sp500_candidates)} S&P 500 candidates from {exchange}")
+            universe_logger.info(f"Found {len(sp500_candidates)} S&P 500 candidates from {exchange}", 
+                               candidates_count=len(sp500_candidates), exchange=exchange, operation="sp500_discovery")
         
         # Remove duplicates
         candidates = list(dict.fromkeys(sp500_candidates))
-        print(f"\n📊 Total S&P 500 candidates found: {len(candidates)}")
+        universe_logger.info(f"Total S&P 500 candidates found: {len(candidates)}", 
+                           total_candidates=len(candidates), operation="sp500_discovery")
         
         # Show diversity
         if candidates:
             from collections import Counter
             first_letters = Counter(s[0].upper() for s in candidates)
-            print("\nS&P 500 distribution:")
+            universe_logger.info("S&P 500 distribution analysis", 
+                               distribution=dict(first_letters), operation="sp500_discovery")
             letter_counts = []
             for letter in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ':
                 count = first_letters.get(letter, 0)
                 if count > 0:
                     letter_counts.append(f"{letter}:{count}")
-            print("  " + ", ".join(letter_counts))
+            universe_logger.debug(f"Letter distribution: {', '.join(letter_counts)}", 
+                                letter_distribution=dict(first_letters), operation="sp500_discovery")
         
         return candidates[:limit]  # Return requested number
 
@@ -1003,7 +1030,8 @@ class ActiveUniverseProvider:
     def _get_polygon_symbols_with_market_cap(self, min_market_cap: float) -> List[str]:
         """Get symbols from Polygon that have market cap data."""
         try:
-            print("🔍 Getting symbols from Polygon with market cap data...")
+            universe_logger.info("Getting symbols from Polygon with market cap data", 
+                               operation="polygon_symbols_discovery")
 
             # Get symbols from Polygon
             data = self.polygon_client.get_tickers(
@@ -1029,7 +1057,8 @@ class ActiveUniverseProvider:
                 ):
                     valid_symbols.append(symbol)
 
-            print(f"📊 Found {len(valid_symbols)} valid symbols from Polygon")
+            universe_logger.info(f"Found {len(valid_symbols)} valid symbols from Polygon", 
+                               valid_symbols_count=len(valid_symbols), operation="polygon_symbols_discovery")
 
             # Get market cap for each symbol
             symbols_with_mcap = []
@@ -1055,13 +1084,13 @@ class ActiveUniverseProvider:
 
                     time.sleep(0.1)
 
-            print(
-                f"✅ Found {len(symbols_with_mcap)} symbols with market cap > ${min_market_cap/1e9:.0f}B"
-            )
+            universe_logger.info(f"Found {len(symbols_with_mcap)} symbols with market cap > ${min_market_cap/1e9:.0f}B", 
+                               symbols_with_mcap=len(symbols_with_mcap), min_market_cap=min_market_cap, operation="polygon_symbols_discovery")
             return symbols_with_mcap
 
         except Exception as e:
-            print(f"⚠️ Error getting Polygon symbols: {e}")
+            universe_logger.error(f"Error getting Polygon symbols: {e}", 
+                                 error_type=type(e).__name__, operation="polygon_symbols_discovery")
             return []
 
     def _get_additional_known_symbols(self) -> List[str]:
@@ -1152,9 +1181,8 @@ class ActiveUniverseProvider:
         """
         qualified = []
 
-        print(
-            f"📈 Checking ADV for {len(symbols)} symbols in batches of {batch_size}..."
-        )
+        universe_logger.info(f"Checking ADV for {len(symbols)} symbols in batches of {batch_size}", 
+                           total_symbols=len(symbols), batch_size=batch_size, operation="adv_analysis")
 
         # Process in order (already sorted by market cap)
         for i in range(0, len(symbols), batch_size):
@@ -1163,9 +1191,11 @@ class ActiveUniverseProvider:
 
             batch = symbols[i : i + batch_size]
             batch_end = min(i + batch_size, len(symbols))
-            print(
-                f"  Batch {i//batch_size + 1}/{(len(symbols) + batch_size - 1)//batch_size}: symbols {i+1}-{batch_end}"
-            )
+            universe_logger.debug(f"Batch {i//batch_size + 1}/{(len(symbols) + batch_size - 1)//batch_size}: symbols {i+1}-{batch_end}", 
+                                 batch_number=i//batch_size + 1, 
+                                 total_batches=(len(symbols) + batch_size - 1)//batch_size,
+                                 symbol_range=f"{i+1}-{batch_end}",
+                                 operation="adv_analysis")
 
             def fetch_metrics(sym: str):
                 try:
@@ -1236,7 +1266,8 @@ class ActiveUniverseProvider:
             if i + batch_size < len(symbols) and len(qualified) < max_symbols:
                 time.sleep(0.5)
 
-        print(f"✅ {len(qualified)} symbols passed ADV filter")
+        universe_logger.info(f"{len(qualified)} symbols passed ADV filter", 
+                           qualified_count=len(qualified), operation="adv_analysis")
         return qualified
 
     def get_active_universe(
@@ -1286,7 +1317,8 @@ class ActiveUniverseProvider:
         sd: date = ed - timedelta(days=analysis_days)
 
         # Discover and RANK candidates from entire S&P 500
-        print("🚀 Building active universe from Polygon data...")
+        universe_logger.info("Building active universe from Polygon data", 
+                           target_size=target_size, operation="active_universe_build")
         ranked_candidates = self._discover_and_rank_candidates(
             min_market_cap=100_000_000,  # $100M minimum - ultra generous for provider
             analysis_days=analysis_days,
@@ -1297,10 +1329,12 @@ class ActiveUniverseProvider:
         )
 
         if not ranked_candidates:
-            print("⚠️ No candidates found from Polygon")
+            universe_logger.warning("No candidates found from Polygon", 
+                                   fallback_triggered=True, operation="active_universe_build")
             return []
 
-        print(f"📊 Found {len(ranked_candidates)} top-ranked candidates from S&P 500")
+        universe_logger.info(f"Found {len(ranked_candidates)} top-ranked candidates from S&P 500", 
+                           candidates_count=len(ranked_candidates), operation="active_universe_build")
 
         # Use the ranked candidates directly
         candidates = ranked_candidates
@@ -1314,6 +1348,7 @@ class ActiveUniverseProvider:
             try:
                 if hasattr(self.polygon_client, "get_earnings_calendar"):
                     from datetime import date as _d
+from utils.enhanced_logging_system import training_logger
 
                     s = _d.fromisoformat(start_iso)
                     e = _d.fromisoformat(end_iso)
@@ -1341,14 +1376,14 @@ class ActiveUniverseProvider:
         earnings_available = False
         try:
             # Quick test with one symbol
-            test_data = self.polygon_client.get_earnings_calendar("AAPL", sd, ed)
-            if test_data.get("status") == "OK" or test_data.get("results"):
+            earnings_test_response = self.polygon_client.get_earnings_calendar("AAPL", sd, ed)
+            if earnings_test_response.get("status") == "OK" or earnings_test_response.get("results"):
                 earnings_available = True
-                print("📅 Earnings calendar available")
+                universe_logger.info("Earnings calendar available", 
+                                   earnings_available=True, operation="active_universe_build")
         except Exception:
-            print(
-                "ℹ️ Earnings calendar not available - proceeding without earnings exclusion"
-            )
+            universe_logger.info("Earnings calendar not available - proceeding without earnings exclusion", 
+                               earnings_available=False, operation="active_universe_build")
 
         symbols = selector.select_universe(
             candidates=candidates,

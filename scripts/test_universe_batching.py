@@ -11,8 +11,8 @@ from utils.active_universe_provider import ActiveUniverseProvider
 def main():
     load_dotenv()
 
-    print("🔍 Testing Universe Selection with Smart Batching")
-    print("=" * 60)
+    universe_logger.info("🔍 Testing Universe Selection with Smart Batching", operation="enhanced_logging")
+    universe_logger.info("=" * 60, operation="enhanced_logging")
 
     provider = ActiveUniverseProvider()
 
@@ -30,22 +30,22 @@ def main():
 
         elapsed = time.time() - start_time
 
-        print(f"\n✅ Completed in {elapsed:.1f} seconds")
-        print(f"📊 Selected {len(universe)} symbols")
+        universe_logger.info(f"\n✅ Completed in {elapsed:.1f} seconds", operation="enhanced_logging")
+        universe_logger.info(f"📊 Selected {len(universe, operation="enhanced_logging")} symbols")
 
         if universe:
-            print(f"\nFirst 20 symbols: {universe[:20]}")
+            universe_logger.info(f"\nFirst 20 symbols: {universe[:20]}", operation="enhanced_logging")
         else:
-            print("\n❌ No symbols selected - investigating why...")
+            universe_logger.error("\n❌ No symbols selected - investigating why...", operation="enhanced_logging")
 
             # Let's trace through the steps manually
-            print("\nDiagnosing issue:")
+            universe_logger.info("\nDiagnosing issue:", operation="enhanced_logging")
 
             # Step 1: Check candidate discovery
             candidates = provider._discover_candidates()
-            print(f"1. Candidates discovered: {len(candidates)}")
+            universe_logger.info(f"1. Candidates discovered: {len(candidates, operation="enhanced_logging")}")
             if candidates:
-                print(f"   First 10: {candidates[:10]}")
+                universe_logger.info(f"   First 10: {candidates[:10]}", operation="enhanced_logging")
 
             # Step 2: Check if prefiltering is too strict
             if candidates:
@@ -54,7 +54,7 @@ def main():
                 end = date.today()
                 start = end - timedelta(days=60)
 
-                print("\n2. Testing ADV prefilter on first 5 candidates...")
+                universe_logger.info("\n2. Testing ADV prefilter on first 5 candidates...", operation="enhanced_logging")
                 prefiltered = provider._prefilter_by_adv_and_price(
                     candidates[:5],
                     start.isoformat(),
@@ -64,11 +64,11 @@ def main():
                     max_symbols=5,
                     batch_size=5,
                 )
-                print(f"   Prefiltered: {len(prefiltered)} passed")
-                print(f"   Results: {prefiltered}")
+                universe_logger.info(f"   Prefiltered: {len(prefiltered, operation="enhanced_logging")} passed")
+                universe_logger.info(f"   Results: {prefiltered}", operation="enhanced_logging")
 
     except Exception as e:
-        print(f"\n❌ Error: {e}")
+        universe_logger.error(f"\n❌ Error: {e}", operation="enhanced_logging")
         import traceback
 
         traceback.print_exc()

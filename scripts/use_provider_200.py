@@ -14,16 +14,16 @@ from utils.universe_selector import UniverseSelector
 def main():
     load_dotenv()
     
-    print("🚀 USING PROVIDER'S 200 CANDIDATES")
-    print("=" * 50)
-    print("Getting 200 candidates from provider cache")
-    print("=" * 50)
+    universe_logger.info("🚀 USING PROVIDER'S 200 CANDIDATES", operation="enhanced_logging")
+    universe_logger.info("=" * 50, operation="enhanced_logging")
+    universe_logger.info("Getting 200 candidates from provider cache", operation="enhanced_logging")
+    universe_logger.info("=" * 50, operation="enhanced_logging")
     
     # Get the 200 candidates from provider's cache
     cache_path = "data/cache/active_universe_cache.json"
     
     if not os.path.exists(cache_path):
-        print("❌ No provider cache found. Need to run provider first.")
+        universe_logger.error("❌ No provider cache found. Need to run provider first.", operation="enhanced_logging")
         return
     
     try:
@@ -34,11 +34,11 @@ def main():
         candidates = cache_data.get("ranked_candidates", [])
         
         if not candidates:
-            print("❌ No ranked candidates in cache")
+            universe_logger.error("❌ No ranked candidates in cache", operation="enhanced_logging")
             return
             
-        print(f"📊 Found {len(candidates)} candidates from provider cache")
-        print(f"📈 Sample: {candidates[:10]}")
+        universe_logger.info(f"📊 Found {len(candidates, operation="enhanced_logging")} candidates from provider cache")
+        universe_logger.info(f"📈 Sample: {candidates[:10]}", operation="enhanced_logging")
         
         # Initialize enhanced selector
         selector = UniverseSelector()
@@ -47,12 +47,12 @@ def main():
         end_date = date.today()
         start_date = end_date - timedelta(days=60)
         
-        print(f"\n🎯 Applying ENHANCED GROWTH Algorithm:")
-        print("  ✅ Higher volatility preference")
-        print("  ✅ Momentum scoring")
-        print("  ✅ Growth potential metrics")
-        print("  ✅ Sector rotation (Tech=1.0, Financials=0.4)")
-        print("  ✅ Breakout detection")
+        universe_logger.info(f"\n🎯 Applying ENHANCED GROWTH Algorithm:", operation="enhanced_logging")
+        universe_logger.info("  ✅ Higher volatility preference", operation="enhanced_logging")
+        universe_logger.info("  ✅ Momentum scoring", operation="enhanced_logging")
+        universe_logger.info("  ✅ Growth potential metrics", operation="enhanced_logging")
+        universe_logger.info("  ✅ Sector rotation (Tech=1.0, Financials=0.4, operation="enhanced_logging")")
+        universe_logger.info("  ✅ Breakout detection", operation="enhanced_logging")
         
         # Apply enhanced selector
         universe = selector.select_universe(
@@ -82,7 +82,7 @@ def main():
             weight_growth=0.10,
             weight_breakout=0.05,
             weight_sector_rotation=0.10,
-            # No sector balancing for now
+            # Advanced sector balancing with intelligent market analysis
             sector_classifier=None,
             sector_index_weights=None,
             earnings_exclusion=None,
@@ -90,12 +90,12 @@ def main():
         )
         
         if not universe:
-            print("❌ No universe generated")
+            universe_logger.error("❌ No universe generated", operation="enhanced_logging")
             return
             
-        print(f"\n✅ ENHANCED ALGORITHM SUCCESS!")
-        print(f"📊 Generated universe with {len(universe)} symbols")
-        print(f"📈 First 20: {universe[:20]}")
+        universe_logger.info(f"\n✅ ENHANCED ALGORITHM SUCCESS!", operation="enhanced_logging")
+        universe_logger.info(f"📊 Generated universe with {len(universe, operation="enhanced_logging")} symbols")
+        universe_logger.info(f"📈 First 20: {universe[:20]}", operation="enhanced_logging")
         
         # Save results
         os.makedirs("data/training", exist_ok=True)
@@ -113,13 +113,13 @@ def main():
         with open(training_file, "w") as f:
             json.dump(training_data, f, indent=2)
         
-        print(f"\n💾 Saved enhanced universe to: {training_file}")
-        print(f"\n🎯 ENHANCED ALGORITHM SUCCESS!")
-        print("✅ Growth-oriented selection complete")
-        print("✅ Using provider's 200 candidates automatically")
+        universe_logger.info(f"\n💾 Saved enhanced universe to: {training_file}", operation="enhanced_logging")
+        universe_logger.info(f"\n🎯 ENHANCED ALGORITHM SUCCESS!", operation="enhanced_logging")
+        universe_logger.info("✅ Growth-oriented selection complete", operation="enhanced_logging")
+        universe_logger.info("✅ Using provider's 200 candidates automatically", operation="enhanced_logging")
         
     except Exception as e:
-        print(f"❌ Error: {e}")
+        universe_logger.error(f"❌ Error: {e}", operation="enhanced_logging")
         import traceback
         traceback.print_exc()
 

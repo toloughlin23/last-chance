@@ -11,10 +11,10 @@ from services.infrastructure_manager import InstitutionalInfrastructureManager
 
 
 def test_func(a, b, c):
-    print(f"a={a}, b={b}, c={c}")
-    print(f"a type: {type(a)}")
-    print(f"b type: {type(b)}")
-    print(f"c type: {type(c)}")
+    training_logger.info(f"a={a}, b={b}, c={c}", operation="enhanced_logging")
+    training_logger.info(f"a type: {type(a, operation="enhanced_logging")}")
+    training_logger.info(f"b type: {type(b, operation="enhanced_logging")}")
+    training_logger.info(f"c type: {type(c, operation="enhanced_logging")}")
     return "test"
 
 
@@ -24,7 +24,7 @@ def main():
     tasks = [("task1", test_func, ("arg1", "arg2", "arg3"))]
 
     results = infra.execute_parallel_tasks(tasks, "algorithm_processing")
-    print(f"Results: {results}")
+    training_logger.info(f"Results: {results}", operation="enhanced_logging")
 
     infra.shutdown()
 

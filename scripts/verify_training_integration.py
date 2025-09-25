@@ -13,61 +13,59 @@ from dotenv import load_dotenv
 def main():
     load_dotenv()
 
-    print("🔍 VERIFYING TRAINING MODULE INTEGRATION")
-    print("=" * 50)
+    training_logger.info("🔍 VERIFYING TRAINING MODULE INTEGRATION", operation="enhanced_logging")
+    training_logger.info("=" * 50, operation="enhanced_logging")
 
     # Check if universe file exists
     universe_file = "data/training/universe_list.json"
     if not os.path.exists(universe_file):
-        print(f"❌ Universe file not found: {universe_file}")
-        print("   Run generate_training_universe.py first")
+        training_logger.error(f"❌ Universe file not found: {universe_file}", operation="enhanced_logging")
+        training_logger.info("   Run generate_training_universe.py first", operation="enhanced_logging")
         return
 
     # Load universe data
     with open(universe_file, "r") as f:
         universe_data = json.load(f)
 
-    print(f"✅ Universe file loaded: {universe_file}")
-    print(f"📊 Symbol count: {universe_data['symbol_count']}")
-    print(f"📅 Generated: {universe_data['generated_date']}")
-    print(f"📈 Data source: {universe_data['data_source']}")
+    training_logger.info(f"✅ Universe file loaded: {universe_file}", operation="enhanced_logging")
+    training_logger.info(f"📊 Symbol count: {universe_data['symbol_count']}", operation="enhanced_logging")
+    training_logger.info(f"📅 Generated: {universe_data['generated_date']}", operation="enhanced_logging")
+    training_logger.info(f"📈 Data source: {universe_data['data_source']}", operation="enhanced_logging")
 
     # Check training module
     try:
         from training.historical_training_module import HistoricalTrainingModule
         from training.training_config import TrainingConfig
 
-        print("\n✅ Training modules imported successfully")
+        training_logger.info("\n✅ Training modules imported successfully", operation="enhanced_logging")
 
         # Test with generated symbols
         symbols = universe_data["symbols"]
-        print(f"📊 Testing with {len(symbols)} symbols...")
+        training_logger.info(f"📊 Testing with {len(symbols, operation="enhanced_logging")} symbols...")
 
         # Create training config
         config = TrainingConfig.curated_120_training()
         config["symbols"] = symbols[:120]  # Use first 120 symbols
 
-        print(f"✅ Training config created with {len(config['symbols'])} symbols")
-        print(
-            f"📅 Training period: {config['training_start_date']} to {config['training_end_date']}"
-        )
-        print(f"🔍 Lookback window: {config['lookback_window']} days")
+        training_logger.info(f"✅ Training config created with {len(config['symbols'], operation="enhanced_logging")} symbols")
+        training_logger.info(f"📅 Training period: {config['training_start_date']} to {config['training_end_date']}", operation="enhanced_logging")
+        training_logger.info(f"🔍 Lookback window: {config['lookback_window']} days", operation="enhanced_logging")
 
         # Test training module initialization
         training_module = HistoricalTrainingModule(config)
         # Use the module to validate config wiring without running training
         assert training_module is not None
-        print(f"✅ Training module initialized: {training_module.__class__.__name__}")
+        training_logger.info(f"✅ Training module initialized: {training_module.__class__.__name__}", operation="enhanced_logging")
 
-        print("\n🎯 INTEGRATION VERIFIED!")
-        print("=" * 50)
-        print("✅ Universe list works with training module")
-        print("✅ All components integrated")
-        print("✅ Ready for algorithm training")
+        training_logger.info("\n🎯 INTEGRATION VERIFIED!", operation="enhanced_logging")
+        training_logger.info("=" * 50, operation="enhanced_logging")
+        training_logger.info("✅ Universe list works with training module", operation="enhanced_logging")
+        training_logger.info("✅ All components integrated", operation="enhanced_logging")
+        training_logger.info("✅ Ready for algorithm training", operation="enhanced_logging")
 
     except Exception as e:
-        print(f"❌ Training module error: {e}")
-        print("   Check that training modules are properly installed")
+        training_logger.error(f"❌ Training module error: {e}", operation="enhanced_logging")
+        training_logger.info("   Check that training modules are properly installed", operation="enhanced_logging")
 
 
 if __name__ == "__main__":

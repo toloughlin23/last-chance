@@ -16,34 +16,34 @@ from services.feature_builder import build_enriched_from_aggs
 
 def diagnose_news_sentiment():
     """Diagnose news sentiment issues"""
-    print("🔍 DIAGNOSING NEWS SENTIMENT ISSUES")
-    print("=" * 50)
+    training_logger.info("🔍 DIAGNOSING NEWS SENTIMENT ISSUES", operation="enhanced_logging")
+    training_logger.info("=" * 50, operation="enhanced_logging")
 
     analyzer = AdvancedNewsSentimentAnalysis()
 
     # Test with real symbol
-    print("Testing news sentiment with AAPL...")
+    training_logger.info("Testing news sentiment with AAPL...", operation="enhanced_logging")
     result = analyzer.analyze_symbol_sentiment("AAPL", lookback_hours=24)
 
-    print(f"Result type: {type(result)}")
-    print(f"Result: {result}")
-    print(f"Has sentiment_score: {hasattr(result, 'sentiment_score')}")
-    print(f"Has confidence: {hasattr(result, 'confidence')}")
+    training_logger.info(f"Result type: {type(result, operation="enhanced_logging")}")
+    training_logger.info(f"Result: {result}", operation="enhanced_logging")
+    training_logger.info(f"Has sentiment_score: {hasattr(result, 'sentiment_score', operation="enhanced_logging")}")
+    training_logger.info(f"Has confidence: {hasattr(result, 'confidence', operation="enhanced_logging")}")
 
     if hasattr(result, "sentiment_score"):
-        print(f"Sentiment Score: {result.sentiment_score}")
-        print(f"Confidence: {result.confidence}")
+        training_logger.info(f"Sentiment Score: {result.sentiment_score}", operation="enhanced_logging")
+        training_logger.info(f"Confidence: {result.confidence}", operation="enhanced_logging")
     else:
-        print("❌ Result object missing required attributes!")
+        training_logger.error("❌ Result object missing required attributes!", operation="enhanced_logging")
 
 
 def diagnose_algorithm_issues():
     """Diagnose algorithm processing issues"""
-    print("\n🔍 DIAGNOSING ALGORITHM PROCESSING ISSUES")
-    print("=" * 50)
+    training_logger.info("\n🔍 DIAGNOSING ALGORITHM PROCESSING ISSUES", operation="enhanced_logging")
+    training_logger.info("=" * 50, operation="enhanced_logging")
 
     # Test feature builder
-    print("Testing feature builder...")
+    training_logger.info("Testing feature builder...", operation="enhanced_logging")
     # nocontam: allow diagnostic example for structure explanation (no execution path relies on it)
     example_aggs = {
         "results": [
@@ -63,68 +63,68 @@ def diagnose_algorithm_issues():
 
     try:
         enriched = build_enriched_from_aggs(example_aggs)
-        print(f"Enriched type: {type(enriched)}")
-        print(f"Enriched: {enriched}")
-        print(f"Has market_data: {hasattr(enriched, 'market_data')}")
+        training_logger.info(f"Enriched type: {type(enriched, operation="enhanced_logging")}")
+        training_logger.info(f"Enriched: {enriched}", operation="enhanced_logging")
+        training_logger.info(f"Has market_data: {hasattr(enriched, 'market_data', operation="enhanced_logging")}")
 
         if hasattr(enriched, "market_data"):
-            print(f"Market data: {enriched.market_data}")
-            print(f"Price: {getattr(enriched.market_data, 'price', 'NO PRICE')}")
+            training_logger.info(f"Market data: {enriched.market_data}", operation="enhanced_logging")
+            training_logger.info(f"Price: {getattr(enriched.market_data, 'price', 'NO PRICE', operation="enhanced_logging")}")
     except Exception as e:
-        print(f"❌ Feature builder failed: {e}")
+        training_logger.error(f"❌ Feature builder failed: {e}", operation="enhanced_logging")
         return
 
     # Test LinUCB algorithm
-    print("\nTesting LinUCB algorithm...")
+    training_logger.info("\nTesting LinUCB algorithm...", operation="enhanced_logging")
     try:
         algorithm = OptimizedInstitutionalLinUCB()
-        print(f"Algorithm type: {type(algorithm)}")
+        training_logger.info(f"Algorithm type: {type(algorithm, operation="enhanced_logging")}")
 
         # Test arm selection
         arm = algorithm.select_arm(enriched)
-        print(f"Selected arm: {arm}")
-        print(f"Arm type: {type(arm)}")
+        training_logger.info(f"Selected arm: {arm}", operation="enhanced_logging")
+        training_logger.info(f"Arm type: {type(arm, operation="enhanced_logging")}")
 
         # Test confidence calculation
         confidence = algorithm.get_confidence_for_context(arm, enriched)
-        print(f"Confidence: {confidence}")
-        print(f"Confidence type: {type(confidence)}")
+        training_logger.info(f"Confidence: {confidence}", operation="enhanced_logging")
+        training_logger.info(f"Confidence type: {type(confidence, operation="enhanced_logging")}")
 
     except Exception as e:
-        print(f"❌ LinUCB algorithm failed: {e}")
+        training_logger.error(f"❌ LinUCB algorithm failed: {e}", operation="enhanced_logging")
 
 
 def diagnose_news_sources():
     """Diagnose news source issues"""
-    print("\n🔍 DIAGNOSING NEWS SOURCE ISSUES")
-    print("=" * 50)
+    training_logger.info("\n🔍 DIAGNOSING NEWS SOURCE ISSUES", operation="enhanced_logging")
+    training_logger.info("=" * 50, operation="enhanced_logging")
 
     analyzer = AdvancedNewsSentimentAnalysis()
 
-    print("Testing individual news sources...")
+    training_logger.info("Testing individual news sources...", operation="enhanced_logging")
     for source_name, source in analyzer.news_sources.items():
-        print(f"\nTesting {source_name}:")
-        print(f"  URL: {source.url}")
-        print(f"  Weight: {source.weight}")
-        print(f"  Reliability: {source.reliability}")
+        training_logger.info(f"\nTesting {source_name}:", operation="enhanced_logging")
+        training_logger.info(f"  URL: {source.url}", operation="enhanced_logging")
+        training_logger.info(f"  Weight: {source.weight}", operation="enhanced_logging")
+        training_logger.info(f"  Reliability: {source.reliability}", operation="enhanced_logging")
 
         # Test if source has API key
         if hasattr(source, "api_key"):
-            print(f"  API Key: {'SET' if source.api_key else 'NOT SET'}")
+            training_logger.info(f"  API Key: {'SET' if source.api_key else 'NOT SET'}", operation="enhanced_logging")
         else:
-            print("  API Key: NOT FOUND")
+            training_logger.info("  API Key: NOT FOUND", operation="enhanced_logging")
 
 
 def main():
     """Main diagnosis function"""
-    print("🚨 DIAGNOSING CRITICAL SYSTEM ISSUES")
-    print("=" * 60)
+    training_logger.error("🚨 DIAGNOSING CRITICAL SYSTEM ISSUES", operation="enhanced_logging")
+    training_logger.info("=" * 60, operation="enhanced_logging")
 
     diagnose_news_sentiment()
     diagnose_algorithm_issues()
     diagnose_news_sources()
 
-    print("\n✅ Diagnosis completed")
+    training_logger.info("\n✅ Diagnosis completed", operation="enhanced_logging")
 
 
 if __name__ == "__main__":

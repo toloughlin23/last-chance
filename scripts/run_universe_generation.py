@@ -12,7 +12,7 @@ from pathlib import Path
 def run_command_safely(command):
     """Run a command safely with proper error handling."""
     try:
-        print(f"🔄 Running: {command}")
+        universe_logger.info(f"🔄 Running: {command}", operation="enhanced_logging")
         result = subprocess.run(
             command,
             shell=True,
@@ -23,68 +23,68 @@ def run_command_safely(command):
         )
 
         if result.returncode == 0:
-            print("✅ Command completed successfully")
+            universe_logger.info("✅ Command completed successfully", operation="enhanced_logging")
             if result.stdout:
-                print(f"📤 Output:\n{result.stdout}")
+                universe_logger.info(f"📤 Output:\n{result.stdout}", operation="enhanced_logging")
             return True, result.stdout
         else:
-            print(f"❌ Command failed with return code {result.returncode}")
+            universe_logger.error(f"❌ Command failed with return code {result.returncode}", operation="enhanced_logging")
             if result.stderr:
-                print(f"📤 Error:\n{result.stderr}")
+                universe_logger.error(f"📤 Error:\n{result.stderr}", operation="enhanced_logging")
             return False, result.stderr
 
     except subprocess.TimeoutExpired:
-        print("⏰ Command timed out after 5 minutes")
+        universe_logger.info("⏰ Command timed out after 5 minutes", operation="enhanced_logging")
         return False, "Timeout"
     except Exception as e:
-        print(f"💥 Command failed with exception: {e}")
+        universe_logger.error(f"💥 Command failed with exception: {e}", operation="enhanced_logging")
         return False, str(e)
 
 
 def main():
-    print("🚀 UNIVERSE GENERATION - BYPASS MODE")
-    print("=" * 50)
-    print("Running commands directly to bypass terminal tool issues")
-    print("=" * 50)
+    universe_logger.info("🚀 UNIVERSE GENERATION - BYPASS MODE", operation="enhanced_logging")
+    universe_logger.info("=" * 50, operation="enhanced_logging")
+    universe_logger.info("Running commands directly to bypass terminal tool issues", operation="enhanced_logging")
+    universe_logger.info("=" * 50, operation="enhanced_logging")
 
     # Set environment
     env = os.environ.copy()
     env["PYTHONPATH"] = "."
 
     # Test 1: Basic Python test
-    print("\n📊 Test 1: Basic Python functionality")
-    success, output = run_command_safely("python -c \"print('Python is working')\"")
+    universe_logger.info("\n📊 Test 1: Basic Python functionality", operation="enhanced_logging")
+    success, output = run_command_safely("python -c \"universe_logger.info('Python is working', operation="enhanced_logging")\"")
     if not success:
-        print("❌ Basic Python test failed")
+        universe_logger.error("❌ Basic Python test failed", operation="enhanced_logging")
         return
 
     # Test 2: Import test
-    print("\n📊 Test 2: Module imports")
+    universe_logger.info("\n📊 Test 2: Module imports", operation="enhanced_logging")
     success, output = run_command_safely(
-        "python -c \"from dotenv import load_dotenv; print('Imports working')\""
+        "python -c \"from dotenv import load_dotenv; universe_logger.info('Imports working', operation="enhanced_logging")\""
     )
     if not success:
-        print("❌ Import test failed")
+        universe_logger.error("❌ Import test failed", operation="enhanced_logging")
         return
 
     # Test 3: Provider test
-    print("\n📊 Test 3: Provider initialization")
+    universe_logger.info("\n📊 Test 3: Provider initialization", operation="enhanced_logging")
     success, output = run_command_safely(
-        "python -c \"from dotenv import load_dotenv; load_dotenv(); from utils.active_universe_provider import ActiveUniverseProvider; provider = ActiveUniverseProvider(); print('Provider initialized')\""
+        "python -c \"from dotenv import load_dotenv; load_dotenv(); from utils.active_universe_provider import ActiveUniverseProvider; provider = ActiveUniverseProvider(); universe_logger.info('Provider initialized', operation="enhanced_logging")\""
     )
     if not success:
-        print("❌ Provider test failed")
+        universe_logger.error("❌ Provider test failed", operation="enhanced_logging")
         return
 
     # Test 4: Quick universe generation
-    print("\n📊 Test 4: Quick universe generation")
+    universe_logger.info("\n📊 Test 4: Quick universe generation", operation="enhanced_logging")
     success, output = run_command_safely("python scripts/quick_universe_test.py")
     if not success:
-        print("❌ Quick universe test failed")
+        universe_logger.error("❌ Quick universe test failed", operation="enhanced_logging")
         return
 
-    print("\n🎯 ALL TESTS PASSED!")
-    print("The system is working correctly despite terminal tool issues")
+    universe_logger.info("\n🎯 ALL TESTS PASSED!", operation="enhanced_logging")
+    universe_logger.info("The system is working correctly despite terminal tool issues", operation="enhanced_logging")
 
 
 if __name__ == "__main__":

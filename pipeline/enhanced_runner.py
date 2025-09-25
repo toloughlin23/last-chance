@@ -73,10 +73,10 @@ class EnhancedPipelineRunner:
         self.universe_analysis_days = 60
         self.universe_target_size = 120
 
-        print("🚀 Enhanced Pipeline Runner initialized")
-        print("✅ 24-thread infrastructure active")
-        print("✅ High-performance in-memory caching enabled")
-        print("✅ Resource monitoring active")
+        training_logger.info("🚀 Enhanced Pipeline Runner initialized", operation="enhanced_logging")
+        training_logger.info("✅ 24-thread infrastructure active", operation="enhanced_logging")
+        training_logger.info("✅ High-performance in-memory caching enabled", operation="enhanced_logging")
+        training_logger.info("✅ Resource monitoring active", operation="enhanced_logging")
 
     def _chunk(self, items: List[str], size: int) -> List[List[str]]:
         """Split items into chunks of specified size"""
@@ -116,7 +116,7 @@ class EnhancedPipelineRunner:
             else:
                 uncached_symbols.append(symbol)
 
-        print(f"📊 Cache hit: {len(cached_data)}/{len(symbols)} symbols")
+        training_logger.info(f"📊 Cache hit: {len(cached_data, operation="enhanced_logging")}/{len(symbols)} symbols")
 
         # Process uncached symbols
         remaining = uncached_symbols
@@ -190,13 +190,11 @@ class EnhancedPipelineRunner:
         """
         ENHANCED: Run pipeline once with 24-thread processing and Redis caching
         """
-        print(f"🚀 Running enhanced pipeline for {len(symbols)} symbols")
+        training_logger.info(f"🚀 Running enhanced pipeline for {len(symbols, operation="enhanced_logging")} symbols")
 
         # ENHANCED: Get resource stats before processing
         stats = self.infra.get_resource_stats()
-        print(
-            f"📊 Resources: CPU {stats.cpu_percent:.1f}%, Memory {stats.memory_percent:.1f}%"
-        )
+        training_logger.info(f"📊 Resources: CPU {stats.cpu_percent:.1f}%, Memory {stats.memory_percent:.1f}%", operation="enhanced_logging")
 
         # ENHANCED: CSV header with additional metrics
         header = [
@@ -227,7 +225,7 @@ class EnhancedPipelineRunner:
 
             # ENHANCED: Prioritize symbols by advanced news sentiment
             if prioritize_by_news:
-                print("📰 Analyzing news sentiment for prioritization...")
+                training_logger.info("📰 Analyzing news sentiment for prioritization...", operation="enhanced_logging")
                 sentiment_results = self.news_analyzer.analyze_multiple_symbols(
                     symbols, lookback_hours=24
                 )
@@ -245,13 +243,13 @@ class EnhancedPipelineRunner:
             safe_symbols = self.hygiene.filter_symbols(
                 ordered_symbols, strategy_profile=strategy_profile
             )
-            print(f"🧹 Hygiene filtered: {len(symbols)} -> {len(safe_symbols)} symbols")
+            training_logger.info(f"🧹 Hygiene filtered: {len(symbols, operation="enhanced_logging")} -> {len(safe_symbols)} symbols")
 
             # ENHANCED: Process in batches with 24-thread architecture
             for batch in (
                 self._chunk(safe_symbols, batch_size) if batch_size else [safe_symbols]
             ):
-                print(f"🔄 Processing batch of {len(batch)} symbols...")
+                training_logger.info(f"🔄 Processing batch of {len(batch, operation="enhanced_logging")} symbols...")
 
                 # ENHANCED: Fetch data with parallel processing
                 aggs_map, status_map = self._fetch_with_retries_enhanced(
@@ -288,7 +286,7 @@ class EnhancedPipelineRunner:
                             news_confidence = sentiment_result.confidence
                             market_impact = sentiment_result.market_impact
                         except Exception as e:
-                            print(f"⚠️ News sentiment failed for {symbol}: {e}")
+                            training_logger.error(f"⚠️ News sentiment failed for {symbol}: {e}", operation="enhanced_logging")
 
                     # ENHANCED: Process with all algorithms in parallel
                     def process_algorithm(
@@ -349,7 +347,7 @@ class EnhancedPipelineRunner:
                             else:
                                 return alg_name, 0.0
                         except Exception as e:
-                            print(f"⚠️ Algorithm {alg_name} failed for {symbol}: {e}")
+                            training_logger.error(f"⚠️ Algorithm {alg_name} failed for {symbol}: {e}", operation="enhanced_logging")
                             return alg_name, 0.0
 
                     # ENHANCED: Create wrapper function for proper argument handling
@@ -438,7 +436,7 @@ class EnhancedPipelineRunner:
                                 # Place order through Alpaca
                                 executed = True
                         except Exception as e:
-                            print(f"⚠️ Execution failed for {symbol}: {e}")
+                            training_logger.error(f"⚠️ Execution failed for {symbol}: {e}", operation="enhanced_logging")
 
                     # ENHANCED: Calculate processing time
                     processing_time = (
@@ -468,16 +466,12 @@ class EnhancedPipelineRunner:
                         ]
                     )
 
-                    print(
-                        f"   ✅ {symbol}: {avg_confidence:.3f} avg confidence, {processing_time:.1f}ms"
-                    )
+                    training_logger.info(f"   ✅ {symbol}: {avg_confidence:.3f} avg confidence, {processing_time:.1f}ms", operation="enhanced_logging")
 
         # ENHANCED: Get final resource stats
         final_stats = self.infra.get_resource_stats()
-        print(
-            f"📊 Final resources: CPU {final_stats.cpu_percent:.1f}%, Memory {final_stats.memory_percent:.1f}%"
-        )
-        print(f"💾 Cache hit rate: {final_stats.cache_hit_rate:.1%}")
+        training_logger.info(f"📊 Final resources: CPU {final_stats.cpu_percent:.1f}%, Memory {final_stats.memory_percent:.1f}%", operation="enhanced_logging")
+        training_logger.info(f"💾 Cache hit rate: {final_stats.cache_hit_rate:.1%}", operation="enhanced_logging")
 
     def run_enhanced_loop(
         self,
@@ -498,8 +492,8 @@ class EnhancedPipelineRunner:
         """
         ENHANCED: Run pipeline loop with 24-thread processing and Redis caching
         """
-        print(f"🔄 Starting enhanced pipeline loop for {len(symbols)} symbols")
-        print(f"⏱️ Interval: {interval_seconds}s, Lookback: {lookback_days} days")
+        training_logger.info(f"🔄 Starting enhanced pipeline loop for {len(symbols, operation="enhanced_logging")} symbols")
+        training_logger.info(f"⏱️ Interval: {interval_seconds}s, Lookback: {lookback_days} days", operation="enhanced_logging")
 
         tz = get_uk_us_handler()
         count = 0
@@ -518,16 +512,13 @@ class EnhancedPipelineRunner:
                             force_refresh=False,
                         )
                         if active_symbols:
-                            print(
-                                f"📚 Active universe loaded: {len(active_symbols)} symbols"
+                            training_logger.info(f"📚 Active universe loaded: {len(active_symbols, operation="enhanced_logging")} symbols"
                             )
                         else:
-                            print(
-                                "⚠️ Active universe is empty; falling back to provided symbols"
-                            )
+                            training_logger.warning("⚠️ Active universe is empty; falling back to provided symbols", operation="enhanced_logging")
                             active_symbols = symbols
                     except Exception as e:
-                        print(f"⚠️ Universe refresh failed, using provided symbols: {e}")
+                        training_logger.error(f"⚠️ Universe refresh failed, using provided symbols: {e}", operation="enhanced_logging")
                         active_symbols = symbols
 
                 # ENHANCED: Check market hours with infrastructure monitoring
@@ -568,25 +559,23 @@ class EnhancedPipelineRunner:
                 time.sleep(interval_seconds)
 
         except KeyboardInterrupt:
-            print("\n🛑 Enhanced pipeline loop stopped by user")
+            training_logger.info("\n🛑 Enhanced pipeline loop stopped by user", operation="enhanced_logging")
         finally:
             # ENHANCED: Generate final performance report
             report = self.infra.get_performance_report()
-            print(
-                f"📊 Final performance report: {report['performance_metrics']['total_tasks_completed']} tasks completed"
-            )
+            training_logger.info(f"📊 Final performance report: {report['performance_metrics']['total_tasks_completed']} tasks completed", operation="enhanced_logging")
 
     def shutdown(self):
         """ENHANCED: Graceful shutdown"""
-        print("🛑 Shutting down enhanced pipeline runner...")
+        training_logger.info("🛑 Shutting down enhanced pipeline runner...", operation="enhanced_logging")
         self.infra.shutdown()
-        print("✅ Enhanced pipeline runner shutdown complete")
+        training_logger.info("✅ Enhanced pipeline runner shutdown complete", operation="enhanced_logging")
 
 
 def main():
     """Test the enhanced pipeline runner"""
-    print("🧪 Testing Enhanced Pipeline Runner")
-    print("=" * 50)
+    training_logger.info("🧪 Testing Enhanced Pipeline Runner", operation="enhanced_logging")
+    training_logger.info("=" * 50, operation="enhanced_logging")
 
     # Initialize enhanced runner
     runner = EnhancedPipelineRunner()
@@ -595,7 +584,7 @@ def main():
     test_symbols = ["AAPL", "MSFT", "GOOGL", "TSLA", "NVDA"]
 
     # Test single run
-    print("🚀 Testing enhanced single run...")
+    training_logger.info("🚀 Testing enhanced single run...", operation="enhanced_logging")
     runner.run_enhanced_once(
         test_symbols,
         "2023-01-03",
@@ -606,7 +595,7 @@ def main():
     )
 
     # Test loop (short duration)
-    print("🔄 Testing enhanced loop (2 iterations)...")
+    training_logger.info("🔄 Testing enhanced loop (2 iterations, operation="enhanced_logging")...")
     runner.run_enhanced_loop(
         test_symbols,
         7,
@@ -619,7 +608,7 @@ def main():
 
     # Shutdown
     runner.shutdown()
-    print("✅ Enhanced pipeline runner test completed")
+    training_logger.info("✅ Enhanced pipeline runner test completed", operation="enhanced_logging")
 
 
 if __name__ == "__main__":

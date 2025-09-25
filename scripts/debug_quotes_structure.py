@@ -26,23 +26,23 @@ def main():
         hour=14, minute=35, second=0, microsecond=0
     )  # Just 5 minutes
 
-    print(f"Fetching quotes for AAPL from {start_time} to {end_time}")
+    training_logger.info(f"Fetching quotes for AAPL from {start_time} to {end_time}", operation="enhanced_logging")
 
     quotes = client.fetch_quotes_window("AAPL", start_time, end_time, limit=5)
 
-    print(f"\nReceived {len(quotes)} quotes")
+    training_logger.info(f"\nReceived {len(quotes, operation="enhanced_logging")} quotes")
 
     if quotes:
-        print("\nStructure of first quote:")
-        print(json.dumps(quotes[0], indent=2, default=str))
+        training_logger.info("\nStructure of first quote:", operation="enhanced_logging")
+        training_logger.info(json.dumps(quotes[0], indent=2, default=str, operation="enhanced_logging"))
 
-        print("\nAll available fields:")
-        print(list(quotes[0].keys()))
+        training_logger.info("\nAll available fields:", operation="enhanced_logging")
+        training_logger.info(list(quotes[0].keys(, operation="enhanced_logging")))
     else:
-        print("No quotes received!")
+        training_logger.info("No quotes received!", operation="enhanced_logging")
 
         # Try a direct API call to see raw response
-        print("\nTrying direct API call...")
+        training_logger.info("\nTrying direct API call...", operation="enhanced_logging")
         url = f"{client.base}/v3/quotes/AAPL"
         params = {
             "timestamp.gte": start_time.isoformat().replace("+00:00", "Z"),
@@ -55,13 +55,13 @@ def main():
         import requests
 
         resp = requests.get(url, params=params)
-        print(f"Status: {resp.status_code}")
+        training_logger.info(f"Status: {resp.status_code}", operation="enhanced_logging")
         if resp.status_code == 200:
             data = resp.json()
-            print(f"Response keys: {list(data.keys())}")
+            training_logger.info(f"Response keys: {list(data.keys(, operation="enhanced_logging"))}")
             if "results" in data and data["results"]:
-                print("\nFirst result structure:")
-                print(json.dumps(data["results"][0], indent=2))
+                training_logger.info("\nFirst result structure:", operation="enhanced_logging")
+                training_logger.info(json.dumps(data["results"][0], indent=2, operation="enhanced_logging"))
 
 
 if __name__ == "__main__":

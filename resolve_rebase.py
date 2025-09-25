@@ -21,53 +21,53 @@ def run_command(cmd, timeout=30):
 
 
 def main():
-    print("=== Resolving Stuck Git Rebase ===")
+    training_logger.info("=== Resolving Stuck Git Rebase ===", operation="enhanced_logging")
 
     # Check if we're in a rebase
     if not os.path.exists(".git/rebase-merge"):
-        print("❌ Not in a rebase state")
+        training_logger.error("❌ Not in a rebase state", operation="enhanced_logging")
         return
 
-    print("✅ Confirmed: Repository is in rebase state")
+    training_logger.info("✅ Confirmed: Repository is in rebase state", operation="enhanced_logging")
 
     # Step 1: Complete the current commit (it's already staged)
-    print("\n1. Completing current commit...")
+    training_logger.info("\n1. Completing current commit...", operation="enhanced_logging")
     code, out, err = run_command("git commit --no-edit")
-    print(f"Commit result: {code}")
+    training_logger.info(f"Commit result: {code}", operation="enhanced_logging")
     if code == 0:
-        print("✅ Commit completed successfully")
+        training_logger.info("✅ Commit completed successfully", operation="enhanced_logging")
     else:
-        print(f"❌ Commit failed: {err}")
+        training_logger.error(f"❌ Commit failed: {err}", operation="enhanced_logging")
         return
 
     # Step 2: Continue the rebase
-    print("\n2. Continuing rebase...")
+    training_logger.info("\n2. Continuing rebase...", operation="enhanced_logging")
     code, out, err = run_command("git rebase --continue")
-    print(f"Continue result: {code}")
+    training_logger.info(f"Continue result: {code}", operation="enhanced_logging")
     if code == 0:
-        print("✅ Rebase continued successfully")
+        training_logger.info("✅ Rebase continued successfully", operation="enhanced_logging")
     else:
-        print(f"❌ Rebase continue failed: {err}")
+        training_logger.error(f"❌ Rebase continue failed: {err}", operation="enhanced_logging")
         # Try to abort if continue fails
-        print("\n3. Attempting to abort rebase...")
+        training_logger.info("\n3. Attempting to abort rebase...", operation="enhanced_logging")
         abort_code, abort_out, abort_err = run_command("git rebase --abort")
         if abort_code == 0:
-            print("✅ Rebase aborted successfully")
+            training_logger.info("✅ Rebase aborted successfully", operation="enhanced_logging")
         else:
-            print(f"❌ Failed to abort rebase: {abort_err}")
+            training_logger.error(f"❌ Failed to abort rebase: {abort_err}", operation="enhanced_logging")
         return
 
     # Step 3: Check final status
-    print("\n4. Final status check...")
+    training_logger.info("\n4. Final status check...", operation="enhanced_logging")
     code, out, err = run_command("git status --porcelain")
-    print(f"Status: {out}")
+    training_logger.info(f"Status: {out}", operation="enhanced_logging")
 
     # Step 4: Check remote
-    print("\n5. Checking GitHub remote...")
+    training_logger.info("\n5. Checking GitHub remote...", operation="enhanced_logging")
     code, out, err = run_command("git remote -v")
-    print(f"Remote: {out}")
+    training_logger.info(f"Remote: {out}", operation="enhanced_logging")
 
-    print("\n=== Rebase Resolution Complete ===")
+    training_logger.info("\n=== Rebase Resolution Complete ===", operation="enhanced_logging")
 
 
 if __name__ == "__main__":
